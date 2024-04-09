@@ -11,3 +11,25 @@ export interface MapItem {
   buildingArea: string
   landArea: string
 }
+
+export interface ListData {
+  ids: string
+  km: boolean
+  kw: boolean
+  gm: boolean
+  gg: boolean
+  x1: number
+  y1: number
+  x2: number
+  y2: number
+  ekm: boolean
+  egm: boolean
+  egg: boolean
+  fromAppraisalAmount: number
+  toAppraisalAmount: number
+  fromMinimumAmount: number
+  toMinimumAmount: number
+  interests: boolean
+  awardedMonths: number
+  userId: string
+}

@@ -83,8 +83,7 @@ export default function GGMap({ formData, setFormData }: Props) {
         egg: formData.egg,
       })
       if (response.status === 200) {
-        setMapItems(response.data.data.mapItems)
-        console.log(response.data.data.mapItems)
+        return
       }
     } catch (error) {
       console.error(error)
