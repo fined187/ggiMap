@@ -1,3 +1,5 @@
+import { NaverMapProps } from 'react-naver-maps'
+
 export interface Form {
   km: boolean
   kw: boolean
@@ -22,4 +24,5 @@ export interface Form {
   ekm: boolean
   egm: boolean
   egg: boolean
+  map: NaverMapProps
 }

@@ -44,7 +44,9 @@ export default function ListBox({ formData, setFormData }: ListBoxProps) {
 
   const { mutate: list, isLoading } = usePostListItems(mapData, setListItems)
   useEffect(() => {
-    list()
+    if (formData.map.zoom! >= 15) {
+      list()
+    }
   }, [formData])
 
   return (
@@ -65,14 +67,25 @@ export default function ListBox({ formData, setFormData }: ListBoxProps) {
           : '70px',
       }}
     >
-      <Result
-        formData={formData}
-        setFormData={setFormData}
-        listItems={listItems}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        isLoading={isLoading}
-      />
+      {formData.map.zoom! >= 15 ? (
+        <Result
+          formData={formData}
+          setFormData={setFormData}
+          listItems={listItems}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          isLoading={isLoading}
+        />
+      ) : (
+        <Header
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          formData={formData}
+          setFormData={setFormData}
+          listItems={listItems}
+          isLoading={isLoading}
+        />
+      )}
     </Flex>
   )
 }

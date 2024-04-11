@@ -1,10 +1,7 @@
 import Flex from '@/components/shared/Flex'
 import ListRow from '@/components/shared/ListRow'
 import Skeleton from '@/components/shared/Skeleton'
-import Text from '@/components/shared/Text'
-import Image from 'next/image'
-
-//https://web-api.ggi.co.kr/ggi/api/bid-form/
+import Spacing from '@/components/shared/Spacing'
 
 function ListSkeleton() {
   return (
@@ -45,6 +42,23 @@ function ListSkeleton() {
         >
           <Skeleton width={40} height={20} />
           <Skeleton width={120} height={20} />
+          <Flex direction="row">
+            <Skeleton width={40} height={20} />
+            <Spacing direction="horizontal" size={5} />
+            <Skeleton width={60} height={20} />
+          </Flex>
+          <Flex direction="row">
+            <Skeleton width={40} height={20} />
+            <Spacing direction="horizontal" size={5} />
+            <Skeleton width={60} height={20} />
+          </Flex>
+          <Flex direction="row">
+            <Skeleton width={40} height={20} />
+            <Spacing direction="horizontal" size={5} />
+            <Skeleton width={40} height={20} />
+            <Spacing direction="horizontal" size={5} />
+            <Skeleton width={40} height={20} />
+          </Flex>
         </Flex>
       </Flex>
     </Flex>

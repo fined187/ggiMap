@@ -37,12 +37,19 @@ export default function Header({
             contents={<Skeleton width={63} height={32} />}
             onClick={() => setIsOpen((prev) => !prev)}
           />
-        ) : (
+        ) : formData.map.zoom! >= 15 ? (
           <ListRow
             left={<SearchText isOpen={isOpen}>검색결과</SearchText>}
             right={<BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />}
             contents={
               <SearchText isOpen={isOpen}>{listItems?.totalCount}건</SearchText>
+            }
+            onClick={() => setIsOpen((prev) => !prev)}
+          />
+        ) : (
+          <ListRow
+            contents={
+              '읍면동이상의 축소에서는 매물종류(경매/예정/공매)와 용도로만 검색됩니다.'
             }
             onClick={() => setIsOpen((prev) => !prev)}
           />

@@ -20,8 +20,6 @@ import { useRecoilState } from 'recoil'
 import { loadingAtom, mapAtom } from '@/store/atom/map'
 import { userAtom } from '@/store/atom/postUser'
 import useDebounce from '../shared/hocs/useDebounce'
-import axios from 'axios'
-import baseApiInstance from '@/remote/baseURL'
 
 interface Props {
   formData: Form
@@ -33,62 +31,29 @@ export default function GGMap({ formData, setFormData }: Props) {
   const [loading, setLoading] = useRecoilState(loadingAtom)
   const [map, setMap] = useState<NaverMapProps>({})
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
-  // const { mutate, isLoading } = usePostMapItems({
-  //   ids:
-  //     formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
-  //   fromAppraisalAmount: formData.fromAppraisalAmount,
-  //   toAppraisalAmount: formData.toAppraisalAmount,
-  //   fromMinimumAmount: formData.fromMinimumAmount,
-  //   toMinimumAmount: formData.toMinimumAmount,
-  //   interests: formData.interests,
-  //   x1: formData.x1,
-  //   y1: formData.y1,
-  //   x2: formData.x2,
-  //   y2: formData.y2,
-  //   awardedMonths: formData.awardedMonths,
-  //   userId: formData.userId,
-  //   km: formData.km,
-  //   kw: formData.kw,
-  //   gg: formData.gg,
-  //   gm: formData.gm,
-  //   ekm: formData.ekm,
-  //   egm: formData.egm,
-  //   egg: formData.egg,
-  // })
-
-  const handleGetMapItems = useCallback(async () => {
-    try {
-      const response = await baseApiInstance.post('ggi/api/map/map-items', {
-        ids:
-          formData.ids.length === 12
-            ? '0'
-            : formData.ids.map((id) => id).join(','),
-        fromAppraisalAmount: formData.fromAppraisalAmount,
-        toAppraisalAmount: formData.toAppraisalAmount,
-        fromMinimumAmount: formData.fromMinimumAmount,
-        toMinimumAmount: formData.toMinimumAmount,
-        interests: formData.interests,
-        x1: formData.x1,
-        y1: formData.y1,
-        x2: formData.x2,
-        y2: formData.y2,
-        awardedMonths: formData.awardedMonths,
-        userId: formData.userId,
-        km: formData.km,
-        kw: formData.kw,
-        gg: formData.gg,
-        gm: formData.gm,
-        ekm: formData.ekm,
-        egm: formData.egm,
-        egg: formData.egg,
-      })
-      if (response.status === 200) {
-        return
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }, [formData, setMapItems])
+  const param = {
+    ids:
+      formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
+    fromAppraisalAmount: formData.fromAppraisalAmount,
+    toAppraisalAmount: formData.toAppraisalAmount,
+    fromMinimumAmount: formData.fromMinimumAmount,
+    toMinimumAmount: formData.toMinimumAmount,
+    interests: formData.interests,
+    x1: formData.x1,
+    y1: formData.y1,
+    x2: formData.x2,
+    y2: formData.y2,
+    awardedMonths: formData.awardedMonths,
+    userId: formData.userId,
+    km: formData.km,
+    kw: formData.kw,
+    gg: formData.gg,
+    gm: formData.gm,
+    ekm: formData.ekm,
+    egm: formData.egm,
+    egg: formData.egg,
+  }
+  const { mutate, isLoading } = usePostMapItems(param)
 
   const [user, setUser] = useRecoilState(userAtom)
   const [center, setCenter] = useState({
@@ -142,9 +107,9 @@ export default function GGMap({ formData, setFormData }: Props) {
 
   useEffect(() => {
     if (debouncedSearch) {
-      handleGetMapItems()
+      mutate()
     }
-  }, [debouncedSearch])
+  }, [debouncedSearch, map])
 
   useListener(map, 'idle', getBounds)
 
@@ -153,11 +118,27 @@ export default function GGMap({ formData, setFormData }: Props) {
       searchAddrToCoord(user.address)
     }
   }, [user.address])
+
+  useEffect(() => {
+    if (map) {
+      setFormData((prev) => ({
+        ...prev,
+        map: map,
+      }))
+    }
+  }, [map])
+
   return (
-    <>
-      <NaverMap center={center} defaultZoom={15} ref={setMap}>
+    <div
+      id="naver-map"
+      style={{
+        width: '100%',
+        height: '100%',
+      }}
+    >
+      <NaverMap center={center} defaultZoom={16} ref={setMap}>
         <Markers />
       </NaverMap>
-    </>
+    </div>
   )
 }
