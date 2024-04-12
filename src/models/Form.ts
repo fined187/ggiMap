@@ -25,4 +25,5 @@ export interface Form {
   egm: boolean
   egg: boolean
   map: NaverMapProps
+  keyword: string
 }

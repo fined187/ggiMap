@@ -6,23 +6,90 @@ import Spacing from '@/components/shared/Spacing'
 import { Form } from '@/models/Form'
 import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useCallback, useState } from 'react'
 import MainFilter from '../filterBox/MainFilter'
 import SubFilter from '../filterBox/SubFilter'
 import DetailBox from '../filterBox/SubFilterDetail/DetailBox'
+import { useNavermaps } from 'react-naver-maps'
+import getSubway from '@/remote/subway/getSubway'
 
 interface SearchBoxProps {
   formData: Form
   setFormData: React.Dispatch<React.SetStateAction<Form>>
+  center: { lat: number; lng: number }
+  setCenter: React.Dispatch<React.SetStateAction<{ lat: number; lng: number }>>
 }
 
-export default function SearchBox({ formData, setFormData }: SearchBoxProps) {
+export default function SearchBox({
+  formData,
+  setFormData,
+  center,
+  setCenter,
+}: SearchBoxProps) {
+  const [keyword, setKeyword] = useState('')
+  const naverMaps = useNavermaps()
   const [isBoxOpen, setIsBoxOpen] = useState({
     finished: false,
     usage: false,
     lowPrice: false,
     price: false,
   })
+
+  const searchAddrToCoord = useCallback(
+    (address: string) => {
+      if (naverMaps?.Service?.geocode !== undefined) {
+        naverMaps?.Service?.geocode(
+          {
+            address,
+          },
+          (status: any, response: any) => {
+            if (status === naverMaps?.Service?.Status?.ERROR) {
+              return alert('Something wrong!')
+            }
+            const result = response.result.items[0]
+            const { point } = result
+            const { x, y } = point
+            setCenter({
+              lat: Number(y),
+              lng: Number(x),
+            })
+          },
+        )
+      }
+    },
+    [naverMaps, setCenter],
+  )
+
+  const handleKeyword = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setKeyword(e.target.value)
+    },
+    [setKeyword, keyword],
+  )
+
+  const handleEnter = async (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      if (keyword.match(/역$/)) {
+        try {
+          const response = await getSubway(keyword)
+          if (response.documents.length === 0) {
+            alert('검색 결과가 없습니다.')
+            return
+          } else {
+            const { x, y } = response.documents[0]
+            setCenter({
+              lat: Number(y),
+              lng: Number(x),
+            })
+          }
+        } catch (error) {
+          console.error(error)
+        }
+      } else {
+        searchAddrToCoord(keyword)
+      }
+    }
+  }
 
   return (
     <Flex id="searchBox" direction="column" align="center" css={ContainerStyle}>
@@ -38,7 +105,15 @@ export default function SearchBox({ formData, setFormData }: SearchBoxProps) {
         }}
       >
         <Logo />
-        <Input type="text" placeholder="지역명, 지하철역" css={InputStyle} />
+        <Input
+          type="text"
+          name="keyword"
+          placeholder="지역명, 지하철역"
+          value={keyword}
+          css={InputStyle}
+          onChange={handleKeyword}
+          onKeyDown={(e) => handleEnter(e)}
+        />
         <Search right="20" top="25" />
       </Flex>
       <Spacing size={10} />

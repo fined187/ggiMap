@@ -46,3 +46,12 @@ export interface MapCounts {
   y2: number
   level: number
 }
+
+export interface MapCountsResponse {
+  count: number
+  sd: string
+  sgg: string
+  umd: string
+  x: number
+  y: number
+}

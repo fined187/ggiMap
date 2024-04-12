@@ -10,6 +10,8 @@ import Text from '@/components/shared/Text'
 import React, { useEffect, useState } from 'react'
 import { usePostListItems } from '../hooks/usePostListItems'
 import { ListData } from '@/models/MapItem'
+import Gmg from './items/GmgItems'
+import Kw from './items/KwItems'
 
 interface ResultProps {
   formData: Form
@@ -101,6 +103,24 @@ function Result({ formData, setFormData, isOpen, setIsOpen }: ResultProps) {
                     <ListSkeleton key={index} />
                   ) : (
                     <Km key={index} kmItem={item} />
+                  ),
+                )
+              : null}
+            {listItems
+              ? listItems?.kwItems?.map((item, index) =>
+                  isLoading ? (
+                    <ListSkeleton key={index} />
+                  ) : (
+                    <Kw key={index} kwItem={item} />
+                  ),
+                )
+              : null}
+            {listItems
+              ? listItems?.gmgItems?.map((item, index) =>
+                  isLoading ? (
+                    <ListSkeleton key={index} />
+                  ) : (
+                    <Gmg key={index} gmgItem={item} />
                   ),
                 )
               : null}

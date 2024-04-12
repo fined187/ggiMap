@@ -1,11 +1,9 @@
 import Map from '@/components/sections/Map'
-import BoxGuard from '@/components/shared/BoxGuard'
-import SearchBox from '@/components/sideMenu/searchBox'
-import ListBox from '@/components/sideMenu/searchListBox/listBox/ListBox'
 import useUser from '@/hooks/auth/useUser'
 import { Form } from '@/models/Form'
 import { mapItem } from '@/models/api/mapItem'
 import { useEffect, useState } from 'react'
+import { useNavermaps } from 'react-naver-maps'
 
 function MapComponent() {
   const [formData, setFormData] = useState<Form>({
@@ -33,6 +31,7 @@ function MapComponent() {
     egm: false,
     egg: false,
     map: {},
+    keyword: '',
   })
 
   const mapData: mapItem = {
@@ -58,8 +57,6 @@ function MapComponent() {
     egg: formData.egg,
   }
 
-  const [items, setItems] = useState([])
-
   const { mutate } = useUser()
   useEffect(() => {
     mutate()
@@ -67,10 +64,6 @@ function MapComponent() {
   return (
     <>
       <Map formData={formData} setFormData={setFormData} />
-      <BoxGuard>
-        <SearchBox formData={formData} setFormData={setFormData} />
-        <ListBox formData={formData} setFormData={setFormData} />
-      </BoxGuard>
     </>
   )
 }

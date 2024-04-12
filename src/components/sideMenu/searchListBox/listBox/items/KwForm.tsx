@@ -1,0 +1,128 @@
+import Interest from '@/components/icons/Interest'
+import Flex from '@/components/shared/Flex'
+import ListRow from '@/components/shared/ListRow'
+import Spacing from '@/components/shared/Spacing'
+import Text from '@/components/shared/Text'
+import { KwItems } from '@/models/ListItems'
+import useNum2Han from '@/utils/useNum2Han'
+import { css } from '@emotion/react'
+import styled from '@emotion/styled'
+
+function KwForm({ item }: { item: KwItems }) {
+  return (
+    <Flex direction="column" css={ContainerStyle}>
+      <ListRow
+        left={<LeftTextStyle color={'#00926F'}>{'예정'}</LeftTextStyle>}
+        contents={<LeftTextStyle color="#000">{item.caseNo}</LeftTextStyle>}
+        right={<Interest interest={item.interest ?? false} />}
+        style={ListLeftStyle}
+      />
+      <Flex
+        direction="column"
+        style={{
+          position: 'absolute',
+          top: 60,
+          left: 10,
+        }}
+      >
+        <Text css={TextStyle}>청구액</Text>
+        <Text css={ClaimStyle}>{`${useNum2Han(parseInt(item.claim))}`}</Text>
+        <Spacing size={10} />
+        <Flex
+          direction="row"
+          justify="start"
+          align="center"
+          style={{
+            display: 'flex',
+            gap: '10px',
+          }}
+        >
+          <Text css={TextStyle}>현재상태</Text>
+          <Text
+            css={ClaimStyle}
+            style={{
+              fontSize: '14px',
+            }}
+          >{`대기`}</Text>
+        </Flex>
+        <Flex
+          direction="row"
+          justify="start"
+          align="center"
+          style={{
+            display: 'flex',
+            gap: '5px',
+          }}
+        >
+          <Text css={TextStyle}>경매개시일</Text>
+          <Text
+            css={ClaimStyle}
+            style={{
+              fontSize: '14px',
+            }}
+          >
+            {item.date}
+          </Text>
+          <Spacing direction="horizontal" size={5} />
+          <Text css={TextStyle}>배당종기일</Text>
+          <Text
+            css={ClaimStyle}
+            style={{
+              fontSize: '14px',
+            }}
+          >
+            {item.date}
+          </Text>
+        </Flex>
+      </Flex>
+    </Flex>
+  )
+}
+
+const ContainerStyle = css`
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid #e0e0e0;
+  background: #fff;
+  gap: 10px;
+  padding: 10px;
+  width: calc(100% - 20px);
+  height: 165px;
+  flex-shrink: 0;
+`
+
+const TextStyle = css`
+  color: #676767;
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 145%;
+  letter-spacing: -0.24px;
+`
+
+const ListLeftStyle = css`
+  width: 90%;
+`
+const LeftTextStyle = styled.span<{ color: string }>`
+  color: ${({ color }) => color};
+  font-family: SUIT;
+  font-size: 16.5px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: -0.165px;
+  height: 30px;
+`
+
+const ClaimStyle = css`
+  color: #000;
+  font-family: SUIT;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 145%;
+  letter-spacing: -0.34px;
+`
+
+export default KwForm

@@ -8,8 +8,6 @@ function useNum2Han(number: number) {
     result = `${Math.floor(number / 10000)}만`
     number %= 10000
     result += number ? ` ${number}` : ''
-  } else {
-    result = ` ${number}`
   }
   return result
 }

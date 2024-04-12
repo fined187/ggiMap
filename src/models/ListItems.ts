@@ -21,6 +21,11 @@ export interface KmItems {
   interest: string
   x: number
   y: number
+  claim?: string
+  type?: number
+  sale?: string
+  period?: string
+  manageNo?: string
 }
 
 export interface KwItems {
@@ -31,10 +36,21 @@ export interface KwItems {
   interest: string
   x: number
   y: number
+  appraisalAmt?: number
+  minAmt?: number
+  winAmt?: number
+  buildingArea?: string
+  landArea?: string
+  path?: string
+  type?: number
+  sale?: string
+  period?: string
+  manageNo?: string
 }
 
 export interface GmgItems {
   goodsId: string
+  caseNo?: string
   type: number
   sale: string
   period: string
@@ -48,4 +64,6 @@ export interface GmgItems {
   interest: string
   x: number
   y: number
+  claim?: string
+  manageNo: string
 }

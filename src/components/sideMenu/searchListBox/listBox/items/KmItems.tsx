@@ -9,63 +9,11 @@ import Image from 'next/image'
 import usePathUrl from '../hooks/usePathUrl'
 import useNum2Han from '@/utils/useNum2Han'
 import Spacing from '@/components/shared/Spacing'
+import Form from './Form'
 
 function Km({ kmItem }: { kmItem: KmItems }) {
   const url = usePathUrl()
-  return (
-    <Flex direction="column" css={ContainerStyle}>
-      <ListRow
-        left={<LeftTextStyle color="#0038FF">경매</LeftTextStyle>}
-        contents={<LeftTextStyle color="#000">{kmItem.caseNo}</LeftTextStyle>}
-        right={<Interest interest={kmItem.interest} />}
-        style={ListLeftStyle}
-      />
-      <Flex
-        direction="row"
-        style={{
-          position: 'absolute',
-          top: 45,
-          left: 10,
-        }}
-      >
-        <Image
-          src={url + kmItem.path}
-          alt="KM image"
-          width={150}
-          height={150}
-          style={{
-            objectFit: 'cover',
-          }}
-        />
-        <Flex
-          direction="column"
-          style={{
-            gap: '5px',
-            marginLeft: '10px',
-          }}
-        >
-          <Text css={minPriceTextStyle}>최저가</Text>
-          <Text css={minPriceNum}>
-            {kmItem.minAmt.toLocaleString('KO') +
-              '(' +
-              ((kmItem.minAmt / kmItem.appraisalAmt) * 100).toFixed(0) +
-              '%)'}
-          </Text>
-          <Flex direction="row">
-            <Text css={appraisalAmtNum}>감정가</Text>
-            <Spacing direction="horizontal" size={5} />
-            <Text css={appraisalAmt}>{useNum2Han(kmItem.appraisalAmt)}</Text>
-          </Flex>
-          <Flex direction="row">
-            <Text css={appraisalAmtNum}>토지면적</Text>
-            <Spacing direction="horizontal" size={5} />
-            <Text css={appraisalAmt}>{kmItem.landArea}</Text>
-          </Flex>
-          <Flex direction="row" css={SpecialText}></Flex>
-        </Flex>
-      </Flex>
-    </Flex>
-  )
+  return <Form item={kmItem} />
 }
 
 export default Km

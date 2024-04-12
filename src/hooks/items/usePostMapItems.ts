@@ -6,7 +6,7 @@ import { useRecoilState } from 'recoil'
 
 export default function usePostMapItems(formData: mapItem) {
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
-  const { mutate, isLoading } = useMutation(() => postMapItems(formData), {
+  const { mutate } = useMutation(() => postMapItems(formData), {
     onSuccess: (data) => {
       setMapItems(data.mapItems)
     },
@@ -14,5 +14,5 @@ export default function usePostMapItems(formData: mapItem) {
       console.log('error')
     },
   })
-  return { mutate, isLoading }
+  return { mutate }
 }

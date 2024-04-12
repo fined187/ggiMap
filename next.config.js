@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'www.ggi.co.kr',
       },
+      {
+        protocol: 'http',
+        hostname: 'file.ggi.co.kr',
+      },
     ],
   },
 }

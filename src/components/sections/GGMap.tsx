@@ -3,37 +3,41 @@ import { Form } from '@/models/Form'
 import {
   Dispatch,
   SetStateAction,
-  useCallback,
   useEffect,
   useLayoutEffect,
-  useRef,
   useState,
 } from 'react'
 import {
+  Marker,
   NaverMap,
   NaverMapProps,
   useListener,
   useNavermaps,
 } from 'react-naver-maps'
-import Markers from './Markers'
-import { useRecoilState } from 'recoil'
-import { loadingAtom, mapAtom } from '@/store/atom/map'
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { mapAtom } from '@/store/atom/map'
 import { userAtom } from '@/store/atom/postUser'
 import useDebounce from '../shared/hocs/useDebounce'
-import Clustering from './Clustering'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
-import { MapCounts } from '@/models/MapItem'
+import { MapCountsResponse } from '@/models/MapItem'
 
 interface Props {
   formData: Form
   setFormData: Dispatch<SetStateAction<Form>>
+  center: { lat: number; lng: number }
+  setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
 }
 
-export default function GGMap({ formData, setFormData }: Props) {
+export default function GGMap({
+  formData,
+  setFormData,
+  center,
+  setCenter,
+}: Props) {
   const naverMaps = useNavermaps()
   const [map, setMap] = useState<NaverMapProps>({})
-  const [mapItems, setMapItems] = useRecoilState(mapAtom)
-  const [mapCount, setMapCount] = useState<MapCounts[] | null>(null)
+  const setMapItems = useSetRecoilState(mapAtom)
+  const [mapCount, setMapCount] = useState<MapCountsResponse[] | null>(null)
   const param = {
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -70,23 +74,21 @@ export default function GGMap({ formData, setFormData }: Props) {
     y2: formData.y2,
     level: formData.map.zoom as number,
   }
-  const { mutate, isLoading } = usePostMapItems(param)
+
+  const { mutate: getMapItems } = usePostMapItems(param)
   const { mutate: getMapCounts } = useMapCounts(countParam, setMapCount)
 
   const [user, setUser] = useRecoilState(userAtom)
-  const [center, setCenter] = useState({
-    lat: user.lat,
-    lng: user.lng,
-  })
+
   const debouncedSearch = useDebounce(formData, 100)
   const searchAddrToCoord = (address: string) => {
-    if (naverMaps.Service.geocode !== undefined) {
-      naverMaps.Service?.geocode(
+    if (naverMaps?.Service?.geocode !== undefined) {
+      naverMaps?.Service?.geocode(
         {
           address,
         },
         (status: any, response: any) => {
-          if (status === naverMaps.Service.Status.ERROR) {
+          if (status === naverMaps?.Service?.Status?.ERROR) {
             return alert('Something wrong!')
           }
           const result = response.result.items[0]
@@ -121,17 +123,19 @@ export default function GGMap({ formData, setFormData }: Props) {
     })
   }
 
+  useListener(map, 'idle', getBounds)
+
   useEffect(() => {
     if (debouncedSearch) {
       if (formData.map.zoom! >= 15) {
-        mutate()
+        getMapItems()
+        setMapCount(null)
       } else {
         getMapCounts()
+        setMapItems([])
       }
     }
   }, [debouncedSearch, map])
-
-  useListener(map, 'idle', getBounds)
 
   useLayoutEffect(() => {
     if (user.address) {
@@ -147,18 +151,46 @@ export default function GGMap({ formData, setFormData }: Props) {
       }))
     }
   }, [map, setFormData])
-  console.log(mapCount)
+
   return (
-    <div
-      id="naver-map"
-      style={{
-        width: '100%',
-        height: '100%',
-      }}
-    >
-      <NaverMap center={center} defaultZoom={16} ref={setMap}>
-        <Clustering />
-      </NaverMap>
-    </div>
+    <NaverMap center={center} defaultZoom={16} ref={setMap}>
+      {mapCount && mapCount.length > 0
+        ? mapCount.map(
+            (item, index) =>
+              item.count > 0 && (
+                <Marker
+                  key={index}
+                  position={{
+                    lat: item.y,
+                    lng: item.x,
+                  }}
+                  title={
+                    formData.map.zoom! > 13
+                      ? item.umd
+                      : formData.map.zoom! > 10
+                      ? item.sgg
+                      : item.sd
+                  }
+                  icon={{
+                    content: `
+                  <div style="position: absolute; display: flex; width: 80px; height: 80px; background-color: #A566FF; border-radius: 50%; opacity:0.9; justify-content:center; align-items:center; flex-direction:column; margin-top:-28px; margin-left:-28px;">
+                    <h1 style="font-size: 12px; margin-bottom: 5px; color:white;">${
+                      formData.map.zoom! > 13
+                        ? item.umd
+                        : formData.map.zoom! > 10
+                        ? item.sgg
+                        : item.sd
+                    }</h1>
+                    <h1 style="font-size: 16px; margin-bottom: 5px; color:white;">${
+                      item.count
+                    }</h1>
+                  </div>
+                `,
+                  }}
+                />
+              ),
+          )
+        : null}
+    </NaverMap>
   )
 }
