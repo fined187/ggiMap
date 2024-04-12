@@ -1,15 +1,8 @@
 import Flex from '@/components/shared/Flex'
 import { Form } from '@/models/Form'
 import { css } from '@emotion/react'
-import { Suspense, useEffect, useState } from 'react'
-import Header from './Header'
+import { useState } from 'react'
 import Result from './Result'
-import { usePostListItems } from '../hooks/usePostListItems'
-import { ListData } from '@/models/MapItem'
-import { Items } from '@/models/ListItems'
-import InfiniteScroll from 'react-infinite-scroller'
-import { useInfiniteQuery } from 'react-query'
-import postListItems from '@/remote/items/postListItems'
 
 interface ListBoxProps {
   formData: Form
@@ -17,37 +10,7 @@ interface ListBoxProps {
 }
 
 export default function ListBox({ formData, setFormData }: ListBoxProps) {
-  const mapData: ListData = {
-    ids:
-      formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
-    fromAppraisalAmount: formData.fromAppraisalAmount,
-    toAppraisalAmount: formData.toAppraisalAmount,
-    fromMinimumAmount: formData.fromMinimumAmount,
-    toMinimumAmount: formData.toMinimumAmount,
-    interests: formData.interests,
-    x1: formData.x1,
-    y1: formData.y1,
-    x2: formData.x2,
-    y2: formData.y2,
-    awardedMonths: formData.awardedMonths,
-    userId: formData.userId,
-    km: formData.km,
-    kw: formData.kw,
-    gm: formData.gm,
-    gg: formData.gg,
-    ekm: formData.ekm,
-    egm: formData.egm,
-    egg: formData.egg,
-  }
   const [isOpen, setIsOpen] = useState(false)
-  const [listItems, setListItems] = useState<Items | null>(null)
-
-  const { mutate: list, isLoading } = usePostListItems(mapData, setListItems)
-  useEffect(() => {
-    if (formData.map.zoom! >= 15) {
-      list()
-    }
-  }, [formData])
 
   return (
     <Flex
@@ -67,25 +30,12 @@ export default function ListBox({ formData, setFormData }: ListBoxProps) {
           : '70px',
       }}
     >
-      {formData.map.zoom! >= 15 ? (
-        <Result
-          formData={formData}
-          setFormData={setFormData}
-          listItems={listItems}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          isLoading={isLoading}
-        />
-      ) : (
-        <Header
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          formData={formData}
-          setFormData={setFormData}
-          listItems={listItems}
-          isLoading={isLoading}
-        />
-      )}
+      <Result
+        formData={formData}
+        setFormData={setFormData}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
     </Flex>
   )
 }

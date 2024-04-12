@@ -20,6 +20,9 @@ import { useRecoilState } from 'recoil'
 import { loadingAtom, mapAtom } from '@/store/atom/map'
 import { userAtom } from '@/store/atom/postUser'
 import useDebounce from '../shared/hocs/useDebounce'
+import Clustering from './Clustering'
+import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
+import { MapCounts } from '@/models/MapItem'
 
 interface Props {
   formData: Form
@@ -28,9 +31,9 @@ interface Props {
 
 export default function GGMap({ formData, setFormData }: Props) {
   const naverMaps = useNavermaps()
-  const [loading, setLoading] = useRecoilState(loadingAtom)
   const [map, setMap] = useState<NaverMapProps>({})
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
+  const [mapCount, setMapCount] = useState<MapCounts[] | null>(null)
   const param = {
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -53,7 +56,22 @@ export default function GGMap({ formData, setFormData }: Props) {
     egm: formData.egm,
     egg: formData.egg,
   }
+
+  const countParam = {
+    ids:
+      formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
+    km: formData.km,
+    kw: formData.kw,
+    gm: formData.gm,
+    gg: formData.gg,
+    x1: formData.x1,
+    y1: formData.y1,
+    x2: formData.x2,
+    y2: formData.y2,
+    level: formData.map.zoom as number,
+  }
   const { mutate, isLoading } = usePostMapItems(param)
+  const { mutate: getMapCounts } = useMapCounts(countParam, setMapCount)
 
   const [user, setUser] = useRecoilState(userAtom)
   const [center, setCenter] = useState({
@@ -89,25 +107,27 @@ export default function GGMap({ formData, setFormData }: Props) {
   }
 
   const getBounds = () => {
-    if (map) {
-      if (map.bounds === undefined) {
-        return
-      }
-      const ne = map.bounds._ne
-      const sw = map.bounds._sw
-      setFormData({
-        ...formData,
-        x1: sw._lng,
-        y1: sw._lat,
-        x2: ne._lng,
-        y2: ne._lat,
-      })
+    if (map.bounds === undefined) {
+      return
     }
+    const ne = map.bounds._ne
+    const sw = map.bounds._sw
+    setFormData({
+      ...formData,
+      x1: sw._lng,
+      y1: sw._lat,
+      x2: ne._lng,
+      y2: ne._lat,
+    })
   }
 
   useEffect(() => {
     if (debouncedSearch) {
-      mutate()
+      if (formData.map.zoom! >= 15) {
+        mutate()
+      } else {
+        getMapCounts()
+      }
     }
   }, [debouncedSearch, map])
 
@@ -126,8 +146,8 @@ export default function GGMap({ formData, setFormData }: Props) {
         map: map,
       }))
     }
-  }, [map])
-
+  }, [map, setFormData])
+  console.log(mapCount)
   return (
     <div
       id="naver-map"
@@ -137,7 +157,7 @@ export default function GGMap({ formData, setFormData }: Props) {
       }}
     >
       <NaverMap center={center} defaultZoom={16} ref={setMap}>
-        <Markers />
+        <Clustering />
       </NaverMap>
     </div>
   )

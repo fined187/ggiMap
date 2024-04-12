@@ -46,14 +46,7 @@ export default function Header({
             }
             onClick={() => setIsOpen((prev) => !prev)}
           />
-        ) : (
-          <ListRow
-            contents={
-              '읍면동이상의 축소에서는 매물종류(경매/예정/공매)와 용도로만 검색됩니다.'
-            }
-            onClick={() => setIsOpen((prev) => !prev)}
-          />
-        )}
+        ) : null}
       </Flex>
     </>
   )

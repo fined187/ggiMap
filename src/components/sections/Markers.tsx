@@ -7,6 +7,8 @@ import {
   useNavermaps,
 } from 'react-naver-maps'
 
-export default function Markers() {
+export default function Markers({ item }: { item: any }) {
+  console.log(item)
+  const naverMaps = useNavermaps()
   return <>hi</>
 }

@@ -1,6 +1,11 @@
 import { Form } from '@/models/Form'
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
-import { Container as MapDiv, NaverMapProps, useMap } from 'react-naver-maps'
+import {
+  Container,
+  Container as MapDiv,
+  NaverMapProps,
+  useMap,
+} from 'react-naver-maps'
 import GGMap from './GGMap'
 
 declare global {
@@ -16,13 +21,15 @@ interface Props {
 
 export default function Map({ formData, setFormData }: Props) {
   return (
-    <MapDiv
-      style={{
-        width: '100vw',
-        height: '100vh',
-      }}
-    >
-      <GGMap formData={formData} setFormData={setFormData} />
-    </MapDiv>
+    <Container>
+      <MapDiv
+        style={{
+          width: '100vw',
+          height: '100vh',
+        }}
+      >
+        <GGMap formData={formData} setFormData={setFormData} />
+      </MapDiv>
+    </Container>
   )
 }
