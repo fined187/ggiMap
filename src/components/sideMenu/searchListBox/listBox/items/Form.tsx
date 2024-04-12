@@ -66,12 +66,12 @@ function Form({ item }: ItemProps) {
         >
           <Text css={minPriceTextStyle}>최저가</Text>
           <Text css={minPriceNum}>
-            {item.minAmt &&
-              item.appraisalAmt &&
-              item.minAmt.toLocaleString('KO') +
-                '(' +
-                ((item.minAmt / item.appraisalAmt) * 100).toFixed(0) +
-                '%)'}
+            {useNum2Han(item.minAmt ?? 0) +
+              '(' +
+              (((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100).toFixed(
+                0,
+              ) +
+              '%)'}
           </Text>
           <Flex direction="row">
             <Text css={appraisalAmtNum}>감정가</Text>
