@@ -1,12 +1,6 @@
 import { Form } from '@/models/Form'
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
-import {
-  Container,
-  Container as MapDiv,
-  NaverMapProps,
-  useMap,
-  useNavermaps,
-} from 'react-naver-maps'
+import { Dispatch, SetStateAction, useState } from 'react'
+import { Container, Container as MapDiv, NaverMapProps } from 'react-naver-maps'
 import GGMap from './GGMap'
 import BoxGuard from '../shared/BoxGuard'
 import SearchBox from '../sideMenu/searchBox'
@@ -15,6 +9,7 @@ import { useRecoilValue } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
 import TopBar from '../top'
 import TopAddress from '../top/TopAddress'
+import Sigungu from '@/constants/Sigungu.json'
 
 declare global {
   interface Window {
@@ -28,8 +23,14 @@ interface Props {
 }
 
 export default function Map({ formData, setFormData }: Props) {
+  const siDoNameArray = Sigungu.map((item) => item.SiDoName)
+  const siDoSet = new Set(siDoNameArray)
   const user = useRecoilValue(userAtom)
   const [center, setCenter] = useState({
+    lat: user.lat,
+    lng: user.lng,
+  })
+  const [windowCenter, setWindowCenter] = useState({
     lat: user.lat,
     lng: user.lng,
   })
@@ -51,15 +52,37 @@ export default function Map({ formData, setFormData }: Props) {
           <ListBox formData={formData} setFormData={setFormData} />
         </BoxGuard>
         <TopBar>
-          <TopAddress SidoAddr="서울특별시" isEnd={false} />
-          <TopAddress SidoAddr="강남구" isEnd={false} />
-          <TopAddress SidoAddr="대치동" isEnd={true} />
+          <TopAddress
+            SidoAddr={true}
+            GunguAddr={false}
+            DongAddr={false}
+            isEnd={false}
+            center={windowCenter}
+            setCenter={setWindowCenter}
+          />
+          <TopAddress
+            SidoAddr={false}
+            GunguAddr={true}
+            DongAddr={false}
+            isEnd={false}
+            center={windowCenter}
+            setCenter={setWindowCenter}
+          />
+          <TopAddress
+            SidoAddr={false}
+            GunguAddr={false}
+            DongAddr={true}
+            isEnd={true}
+            center={windowCenter}
+            setCenter={setWindowCenter}
+          />
         </TopBar>
         <GGMap
           formData={formData}
           setFormData={setFormData}
           center={center}
           setCenter={setCenter}
+          setWindowCenter={setWindowCenter}
         />
       </MapDiv>
     </Container>

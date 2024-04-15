@@ -1,14 +1,14 @@
 import Map from '@/components/sections/Map'
-import useUser from '@/hooks/auth/useUser'
 import { Form } from '@/models/Form'
 import { User } from '@/models/User'
 import { mapItem } from '@/models/api/mapItem'
 import getUser from '@/remote/auth/user'
 import { userAtom } from '@/store/atom/postUser'
-import { GetServerSidePropsContext } from 'next'
+import { GetServerSidePropsContext, GetStaticProps } from 'next'
 import { useEffect, useState } from 'react'
 import { useNavermaps } from 'react-naver-maps'
 import { useRecoilState } from 'recoil'
+import address from '@/constants/Sigungu.json'
 
 function MapComponent({ data }: { data: User }) {
   const [user, setUser] = useRecoilState(userAtom)
@@ -62,15 +62,14 @@ function MapComponent({ data }: { data: User }) {
     egg: formData.egg,
   }
 
-  const { mutate } = useUser()
   useEffect(() => {
-    mutate()
     setUser({
       ...user,
       aesUserId: data.userId,
       address: data.address,
     })
   }, [data])
+
   return (
     <>
       <Map formData={formData} setFormData={setFormData} />
@@ -79,6 +78,27 @@ function MapComponent({ data }: { data: User }) {
 }
 
 //'Ug3033i0SuUmGQaRK2XcxQ=='
+
+// export const getStaticProps: GetStaticProps = async () => {
+//   const juso = (await import('@/constants/Sigungu.json')).default
+//   const siDoName = juso.map((item) => item.SiDoName)
+//   const siName = juso.map((item) => item.SiName)
+//   const gunGuName = juso.map((item) => item.GunGuName)
+//   const dongName = juso.map((item) => item.DongName)
+//   if (!juso) {
+//     return {
+//       notFound: true,
+//     }
+//   }
+//   return {
+//     props: {
+//       siDoName,
+//       siName,
+//       gunGuName,
+//       dongName,
+//     },
+//   }
+// }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { userId } = context.query

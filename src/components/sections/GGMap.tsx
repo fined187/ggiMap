@@ -26,6 +26,7 @@ interface Props {
   setFormData: Dispatch<SetStateAction<Form>>
   center: { lat: number; lng: number }
   setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
+  setWindowCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
 }
 
 export default function GGMap({
@@ -33,6 +34,7 @@ export default function GGMap({
   setFormData,
   center,
   setCenter,
+  setWindowCenter,
 }: Props) {
   const naverMaps = useNavermaps()
   const [map, setMap] = useState<NaverMapProps>({})
@@ -112,6 +114,10 @@ export default function GGMap({
     if (map.bounds === undefined) {
       return
     }
+    setWindowCenter({
+      lat: map.center.y,
+      lng: map.center.x,
+    })
     const ne = map.bounds._ne
     const sw = map.bounds._sw
     setFormData({

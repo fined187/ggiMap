@@ -3,31 +3,84 @@ import Flex from '../shared/Flex'
 import Text from '../shared/Text'
 import AddressArrow from '../icons/AddressArrow'
 import AddressCursorArrow from '../icons/AddressCursorArrow'
-import { useState } from 'react'
-import getAddress from '@/remote/address/getAddress'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useNavermaps } from 'react-naver-maps'
 
 interface AddressProps {
-  SidoAddr?: string
-  GunguAddr?: string
-  DongAddr?: string
+  SidoAddr: boolean
+  GunguAddr: boolean
+  DongAddr: boolean
   isEnd: boolean
+  center: {
+    lat: number
+    lng: number
+  }
+  setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
 }
 
-function TopAddress({ SidoAddr, GunguAddr, DongAddr, isEnd }: AddressProps) {
+function TopAddress({
+  SidoAddr,
+  GunguAddr,
+  DongAddr,
+  isEnd,
+  center,
+  setCenter,
+}: AddressProps) {
+  const naverMaps = useNavermaps()
   const [openCursor, setOpenCursor] = useState(false)
-  getAddress('서울특별시')
+  const [nowJuso, setNowJuso] = useState({
+    sido: '',
+    gungu: '',
+    dong: '',
+  })
+
+  const centerToAddr = () => {
+    if (naverMaps?.Service?.reverseGeocode !== undefined) {
+      naverMaps.Service.reverseGeocode(
+        {
+          location: new naverMaps.LatLng({
+            lat: center.lat,
+            lng: center.lng,
+          }),
+        },
+        (status: any, response: any) => {
+          if (status === naverMaps.Service.Status.ERROR) {
+            return
+          }
+          const result = response.v2.address
+          if (result.jibunAddress) {
+            setNowJuso({
+              sido: result.jibunAddress.match(/(\S+?[시도])/)[0],
+              gungu: nowJuso.sido.match(/.*시$/)
+                ? result.jibunAddress.match(/(\S+?[군구])/)[0]
+                : result.jibunAddress.match(/(\S+?[시])/)[0],
+              dong: nowJuso.gungu.match(/.*$시/)
+                ? result.jibunAddress.match(/(\S+?[군구])/)[0]
+                : result.jibunAddress.match(/(\S+?[동])/)[0],
+            })
+          }
+        },
+      )
+    }
+  }
+  useEffect(() => {
+    centerToAddr()
+  }, [center])
+
+  console.log(nowJuso.sido.match(/.*시$/))
+
   return (
     <Flex css={ContainerStyle}>
       <Flex
         style={{
           justifyContent: 'center',
           alignItems: 'center',
-          display: 'flex',
+          display: `${DongAddr ? 'none' : 'flex'}`,
           width: '100%',
         }}
       >
         <Text css={TextStyle}>
-          {SidoAddr ? SidoAddr : GunguAddr ? GunguAddr : null}
+          {SidoAddr ? nowJuso.sido : GunguAddr ? nowJuso.gungu : ''}
         </Text>
       </Flex>
       {isEnd ? (
@@ -35,8 +88,15 @@ function TopAddress({ SidoAddr, GunguAddr, DongAddr, isEnd }: AddressProps) {
           onClick={() => {
             setOpenCursor(!openCursor)
           }}
+          style={{
+            justifyContent: 'end',
+            alignItems: 'center',
+            display: 'flex',
+            width: '100%',
+            gap: '20px',
+          }}
         >
-          <Text css={TextStyle}>{DongAddr}</Text>
+          <Text css={TextStyle}>{DongAddr ? nowJuso.dong : ''}</Text>
           <AddressCursorArrow
             openCursor={openCursor}
             setOpenCursor={setOpenCursor}

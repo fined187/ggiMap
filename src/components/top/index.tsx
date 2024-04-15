@@ -9,7 +9,7 @@ function TopBar({ children }: { children: React.ReactNode }) {
 const Container = styled.div<{ isOpen: boolean }>`
   position: absolute;
   top: 30px;
-  left: 50%;
+  left: calc(50% + 180px);
   transform: translateX(-50%);
   z-index: 10;
   display: inline-flex;
