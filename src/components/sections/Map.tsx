@@ -13,6 +13,8 @@ import SearchBox from '../sideMenu/searchBox'
 import ListBox from '../sideMenu/searchListBox/listBox/ListBox'
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
+import TopBar from '../top'
+import TopAddress from '../top/TopAddress'
 
 declare global {
   interface Window {
@@ -48,6 +50,11 @@ export default function Map({ formData, setFormData }: Props) {
           />
           <ListBox formData={formData} setFormData={setFormData} />
         </BoxGuard>
+        <TopBar>
+          <TopAddress SidoAddr="서울특별시" isEnd={false} />
+          <TopAddress SidoAddr="강남구" isEnd={false} />
+          <TopAddress SidoAddr="대치동" isEnd={true} />
+        </TopBar>
         <GGMap
           formData={formData}
           setFormData={setFormData}

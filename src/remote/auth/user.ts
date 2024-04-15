@@ -1,8 +1,8 @@
 import baseApiInstance from '../baseURL'
 
-export default async function getUser() {
+export default async function getUser(id: string) {
   const response = await baseApiInstance.post('ggi/api/map/address', {
-    aesUserId: 'Ug3033i0SuUmGQaRK2XcxQ==',
+    aesUserId: id,
   })
   return response.data.data
 }

@@ -1,6 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: 'localhost:3000',
+          },
+        ],
+      },
+    ]
+  },
   images: {
     remotePatterns: [
       {
@@ -16,6 +29,14 @@ const nextConfig = {
         hostname: 'file.ggi.co.kr',
       },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/:path*',
+        destination: 'https://api.vworld.kr/:path*',
+      },
+    ]
   },
 }
 

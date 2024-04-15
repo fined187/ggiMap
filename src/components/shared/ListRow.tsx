@@ -3,6 +3,7 @@ import Flex from './Flex'
 import Skeleton from './Skeleton'
 import Spacing from './Spacing'
 import Text from './Text'
+import AddressArrow from '../icons/AddressArrow'
 
 interface ListRowProps {
   left?: React.ReactNode
@@ -33,7 +34,7 @@ function ListRow({
       {left && <Flex css={listRowLeftStyles}>{left}</Flex>}
       <Flex css={listRowContentsStyles}>{contents}</Flex>
       {right && <Flex>{right}</Flex>}
-      {withArrow ? <IconArrowRight /> : null}
+      {withArrow ? <AddressArrow /> : null}
     </Flex>
   )
 }

@@ -1,11 +1,17 @@
 import Map from '@/components/sections/Map'
 import useUser from '@/hooks/auth/useUser'
 import { Form } from '@/models/Form'
+import { User } from '@/models/User'
 import { mapItem } from '@/models/api/mapItem'
+import getUser from '@/remote/auth/user'
+import { userAtom } from '@/store/atom/postUser'
+import { GetServerSidePropsContext } from 'next'
 import { useEffect, useState } from 'react'
 import { useNavermaps } from 'react-naver-maps'
+import { useRecoilState } from 'recoil'
 
-function MapComponent() {
+function MapComponent({ data }: { data: User }) {
+  const [user, setUser] = useRecoilState(userAtom)
   const [formData, setFormData] = useState<Form>({
     usageCodes: '',
     ids: ['2', '3', '4', '5', '6', '7', '9', '10', '11', '12', '13', '14'],
@@ -33,7 +39,6 @@ function MapComponent() {
     map: {},
     keyword: '',
   })
-
   const mapData: mapItem = {
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -60,12 +65,30 @@ function MapComponent() {
   const { mutate } = useUser()
   useEffect(() => {
     mutate()
-  }, [])
+    setUser({
+      ...user,
+      aesUserId: data.userId,
+      address: data.address,
+    })
+  }, [data])
   return (
     <>
       <Map formData={formData} setFormData={setFormData} />
     </>
   )
+}
+
+//'Ug3033i0SuUmGQaRK2XcxQ=='
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { userId } = context.query
+  const res = await getUser(userId as string)
+  const data = res
+  return {
+    props: {
+      data,
+    },
+  }
 }
 
 export default MapComponent
