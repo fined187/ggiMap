@@ -29,6 +29,11 @@ export default function Map({ formData, setFormData }: Props) {
     lat: user.lat,
     lng: user.lng,
   })
+  const [nowJuso, setNowJuso] = useState({
+    sido: '',
+    gungu: '',
+    dong: '',
+  })
   return (
     <Container>
       <MapDiv
@@ -55,6 +60,8 @@ export default function Map({ formData, setFormData }: Props) {
               isEnd={false}
               center={center}
               setCenter={setCenter}
+              nowJuso={nowJuso}
+              setNowJuso={setNowJuso}
             />
             <TopAddress
               SidoAddr={false}
@@ -63,6 +70,8 @@ export default function Map({ formData, setFormData }: Props) {
               isEnd={false}
               center={center}
               setCenter={setCenter}
+              nowJuso={nowJuso}
+              setNowJuso={setNowJuso}
             />
             <TopAddress
               SidoAddr={false}
@@ -71,6 +80,8 @@ export default function Map({ formData, setFormData }: Props) {
               isEnd={true}
               center={center}
               setCenter={setCenter}
+              nowJuso={nowJuso}
+              setNowJuso={setNowJuso}
             />
           </TopBar>
           <BottomAddress />

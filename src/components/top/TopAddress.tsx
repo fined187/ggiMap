@@ -23,6 +23,18 @@ interface AddressProps {
     lng: number
   }
   setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
+  nowJuso: {
+    sido: string
+    gungu: string
+    dong: string
+  }
+  setNowJuso: Dispatch<
+    SetStateAction<{
+      sido: string
+      gungu: string
+      dong: string
+    }>
+  >
 }
 
 function TopAddress({
@@ -32,14 +44,11 @@ function TopAddress({
   isEnd,
   center,
   setCenter,
+  nowJuso,
+  setNowJuso,
 }: AddressProps) {
   const naverMaps = useNavermaps()
   const [openCursor, setOpenCursor] = useState(false)
-  const [nowJuso, setNowJuso] = useState({
-    sido: '',
-    gungu: '',
-    dong: '',
-  })
 
   const centerToAddr = useCallback(() => {
     if (naverMaps?.Service?.reverseGeocode !== undefined) {
