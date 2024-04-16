@@ -9,7 +9,8 @@ import { useRecoilValue } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
 import TopBar from '../top'
 import TopAddress from '../top/TopAddress'
-import Sigungu from '@/constants/Sigungu.json'
+import BottomAddress from '../top/BottomAddress'
+import Flex from '../shared/Flex'
 
 declare global {
   interface Window {
@@ -23,14 +24,8 @@ interface Props {
 }
 
 export default function Map({ formData, setFormData }: Props) {
-  const siDoNameArray = Sigungu.map((item) => item.SiDoName)
-  const siDoSet = new Set(siDoNameArray)
   const user = useRecoilValue(userAtom)
   const [center, setCenter] = useState({
-    lat: user.lat,
-    lng: user.lng,
-  })
-  const [windowCenter, setWindowCenter] = useState({
     lat: user.lat,
     lng: user.lng,
   })
@@ -51,38 +46,40 @@ export default function Map({ formData, setFormData }: Props) {
           />
           <ListBox formData={formData} setFormData={setFormData} />
         </BoxGuard>
-        <TopBar>
-          <TopAddress
-            SidoAddr={true}
-            GunguAddr={false}
-            DongAddr={false}
-            isEnd={false}
-            center={windowCenter}
-            setCenter={setWindowCenter}
-          />
-          <TopAddress
-            SidoAddr={false}
-            GunguAddr={true}
-            DongAddr={false}
-            isEnd={false}
-            center={windowCenter}
-            setCenter={setWindowCenter}
-          />
-          <TopAddress
-            SidoAddr={false}
-            GunguAddr={false}
-            DongAddr={true}
-            isEnd={true}
-            center={windowCenter}
-            setCenter={setWindowCenter}
-          />
-        </TopBar>
+        <Flex direction="column">
+          <TopBar>
+            <TopAddress
+              SidoAddr={true}
+              GunguAddr={false}
+              DongAddr={false}
+              isEnd={false}
+              center={center}
+              setCenter={setCenter}
+            />
+            <TopAddress
+              SidoAddr={false}
+              GunguAddr={true}
+              DongAddr={false}
+              isEnd={false}
+              center={center}
+              setCenter={setCenter}
+            />
+            <TopAddress
+              SidoAddr={false}
+              GunguAddr={false}
+              DongAddr={true}
+              isEnd={true}
+              center={center}
+              setCenter={setCenter}
+            />
+          </TopBar>
+          <BottomAddress />
+        </Flex>
         <GGMap
           formData={formData}
           setFormData={setFormData}
           center={center}
           setCenter={setCenter}
-          setWindowCenter={setWindowCenter}
         />
       </MapDiv>
     </Container>

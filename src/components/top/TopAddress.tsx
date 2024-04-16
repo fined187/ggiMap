@@ -3,8 +3,15 @@ import Flex from '../shared/Flex'
 import Text from '../shared/Text'
 import AddressArrow from '../icons/AddressArrow'
 import AddressCursorArrow from '../icons/AddressCursorArrow'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { useNavermaps } from 'react-naver-maps'
+import BottomAddress from './BottomAddress'
 
 interface AddressProps {
   SidoAddr: boolean
@@ -34,7 +41,7 @@ function TopAddress({
     dong: '',
   })
 
-  const centerToAddr = () => {
+  const centerToAddr = useCallback(() => {
     if (naverMaps?.Service?.reverseGeocode !== undefined) {
       naverMaps.Service.reverseGeocode(
         {
@@ -62,50 +69,51 @@ function TopAddress({
         },
       )
     }
-  }
+  }, [center, naverMaps, nowJuso.gungu, nowJuso.sido])
+
   useEffect(() => {
     centerToAddr()
-  }, [center])
-
-  console.log(nowJuso.sido.match(/.*시$/))
+  }, [center, centerToAddr])
 
   return (
-    <Flex css={ContainerStyle}>
-      <Flex
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          display: `${DongAddr ? 'none' : 'flex'}`,
-          width: '100%',
-        }}
-      >
-        <Text css={TextStyle}>
-          {SidoAddr ? nowJuso.sido : GunguAddr ? nowJuso.gungu : ''}
-        </Text>
-      </Flex>
-      {isEnd ? (
+    <>
+      <Flex css={ContainerStyle}>
         <Flex
-          onClick={() => {
-            setOpenCursor(!openCursor)
-          }}
           style={{
-            justifyContent: 'end',
+            justifyContent: 'center',
             alignItems: 'center',
-            display: 'flex',
+            display: `${DongAddr ? 'none' : 'flex'}`,
             width: '100%',
-            gap: '20px',
           }}
         >
-          <Text css={TextStyle}>{DongAddr ? nowJuso.dong : ''}</Text>
-          <AddressCursorArrow
-            openCursor={openCursor}
-            setOpenCursor={setOpenCursor}
-          />
+          <Text css={TextStyle}>
+            {SidoAddr ? nowJuso.sido : GunguAddr ? nowJuso.gungu : ''}
+          </Text>
         </Flex>
-      ) : (
-        <AddressArrow />
-      )}
-    </Flex>
+        {isEnd ? (
+          <Flex
+            onClick={() => {
+              setOpenCursor(!openCursor)
+            }}
+            style={{
+              justifyContent: 'end',
+              alignItems: 'center',
+              display: 'flex',
+              width: '100%',
+              gap: '20px',
+            }}
+          >
+            <Text css={TextStyle}>{DongAddr ? nowJuso.dong : ''}</Text>
+            <AddressCursorArrow
+              openCursor={openCursor}
+              setOpenCursor={setOpenCursor}
+            />
+          </Flex>
+        ) : (
+          <AddressArrow />
+        )}
+      </Flex>
+    </>
   )
 }
 

@@ -8,7 +8,6 @@ import { GetServerSidePropsContext, GetStaticProps } from 'next'
 import { useEffect, useState } from 'react'
 import { useNavermaps } from 'react-naver-maps'
 import { useRecoilState } from 'recoil'
-import address from '@/constants/Sigungu.json'
 
 function MapComponent({ data }: { data: User }) {
   const [user, setUser] = useRecoilState(userAtom)
