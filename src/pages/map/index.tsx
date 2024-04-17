@@ -2,6 +2,7 @@ import Map from '@/components/sections/Map'
 import { Form } from '@/models/Form'
 import { User } from '@/models/User'
 import { mapItem } from '@/models/api/mapItem'
+import handleToken from '@/remote/auth/token'
 import getUser from '@/remote/auth/user'
 import { userAtom } from '@/store/atom/postUser'
 import { GetServerSidePropsContext, GetStaticProps } from 'next'
@@ -9,7 +10,7 @@ import { useEffect, useState } from 'react'
 import { useNavermaps } from 'react-naver-maps'
 import { useRecoilState } from 'recoil'
 
-function MapComponent({ data }: { data: User }) {
+function MapComponent({ data }: { data: any }) {
   const [user, setUser] = useRecoilState(userAtom)
   const [formData, setFormData] = useState<Form>({
     usageCodes: '',
@@ -64,10 +65,14 @@ function MapComponent({ data }: { data: User }) {
   useEffect(() => {
     setUser({
       ...user,
+      role: data.authorities[0],
       aesUserId: data.userId,
       address: data.address,
     })
-  }, [data])
+    if (window) {
+      window.history.pushState({}, '', '/map')
+    }
+  }, [data, setUser])
 
   return (
     <>
@@ -100,9 +105,8 @@ function MapComponent({ data }: { data: User }) {
 // }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { userId } = context.query
-  const res = await getUser(userId as string)
-  const data = res
+  const token = context.query.token as string
+  const data = await handleToken({ token })
   return {
     props: {
       data,

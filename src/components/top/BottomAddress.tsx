@@ -33,7 +33,6 @@ function BottomAddress({
   setFormData,
 }: BottomAddressProps) {
   const map = useMap()
-  console.log(map)
   const [range, setRange] = useState(0)
   const [juso, setJuso] = useState({
     sido: '',
