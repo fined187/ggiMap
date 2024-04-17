@@ -49,7 +49,13 @@ function Form({ item }: ItemProps) {
         }}
       >
         <Image
-          src={item.path?.includes('http') ? item.path : url + item.path}
+          src={
+            item.path?.includes('http')
+              ? item.path
+              : item.path === null
+              ? ''
+              : url + item.path
+          }
           alt="KM image"
           width={150}
           height={150}

@@ -14,8 +14,8 @@ export default function NextArrow() {
         <path
           d="M1 1.5L5.64645 6.14645C5.84171 6.34171 5.84171 6.65829 5.64645 6.85355L1 11.5"
           stroke="#332EFC"
-          stroke-width="1.5"
-          stroke-linecap="round"
+          strokeWidth="1.5"
+          strokeLinecap="round"
         />
       </svg>
     </>

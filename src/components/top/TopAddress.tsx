@@ -35,6 +35,8 @@ interface AddressProps {
       dong: string
     }>
   >
+  openCursor: boolean
+  setOpenCursor: Dispatch<SetStateAction<boolean>>
 }
 
 function TopAddress({
@@ -46,9 +48,10 @@ function TopAddress({
   setCenter,
   nowJuso,
   setNowJuso,
+  openCursor,
+  setOpenCursor,
 }: AddressProps) {
   const naverMaps = useNavermaps()
-  const [openCursor, setOpenCursor] = useState(false)
 
   const centerToAddr = useCallback(() => {
     if (naverMaps?.Service?.reverseGeocode !== undefined) {
@@ -65,20 +68,18 @@ function TopAddress({
           }
           const result = response.v2.address
           if (result.jibunAddress) {
+            const addrToList = result.jibunAddress.split(' ')
+            console.log(addrToList)
             setNowJuso({
-              sido: result.jibunAddress.match(/(\S+?[시도])/)[0],
-              gungu: nowJuso.sido.match(/.*시$/)
-                ? result.jibunAddress.match(/(\S+?[군구])/)[0]
-                : result.jibunAddress.match(/(\S+?[시])/)[0],
-              dong: nowJuso.gungu.match(/.*$시/)
-                ? result.jibunAddress.match(/(\S+?[군구])/)[0]
-                : result.jibunAddress.match(/(\S+?[동])/)[0],
+              sido: addrToList[0],
+              gungu: addrToList[1],
+              dong: addrToList[2],
             })
           }
         },
-      )
+      ) //result.jibunAddress.match(/(\S+?[동])/)[0]
     }
-  }, [center, naverMaps, nowJuso.gungu, nowJuso.sido])
+  }, [center, naverMaps, setNowJuso])
 
   useEffect(() => {
     centerToAddr()

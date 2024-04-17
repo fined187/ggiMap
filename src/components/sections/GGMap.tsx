@@ -157,7 +157,7 @@ export default function GGMap({
   }, [map, setFormData])
 
   return (
-    <NaverMap center={center} defaultZoom={16} ref={setMap}>
+    <NaverMap center={center} zoom={16} ref={setMap}>
       {mapCount && mapCount.length > 0
         ? mapCount.map(
             (item, index) =>

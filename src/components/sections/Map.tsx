@@ -34,6 +34,8 @@ export default function Map({ formData, setFormData }: Props) {
     gungu: '',
     dong: '',
   })
+  const [openCursor, setOpenCursor] = useState(false)
+
   return (
     <Container>
       <MapDiv
@@ -62,6 +64,8 @@ export default function Map({ formData, setFormData }: Props) {
               setCenter={setCenter}
               nowJuso={nowJuso}
               setNowJuso={setNowJuso}
+              openCursor={openCursor}
+              setOpenCursor={setOpenCursor}
             />
             <TopAddress
               SidoAddr={false}
@@ -72,6 +76,8 @@ export default function Map({ formData, setFormData }: Props) {
               setCenter={setCenter}
               nowJuso={nowJuso}
               setNowJuso={setNowJuso}
+              openCursor={openCursor}
+              setOpenCursor={setOpenCursor}
             />
             <TopAddress
               SidoAddr={false}
@@ -82,9 +88,18 @@ export default function Map({ formData, setFormData }: Props) {
               setCenter={setCenter}
               nowJuso={nowJuso}
               setNowJuso={setNowJuso}
+              openCursor={openCursor}
+              setOpenCursor={setOpenCursor}
             />
           </TopBar>
-          <BottomAddress />
+          {openCursor ? (
+            <BottomAddress
+              center={center}
+              setCenter={setCenter}
+              formData={formData}
+              setFormData={setFormData}
+            />
+          ) : null}
         </Flex>
         <GGMap
           formData={formData}

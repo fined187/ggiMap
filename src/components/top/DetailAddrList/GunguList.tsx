@@ -4,9 +4,8 @@ import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import Text from '@/components/shared/Text'
 import dynamic from 'next/dynamic'
-const FixedBottomButton = dynamic(
-  () => import('@/components/shared/FixedBottomButton'),
-)
+import Spacing from '@/components/shared/Spacing'
+
 interface Props {
   juso: {
     sido: string
@@ -16,15 +15,18 @@ interface Props {
   setJuso: Dispatch<
     SetStateAction<{ sido: string; gungu: string; dong: string }>
   >
+  range: number
+  setRange: Dispatch<SetStateAction<number>>
 }
 
-export default function GunguList({ juso, setJuso }: Props) {
+export default function GunguList({ juso, setJuso, range, setRange }: Props) {
   const handleGetGungu = (siName: string) => {
     if (juso.sido.match(/시$/)) {
       return new Set(
         jusoAddr
           .filter((item) => item.SiDoName === siName)
-          .map((item) => item.GunGuName),
+          .map((item) => item.GunGuName)
+          .filter((item) => item !== ''),
       )
     } else {
       return new Set(
@@ -32,7 +34,8 @@ export default function GunguList({ juso, setJuso }: Props) {
           .filter((item) => item.SiDoName === siName)
           .map((item) => item.SiName)
           .filter(
-            (item, index, self) => self.indexOf(item) === index && item !== '',
+            (item, index, self) =>
+              self.indexOf(item) === index && item !== '' && item !== '0',
           ),
       )
     }
@@ -46,58 +49,58 @@ export default function GunguList({ juso, setJuso }: Props) {
       }
     })
   }
-  console.log(handleGetGungu(juso.sido))
   return (
-    <Flex
-      direction="column"
-      style={{
-        overflowY: 'auto',
-      }}
-    >
-      {Array.from(handleGetGungu(juso.sido)).map(
-        (_, index) =>
-          index % 3 === 0 && (
-            <Flex direction="row" key={index}>
-              {Array.from(handleGetGungu(juso.sido))
-                .slice(index, index + 3)
-                .map(
-                  (item, index) =>
-                    item !== '' && (
-                      <Flex
-                        direction="row"
-                        key={index}
-                        css={BoxStyle}
-                        style={{
-                          backgroundColor:
-                            juso.gungu === item ? '#F0F0FF' : 'white',
-                          border:
-                            juso.gungu === item
-                              ? '1px solid #332EFC'
-                              : '1px solid #9d9999',
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => handleClick(item)}
-                      >
-                        <Text
-                          style={{
-                            color: juso.gungu === item ? '#332EFC' : '#000001',
-                          }}
-                        >
-                          {item}
-                        </Text>
-                      </Flex>
-                    ),
-                )}
-            </Flex>
-          ),
-      )}
-      <FixedBottomButton
-        label={'이동하기'}
-        onClick={() => {
-          console.log(juso.gungu)
+    <>
+      <Flex
+        direction="column"
+        style={{
+          overflowY: 'auto',
+          position: 'relative',
+          minHeight: '100px',
+          maxHeight: '200px',
         }}
-      />
-    </Flex>
+      >
+        {Array.from(handleGetGungu(juso.sido)).map(
+          (_, index) =>
+            index % 3 === 0 && (
+              <Flex direction="row" key={index}>
+                {Array.from(handleGetGungu(juso.sido))
+                  .slice(index, index + 3)
+                  .map(
+                    (item, index) =>
+                      item !== '' && (
+                        <Flex
+                          direction="row"
+                          key={index}
+                          css={BoxStyle}
+                          style={{
+                            backgroundColor:
+                              juso.gungu === item ? '#F0F0FF' : 'white',
+                            border:
+                              juso.gungu === item
+                                ? '1px solid #332EFC'
+                                : '1px solid #9d9999',
+                            cursor: 'pointer',
+                          }}
+                          onClick={() => handleClick(item)}
+                        >
+                          <Text
+                            style={{
+                              color:
+                                juso.gungu === item ? '#332EFC' : '#000001',
+                            }}
+                          >
+                            {item}
+                          </Text>
+                        </Flex>
+                      ),
+                  )}
+              </Flex>
+            ),
+        )}
+        <Spacing size={10} />
+      </Flex>
+    </>
   )
 }
 

@@ -13,14 +13,17 @@ interface Props {
   setJuso: Dispatch<
     SetStateAction<{ sido: string; gungu: string; dong: string }>
   >
+  range: number
+  setRange: Dispatch<SetStateAction<number>>
 }
 
-export default function SidoList({ juso, setJuso }: Props) {
+export default function SidoList({ juso, setJuso, range, setRange }: Props) {
   const sidoList = jusoAddr.map((item) => item.SiDoName)
   const sidoListSet = new Set(sidoList)
 
   const handleClick = (sido: string) => {
     if (juso.sido === sido) {
+      setRange(1)
       setJuso((prev) => {
         return {
           ...prev,
@@ -28,6 +31,7 @@ export default function SidoList({ juso, setJuso }: Props) {
         }
       })
     } else {
+      setRange(1)
       setJuso((prev) => {
         return {
           ...prev,
