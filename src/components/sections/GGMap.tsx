@@ -17,7 +17,7 @@ import {
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { mapAtom } from '@/store/atom/map'
 import { userAtom } from '@/store/atom/postUser'
-import useDebounce from '../shared/hocs/useDebounce'
+import useDebounce from '../shared/hooks/useDebounce'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
 import { MapCountsResponse } from '@/models/MapItem'
 
@@ -81,6 +81,7 @@ export default function GGMap({
   const [user, setUser] = useRecoilState(userAtom)
 
   const debouncedSearch = useDebounce(formData, 100)
+
   const searchAddrToCoord = (address: string) => {
     if (naverMaps?.Service?.geocode !== undefined) {
       naverMaps?.Service?.geocode(

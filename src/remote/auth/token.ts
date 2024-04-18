@@ -1,6 +1,6 @@
 import baseApiInstance from '../baseURL'
 
-export default async function handleToken({ token }: { token: string }) {
+export default async function handleToken(token: string) {
   try {
     const response = await baseApiInstance.post(
       `/ggi/api/auth/asp`,

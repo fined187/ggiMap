@@ -1,7 +1,9 @@
 import Map from '@/components/sections/Map'
+import useAddress from '@/hooks/auth/useAddress'
 import { Form } from '@/models/Form'
 import { User } from '@/models/User'
 import { mapItem } from '@/models/api/mapItem'
+import getAddress from '@/remote/auth/getAddress'
 import handleToken from '@/remote/auth/token'
 import getUser from '@/remote/auth/user'
 import { userAtom } from '@/store/atom/postUser'
@@ -10,7 +12,7 @@ import { useEffect, useState } from 'react'
 import { useNavermaps } from 'react-naver-maps'
 import { useRecoilState } from 'recoil'
 
-function MapComponent({ data }: { data: any }) {
+function MapComponent({ token }: { token: string }) {
   const [user, setUser] = useRecoilState(userAtom)
   const [formData, setFormData] = useState<Form>({
     usageCodes: '',
@@ -62,17 +64,33 @@ function MapComponent({ data }: { data: any }) {
     egg: formData.egg,
   }
 
+  const handleGetUser = async (token: string) => {
+    const data = await handleToken(token)
+    if (data.success) {
+      setUser((prev) => {
+        return {
+          ...prev,
+          aesUserId: data.data.userId,
+          role: data.data.authorities,
+        }
+      })
+      const address = await getAddress()
+      console.log(address)
+    } else {
+      console.error('error')
+    }
+  }
+
   useEffect(() => {
-    setUser({
-      ...user,
-      role: data.authorities[0],
-      aesUserId: data.userId,
-      address: data.address,
-    })
+    if (token) {
+      handleGetUser(token)
+      getAddress()
+    }
     if (window) {
       window.history.pushState({}, '', '/map')
     }
-  }, [data, setUser])
+    console.log(user)
+  }, [setUser, token])
 
   return (
     <>
@@ -81,35 +99,11 @@ function MapComponent({ data }: { data: any }) {
   )
 }
 
-//'Ug3033i0SuUmGQaRK2XcxQ=='
-
-// export const getStaticProps: GetStaticProps = async () => {
-//   const juso = (await import('@/constants/Sigungu.json')).default
-//   const siDoName = juso.map((item) => item.SiDoName)
-//   const siName = juso.map((item) => item.SiName)
-//   const gunGuName = juso.map((item) => item.GunGuName)
-//   const dongName = juso.map((item) => item.DongName)
-//   if (!juso) {
-//     return {
-//       notFound: true,
-//     }
-//   }
-//   return {
-//     props: {
-//       siDoName,
-//       siName,
-//       gunGuName,
-//       dongName,
-//     },
-//   }
-// }
-
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const token = context.query.token as string
-  const data = await handleToken({ token })
   return {
     props: {
-      data,
+      token,
     },
   }
 }
