@@ -5,11 +5,20 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <link rel="icon" href="/favicon.ico" />
+        <link
+          href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT/fonts/static/woff2/SUIT.css"
+          rel="stylesheet"
+        />
       </Head>
+      <meta
+        name="viewport"
+        content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width, minimum-scale=1.0"
+      />
       <body>
         <Main />
         <NextScript />
         <div id="root-portal" />
+        <div id="portal" />
       </body>
     </Html>
   )

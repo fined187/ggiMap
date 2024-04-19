@@ -3,7 +3,7 @@ import Flex from './Flex'
 import Skeleton from './Skeleton'
 import Spacing from './Spacing'
 import Text from './Text'
-import AddressArrow from '../icons/AddressArrow'
+import AddressArrow from '../map/icons/AddressArrow'
 
 interface ListRowProps {
   left?: React.ReactNode
