@@ -29,10 +29,10 @@ export default function SubFilterProps({
           backgroundColor: isSelected ? checkedColor : '#545454',
           right:
             textType.length === 2
-              ? '11px'
+              ? '7px'
               : textType.length === 3
-              ? '5px'
-              : '-1px',
+              ? '2px'
+              : '-7px',
         }}
       />
       <Text
@@ -51,7 +51,7 @@ const dotStyle = css`
   height: 4px;
   border-radius: 50%;
   position: absolute;
-  top: 14px;
+  top: 5px;
 `
 
 const FilterStyle = css`

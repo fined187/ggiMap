@@ -164,7 +164,7 @@ const ContainerStyle = css`
   padding: 10px 20px 10px 20px;
   z-index: 10;
   background-color: white;
-  width: 330px;
+  width: 370px;
   min-height: 200px;
   max-height: 530px;
   border-radius: 16px;

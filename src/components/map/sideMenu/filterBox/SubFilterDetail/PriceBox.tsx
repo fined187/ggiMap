@@ -218,8 +218,8 @@ const ContainerStyle = css`
 
 const BoxStyle = css`
   display: flex;
-  width: 70px;
-  height: 30px;
+  width: 80px;
+  height: 45px;
   padding: 8px 8px 8px 4px;
   justify-content: center;
   align-items: center;

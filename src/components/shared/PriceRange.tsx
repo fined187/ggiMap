@@ -123,8 +123,8 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
                   .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
           }
           style={{
-            height: '27px',
-            width: '100px',
+            height: '25px',
+            width: '90px',
             borderTop: '1px solid #9d9999',
             borderBottom: '1px solid #9d9999',
           }}
@@ -202,8 +202,8 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
                   .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
           }
           style={{
-            height: '27px',
-            width: '100px',
+            height: '25px',
+            width: '90px',
             borderTop: '1px solid #9d9999',
             borderBottom: '1px solid #9d9999',
           }}
@@ -231,7 +231,7 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
 }
 
 const ContainerStyle = css`
-  width: 335px;
+  width: 320px;
   height: 40px;
   background-color: white;
   display: flex;

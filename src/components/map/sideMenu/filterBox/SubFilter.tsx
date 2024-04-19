@@ -138,7 +138,7 @@ const ContainerStyle = css`
   display: flex;
   padding: 10px;
   background-color: #f9f9f9;
-  width: 95%;
+  width: 100%;
   height: 40px;
   gap: 5px;
   transition: all 0.3s ease-in-out;
