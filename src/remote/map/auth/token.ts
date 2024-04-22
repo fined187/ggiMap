@@ -3,7 +3,7 @@ import axios from 'axios'
 export default async function handleToken(token: string) {
   try {
     const response = await axios.post(
-      `/ggi/api/auth/asp`,
+      `https://dev-api.ggi.co.kr:8443/ggi/api/auth/asp`,
       {},
       {
         headers: {

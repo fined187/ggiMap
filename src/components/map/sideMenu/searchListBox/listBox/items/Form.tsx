@@ -18,6 +18,7 @@ function Form({ item }: ItemProps) {
   const url = usePathUrl()
   return (
     <Flex direction="column" css={ContainerStyle}>
+      <Spacing direction="horizontal" size={30} />
       <ListRow
         left={
           <LeftTextStyle
@@ -33,7 +34,14 @@ function Form({ item }: ItemProps) {
           </LeftTextStyle>
         }
         contents={
-          <LeftTextStyle color="#000">
+          <LeftTextStyle
+            color="#000"
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {item.caseNo ? item.caseNo : item.manageNo}
           </LeftTextStyle>
         }
@@ -50,10 +58,8 @@ function Form({ item }: ItemProps) {
       >
         <Image
           src={
-            item.path?.includes('http')
-              ? item.path
-              : item.path === null
-              ? ''
+            item.type === 2 || item.type === 3
+              ? 'http://file.ggi.co.kr/' + item.path
               : url + item.path
           }
           alt="KM image"
@@ -61,6 +67,8 @@ function Form({ item }: ItemProps) {
           height={150}
           style={{
             objectFit: 'cover',
+            width: '150px',
+            height: '135px',
           }}
         />
         <Flex
@@ -117,6 +125,7 @@ const ContainerStyle = css`
 
 const ListLeftStyle = css`
   width: 90%;
+  flex: 1;
 `
 const LeftTextStyle = styled.span<{ color: string }>`
   color: ${({ color }) => color};

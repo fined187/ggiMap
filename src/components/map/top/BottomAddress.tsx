@@ -141,7 +141,7 @@ function BottomAddress({
         />
       )}
       {range === 2 && <DongList juso={juso} setJuso={setJuso} />}
-      <Spacing size={10} />
+      <Spacing direction="vertical" size={50} />
       {juso.gungu !== '' && range === 1 && (
         <FixedInBoxButton
           label={`${juso.gungu} 지도 보기`}
@@ -161,7 +161,9 @@ function BottomAddress({
     </Flex>
   )
 }
+//  24a10950974a42238f83 892966514bba4216a627
 
+//  ab7a0fbd-9d5a-49b0-b56f-f5d6b51859e5
 const ContainerStyle = css`
   background-color: #fff;
   width: 350px;

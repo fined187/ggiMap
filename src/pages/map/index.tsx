@@ -6,9 +6,16 @@ import { userAtom } from '@/store/atom/postUser'
 import { GetServerSidePropsContext, GetStaticProps } from 'next'
 import { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
-import axios from 'axios'
+import handleToken from '@/remote/map/auth/token'
 
-function MapComponent({ token }: { token: string }) {
+interface Props {
+  data: {
+    userId: string | null
+    authorities: string[] | null
+  }
+}
+
+function MapComponent({ data }: Props) {
   const [user, setUser] = useRecoilState(userAtom)
   const [formData, setFormData] = useState<Form>({
     usageCodes: '',
@@ -60,54 +67,36 @@ function MapComponent({ token }: { token: string }) {
     egg: formData.egg,
   }
 
-  async function handleToken(token: string) {
+  const handleGetAddress = async () => {
     try {
-      const response = await axios.post(
-        `/ggi/api/auth/asp`,
-        {},
-        {
-          headers: {
-            'Content-Type': 'Application/json',
-            Api_Key: 'iyv0Lk8v.GMiSXcZDDSRLquqAm7M9YHVwTF4aY8zr',
-            Authorization: token,
-          },
-        },
-      )
-      if (response.data.success === true) {
-        return response.data.data
+      const response = await getAddress()
+      console.log(response)
+      if (response) {
+        setUser((prev) => {
+          return {
+            ...prev,
+            address: response.address,
+          }
+        })
       }
     } catch (error) {
       console.error(error)
     }
   }
 
-  const handleGetUser = async (token: string) => {
-    const data = await handleToken(token)
-    if (data.success) {
-      setUser((prev) => {
-        return {
-          ...prev,
-          aesUserId: data.data.userId,
-          role: data.data.authorities,
-        }
-      })
-      const address = await getAddress()
-      console.log(address)
-    } else {
-      console.error('error')
-    }
-  }
-
   useEffect(() => {
-    if (token) {
-      handleGetUser(token)
-      getAddress()
-    }
     if (window) {
       window.history.pushState({}, '', '/map')
     }
-    console.log(user)
-  }, [setUser, token])
+    handleGetAddress()
+    setUser((prev) => {
+      return {
+        ...prev,
+        aesUserId: data?.userId ?? '',
+        authorities: data?.authorities ?? [],
+      }
+    })
+  }, [data])
 
   return (
     <>
@@ -118,9 +107,10 @@ function MapComponent({ token }: { token: string }) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const token = context.query.token as string
+  const data = await handleToken(token)
   return {
     props: {
-      token,
+      data: data ?? null,
     },
   }
 }

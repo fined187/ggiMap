@@ -3,14 +3,25 @@ import BidFormProps from './bid-form'
 import Layout from '@/components/bidForm/Layout'
 import { ChakraProvider } from '@chakra-ui/react'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
-interface Props {
+
+interface ServerSideProps {
+  data?: {
+    userId: string | null
+    authorities: string[] | null
+  }
   idcode?: string | null
   token: string | null
   mstSeq?: string | null
   lastPathPart: string | null
 }
 
-export default function Home({ token, idcode, mstSeq, lastPathPart }: Props) {
+export default function Home({
+  data,
+  idcode,
+  token,
+  mstSeq,
+  lastPathPart,
+}: ServerSideProps) {
   return (
     <>
       <ChakraProvider>
@@ -21,7 +32,7 @@ export default function Home({ token, idcode, mstSeq, lastPathPart }: Props) {
           lastPathPart={lastPathPart as string}
         />
       </ChakraProvider>
-      <MapComponent token={token as string} />
+      <MapComponent data={data as { userId: string; authorities: string[] }} />
     </>
   )
 }

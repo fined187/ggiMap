@@ -62,7 +62,6 @@ function TopAddress({
           const result = response.v2.address
           if (result.jibunAddress) {
             const addrToList = result.jibunAddress.split(' ')
-            console.log(addrToList)
             setNowJuso({
               sido: addrToList[0],
               gungu: addrToList[1],
