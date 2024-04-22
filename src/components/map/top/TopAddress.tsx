@@ -69,7 +69,7 @@ function TopAddress({
             })
           }
         },
-      ) //result.jibunAddress.match(/(\S+?[동])/)[0]
+      )
     }
   }, [center, naverMaps, setNowJuso])
 

@@ -1,8 +1,9 @@
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import jusoAddr from '@/mock/Sigungu.json'
 import { css } from '@emotion/react'
+import axios from 'axios'
 
 interface DongListProps {
   juso: {
@@ -16,31 +17,15 @@ interface DongListProps {
 }
 
 function DongList({ juso, setJuso }: DongListProps) {
-  const handleGetDong = (siName: string) => {
-    if (juso.gungu.match(/시$/)) {
-      return new Set(
-        jusoAddr
-          .filter((item) => item.SiName === siName)
-          .map((item) => item.DongName)
-          .filter((item) => item !== ''),
+  const [dongList, setDongList] = useState<string[]>([])
+  const handleGetDong = async (siName: string, guName: string) => {
+    try {
+      const response = await axios.get(
+        `/ggi/api/location/${siName}/${guName}/umds`,
       )
-    } else if (juso.gungu.match(/군$/)) {
-      return new Set(
-        jusoAddr
-          .filter((item) => item.SiName === siName)
-          .map((item) => item.DongName)
-          .filter((item) => item !== ''),
-      )
-    } else {
-      return new Set(
-        jusoAddr
-          .filter((item) => item.SiName === siName)
-          .map((item) => item.SiName)
-          .filter(
-            (item, index, self) =>
-              self.indexOf(item) === index && item !== '' && item !== '0',
-          ),
-      )
+      setDongList(response.data.data.umds)
+    } catch (error) {
+      console.error(error)
     }
   }
   const handleClick = (dong: string) => {
@@ -49,8 +34,11 @@ function DongList({ juso, setJuso }: DongListProps) {
       dong: dong,
     })
   }
-  console.log(handleGetDong(juso.gungu ?? ''))
-  console.log(juso.gungu)
+
+  useEffect(() => {
+    handleGetDong(juso.sido, juso.gungu)
+  }, [juso.sido, juso.gungu])
+
   return (
     <Flex
       direction="column"
@@ -61,11 +49,11 @@ function DongList({ juso, setJuso }: DongListProps) {
         maxHeight: '200px',
       }}
     >
-      {Array.from(handleGetDong(juso.gungu)).map(
+      {Array.from(dongList).map(
         (_, index) =>
           index % 3 === 0 && (
             <Flex direction="row" key={index}>
-              {Array.from(handleGetDong(juso.gungu))
+              {Array.from(dongList)
                 .slice(index, index + 3)
                 .map(
                   (item, index) =>

@@ -1,8 +1,8 @@
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
-import jusoAddr from '@/mock/Sigungu.json'
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction } from 'react'
+import axios from 'axios'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 interface Props {
   juso: {
@@ -18,8 +18,7 @@ interface Props {
 }
 
 export default function SidoList({ juso, setJuso, range, setRange }: Props) {
-  const sidoList = jusoAddr.map((item) => item.SiDoName)
-  const sidoListSet = new Set(sidoList)
+  const [sidoList, setSidoList] = useState<string[]>([])
 
   const handleClick = (sido: string) => {
     if (juso.sido === sido) {
@@ -42,13 +41,25 @@ export default function SidoList({ juso, setJuso, range, setRange }: Props) {
       })
     }
   }
+  console.log(juso)
+  const handleGetSidoList = async () => {
+    try {
+      const response = await axios.get(`/ggi/api/location/sds`)
+      setSidoList(response.data.data.sds)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  useEffect(() => {
+    handleGetSidoList()
+  }, [])
   return (
     <Flex direction="column">
-      {Array.from(sidoListSet).map(
+      {Array.from(sidoList).map(
         (_, index) =>
           index % 3 === 0 && (
             <Flex direction="row" key={index}>
-              {Array.from(sidoListSet)
+              {Array.from(sidoList)
                 .slice(index, index + 3)
                 .map((item, index) => (
                   <Flex

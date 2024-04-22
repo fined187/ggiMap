@@ -1,10 +1,9 @@
-import { Dispatch, SetStateAction } from 'react'
-import jusoAddr from '@/mock/Sigungu.json'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import Text from '@/components/shared/Text'
-import dynamic from 'next/dynamic'
 import Spacing from '@/components/shared/Spacing'
+import axios from 'axios'
 
 interface Props {
   juso: {
@@ -15,29 +14,16 @@ interface Props {
   setJuso: Dispatch<
     SetStateAction<{ sido: string; gungu: string; dong: string }>
   >
-  range: number
-  setRange: Dispatch<SetStateAction<number>>
 }
 
-export default function GunguList({ juso, setJuso, range, setRange }: Props) {
-  const handleGetGungu = (siName: string) => {
-    if (juso.sido.match(/시$/)) {
-      return new Set(
-        jusoAddr
-          .filter((item) => item.SiDoName === siName)
-          .map((item) => item.GunGuName)
-          .filter((item) => item !== ''),
-      )
-    } else {
-      return new Set(
-        jusoAddr
-          .filter((item) => item.SiDoName === siName)
-          .map((item) => item.SiName)
-          .filter(
-            (item, index, self) =>
-              self.indexOf(item) === index && item !== '' && item !== '0',
-          ),
-      )
+export default function GunguList({ juso, setJuso }: Props) {
+  const [gunguList, setGunguList] = useState<string[]>([])
+  const handleGetGungu = async (siName: string) => {
+    try {
+      const response = await axios.get(`/ggi/api/location/${siName}/sggs`)
+      setGunguList(response.data.data.sggs)
+    } catch (error) {
+      console.error(error)
     }
   }
 
@@ -49,6 +35,10 @@ export default function GunguList({ juso, setJuso, range, setRange }: Props) {
       }
     })
   }
+
+  useEffect(() => {
+    handleGetGungu(juso.sido)
+  }, [juso.sido])
   return (
     <>
       <Flex
@@ -60,11 +50,11 @@ export default function GunguList({ juso, setJuso, range, setRange }: Props) {
           maxHeight: '200px',
         }}
       >
-        {Array.from(handleGetGungu(juso.sido)).map(
+        {Array.from(gunguList).map(
           (_, index) =>
             index % 3 === 0 && (
               <Flex direction="row" key={index}>
-                {Array.from(handleGetGungu(juso.sido))
+                {Array.from(gunguList)
                   .slice(index, index + 3)
                   .map(
                     (item, index) =>

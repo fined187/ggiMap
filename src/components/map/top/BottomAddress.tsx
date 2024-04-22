@@ -166,13 +166,13 @@ function BottomAddress({
 //  ab7a0fbd-9d5a-49b0-b56f-f5d6b51859e5
 const ContainerStyle = css`
   background-color: #fff;
-  width: 350px;
+  width: 360px;
   min-height: 300px;
   max-height: 350px;
   display: flex;
   left: calc(50% + 180px);
   transform: translateX(-50%);
-  top: 80px;
+  top: 70px;
   position: absolute;
   border-radius: 10px;
   padding: 10px;
