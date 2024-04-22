@@ -59,7 +59,7 @@ function Form({ item }: ItemProps) {
         <Image
           src={
             item.type === 2 || item.type === 3
-              ? 'http://file.ggi.co.kr/' + item.path
+              ? 'http://file.ggi.co.kr/Gongmae/Pic/' + item.path
               : url + item.path
           }
           alt="KM image"
@@ -74,7 +74,7 @@ function Form({ item }: ItemProps) {
         <Flex
           direction="column"
           style={{
-            gap: '5px',
+            gap: item.type ? '0px' : '5px',
             marginLeft: '10px',
           }}
         >
@@ -104,7 +104,20 @@ function Form({ item }: ItemProps) {
             <Spacing direction="horizontal" size={5} />
             <Text css={appraisalAmt}>{item.landArea}</Text>
           </Flex>
-          <Flex direction="row" css={SpecialText}></Flex>
+          {item.checkInfo && (
+            <Flex
+              direction="row"
+              style={{
+                gap: '5px',
+              }}
+            >
+              {Array.from(item.checkInfo.split(',')).map((info, idx) => (
+                <Flex css={SpecialText} key={idx}>
+                  <Text css={SpecialTextStyle}>{info}</Text>
+                </Flex>
+              ))}
+            </Flex>
+          )}
         </Flex>
       </Flex>
     </Flex>
@@ -188,7 +201,22 @@ const SpecialText = css`
   border-radius: 3px;
   border: 0.5px solid #f00;
   background: #fff;
-  height: 15px;
+  height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  nowrap: white-space;
+`
+
+const SpecialTextStyle = css`
+  color: #f00;
+
+  text-align: center;
+  font-family: SUIT;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 13px;
+  letter-spacing: -0.26px;
 `
 
 export default Form

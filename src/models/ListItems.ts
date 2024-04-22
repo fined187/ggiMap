@@ -26,6 +26,7 @@ export interface KmItems {
   sale?: string
   period?: string
   manageNo?: string
+  checkInfo?: string | null
 }
 
 export interface KwItems {
@@ -46,6 +47,7 @@ export interface KwItems {
   sale?: string
   period?: string
   manageNo?: string
+  checkInfo?: string | null
 }
 
 export interface GmgItems {
@@ -66,4 +68,5 @@ export interface GmgItems {
   y: number
   claim?: string
   manageNo: string
+  checkInfo?: string | null
 }
