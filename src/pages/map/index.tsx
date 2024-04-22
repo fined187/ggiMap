@@ -1,16 +1,12 @@
 import Map from '@/components/map/sections/Map'
-import useAddress from '@/hooks/auth/useAddress'
 import { Form } from '@/models/Form'
-import { User } from '@/models/User'
 import { mapItem } from '@/models/api/mapItem'
 import getAddress from '@/remote/map/auth/getAddress'
-import handleToken from '@/remote/map/auth/token'
-import getUser from '@/remote/map/auth/user'
 import { userAtom } from '@/store/atom/postUser'
 import { GetServerSidePropsContext, GetStaticProps } from 'next'
 import { useEffect, useState } from 'react'
-import { useNavermaps } from 'react-naver-maps'
 import { useRecoilState } from 'recoil'
+import axios from 'axios'
 
 function MapComponent({ token }: { token: string }) {
   const [user, setUser] = useRecoilState(userAtom)
@@ -62,6 +58,27 @@ function MapComponent({ token }: { token: string }) {
     ekm: formData.ekm,
     egm: formData.egm,
     egg: formData.egg,
+  }
+
+  async function handleToken(token: string) {
+    try {
+      const response = await axios.post(
+        `/ggi/api/auth/asp`,
+        {},
+        {
+          headers: {
+            'Content-Type': 'Application/json',
+            Api_Key: 'iyv0Lk8v.GMiSXcZDDSRLquqAm7M9YHVwTF4aY8zr',
+            Authorization: token,
+          },
+        },
+      )
+      if (response.data.success === true) {
+        return response.data.data
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const handleGetUser = async (token: string) => {

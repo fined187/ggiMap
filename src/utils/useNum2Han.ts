@@ -4,10 +4,8 @@ function useNum2Han(number: number) {
     result = `${Math.floor(number / 100000000)}억`
     number %= 100000000
     result += number ? ` ${Math.floor(number / 10000)}만` : ''
-  } else if (number >= 10000 && number < 100000000) {
+  } else {
     result = `${Math.floor(number / 10000)}만`
-    number %= 10000
-    result += number ? ` ${number}` : ''
   }
   return result
 }

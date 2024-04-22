@@ -86,7 +86,7 @@ const ContainerStyle = css`
   background: #fff;
   gap: 10px;
   padding: 10px;
-  width: calc(100% - 20px);
+  width: 100%;
   height: 165px;
   flex-shrink: 0;
 `

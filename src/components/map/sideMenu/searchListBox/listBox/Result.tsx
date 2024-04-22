@@ -161,7 +161,7 @@ const ContainerNone = styled.div<{ isOpen: boolean }>`
 `
 
 const Container = styled.div<{ isOpen: boolean }>`
-  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 35px)' : '0px')};
+  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 50px)' : '0px')};
   display: flex;
   position: relative;
   overflow-y: scroll;

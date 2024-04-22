@@ -1,7 +1,7 @@
-import baseApiInstance from '../../baseURL'
+import axios from 'axios'
 
 export default async function getUser(id: string) {
-  const response = await baseApiInstance.post('ggi/api/map/address', {
+  const response = await axios.post('ggi/api/map/address', {
     aesUserId: id,
   })
   return response.data.data

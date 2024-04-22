@@ -1,8 +1,8 @@
-import baseApiInstance from '../../baseURL'
+import axios from 'axios'
 
 export default async function handleToken(token: string) {
   try {
-    const response = await baseApiInstance.post(
+    const response = await axios.post(
       `/ggi/api/auth/asp`,
       {},
       {
