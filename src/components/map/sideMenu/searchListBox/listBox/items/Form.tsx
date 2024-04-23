@@ -64,7 +64,7 @@ function Form({ item }: ItemProps) {
           }
           alt="KM image"
           width={150}
-          height={150}
+          height={135}
           style={{
             objectFit: 'cover',
             width: '150px',

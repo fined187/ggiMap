@@ -14,6 +14,7 @@ export default async function handleToken(token: string) {
       },
     )
     if (response.data.success === true) {
+      console.log(response.data.data)
       return response.data.data
     }
   } catch (error) {

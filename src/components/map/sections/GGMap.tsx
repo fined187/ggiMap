@@ -5,6 +5,7 @@ import {
   SetStateAction,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useState,
 } from 'react'
 import {
@@ -14,12 +15,17 @@ import {
   useListener,
   useNavermaps,
 } from 'react-naver-maps'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
 import { mapAtom } from '@/store/atom/map'
 import { userAtom } from '@/store/atom/postUser'
 import useDebounce from '../../shared/hooks/useDebounce'
 import { MapCountsResponse } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
+import Clustering from './markers/Clustering'
+import KmMarker from './markers/KmMarker'
+import GmMarker from './markers/GmMarker'
+import KwMarker from './markers/KwMarker'
+import GgMarker from './markers/GgMarker'
 
 interface Props {
   formData: Form
@@ -36,7 +42,7 @@ export default function GGMap({
 }: Props) {
   const naverMaps = useNavermaps()
   const [map, setMap] = useState<NaverMapProps>({})
-  const setMapItems = useSetRecoilState(mapAtom)
+  const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [mapCount, setMapCount] = useState<MapCountsResponse[] | null>(null)
   const param = {
     ids:
@@ -156,48 +162,42 @@ export default function GGMap({
       }))
     }
   }, [map, setFormData])
-
+  // 50m => 17
+  // 100m => 16
+  // 300m => 15
+  // 500m => 14
+  console.log(mapItems)
   return (
     <NaverMap center={center} zoom={16} ref={setMap}>
       {mapCount && mapCount.length > 0
         ? mapCount.map(
             (item, index) =>
               item.count > 0 && (
-                <Marker
+                <Clustering
                   key={index}
-                  position={{
-                    lat: item.y,
-                    lng: item.x,
-                  }}
-                  title={
-                    formData.map.zoom! > 13
-                      ? item.umd
-                      : formData.map.zoom! > 10
-                      ? item.sgg
-                      : item.sd
-                  }
-                  icon={{
-                    content: `
-                  <div style="position: absolute; display: flex; width: 80px; height: 50px; justify-content:center; align-items:center; flex-direction:column;">
-                    <div style="display:flex; width:100%; height:50%; background:#332EFC; justify-content:center; align-items:center; border-radius: 12px 12px 0px 0px;">
-                      <h1 style="font-size: 12px; margin-bottom: 5px; text-align: center; color:white; font-family: SUIT; font-style: normal; font-weight: 600; line-height: 100%; letter-spacing: -0.24px;">${
-                        formData.map.zoom! > 13
-                          ? item.umd
-                          : formData.map.zoom! > 10
-                          ? item.sgg
-                          : item.sd
-                      }</h1>
-                    </div>
-                    <div style="display:flex; width:100%; height:50%; background:#fff; justify-content:center; align-items:center; border-radius: 0px 0px 12px 12px;">
-                      <h1 style="font-size: 16px; margin-bottom: 5px; color:black; text-align: center; font-family: SUIT; font-style: normal; font-weight: 600; line-height: 100%; letter-spacing: -0.24px;">${
-                        item.count
-                      }</h1>
-                    </div>
-                  </div>
-                `,
+                  formData={formData}
+                  item={{
+                    sd: item.sd,
+                    sgg: item.sgg,
+                    umd: item.umd,
+                    count: item.count,
+                    x: item.x,
+                    y: item.y,
                   }}
                 />
               ),
+          )
+        : mapItems
+        ? mapItems.map((item, index) =>
+            item.type === 1 ? (
+              <KmMarker key={index} item={item} formData={formData} />
+            ) : item.type === 2 ? (
+              <GmMarker key={index} item={item} formData={formData} />
+            ) : item.type === 3 ? (
+              <GgMarker key={index} item={item} formData={formData} />
+            ) : (
+              <KwMarker key={index} item={item} formData={formData} />
+            ),
           )
         : null}
     </NaverMap>

@@ -108,6 +108,7 @@ function MapComponent({ data }: Props) {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const token = context.query.token as string
   const data = await handleToken(token)
+  console.log(data)
   return {
     props: {
       data: data ?? null,
