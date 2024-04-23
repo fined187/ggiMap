@@ -70,7 +70,7 @@ const RAW_RUNTIME_STATE =
           ["tailwind-scrollbar-hide", "npm:1.1.7"],\
           ["tailwindcss", "npm:3.4.3"],\
           ["twin.macro", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:3.4.1"],\
-          ["typescript", "patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"],\
+          ["typescript", "patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"],\
           ["uuid", "npm:9.0.1"]\
         ],\
         "linkType": "SOFT"\
@@ -4751,7 +4751,7 @@ const RAW_RUNTIME_STATE =
           ["@typescript-eslint/visitor-keys", "npm:6.9.0"],\
           ["debug", "virtual:feb0771c9f8eadaf509cfed41e14a8bebbea5442233275c1c87085111077a08ef71eb773b899665b154d8203a55a489610a54117ae059fce5f5b8b844493b1b1#npm:4.3.4"],\
           ["eslint", "npm:8.52.0"],\
-          ["typescript", "patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"]\
+          ["typescript", "patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"]\
         ],\
         "packagePeers": [\
           "@types/eslint",\
@@ -4802,7 +4802,7 @@ const RAW_RUNTIME_STATE =
           ["is-glob", "npm:4.0.3"],\
           ["semver", "npm:7.5.4"],\
           ["ts-api-utils", "virtual:2999076d3e7dd3e400812a9869824cfc903828e9b825eb9ca8a2a442ac8d94336c6ea67ca4728e970622fe6ee4f2ce9548d59939a5ba84e7643b5932ec1b9724#npm:1.0.3"],\
-          ["typescript", "patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"]\
+          ["typescript", "patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"]\
         ],\
         "packagePeers": [\
           "@types/typescript",\
@@ -6658,7 +6658,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-jsx-a11y", "virtual:3156c884bcc1a0061944a4a9db2395d4df6c6b1de1b2761019c7b2d01fee39bb572b083a1898f90a50c1b950065690c37ce5f2b3d6046c3cc81c8130f7814380#npm:6.7.1"],\
           ["eslint-plugin-react", "virtual:3156c884bcc1a0061944a4a9db2395d4df6c6b1de1b2761019c7b2d01fee39bb572b083a1898f90a50c1b950065690c37ce5f2b3d6046c3cc81c8130f7814380#npm:7.33.2"],\
           ["eslint-plugin-react-hooks", "virtual:3156c884bcc1a0061944a4a9db2395d4df6c6b1de1b2761019c7b2d01fee39bb572b083a1898f90a50c1b950065690c37ce5f2b3d6046c3cc81c8130f7814380#npm:5.0.0-canary-7118f5dd7-20230705"],\
-          ["typescript", "patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"]\
+          ["typescript", "patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"]\
         ],\
         "packagePeers": [\
           "@types/eslint",\
@@ -9718,7 +9718,7 @@ const RAW_RUNTIME_STATE =
           ["tailwind-scrollbar-hide", "npm:1.1.7"],\
           ["tailwindcss", "npm:3.4.3"],\
           ["twin.macro", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:3.4.1"],\
-          ["typescript", "patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"],\
+          ["typescript", "patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"],\
           ["uuid", "npm:9.0.1"]\
         ],\
         "linkType": "SOFT"\
@@ -11723,7 +11723,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["ts-api-utils", "virtual:2999076d3e7dd3e400812a9869824cfc903828e9b825eb9ca8a2a442ac8d94336c6ea67ca4728e970622fe6ee4f2ce9548d59939a5ba84e7643b5932ec1b9724#npm:1.0.3"],\
           ["@types/typescript", null],\
-          ["typescript", "patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"]\
+          ["typescript", "patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"]\
         ],\
         "packagePeers": [\
           "@types/typescript",\
@@ -11889,10 +11889,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["typescript", [\
-      ["patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c", {\
-        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/typescript-patch-6e159bfddb-10c0.zip/node_modules/typescript/",\
+      ["patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/typescript-patch-32ada147aa-10c0.zip/node_modules/typescript/",\
         "packageDependencies": [\
-          ["typescript", "patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"]\
+          ["typescript", "patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"]\
         ],\
         "linkType": "HARD"\
       }]\

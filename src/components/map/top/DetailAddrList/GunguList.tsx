@@ -14,9 +14,11 @@ interface Props {
   setJuso: Dispatch<
     SetStateAction<{ sido: string; gungu: string; dong: string }>
   >
+  range: number
+  setRange: Dispatch<SetStateAction<number>>
 }
 
-export default function GunguList({ juso, setJuso }: Props) {
+export default function GunguList({ juso, setJuso, range, setRange }: Props) {
   const [gunguList, setGunguList] = useState<string[]>([])
   const handleGetGungu = async (siName: string) => {
     try {

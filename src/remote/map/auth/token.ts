@@ -1,9 +1,9 @@
 import axios from 'axios'
-
+axios.defaults.withCredentials = true
 export default async function handleToken(token: string) {
   try {
     const response = await axios.post(
-      `https://dev-api.ggi.co.kr:8443/ggi/api/auth/asp`,
+      `/ggi/api/auth/asp`,
       {},
       {
         headers: {

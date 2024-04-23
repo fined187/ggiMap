@@ -155,6 +155,7 @@ const ContainerNone = styled.div<{ isOpen: boolean }>`
   display: flex;
   position: relative;
   overflow-y: scroll;
+  overflow-x: hidden;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -165,6 +166,7 @@ const Container = styled.div<{ isOpen: boolean }>`
   display: flex;
   position: relative;
   overflow-y: scroll;
+  overflow-x: hidden;
   flex-direction: column;
 `
 

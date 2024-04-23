@@ -7,6 +7,7 @@ import { GetServerSidePropsContext, GetStaticProps } from 'next'
 import { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import handleToken from '@/remote/map/auth/token'
+import axios from 'axios'
 
 interface Props {
   data: {
@@ -70,7 +71,6 @@ function MapComponent({ data }: Props) {
   const handleGetAddress = async () => {
     try {
       const response = await getAddress()
-      console.log(response)
       if (response) {
         setUser((prev) => {
           return {
