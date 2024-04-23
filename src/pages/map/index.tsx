@@ -10,13 +10,14 @@ import handleToken from '@/remote/map/auth/token'
 import axios from 'axios'
 
 interface Props {
-  data: {
+  data?: {
     userId: string | null
     authorities: string[] | null
   }
+  token: string | null
 }
 
-function MapComponent({ data }: Props) {
+function MapComponent({ token }: Props) {
   const [user, setUser] = useRecoilState(userAtom)
   const [formData, setFormData] = useState<Form>({
     usageCodes: '',
@@ -84,19 +85,43 @@ function MapComponent({ data }: Props) {
     }
   }
 
+  async function handleToken(token: string) {
+    try {
+      const response = await axios.post(
+        `/ggi/api/auth/asp`,
+        {},
+        {
+          headers: {
+            'Content-Type': 'Application/json',
+            Api_Key: 'iyv0Lk8v.GMiSXcZDDSRLquqAm7M9YHVwTF4aY8zr',
+            Authorization:
+              'aspeyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiZXN0IiwiaWF0IjoxNzEyMjE2MDIxLCJleHAiOjE3MTc0MDAwMjF9.-02DzRz0XSu0D2f0pL48hp4QWcFr0tUfsKJr3Ukx1ueMYgOluZ3FZDqmhqR5yBAI7X-doBnR6LPpcCh1lZ3g5A',
+          },
+        },
+      )
+      if (response.data.success === true) {
+        setUser((prev) => {
+          return {
+            ...prev,
+            aesUserId: response?.data?.data?.userId ?? '',
+            authorities: response?.data?.data?.authorities ?? [],
+          }
+        })
+        handleGetAddress()
+        return response.data.data
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   useEffect(() => {
+    handleToken(token as string)
     if (window) {
       window.history.pushState({}, '', '/map')
     }
     handleGetAddress()
-    setUser((prev) => {
-      return {
-        ...prev,
-        aesUserId: data?.userId ?? '',
-        authorities: data?.authorities ?? [],
-      }
-    })
-  }, [data])
+  }, [token])
 
   return (
     <>
@@ -107,11 +132,9 @@ function MapComponent({ data }: Props) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const token = context.query.token as string
-  const data = await handleToken(token)
-  console.log(data)
   return {
     props: {
-      data: data ?? null,
+      token: token ?? null,
     },
   }
 }

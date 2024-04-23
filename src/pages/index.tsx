@@ -32,7 +32,10 @@ export default function Home({
           lastPathPart={lastPathPart as string}
         />
       </ChakraProvider>
-      <MapComponent data={data as { userId: string; authorities: string[] }} />
+      <MapComponent
+        data={data as { userId: string; authorities: string[] }}
+        token={token}
+      />
     </>
   )
 }
