@@ -26,6 +26,7 @@ interface Props {
 }
 
 export default function Map({ formData, setFormData }: Props) {
+  const [zoom, setZoom] = useState<number>(16)
   const user = useRecoilValue(userAtom)
   const [center, setCenter] = useState({
     lat: user.lat,
@@ -98,8 +99,8 @@ export default function Map({ formData, setFormData }: Props) {
             <BottomAddress
               center={center}
               setCenter={setCenter}
-              formData={formData}
-              setFormData={setFormData}
+              zoom={zoom}
+              setZoom={setZoom}
             />
           ) : null}
         </Flex>
@@ -108,6 +109,8 @@ export default function Map({ formData, setFormData }: Props) {
           setFormData={setFormData}
           center={center}
           setCenter={setCenter}
+          zoom={zoom}
+          setZoom={setZoom}
         />
       </MapDiv>
     </Container>

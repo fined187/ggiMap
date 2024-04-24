@@ -20,13 +20,21 @@ export default function GgMarker({ item, formData }: GgMarkerProps) {
           icon={{
             content: `
               <div style="display:flex; flex-direction:row;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="32" viewBox="0 0 35 32" fill="none">
-                  <mask id="path-1-inside-1_228_718" fill="white">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 0C7.83502 0 0 7.83502 0 17.5V32H17.5H35V0H17.5Z"/>
-                  </mask>
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 0C7.83502 0 0 7.83502 0 17.5V32H17.5H35V0H17.5Z" fill="white"/>
-                  <path d="M0 32H-1V33H0V32ZM35 32V33H36V32H35ZM35 0H36V-1H35V0ZM1 17.5C1 8.3873 8.3873 1 17.5 1V-1C7.28273 -1 -1 7.28273 -1 17.5H1ZM1 32V17.5H-1V32H1ZM17.5 31H0V33H17.5V31ZM35 31H17.5V33H35V31ZM34 0V32H36V0H34ZM17.5 1H35V-1H17.5V1Z" fill="#0087B1" mask="url(#path-1-inside-1_228_718)"/>
-                </svg>
+                <div style="display: inline-flex; width: 45px; height: 32px; padding: 10px 6px; justify-content: center; align-items: center; border-radius: 17.5px 0px 0px 0px; border: 1px solid #0087B1; background: #FFF;">
+                  <h1 style="color: #0087B1; text-align: center; font-family: SUIT; font-size: 11px; font-style: normal; font-weight: 800; line-height: 110%; letter-spacing: -0.22px;">
+                    ${
+                      item.usage === '연립.다세대'
+                        ? '다세대'
+                        : item.usage === '단독,다가구'
+                        ? '다가구'
+                        : item.usage.length === 4
+                        ? item.usage.slice(0, 2) +
+                          '<br />' +
+                          item.usage.slice(2, 4)
+                        : item.usage
+                    }
+                  </h1>
+                </div>
                 <div style="display:flex; width: 56px; height: 32px; flex-shrink: 0; border-radius: 0px 75px 75px 0px; background: #0087B1; justify-content:center; align-items:center;">
                   <h1 style="font-size: 12px; color: white; font-family: SUIT; font-style: normal; font-weight: 800; line-height: 110%; letter-spacing: -0.24px;">
                     ${NumToHan(parseInt(item.amount ?? 0))}

@@ -3,6 +3,7 @@ import { Form } from '@/models/Form'
 import {
   Dispatch,
   SetStateAction,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -32,6 +33,8 @@ interface Props {
   setFormData: Dispatch<SetStateAction<Form>>
   center: { lat: number; lng: number }
   setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
+  zoom: number
+  setZoom: Dispatch<SetStateAction<number>>
 }
 
 export default function GGMap({
@@ -39,11 +42,14 @@ export default function GGMap({
   setFormData,
   center,
   setCenter,
+  zoom,
+  setZoom,
 }: Props) {
   const naverMaps = useNavermaps()
   const [map, setMap] = useState<NaverMapProps>({})
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [mapCount, setMapCount] = useState<MapCountsResponse[] | null>(null)
+
   const param = {
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -166,9 +172,20 @@ export default function GGMap({
   // 100m => 16
   // 300m => 15
   // 500m => 14
-  console.log(mapItems)
+  // 1km => 13
+  // 3km => 12
+  const handleZoomChanged = useCallback(() => {
+    setZoom(map.zoom ?? 16)
+  }, [map.zoom])
+  console.log(zoom)
+  console.log(map.zoom)
   return (
-    <NaverMap center={center} zoom={16} ref={setMap}>
+    <NaverMap
+      center={center}
+      zoom={zoom}
+      ref={setMap}
+      onZoomChanged={handleZoomChanged}
+    >
       {mapCount && mapCount.length > 0
         ? mapCount.map(
             (item, index) =>
@@ -184,6 +201,9 @@ export default function GGMap({
                     x: item.x,
                     y: item.y,
                   }}
+                  map={map}
+                  setMap={setMap}
+                  setZoom={setZoom}
                 />
               ),
           )

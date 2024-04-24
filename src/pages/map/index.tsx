@@ -3,10 +3,9 @@ import { Form } from '@/models/Form'
 import { mapItem } from '@/models/api/mapItem'
 import getAddress from '@/remote/map/auth/getAddress'
 import { userAtom } from '@/store/atom/postUser'
-import { GetServerSidePropsContext, GetStaticProps } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
-import handleToken from '@/remote/map/auth/token'
 import axios from 'axios'
 
 interface Props {

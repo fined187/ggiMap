@@ -6,7 +6,6 @@ import GunguList from './DetailAddrList/GunguList'
 import dynamic from 'next/dynamic'
 import getSubway from '@/remote/map/subway/getSubway'
 import DongList from './DetailAddrList/DongList'
-import { Form } from '@/models/Form'
 import { useMap } from 'react-naver-maps'
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
@@ -17,21 +16,16 @@ const FixedInBoxButton = dynamic(
 )
 
 interface BottomAddressProps {
-  center: {
+  center?: {
     lat: number
     lng: number
   }
   setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
-  formData: Form
-  setFormData: Dispatch<SetStateAction<Form>>
+  zoom: number
+  setZoom: Dispatch<SetStateAction<number>>
 }
 
-function BottomAddress({
-  center,
-  setCenter,
-  formData,
-  setFormData,
-}: BottomAddressProps) {
+function BottomAddress({ setCenter, zoom, setZoom }: BottomAddressProps) {
   const map = useMap()
   const [range, setRange] = useState(0)
   const [juso, setJuso] = useState({
@@ -147,6 +141,7 @@ function BottomAddress({
           label={`${juso.gungu} 지도 보기`}
           onClick={() => {
             addrToCenter(juso.gungu)
+            setZoom(14)
           }}
         />
       )}
@@ -155,6 +150,7 @@ function BottomAddress({
           label={`${juso.dong} 지도 보기`}
           onClick={() => {
             addrToCenter(juso.gungu + juso.dong)
+            setZoom(17)
           }}
         />
       )}
