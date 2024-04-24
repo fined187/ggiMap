@@ -1,11 +1,6 @@
 import { Form } from '@/models/Form'
 import { Dispatch, SetStateAction, useRef } from 'react'
-import {
-  Marker,
-  MarkerProps,
-  NaverMapProps,
-  useListener,
-} from 'react-naver-maps'
+import { Marker, MarkerProps, NaverMapProps } from 'react-naver-maps'
 
 interface ClusteringProps {
   formData: Form
@@ -18,7 +13,7 @@ interface ClusteringProps {
     y: number
   }
   map: NaverMapProps
-  setMap: Dispatch<SetStateAction<NaverMapProps>>
+  setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
   setZoom: Dispatch<SetStateAction<number>>
 }
 
@@ -26,21 +21,10 @@ export default function Clustering({
   formData,
   item,
   map,
-  setMap,
+  setCenter,
   setZoom,
 }: ClusteringProps) {
   const markerRef = useRef<MarkerProps>(null)
-  useListener(markerRef, 'click', () => {
-    console.log('click')
-    setMap((prevMap) => ({
-      ...prevMap,
-      center: {
-        lat: item.y,
-        lng: item.x,
-      },
-      zoom: prevMap.zoom ?? 13 + 1,
-    }))
-  })
   return (
     <Marker
       ref={markerRef}
@@ -76,7 +60,7 @@ export default function Clustering({
         `,
       }}
       onClick={() => {
-        console.log('click')
+        setCenter({ lat: item.y, lng: item.x })
         setZoom(map.zoom! + 1)
       }}
     />

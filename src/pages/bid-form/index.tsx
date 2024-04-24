@@ -32,12 +32,41 @@ interface BidFormProps {
   lastPathPart: string | null
 }
 
+let isCheck = false
+
 export default function BidForm({
   idcode,
   token,
   mstSeq,
   lastPathPart,
 }: BidFormProps) {
+  function handleErrorResponse() {
+    // 사용자에게 알리고 창을 닫음
+    // eslint-disable-next-line prettier/prettier
+    const confirmed = window.confirm(
+      '허용접속시간이 초과하여 종료합니다. 메뉴의 고객라운지 - 물건관리 - 입찰표관리에서 저장된 내용을 확인하세요.',
+    )
+    if (confirmed) {
+      window.close()
+    }
+  }
+  axios.interceptors.response.use(
+    function (response) {
+      if (!isCheck && response.data.code === 40005) {
+        isCheck = true
+        // eslint-disable-next-line prettier/prettier
+        handleErrorResponse()
+      }
+      console.log(response)
+      return response
+    },
+    function (error) {
+      // eslint-disable-next-line prettier/prettier
+      handleErrorResponse()
+      console.log(error)
+      return null
+    },
+  )
   const [stateNum, setStateNum] = useRecoilState(stepState)
   const [biddingForm, setBiddingForm] = useRecoilState(biddingInfoState)
   const [loading, setLoading] = useState<boolean>(false)

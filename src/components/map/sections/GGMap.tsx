@@ -177,8 +177,6 @@ export default function GGMap({
   const handleZoomChanged = useCallback(() => {
     setZoom(map.zoom ?? 16)
   }, [map.zoom])
-  console.log(zoom)
-  console.log(map.zoom)
   return (
     <NaverMap
       center={center}
@@ -202,7 +200,7 @@ export default function GGMap({
                     y: item.y,
                   }}
                   map={map}
-                  setMap={setMap}
+                  setCenter={setCenter}
                   setZoom={setZoom}
                 />
               ),

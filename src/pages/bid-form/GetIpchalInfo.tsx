@@ -46,9 +46,6 @@ export default function GetIpchalInfo({ mstSeq }: { mstSeq: string | null }) {
     handleGetInfo()
   }, [])
 
-  console.log(biddingInfo)
-  console.log(info)
-
   const handleReset = () => {
     setBiddingInfo((prev) => {
       const temp1 = ['']
