@@ -30,6 +30,7 @@ export default function GunguList({ juso, setJuso, range, setRange }: Props) {
   }
 
   const handleClick = (gungu: string) => {
+    setRange(2)
     setJuso((prev) => {
       return {
         ...prev,

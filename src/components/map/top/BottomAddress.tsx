@@ -181,8 +181,7 @@ function BottomAddress({
         />
       )}
       {range === 2 && <DongList juso={juso} setJuso={setJuso} />}
-      {/* <Spacing direction="vertical" size={50} /> */}
-      {juso.gungu !== '' && range === 1 && (
+      {juso.gungu !== '' && juso.dong === '' && (
         <>
           <Spacing direction="vertical" size={50} />
           <FixedInBoxButton
@@ -195,7 +194,7 @@ function BottomAddress({
           />
         </>
       )}
-      {juso.dong !== '' && range === 2 && (
+      {juso.dong !== '' && (
         <>
           <Spacing direction="vertical" size={50} />
           <FixedInBoxButton

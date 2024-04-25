@@ -12,6 +12,7 @@ import { usePostListItems } from '../hooks/usePostListItems'
 import { ListData } from '@/models/MapItem'
 import Gmg from './items/GmgItems'
 import Kw from './items/KwItems'
+import { css } from '@emotion/react'
 
 interface ResultProps {
   formData: Form
@@ -137,10 +138,9 @@ function Result({ formData, setFormData, isOpen, setIsOpen }: ResultProps) {
             isLoading={isLoading}
           />
           <ContainerNone isOpen={true}>
-            <Text>
-              읍면동이상의 축소에서는 매물종류(경매/예정/공매)와
-              <br />
-              용도로만 검색됩니다.
+            <Text css={NoResultText}>
+              500m 이상에서는 매물 종류(경매/예정/공매)
+              <br />와 용도로만 필터링 할 수 있습니다.
             </Text>
           </ContainerNone>
         </>
@@ -157,7 +157,7 @@ const ContainerNone = styled.div<{ isOpen: boolean }>`
   overflow-y: scroll;
   overflow-x: hidden;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
 `
 
@@ -168,6 +168,17 @@ const Container = styled.div<{ isOpen: boolean }>`
   overflow-y: scroll;
   overflow-x: hidden;
   flex-direction: column;
+`
+
+const NoResultText = css`
+  color: #545454;
+
+  font-family: SUIT;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; /* 20.8px */
+  letter-spacing: -0.16px;
 `
 
 export default Result

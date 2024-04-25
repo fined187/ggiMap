@@ -62,6 +62,29 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
           icon={{
             content: `
               <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px;">
+              ${
+                item.interest === 'Y'
+                  ? `
+                  <div style="flex-direction: row; display: flex; width: 100%; justify-content: flex-end; position: absolute; top: -10px; right: 0px;">
+                    ${
+                      item.share === 'Y'
+                        ? `
+                    <div style="display: flex; padding: 1px 6px; justify-content: center; align-items: center; border-radius: 100px; ${
+                      item.winYn === 'Y'
+                        ? '1px solid #FF4D00;'
+                        : '1px solid #0038FF;'
+                    } background: #FFF;">
+                      <span style="color: #000001; text-align: center; font-family: SUIT; font-size: 11px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.11px;">
+                        지분
+                      </span>
+                    </div>
+                    `
+                        : ``
+                    }
+                    </div>
+                  `
+                  : ''
+              }
                 <div style="flex-direction: column; display: flex; width: 100px; height: 42px; padding: 2px 4px; justify-content: center; align-items: center; gap: 2px; flex-shrink: 0; border-radius: 12px 12px 0px 0px; border-top: ${
                   item.winYn === 'Y'
                     ? '1px solid #FF4D00;'
@@ -75,13 +98,7 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
                     ? '1px solid #FF4D00;'
                     : '1px solid #0038FF;'
                 } background: #0038FF;">
-                  ${
-                    item.interest === 'Y'
-                      ? `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="11" viewBox="0 0 14 11" fill="none">
-                    <path d="M7.00377 10.5071L1.91133 5.89433C-0.856306 3.1267 3.21211 -2.18716 7.00377 2.1119C10.7954 -2.18716 14.8454 3.14515 12.0962 5.89433L7.00377 10.5071Z" fill="white" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>`
-                      : ''
-                  }
+                  
                   <div style="display: flex; flex-direction: row; gap: 5px;">
                     ${
                       item.winYn === 'Y'
@@ -89,6 +106,17 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
                               <span style="color: #FFF; font-size: 10px; font-family: SUIT; font-style: normal; font-weight: 800; line-height: 135%; letter-spacing: -0.1px; text-align: center;">낙</span>
                             </div>`
                         : ''
+                    }
+                    ${
+                      item.interest === 'Y'
+                        ? `
+                      <div style="display: flex; width: 15px; height: 16px; flex-direction: column; justify-content: center; flex-shrink: 0; background: green; margin-top: 2px;">
+                        <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 800; line-height: 135%; letter-spacing: -0.1px;">
+                          관
+                        </span>
+                      </div>
+                      `
+                        : ``
                     }
                       <h1 style="color: #FFF; text-align: center; font-family: SUIT; font-size: 14px; font-style: normal; font-weight: 800; line-height: 135%; letter-spacing: -0.14px;">
                         ${item.usage}
