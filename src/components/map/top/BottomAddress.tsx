@@ -23,16 +23,49 @@ interface BottomAddressProps {
   setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
   zoom: number
   setZoom: Dispatch<SetStateAction<number>>
+  range: number
+  setRange: Dispatch<SetStateAction<number>>
+  setOpenCursor?: Dispatch<SetStateAction<boolean>>
+  nowJuso: {
+    sido: string
+    gungu: string
+    dong: string
+  }
+  setNowJuso: Dispatch<
+    SetStateAction<{
+      sido: string
+      gungu: string
+      dong: string
+    }>
+  >
+  juso: {
+    sido: string
+    gungu: string
+    dong: string
+  }
+  setJuso: Dispatch<
+    SetStateAction<{
+      sido: string
+      gungu: string
+      dong: string
+    }>
+  >
 }
 
-function BottomAddress({ setCenter, zoom, setZoom }: BottomAddressProps) {
+function BottomAddress({
+  setCenter,
+  zoom,
+  setZoom,
+  range,
+  setRange,
+  setOpenCursor,
+  nowJuso,
+  setNowJuso,
+  juso,
+  setJuso,
+}: BottomAddressProps) {
   const map = useMap()
-  const [range, setRange] = useState(0)
-  const [juso, setJuso] = useState({
-    sido: '',
-    gungu: '',
-    dong: '',
-  })
+
   const addrToCenter = async (addr: string) => {
     if (range === 1) {
       try {
@@ -81,7 +114,10 @@ function BottomAddress({ setCenter, zoom, setZoom }: BottomAddressProps) {
         <Text
           css={TextStyle}
           style={{
-            color: juso.sido !== '' ? '#000001' : '#9d9999',
+            color:
+              range === 0 || juso.sido !== '' || nowJuso.sido !== ''
+                ? '#000001'
+                : '#9d9999',
             cursor: 'pointer',
           }}
           onClick={() => {
@@ -94,27 +130,37 @@ function BottomAddress({ setCenter, zoom, setZoom }: BottomAddressProps) {
         <Text
           css={TextStyle}
           style={{
-            color: juso.gungu !== '' ? '#000001' : '#9d9999',
+            color:
+              juso.gungu !== '' || nowJuso.gungu !== '' ? '#000001' : '#9d9999',
             cursor: 'pointer',
           }}
           onClick={() => {
+            if (juso.sido === '') {
+              alert('시 / 도를 먼저 선택해주세요.')
+              return
+            }
             setRange(1)
           }}
         >
-          {juso.gungu === '' ? '시/군/구' : juso.gungu}
+          {juso.gungu === '' ? '시 / 군 / 구' : juso.gungu}
         </Text>
         <NextArrow />
         <Text
           css={TextStyle}
           style={{
-            color: range === 2 ? '#000001' : '#9d9999',
+            color:
+              juso.dong !== '' || nowJuso.dong !== '' ? '#000001' : '#9d9999',
             cursor: 'pointer',
           }}
           onClick={() => {
+            if (juso.gungu === '') {
+              alert('시 / 군 / 구를 먼저 선택해주세요.')
+              return
+            }
             setRange(2)
           }}
         >
-          {'읍/면/동'}
+          {juso.dong === '' ? '읍 / 면 / 동' : juso.dong}
         </Text>
       </Flex>
       <Spacing size={20} />
@@ -135,24 +181,32 @@ function BottomAddress({ setCenter, zoom, setZoom }: BottomAddressProps) {
         />
       )}
       {range === 2 && <DongList juso={juso} setJuso={setJuso} />}
-      <Spacing direction="vertical" size={50} />
+      {/* <Spacing direction="vertical" size={50} /> */}
       {juso.gungu !== '' && range === 1 && (
-        <FixedInBoxButton
-          label={`${juso.gungu} 지도 보기`}
-          onClick={() => {
-            addrToCenter(juso.gungu)
-            setZoom(14)
-          }}
-        />
+        <>
+          <Spacing direction="vertical" size={50} />
+          <FixedInBoxButton
+            label={`${juso.gungu} 지도 보기`}
+            onClick={() => {
+              addrToCenter(juso.gungu)
+              setZoom(14)
+              setOpenCursor && setOpenCursor(false)
+            }}
+          />
+        </>
       )}
       {juso.dong !== '' && range === 2 && (
-        <FixedInBoxButton
-          label={`${juso.dong} 지도 보기`}
-          onClick={() => {
-            addrToCenter(juso.gungu + juso.dong)
-            setZoom(17)
-          }}
-        />
+        <>
+          <Spacing direction="vertical" size={50} />
+          <FixedInBoxButton
+            label={`${juso.dong} 지도 보기`}
+            onClick={() => {
+              addrToCenter(juso.gungu + juso.dong)
+              setZoom(17)
+              setOpenCursor && setOpenCursor(false)
+            }}
+          />
+        </>
       )}
     </Flex>
   )
@@ -163,12 +217,11 @@ function BottomAddress({ setCenter, zoom, setZoom }: BottomAddressProps) {
 const ContainerStyle = css`
   background-color: #fff;
   width: 360px;
-  min-height: 300px;
-  max-height: 350px;
+  max-height: 400px;
   display: flex;
   left: calc(50% + 180px);
   transform: translateX(-50%);
-  top: 70px;
+  top: 75px;
   position: absolute;
   border-radius: 10px;
   padding: 10px;

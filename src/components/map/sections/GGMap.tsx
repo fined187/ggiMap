@@ -27,6 +27,7 @@ import KmMarker from './markers/KmMarker'
 import GmMarker from './markers/GmMarker'
 import KwMarker from './markers/KwMarker'
 import GgMarker from './markers/GgMarker'
+import { set } from 'date-fns'
 
 interface Props {
   formData: Form
@@ -35,6 +36,12 @@ interface Props {
   setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
   zoom: number
   setZoom: Dispatch<SetStateAction<number>>
+}
+
+type PnuProps = {
+  pnu: string
+  count: number
+  type: number
 }
 
 export default function GGMap({
@@ -49,6 +56,7 @@ export default function GGMap({
   const [map, setMap] = useState<NaverMapProps>({})
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [mapCount, setMapCount] = useState<MapCountsResponse[] | null>(null)
+  const [pnuCounts, setPnuCounts] = useState<PnuProps[]>([])
 
   const param = {
     ids:
@@ -177,6 +185,33 @@ export default function GGMap({
   const handleZoomChanged = useCallback(() => {
     setZoom(map.zoom ?? 16)
   }, [map.zoom])
+
+  const handleGetPnuCounts = useCallback(() => {
+    for (let i = 0; i < mapItems.length; i++) {
+      let count = 1
+      for (let j = i + 1; j < mapItems.length; j++) {
+        if (mapItems[i].pnu === mapItems[j].pnu) {
+          count++
+        }
+      }
+      setPnuCounts((prev) => [
+        ...prev,
+        {
+          pnu: mapItems[i].pnu,
+          type: mapItems[i].type,
+          count,
+        },
+      ])
+    }
+  }, [mapItems])
+
+  useEffect(() => {
+    if (mapItems) {
+      setPnuCounts([])
+      handleGetPnuCounts()
+    }
+  }, [mapItems])
+  console.log(pnuCounts)
   return (
     <NaverMap
       center={center}
@@ -208,7 +243,12 @@ export default function GGMap({
         : mapItems
         ? mapItems.map((item, index) =>
             item.type === 1 ? (
-              <KmMarker key={index} item={item} formData={formData} />
+              <KmMarker
+                key={index}
+                item={item}
+                formData={formData}
+                pnuCounts={pnuCounts}
+              />
             ) : item.type === 2 ? (
               <GmMarker key={index} item={item} formData={formData} />
             ) : item.type === 3 ? (

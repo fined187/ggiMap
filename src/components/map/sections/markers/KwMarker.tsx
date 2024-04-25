@@ -66,6 +66,7 @@ export default function KwMarker({ item, formData }: KwMarkerProps) {
             </defs>
           </svg>
             `,
+            zIndex: 1, // Set the desired z-index value here
           }}
         />
       ) : null}

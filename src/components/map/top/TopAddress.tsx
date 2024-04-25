@@ -30,6 +30,20 @@ interface AddressProps {
   >
   openCursor: boolean
   setOpenCursor: Dispatch<SetStateAction<boolean>>
+  range: number
+  setRange: Dispatch<SetStateAction<number>>
+  juso: {
+    sido: string
+    gungu: string
+    dong: string
+  }
+  setJuso: Dispatch<
+    SetStateAction<{
+      sido: string
+      gungu: string
+      dong: string
+    }>
+  >
 }
 
 function TopAddress({
@@ -43,9 +57,12 @@ function TopAddress({
   setNowJuso,
   openCursor,
   setOpenCursor,
+  range,
+  setRange,
+  juso,
+  setJuso,
 }: AddressProps) {
   const naverMaps = useNavermaps()
-
   const centerToAddr = useCallback(() => {
     if (naverMaps?.Service?.reverseGeocode !== undefined) {
       naverMaps.Service.reverseGeocode(
@@ -86,6 +103,38 @@ function TopAddress({
             alignItems: 'center',
             display: `${DongAddr ? 'none' : 'flex'}`,
             width: '100%',
+            marginLeft: `${SidoAddr ? '10px' : '0px'}`,
+            marginRight: `${SidoAddr ? '10px' : '0px'}`,
+          }}
+          onClick={() => {
+            if (SidoAddr) {
+              setRange(0)
+              setOpenCursor(!openCursor)
+              setJuso({
+                sido: '',
+                gungu: '',
+                dong: '',
+              })
+            } else if (GunguAddr) {
+              setRange(1)
+              setOpenCursor(!openCursor)
+              setJuso((prev) => {
+                return {
+                  ...prev,
+                  gungu: '',
+                  dong: '',
+                }
+              })
+            } else if (DongAddr) {
+              setRange(2)
+              setOpenCursor(!openCursor)
+              setJuso((prev) => {
+                return {
+                  ...prev,
+                  dong: '',
+                }
+              })
+            }
           }}
         >
           <Text css={TextStyle}>
@@ -101,8 +150,8 @@ function TopAddress({
               justifyContent: 'end',
               alignItems: 'center',
               display: 'flex',
-              width: '100%',
-              gap: '20px',
+              minWidth: '100px',
+              gap: '15px',
             }}
           >
             <Text css={TextStyle}>{DongAddr ? nowJuso.dong : ''}</Text>
@@ -126,7 +175,8 @@ const ContainerStyle = css`
   align-items: center;
   flex-shrink: 0;
   cursor: pointer;
-  min-width: 120px;
+  min-width: 80px;
+  max-width: 160px;
 `
 
 const TextStyle = css`

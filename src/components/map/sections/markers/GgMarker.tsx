@@ -42,6 +42,7 @@ export default function GgMarker({ item, formData }: GgMarkerProps) {
                 </div>
               </div>
               `,
+            zIndex: 100, // Add the desired z-index value here
           }}
         />
       ) : formData.map.zoom! > 15 ? (
@@ -69,6 +70,7 @@ export default function GgMarker({ item, formData }: GgMarkerProps) {
                 </div>
               </div>
               `,
+            zIndex: 100, // Add the desired z-index value here
           }}
         />
       ) : null}

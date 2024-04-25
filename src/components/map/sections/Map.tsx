@@ -37,7 +37,13 @@ export default function Map({ formData, setFormData }: Props) {
     gungu: '',
     dong: '',
   })
+  const [juso, setJuso] = useState({
+    sido: '',
+    gungu: '',
+    dong: '',
+  })
   const [openCursor, setOpenCursor] = useState(false)
+  const [range, setRange] = useState(0)
 
   return (
     <Container>
@@ -69,6 +75,10 @@ export default function Map({ formData, setFormData }: Props) {
               setNowJuso={setNowJuso}
               openCursor={openCursor}
               setOpenCursor={setOpenCursor}
+              range={range}
+              setRange={setRange}
+              juso={juso}
+              setJuso={setJuso}
             />
             <TopAddress
               SidoAddr={false}
@@ -81,6 +91,10 @@ export default function Map({ formData, setFormData }: Props) {
               setNowJuso={setNowJuso}
               openCursor={openCursor}
               setOpenCursor={setOpenCursor}
+              range={range}
+              setRange={setRange}
+              juso={juso}
+              setJuso={setJuso}
             />
             <TopAddress
               SidoAddr={false}
@@ -93,6 +107,10 @@ export default function Map({ formData, setFormData }: Props) {
               setNowJuso={setNowJuso}
               openCursor={openCursor}
               setOpenCursor={setOpenCursor}
+              range={range}
+              setRange={setRange}
+              juso={juso}
+              setJuso={setJuso}
             />
           </TopBar>
           {openCursor ? (
@@ -101,6 +119,13 @@ export default function Map({ formData, setFormData }: Props) {
               setCenter={setCenter}
               zoom={zoom}
               setZoom={setZoom}
+              range={range}
+              setRange={setRange}
+              setOpenCursor={setOpenCursor}
+              nowJuso={nowJuso}
+              setNowJuso={setNowJuso}
+              juso={juso}
+              setJuso={setJuso}
             />
           ) : null}
         </Flex>

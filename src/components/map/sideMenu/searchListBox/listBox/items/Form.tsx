@@ -82,9 +82,10 @@ function Form({ item }: ItemProps) {
           <Text css={minPriceNum}>
             {useNum2Han(item.minAmt ?? 0) +
               '(' +
-              (((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100).toFixed(
-                0,
-              ) +
+              (isNaN(((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100)
+                ? 0
+                : ((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100
+              ).toFixed(0) +
               '%)'}
           </Text>
           <Flex direction="row">

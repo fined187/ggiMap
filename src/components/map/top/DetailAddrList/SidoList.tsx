@@ -41,7 +41,6 @@ export default function SidoList({ juso, setJuso, range, setRange }: Props) {
       })
     }
   }
-  console.log(juso)
   const handleGetSidoList = async () => {
     try {
       const response = await axios.get(`/ggi/api/location/sds`)

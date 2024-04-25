@@ -20,7 +20,6 @@ const Container = styled.div<{ isOpen: boolean }>`
   background: #fff;
   border: ${({ isOpen }) =>
     isOpen ? '1px solid #332EFC' : '1px solid #000001'};
-  min-width: 360px;
 `
 
 export default TopBar
