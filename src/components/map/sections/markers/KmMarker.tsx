@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Form } from '@/models/Form'
 import { MapItem } from '@/models/MapItem'
 import { NumToHan } from '@/utils/NumToHan'
-import axios from 'axios'
+import useNum2Han from '@/utils/useNum2Han'
 import { Marker } from 'react-naver-maps'
 
 interface ItemProps {
@@ -10,10 +11,8 @@ interface ItemProps {
 }
 
 export default function KmMarker({ item, formData }: ItemProps) {
-  axios.interceptors.request.use((config) => {
-    config.headers['Content-Type'] = 'application/json'
-    return config
-  })
+  console.log('item', item)
+
   return (
     <>
       {formData.map.zoom === 15 ? (
@@ -57,7 +56,16 @@ export default function KmMarker({ item, formData }: ItemProps) {
           }}
           icon={{
             content: `
-                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 80px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0;">
+                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0;">
+                  ${
+                    item.share === 'true'
+                      ? `<div style="position: absolute; top: -10px; right: 0px; display: inline-flex; padding: 1px 6px; justify-content: center; align-items: center; border-radius: 100px; border: 1px solid #0038FF;background: #FFF;">
+                  <span style="color: #000001; text-align: center; font-family: SUIT; font-size: 11px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.11px;">
+                    지분
+                  </span>
+                </div>`
+                      : ``
+                  }
                   <div style="flex-direction: column; display: flex; width: 100px; height: 42px; padding: 2px 4px; justify-content: center; align-items: center; gap: 2px; flex-shrink: 0; border-radius: 12px 12px 0px 0px; border-top: 1px solid #0038FF; border-right: 1px solid #0038FF; border-left: 1px solid #0038FF; background: #0038FF;">
                     ${
                       item.interest === 'Y'
@@ -79,8 +87,37 @@ export default function KmMarker({ item, formData }: ItemProps) {
                         </h1>
                     </div>
                   </div>
-                  <div style="width: 100px; height: 58.851px; border-radius: 0px 0px 12px 0px; background: #D9D9D9;">
-                    hi
+                  <div style="width: 100px; height: 59px; border-radius: 0px 0px 12px 0px; background: #FFF; display:flex; align-items: start; justify-content: center; flex-direction: column; border: 1px solid #0038FF;">
+                    <div style="display:flex; flex-direction:row; margin-left: 10px; gap: 5px;">
+                      <span style="color: #000001; font-family: SUIT; font-size: 13px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.26px;">
+                        ${NumToHan(parseInt(item.amount))} 
+                      </span>
+                      <span style="color: #676767; font-family: SUIT; font-size: 12px; font-style: normal; font-weight: 600; line-height: 135%; letter-spacing: -0.5px;">
+                        ${'(' + item.ratio}%)
+                      </span>
+                    </div>
+                    <div style="display:flex; flex-direction:row; margin-left: 10px; gap: 5px;">
+                      <span style="color: #676767; text-align: right; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 600; line-height: 135%; letter-spacing: -0.1px;">
+                        건물
+                      </span>
+                      <span style="color: #000001; text-align: right; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 600; line-height: 135%; letter-spacing: -0.1px;">
+                        ${item.buildingArea === '' ? 0 : item.buildingArea}
+                      </span>
+                    </div>
+                    <div style="display:flex; flex-direction:row; margin-left: 10px; gap: 5px;">
+                      <span style="color: #676767; text-align: right; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 600; line-height: 135%; letter-spacing: -0.1px;">
+                        토지
+                      </span>
+                      <span style="color: #000001; text-align: right; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 600; line-height: 135%; letter-spacing: -0.1px;">
+                        ${item.landArea === '' ? 0 : item.landArea}
+                      </span>
+                    </div>
+                  </div>
+                  <div style="position: absolute; left: 1px; bottom: -10px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="13" viewBox="0 0 8 13" fill="none">
+                    <path d="M0 11.8821V0.25C0 0.111929 0.111929 0 0.25 0H7.54802C7.74457 0 7.86425 0.21637 7.75979 0.382866L0.46177 12.015C0.328402 12.2275 0 12.133 0 11.8821Z" fill="#0038FF"/>
+                    <path d="M1 9.56322V0H7L1 9.56322Z" fill="white"/>
+                    </svg>
                   </div>
                 </div>
               `,

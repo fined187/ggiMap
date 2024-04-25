@@ -10,6 +10,8 @@ export interface MapItem {
   amount: string
   buildingArea: string
   landArea: string
+  share: string
+  ratio: string
 }
 
 export interface ListData {
