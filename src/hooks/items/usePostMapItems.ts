@@ -8,6 +8,7 @@ export default function usePostMapItems(formData: mapItem) {
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const { mutate } = useMutation(() => postMapItems(formData), {
     onSuccess: (data) => {
+      setMapItems([])
       setMapItems(data.mapItems)
     },
     onError: () => {

@@ -87,8 +87,14 @@ export default function SearchBox({
         } catch (error) {
           console.error(error)
         }
-      } else {
+      } else if (
+        keyword.match(/시$/) ||
+        keyword.match(/구$/) ||
+        keyword.match(/동$/)
+      ) {
         searchAddrToCoord(keyword)
+      } else {
+        alert('지하철역 혹은 주소를 입력해주세요')
       }
     }
   }

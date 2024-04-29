@@ -38,10 +38,14 @@ interface Props {
   setZoom: Dispatch<SetStateAction<number>>
 }
 
-type PnuProps = {
+type PnuCount = {
   pnu: string
-  count: number
   type: number
+  count: number
+}
+
+type pnuCounts = {
+  updatedCounts: PnuCount[]
 }
 
 export default function GGMap({
@@ -56,7 +60,7 @@ export default function GGMap({
   const [map, setMap] = useState<NaverMapProps>({})
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [mapCount, setMapCount] = useState<MapCountsResponse[] | null>(null)
-  const [pnuCounts, setPnuCounts] = useState<PnuProps[]>([])
+  const [pnuCounts, setPnuCounts] = useState<pnuCounts>({ updatedCounts: [] })
 
   const param = {
     ids:
@@ -100,7 +104,7 @@ export default function GGMap({
 
   const [user, setUser] = useRecoilState(userAtom)
 
-  const debouncedSearch = useDebounce(formData, 100)
+  const debouncedSearch = useDebounce(formData, 500)
 
   const searchAddrToCoord = (address: string) => {
     if (naverMaps?.Service?.geocode !== undefined) {
@@ -187,27 +191,41 @@ export default function GGMap({
   }, [map.zoom])
 
   const handleGetPnuCounts = useCallback(() => {
-    for (let i = 0; i < mapItems.length; i++) {
-      let count = 1
-      for (let j = i + 1; j < mapItems.length; j++) {
-        if (mapItems[i].pnu === mapItems[j].pnu) {
-          count++
-        }
+    const countsMap: {
+      [pnu: string]: number
+    } = {} // pnu를 키로 갖고 count를 값으로 갖는 객체
+
+    // mapItems를 반복하면서 pnu별로 count를 누적
+    mapItems.forEach((item) => {
+      countsMap[item.pnu] = (countsMap[item.pnu] || 0) + 1
+    })
+
+    // 최대 count를 가진 pnu를 찾기 위한 초기값 설정
+    const maxCounts: {
+      [pnu: string]: number
+    } = {}
+
+    // countsMap을 반복하여 각 pnu별 최대 count를 구함
+    Object.keys(countsMap).forEach((pnu) => {
+      const count = countsMap[pnu]
+      if (!maxCounts[pnu] || count > maxCounts[pnu]) {
+        maxCounts[pnu] = count
       }
-      setPnuCounts((prev) => [
-        ...prev,
-        {
-          pnu: mapItems[i].pnu,
-          type: mapItems[i].type,
-          count,
-        },
-      ])
-    }
+    })
+
+    // 최대 count를 가진 pnu의 정보로 이루어진 배열을 생성
+    const updatedCounts = Object.keys(maxCounts).map((pnu) => ({
+      pnu,
+      type: mapItems.find((item) => item.pnu === pnu)?.type!,
+      count: maxCounts[pnu] as number,
+    }))
+    setPnuCounts({ updatedCounts })
+    // state 업데이트
   }, [mapItems])
 
   useEffect(() => {
     if (mapItems) {
-      setPnuCounts([])
+      setPnuCounts({ updatedCounts: [] })
       handleGetPnuCounts()
     }
   }, [mapItems])

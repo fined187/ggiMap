@@ -3,6 +3,8 @@
 import { Form } from '@/models/Form'
 import { MapItem } from '@/models/MapItem'
 import { NumToHan } from '@/utils/NumToHan'
+import { count } from 'console'
+import { useCallback, useEffect, useState } from 'react'
 import { Marker } from 'react-naver-maps'
 
 type PnuProps = {
@@ -13,10 +15,27 @@ type PnuProps = {
 interface ItemProps {
   item: MapItem
   formData: Form
-  pnuCounts: PnuProps[]
+  pnuCounts: {
+    updatedCounts: PnuProps[]
+  }
 }
 
 export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
+  const [count, setCount] = useState<number>(0)
+  const handleGetItemPnuCounts = useCallback(() => {
+    if (
+      pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ??
+      0 > 1
+    ) {
+      setCount(
+        pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ?? 0,
+      )
+    }
+  }, [item, pnuCounts])
+  console.log(count)
+  useEffect(() => {
+    handleGetItemPnuCounts()
+  }, [pnuCounts, handleGetItemPnuCounts])
   return (
     <>
       {formData.map.zoom === 15 ? (
@@ -28,25 +47,108 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
           icon={{
             content: `
               <div style="display:flex; flex-direction:row; position: absolute; margin-left: -28px; margin-top: -28px;">
-                <div style="display: inline-flex; width: 45px; height: 32px; padding: 10px 6px; justify-content: center; align-items: center; border-radius: 17.5px 0px 0px 0px; border: 1px solid #0038FF; background: #FFF;">
-                  <h1 style="color: #0038FF; text-align: center; font-family: SUIT; font-size: 11px; font-style: normal; font-weight: 800; line-height: 110%; letter-spacing: -0.22px;">
-                    ${
-                      item.usage === '연립.다세대'
-                        ? '다세대'
-                        : item.usage === '단독,다가구'
-                        ? '다가구'
-                        : item.usage.length === 4
-                        ? item.usage.slice(0, 2) +
-                          '<br />' +
-                          item.usage.slice(2, 4)
-                        : item.usage
-                    }
-                  </h1>
+                ${
+                  item.interest === 'Y'
+                    ? `
+                <div style="position: absolute; right: 0px; top: -10px; flex-direction:row;">
+                  ${
+                    item.share === 'Y'
+                      ? `
+                  <svg xmlns="http://www.w3.org/2000/svg" width="17" height="15" viewBox="0 0 17 15" fill="none">
+                    <rect x="0.5" y="0.5" width="16" height="14" rx="7" fill="white"/>
+                    <rect x="0.5" y="0.5" width="16" height="14" rx="7" stroke=${
+                      item.winYn === 'Y' ? '#FF4D00' : '#0038FF'
+                    } />
+                    <path d="M8.50283 11.5108L4.6835 8.05124C2.60777 5.97552 5.65909 1.99013 8.50283 5.21442C11.3466 1.99013 14.3841 5.98936 12.3222 8.05124L8.50283 11.5108Z" fill="#0038FF" stroke="#0038FF" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div style="display: inline-flex; padding: 0px 6px 1px 6px; justify-content: center; align-items: center; border-radius: 100px; border: 1px solid #0038FF; background: #FFF;">
+                    <span style="color: #000001; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
+                      지분
+                    </span>
+                  </div>
+                  `
+                      : `
+                      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="15" viewBox="0 0 17 15" fill="none">
+                        <rect x="0.5" y="0.5" width="16" height="14" rx="7" fill="white"/>
+                        <rect x="0.5" y="0.5" width="16" height="14" rx="7" stroke=${
+                          item.winYn === 'Y' ? '#FF4D00' : '#0038FF'
+                        } />
+                        <path d="M8.50283 11.5108L4.6835 8.05124C2.60777 5.97552 5.65909 1.99013 8.50283 5.21442C11.3466 1.99013 14.3841 5.98936 12.3222 8.05124L8.50283 11.5108Z" fill="#0038FF" stroke="#0038FF" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      `
+                  }
                 </div>
-                <div style="display:flex; width: 56px; height: 32px; flex-shrink: 0; border-radius: 0px 75px 75px 0px; background: #0038FF; justify-content:center; align-items:center;">
-                  <h1 style="font-size: 12px; color: white; font-family: SUIT; font-style: normal; font-weight: 800; line-height: 110%; letter-spacing: -0.24px;">${NumToHan(
+                `
+                    : `${
+                        item.share === 'Y'
+                          ? `
+                    <div style="position: absolute; right: 0px; top: -10px; flex-direction:row;">
+                      <div style="display: inline-flex; padding: 0px 6px 1px 6px; justify-content: center; align-items: center; border-radius: 100px; border: ${
+                        item.winYn === 'Y'
+                          ? '1px solid #FF4D00'
+                          : '1px solid #0038FF'
+                      }; background: #FFF;">
+                        <span style="color: #000001; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
+                          지분
+                        </span>
+                      </div>
+                    </div>
+                    `
+                          : `${
+                              item.winYn === 'Y'
+                                ? count > 1
+                                  ? `
+                                  <div style="position: absolute; right: 0px; top: -10px; flex-direction:row;">
+                                    <div style=display: inline-flex; padding: 0px 6px 1px 6px; justify-content: center; align-items: center; border-radius: 100px; border: 1px solid #0038FF; background: #FFF;">
+                                      <span style="color: #000001; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
+                                        ${count}
+                                      </span>
+                                    </div>
+                                  </div>
+                          `
+                                  : ``
+                                : count > 1
+                                ? `
+                                <div style="position: absolute; right: 0px; top: -10px; flex-direction:row;">
+                                  <div style="display: inline-flex; padding: 0px 6px 1px 6px; justify-content: center; align-items: center; border-radius: 100px; border: 1px solid #0038FF; background: #FFF;">
+                                    <span style="color: #000001; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
+                                      ${count}
+                                    </span>
+                                  </div>
+                                </div>
+                                `
+                                : ``
+                            }`
+                      }`
+                }
+                <div style="display: inline-flex; width: 45px; height: 32px; padding: 10px 6px; justify-content: center; align-items: center; border-radius: 17.5px 0px 0px 0px; border: ${
+                  item.winYn === 'Y' ? '1px solid #FF4D00' : '1px solid #0038FF'
+                }; background: #FFF;">
+                  <span style="color: ${
+                    item.winYn === 'Y' ? '#FF4D00' : '#0038FF'
+                  }; text-align: center; font-family: SUIT; font-size: 11px; font-style: normal; font-weight: 800; line-height: 110%; letter-spacing: -0.22px;">
+                    ${
+                      item.winYn !== 'Y' && item.usage === '연립.다세대'
+                        ? '다세대'
+                        : item.winYn !== 'Y' && item.usage === '단독,다가구'
+                        ? '다가구'
+                        : item.winYn !== 'Y' && item.usage.length === 4
+                        ? item.winYn !== 'Y' &&
+                          item.usage.slice(0, 2) + '<br />' + item.winYn !==
+                            'Y' &&
+                          item.usage.slice(2, 4)
+                        : item.winYn !== 'Y' && item.usage
+                        ? item.usage
+                        : '낙찰'
+                    }
+                  </span>
+                </div>
+                <div style="display:flex; width: 56px; height: 32px; flex-shrink: 0; border-radius: 0px 75px 75px 0px; background: #0038FF; border: ${
+                  item.winYn === 'Y' ? '1px solid #FF4D00' : '1px solid #0038FF'
+                }; justify-content:center; align-items:center;">
+                  <span style="font-size: 12px; color: white; font-family: SUIT; font-style: normal; font-weight: 800; line-height: 110%; letter-spacing: -0.24px;">${NumToHan(
                     parseInt(item.amount ?? 0),
-                  )}</h1>
+                  )}</span>
                 </div>
               </div>
             `,
@@ -163,7 +265,7 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
                 </div>
               </div>
             `,
-            zIndex: 100, // Add the desired z-index value here
+            zIndex: 100,
           }}
         />
       ) : null}

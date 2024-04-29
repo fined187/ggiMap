@@ -195,6 +195,7 @@ export default function CreateFile({ userId }: { userId: string }) {
 
   const handleDownload = (file: Blob) => {
     if (!isMobile) {
+      // PC
       if (window) {
         const url = window.URL.createObjectURL(file)
         const a = document.createElement('a')
@@ -209,6 +210,11 @@ export default function CreateFile({ userId }: { userId: string }) {
   const handleDownloadMobile = (file: Blob) => {
     if (window) {
       window && window.open(URL.createObjectURL(file), '_blank')
+      const url = window.URL.createObjectURL(file)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${fileName.replace(' ', '')}.pdf`
+      a.click()
     }
   }
 

@@ -78,7 +78,14 @@ function Form({ item }: ItemProps) {
             marginLeft: '10px',
           }}
         >
-          <Text css={minPriceTextStyle}>최저가</Text>
+          <Text
+            css={minPriceTextStyle}
+            style={{
+              color: item.winAmt != 0 ? '#FF0000' : '#000000',
+            }}
+          >
+            {item.winAmt != 0 ? '낙찰가' : '최저가'}
+          </Text>
           <Text css={minPriceNum}>
             {useNum2Han(item.minAmt ?? 0) +
               '(' +
@@ -110,10 +117,19 @@ function Form({ item }: ItemProps) {
               direction="row"
               style={{
                 gap: '5px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
               }}
             >
               {Array.from(item.checkInfo.split(',')).map((info, idx) => (
-                <Flex css={SpecialText} key={idx}>
+                <Flex
+                  css={SpecialText}
+                  key={idx}
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                >
                   <Text css={SpecialTextStyle}>{info}</Text>
                 </Flex>
               ))}
@@ -194,7 +210,8 @@ const appraisalAmt = css`
 
 const SpecialText = css`
   display: flex;
-  width: 80px;
+  min-width: 50px;
+  max-width: 100px;
   padding: 5px 2px;
   justify-content: center;
   align-items: center;
