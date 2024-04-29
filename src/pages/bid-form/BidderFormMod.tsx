@@ -35,7 +35,19 @@ export default function BidderFormMod2() {
   const [passwordActive, setPasswordActive] = useState(false)
 
   const [biddingForm, setBiddingForm] = useRecoilState(biddingInfoState) //  전역 상태에서 저장하는 값
-  const [bidderList, setBidderList] = useState<BiddersProps[] | null>(null) //  입찰자 정보(서버에서 받아온 값)
+  const [bidderList, setBidderList] = useState<BiddersProps[]>([
+    {
+      address: '',
+      bidderType: '',
+      companyNo: '',
+      corporationNo: '',
+      job: '',
+      name: '',
+      peopleSeq: 1,
+      phoneNo: '',
+      share: '',
+    },
+  ]) //  입찰자 정보(서버에서 받아온 값)
 
   useEffect(() => {
     handleGetBidders()
@@ -77,241 +89,261 @@ export default function BidderFormMod2() {
       const response = await axios.get(
         `/ggi/api/bid-form/${biddingForm.mstSeq}/bidders`,
       )
-      if (response.status === 200) {
-        setBidderList(response.data.data.bidders)
-        if (biddingForm.bidderNum > response.data.data.bidders.length) {
-          //  입찰자 수가 서버에 저장된 입찰자 수보다 많을 경우
-          setBiddingForm((prev: any) => {
-            const temp1 = prev.bidName
-            const temp2 = prev.bidPhone1
-            const temp3 = prev.bidPhone2
-            const temp4 = prev.bidPhone3
-            const temp5 = prev.bidIdNum1
-            const temp6 = prev.bidIdNum2
-            const temp7 = prev.bidAddr
-            const temp8 = prev.bidAddrDetail
-            const temp9 = prev.bidCorpNum1
-            const temp10 = prev.bidCorpNum2
-            const temp11 = prev.bidCorpNum3
-            const temp12 = prev.bidCorpRegiNum1
-            const temp13 = prev.bidCorpRegiNum2
-            const temp14 = prev.bidCorpYn
-            const temp15 = prev.bidJob
-            for (
-              let i = biddingForm.bidName.length;
-              i < biddingForm.bidderNum;
-              i++
-            ) {
-              temp1.push('')
-              temp2.push('')
-              temp3.push('')
-              temp4.push('')
-              temp5.push('')
-              temp6.push('')
-              temp7.push('')
-              temp8.push('')
-              temp9.push('')
-              temp10.push('')
-              temp11.push('')
-              temp12.push('')
-              temp13.push('')
-              temp14.push('I')
-              temp15.push('')
-            }
-            return {
-              ...prev,
-              bidName: temp1,
-              bidPhone1: temp2,
-              bidPhone2: temp3,
-              bidPhone3: temp4,
-              bidIdNum1: temp5,
-              bidIdNum2: temp6,
-              bidAddr: temp7,
-              bidAddrDetail: temp8,
-              bidCorpNum1: temp9,
-              bidCorpNum2: temp10,
-              bidCorpNum3: temp11,
-              bidCorpRegiNum1: temp12,
-              bidCorpRegiNum2: temp13,
-              bidCorpYn: temp14,
-              bidJob: temp15,
-            }
-          })
-        } else if (biddingForm.bidderNum < response.data.data.bidders.length) {
-          //  입찰자 수가 서버에 저장된 입찰자 수보다 적을 경우 => 입찰자 수 감소
-          setBiddingForm((prev: any) => {
-            const temp1 = response.data.data.bidders.map(
-              (bidder: BiddersProps) => bidder.name,
-            )
-            const temp2 = response.data.data.bidders.map(
-              (bidder: BiddersProps) =>
-                bidder.phoneNo.length > 10
-                  ? bidder.phoneNo.slice(0, 3)
-                  : bidder.phoneNo.slice(0, 2),
-            )
-            const temp3 = response.data.data.bidders.map(
-              (bidder: BiddersProps) =>
-                bidder.phoneNo.length > 10
-                  ? bidder.phoneNo.slice(3, 7)
-                  : bidder.phoneNo.slice(2, 6),
-            )
-            const temp4 = response.data.data.bidders.map(
-              (bidder: BiddersProps) =>
-                bidder.phoneNo.length > 10
-                  ? bidder.phoneNo.slice(7, 11)
-                  : bidder.phoneNo.slice(6, 10),
-            )
-            const temp5 = prev.bidIdNum1.slice(
-              0,
-              response.data.data.bidders.length,
-            )
-            const temp6 = prev.bidIdNum2.slice(
-              0,
-              response.data.data.bidders.length,
-            )
-            const temp7 = response.data.data.bidders.map(
-              (bidder: BiddersProps) => bidder.address,
-            )
-            const temp8 = prev.bidAddrDetail.slice(
-              0,
-              response.data.data.bidders.length,
-            )
-            const temp9 = response.data.data.bidders.map(
-              (bidder: BiddersProps) => bidder.companyNo?.slice(0, 3) || '',
-            )
-            const temp10 = response.data.data.bidders.map(
-              (bidder: BiddersProps) => bidder.companyNo?.slice(3, 5) || '',
-            )
-            const temp11 = response.data.data.bidders.map(
-              (bidder: BiddersProps) => bidder.companyNo?.slice(5, 10) || '',
-            )
-            const temp12 = response.data.data.bidders.map(
-              (bidder: BiddersProps) => bidder.corporationNo?.slice(0, 6) || '',
-            )
-            const temp13 = response.data.data.bidders.map(
-              (bidder: BiddersProps) =>
-                bidder.corporationNo?.slice(6, 13) || '',
-            )
-            const temp14 = response.data.data.bidders.map(
-              (bidder: BiddersProps) => bidder.bidderType,
-            )
-            const temp15 = response.data.data.bidders.map(
-              (bidder: BiddersProps) => bidder.job || '',
-            )
-            temp1.splice(biddingForm.bidderNum, response.data.data.length)
-            temp2.splice(biddingForm.bidderNum, response.data.data.length)
-            temp3.splice(biddingForm.bidderNum, response.data.data.length)
-            temp4.splice(biddingForm.bidderNum, response.data.data.length)
-            temp5.splice(biddingForm.bidderNum, response.data.data.length)
-            temp6.splice(biddingForm.bidderNum, response.data.data.length)
-            temp7.splice(biddingForm.bidderNum, response.data.data.length)
-            temp8.splice(biddingForm.bidderNum, response.data.data.length)
-            temp9.splice(biddingForm.bidderNum, response.data.data.length)
-            temp10.splice(biddingForm.bidderNum, response.data.data.length)
-            temp11.splice(biddingForm.bidderNum, response.data.data.length)
-            temp12.splice(biddingForm.bidderNum, response.data.data.length)
-            temp13.splice(biddingForm.bidderNum, response.data.data.length)
-            temp14.splice(biddingForm.bidderNum, response.data.data.length)
-            temp15.splice(biddingForm.bidderNum, response.data.data.length)
-            return {
-              ...prev,
-              bidName: temp1,
-              bidPhone1: temp2,
-              bidPhone2: temp3,
-              bidPhone3: temp4,
-              bidIdNum1: temp5,
-              bidIdNum2: temp6,
-              bidAddr: temp7,
-              bidAddrDetail: temp8,
-              bidCorpNum1: temp9,
-              bidCorpNum2: temp10,
-              bidCorpNum3: temp11,
-              bidCorpRegiNum1: temp12,
-              bidCorpRegiNum2: temp13,
-              bidCorpYn: temp14,
-              bidJob: temp15,
-            }
-          })
-        } else {
-          //  입찰자 수가 서버에 저장된 입찰자 수와 같을 경우
-          setBiddingForm((prev: any) => {
-            const temp1 =
-              response.data.data.bidders.map(
+      if (response.data.success) {
+        if (response.data.data.bidders.length > 0) {
+          setBidderList(response.data.data.bidders)
+          if (biddingForm.bidderNum > response.data.data.bidders.length) {
+            //  입찰자 수가 서버에 저장된 입찰자 수보다 많을 경우
+            setBiddingForm((prev: any) => {
+              const temp1 = prev.bidName
+              const temp2 = prev.bidPhone1
+              const temp3 = prev.bidPhone2
+              const temp4 = prev.bidPhone3
+              const temp5 = prev.bidIdNum1
+              const temp6 = prev.bidIdNum2
+              const temp7 = prev.bidAddr
+              const temp8 = prev.bidAddrDetail
+              const temp9 = prev.bidCorpNum1
+              const temp10 = prev.bidCorpNum2
+              const temp11 = prev.bidCorpNum3
+              const temp12 = prev.bidCorpRegiNum1
+              const temp13 = prev.bidCorpRegiNum2
+              const temp14 = prev.bidCorpYn
+              const temp15 = prev.bidJob
+              for (
+                let i = biddingForm.bidName.length;
+                i < biddingForm.bidderNum;
+                i++
+              ) {
+                temp1.push('')
+                temp2.push('')
+                temp3.push('')
+                temp4.push('')
+                temp5.push('')
+                temp6.push('')
+                temp7.push('')
+                temp8.push('')
+                temp9.push('')
+                temp10.push('')
+                temp11.push('')
+                temp12.push('')
+                temp13.push('')
+                temp14.push('I')
+                temp15.push('')
+              }
+              return {
+                ...prev,
+                bidName: temp1,
+                bidPhone1: temp2,
+                bidPhone2: temp3,
+                bidPhone3: temp4,
+                bidIdNum1: temp5,
+                bidIdNum2: temp6,
+                bidAddr: temp7,
+                bidAddrDetail: temp8,
+                bidCorpNum1: temp9,
+                bidCorpNum2: temp10,
+                bidCorpNum3: temp11,
+                bidCorpRegiNum1: temp12,
+                bidCorpRegiNum2: temp13,
+                bidCorpYn: temp14,
+                bidJob: temp15,
+              }
+            })
+          } else if (
+            biddingForm.bidderNum < response.data.data.bidders.length
+          ) {
+            //  입찰자 수가 서버에 저장된 입찰자 수보다 적을 경우 => 입찰자 수 감소
+            setBiddingForm((prev: any) => {
+              const temp1 = response.data.data.bidders.map(
                 (bidder: BiddersProps) => bidder.name,
-              ) ?? prev.bidName
-            const temp2 =
-              response.data.data.bidders.map((bidder: BiddersProps) =>
-                bidder.phoneNo.length > 10
-                  ? bidder.phoneNo.slice(0, 3)
-                  : bidder.phoneNo.slice(0, 2),
-              ) ?? prev.bidPhone1
-            const temp3 =
-              response.data.data.bidders.map((bidder: BiddersProps) =>
-                bidder.phoneNo.length > 10
-                  ? bidder.phoneNo.slice(3, 7)
-                  : bidder.phoneNo.slice(2, 6),
-              ) ?? prev.bidPhone2
-            const temp4 =
-              response.data.data.bidders.map((bidder: BiddersProps) =>
-                bidder.phoneNo.length > 10
-                  ? bidder.phoneNo.slice(7, 11)
-                  : bidder.phoneNo.slice(6, 10),
-              ) ?? prev.bidPhone3
-            const temp5 = prev.bidIdNum1 ?? prev.bidIdNum1
-            const temp6 = prev.bidIdNum2 ?? prev.bidIdNum2
-            const temp7 =
-              response.data.data.bidders.map(
+              )
+              const temp2 = response.data.data.bidders.map(
+                (bidder: BiddersProps) =>
+                  bidder.phoneNo.length > 10
+                    ? bidder.phoneNo.slice(0, 3)
+                    : bidder.phoneNo.slice(0, 2),
+              )
+              const temp3 = response.data.data.bidders.map(
+                (bidder: BiddersProps) =>
+                  bidder.phoneNo.length > 10
+                    ? bidder.phoneNo.slice(3, 7)
+                    : bidder.phoneNo.slice(2, 6),
+              )
+              const temp4 = response.data.data.bidders.map(
+                (bidder: BiddersProps) =>
+                  bidder.phoneNo.length > 10
+                    ? bidder.phoneNo.slice(7, 11)
+                    : bidder.phoneNo.slice(6, 10),
+              )
+              const temp5 = prev.bidIdNum1.slice(
+                0,
+                response.data.data.bidders.length,
+              )
+              const temp6 = prev.bidIdNum2.slice(
+                0,
+                response.data.data.bidders.length,
+              )
+              const temp7 = response.data.data.bidders.map(
                 (bidder: BiddersProps) => bidder.address,
-              ) ?? prev.bidAddr
-            const temp8 = prev.bidAddrDetail ?? ''
-            const temp9 =
-              response.data.data.bidders.map(
+              )
+              const temp8 = prev.bidAddrDetail.slice(
+                0,
+                response.data.data.bidders.length,
+              )
+              const temp9 = response.data.data.bidders.map(
                 (bidder: BiddersProps) => bidder.companyNo?.slice(0, 3) || '',
-              ) ?? prev.bidCorpNum1
-            const temp10 =
-              response.data.data.bidders.map(
+              )
+              const temp10 = response.data.data.bidders.map(
                 (bidder: BiddersProps) => bidder.companyNo?.slice(3, 5) || '',
-              ) ?? prev.bidCorpNum2
-            const temp11 =
-              response.data.data.bidders.map(
+              )
+              const temp11 = response.data.data.bidders.map(
                 (bidder: BiddersProps) => bidder.companyNo?.slice(5, 10) || '',
-              ) ?? prev.bidCorpNum3
-            const temp12 =
-              response.data.data.bidders.map(
+              )
+              const temp12 = response.data.data.bidders.map(
                 (bidder: BiddersProps) =>
                   bidder.corporationNo?.slice(0, 6) || '',
-              ) ?? prev.bidCorpRegiNum1
-            const temp13 =
-              response.data.data.bidders.map(
+              )
+              const temp13 = response.data.data.bidders.map(
                 (bidder: BiddersProps) =>
                   bidder.corporationNo?.slice(6, 13) || '',
-              ) ?? prev.bidCorpRegiNum2
-            const temp14 =
-              response.data.data.bidders.map(
+              )
+              const temp14 = response.data.data.bidders.map(
                 (bidder: BiddersProps) => bidder.bidderType,
-              ) ?? prev.bidCorpYn
-            const temp15 =
-              response.data.data.bidders.map(
+              )
+              const temp15 = response.data.data.bidders.map(
                 (bidder: BiddersProps) => bidder.job || '',
-              ) ?? prev.bidJob
-            return {
-              ...prev,
-              bidName: temp1,
-              bidPhone1: temp2,
-              bidPhone2: temp3,
-              bidPhone3: temp4,
-              bidIdNum1: temp5,
-              bidIdNum2: temp6,
-              bidAddr: temp7,
-              bidAddrDetail: temp8,
-              bidCorpNum1: temp9,
-              bidCorpNum2: temp10,
-              bidCorpNum3: temp11,
-              bidCorpRegiNum1: temp12,
-              bidCorpRegiNum2: temp13,
-              bidCorpYn: temp14,
-              bidJob: temp15,
-            }
+              )
+              temp1.splice(biddingForm.bidderNum, response.data.data.length)
+              temp2.splice(biddingForm.bidderNum, response.data.data.length)
+              temp3.splice(biddingForm.bidderNum, response.data.data.length)
+              temp4.splice(biddingForm.bidderNum, response.data.data.length)
+              temp5.splice(biddingForm.bidderNum, response.data.data.length)
+              temp6.splice(biddingForm.bidderNum, response.data.data.length)
+              temp7.splice(biddingForm.bidderNum, response.data.data.length)
+              temp8.splice(biddingForm.bidderNum, response.data.data.length)
+              temp9.splice(biddingForm.bidderNum, response.data.data.length)
+              temp10.splice(biddingForm.bidderNum, response.data.data.length)
+              temp11.splice(biddingForm.bidderNum, response.data.data.length)
+              temp12.splice(biddingForm.bidderNum, response.data.data.length)
+              temp13.splice(biddingForm.bidderNum, response.data.data.length)
+              temp14.splice(biddingForm.bidderNum, response.data.data.length)
+              temp15.splice(biddingForm.bidderNum, response.data.data.length)
+              return {
+                ...prev,
+                bidName: temp1,
+                bidPhone1: temp2,
+                bidPhone2: temp3,
+                bidPhone3: temp4,
+                bidIdNum1: temp5,
+                bidIdNum2: temp6,
+                bidAddr: temp7,
+                bidAddrDetail: temp8,
+                bidCorpNum1: temp9,
+                bidCorpNum2: temp10,
+                bidCorpNum3: temp11,
+                bidCorpRegiNum1: temp12,
+                bidCorpRegiNum2: temp13,
+                bidCorpYn: temp14,
+                bidJob: temp15,
+              }
+            })
+          } else {
+            //  입찰자 수가 서버에 저장된 입찰자 수와 같을 경우
+            setBiddingForm((prev: any) => {
+              const temp1 =
+                response.data.data.bidders.map(
+                  (bidder: BiddersProps) => bidder.name,
+                ) ?? prev.bidName
+              const temp2 =
+                response.data.data.bidders.map((bidder: BiddersProps) =>
+                  bidder.phoneNo.length > 10
+                    ? bidder.phoneNo.slice(0, 3)
+                    : bidder.phoneNo.slice(0, 2),
+                ) ?? prev.bidPhone1
+              const temp3 =
+                response.data.data.bidders.map((bidder: BiddersProps) =>
+                  bidder.phoneNo.length > 10
+                    ? bidder.phoneNo.slice(3, 7)
+                    : bidder.phoneNo.slice(2, 6),
+                ) ?? prev.bidPhone2
+              const temp4 =
+                response.data.data.bidders.map((bidder: BiddersProps) =>
+                  bidder.phoneNo.length > 10
+                    ? bidder.phoneNo.slice(7, 11)
+                    : bidder.phoneNo.slice(6, 10),
+                ) ?? prev.bidPhone3
+              const temp5 = prev.bidIdNum1 ?? prev.bidIdNum1
+              const temp6 = prev.bidIdNum2 ?? prev.bidIdNum2
+              const temp7 =
+                response.data.data.bidders.map(
+                  (bidder: BiddersProps) => bidder.address,
+                ) ?? prev.bidAddr
+              const temp8 = prev.bidAddrDetail ?? ''
+              const temp9 =
+                response.data.data.bidders.map(
+                  (bidder: BiddersProps) => bidder.companyNo?.slice(0, 3) || '',
+                ) ?? prev.bidCorpNum1
+              const temp10 =
+                response.data.data.bidders.map(
+                  (bidder: BiddersProps) => bidder.companyNo?.slice(3, 5) || '',
+                ) ?? prev.bidCorpNum2
+              const temp11 =
+                response.data.data.bidders.map(
+                  (bidder: BiddersProps) =>
+                    bidder.companyNo?.slice(5, 10) || '',
+                ) ?? prev.bidCorpNum3
+              const temp12 =
+                response.data.data.bidders.map(
+                  (bidder: BiddersProps) =>
+                    bidder.corporationNo?.slice(0, 6) || '',
+                ) ?? prev.bidCorpRegiNum1
+              const temp13 =
+                response.data.data.bidders.map(
+                  (bidder: BiddersProps) =>
+                    bidder.corporationNo?.slice(6, 13) || '',
+                ) ?? prev.bidCorpRegiNum2
+              const temp14 =
+                response.data.data.bidders.map(
+                  (bidder: BiddersProps) => bidder.bidderType,
+                ) ?? prev.bidCorpYn
+              const temp15 =
+                response.data.data.bidders.map(
+                  (bidder: BiddersProps) => bidder.job || '',
+                ) ?? prev.bidJob
+              return {
+                ...prev,
+                bidName: temp1,
+                bidPhone1: temp2,
+                bidPhone2: temp3,
+                bidPhone3: temp4,
+                bidIdNum1: temp5,
+                bidIdNum2: temp6,
+                bidAddr: temp7,
+                bidAddrDetail: temp8,
+                bidCorpNum1: temp9,
+                bidCorpNum2: temp10,
+                bidCorpNum3: temp11,
+                bidCorpRegiNum1: temp12,
+                bidCorpRegiNum2: temp13,
+                bidCorpYn: temp14,
+                bidJob: temp15,
+              }
+            })
+          }
+        } else {
+          setBidderList(() => {
+            return Array(biddingForm.bidderNum).fill({
+              address: '',
+              bidderType: '',
+              companyNo: '',
+              corporationNo: '',
+              job: '',
+              name: '',
+              peopleSeq: 1,
+              phoneNo: '',
+              share: '',
+            })
           })
         }
       }

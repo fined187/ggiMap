@@ -211,7 +211,7 @@ export default function GGMap({
       handleGetPnuCounts()
     }
   }, [mapItems])
-  console.log(pnuCounts)
+
   return (
     <NaverMap
       center={center}

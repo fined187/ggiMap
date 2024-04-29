@@ -7,7 +7,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { LiaEyeSlashSolid, LiaEyeSolid } from 'react-icons/lia'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
 
 type BiddersProps = {
   address: string

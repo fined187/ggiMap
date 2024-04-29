@@ -26,24 +26,24 @@ interface BottomAddressProps {
   range: number
   setRange: Dispatch<SetStateAction<number>>
   setOpenCursor?: Dispatch<SetStateAction<boolean>>
-  nowJuso: {
+  topJuso: {
     sido: string
     gungu: string
     dong: string
   }
-  setNowJuso: Dispatch<
+  setTopJuso: Dispatch<
     SetStateAction<{
       sido: string
       gungu: string
       dong: string
     }>
   >
-  juso: {
+  bottomJuso: {
     sido: string
     gungu: string
     dong: string
   }
-  setJuso: Dispatch<
+  setBottomJuso: Dispatch<
     SetStateAction<{
       sido: string
       gungu: string
@@ -59,17 +59,17 @@ function BottomAddress({
   range,
   setRange,
   setOpenCursor,
-  nowJuso,
-  setNowJuso,
-  juso,
-  setJuso,
+  topJuso,
+  setTopJuso,
+  bottomJuso,
+  setBottomJuso,
 }: BottomAddressProps) {
   const map = useMap()
 
   const addrToCenter = async (addr: string) => {
     if (range === 1) {
       try {
-        const response = await getSubway(juso.sido + addr + '청')
+        const response = await getSubway(bottomJuso.sido + addr + '청')
         if (response.documents.length === 0) {
           return
         } else {
@@ -115,7 +115,7 @@ function BottomAddress({
           css={TextStyle}
           style={{
             color:
-              range === 0 || juso.sido !== '' || nowJuso.sido !== ''
+              range === 0 || bottomJuso.sido !== '' || topJuso.sido !== ''
                 ? '#000001'
                 : '#9d9999',
             cursor: 'pointer',
@@ -124,83 +124,89 @@ function BottomAddress({
             setRange(0)
           }}
         >
-          {juso.sido === '' ? '시 / 도' : juso.sido}
+          {bottomJuso.sido === '' ? '시 / 도' : bottomJuso.sido}
         </Text>
         <NextArrow />
         <Text
           css={TextStyle}
           style={{
             color:
-              juso.gungu !== '' || nowJuso.gungu !== '' ? '#000001' : '#9d9999',
+              bottomJuso.gungu !== '' || topJuso.gungu !== ''
+                ? '#000001'
+                : '#9d9999',
             cursor: 'pointer',
           }}
           onClick={() => {
-            if (juso.sido === '') {
+            if (bottomJuso.sido === '') {
               alert('시 / 도를 먼저 선택해주세요.')
               return
             }
             setRange(1)
           }}
         >
-          {juso.gungu === '' ? '시 / 군 / 구' : juso.gungu}
+          {bottomJuso.gungu === '' ? '시 / 군 / 구' : bottomJuso.gungu}
         </Text>
         <NextArrow />
         <Text
           css={TextStyle}
           style={{
             color:
-              juso.dong !== '' || nowJuso.dong !== '' ? '#000001' : '#9d9999',
+              bottomJuso.dong !== '' || topJuso.dong !== ''
+                ? '#000001'
+                : '#9d9999',
             cursor: 'pointer',
           }}
           onClick={() => {
-            if (juso.gungu === '') {
+            if (bottomJuso.gungu === '') {
               alert('시 / 군 / 구를 먼저 선택해주세요.')
               return
             }
             setRange(2)
           }}
         >
-          {juso.dong === '' ? '읍 / 면 / 동' : juso.dong}
+          {bottomJuso.dong === '' ? '읍 / 면 / 동' : bottomJuso.dong}
         </Text>
       </Flex>
       <Spacing size={20} />
       {range === 0 && (
         <SidoList
-          juso={juso}
-          setJuso={setJuso}
+          bottomJuso={bottomJuso}
+          setBottomJuso={setBottomJuso}
           range={range}
           setRange={setRange}
         />
       )}
       {range === 1 && (
         <GunguList
-          juso={juso}
-          setJuso={setJuso}
+          bottomJuso={bottomJuso}
+          setBottomJuso={setBottomJuso}
           range={range}
           setRange={setRange}
         />
       )}
-      {range === 2 && <DongList juso={juso} setJuso={setJuso} />}
-      {juso.gungu !== '' && juso.dong === '' && (
+      {range === 2 && (
+        <DongList bottomJuso={bottomJuso} setBottomJuso={setBottomJuso} />
+      )}
+      {bottomJuso.gungu !== '' && bottomJuso.dong === '' && (
         <>
           <Spacing direction="vertical" size={50} />
           <FixedInBoxButton
-            label={`${juso.gungu} 지도 보기`}
+            label={`${bottomJuso.gungu} 지도 보기`}
             onClick={() => {
-              addrToCenter(juso.gungu)
+              addrToCenter(bottomJuso.gungu)
               setZoom(14)
               setOpenCursor && setOpenCursor(false)
             }}
           />
         </>
       )}
-      {juso.dong !== '' && (
+      {bottomJuso.dong !== '' && (
         <>
           <Spacing direction="vertical" size={50} />
           <FixedInBoxButton
-            label={`${juso.dong} 지도 보기`}
+            label={`${bottomJuso.dong} 지도 보기`}
             onClick={() => {
-              addrToCenter(juso.gungu + juso.dong)
+              addrToCenter(bottomJuso.gungu + bottomJuso.dong)
               setZoom(17)
               setOpenCursor && setOpenCursor(false)
             }}

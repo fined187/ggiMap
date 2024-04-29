@@ -32,12 +32,12 @@ export default function Map({ formData, setFormData }: Props) {
     lat: user.lat,
     lng: user.lng,
   })
-  const [nowJuso, setNowJuso] = useState({
+  const [topJuso, setTopJuso] = useState({
     sido: '',
     gungu: '',
     dong: '',
   })
-  const [juso, setJuso] = useState({
+  const [bottomJuso, setBottomJuso] = useState({
     sido: '',
     gungu: '',
     dong: '',
@@ -71,14 +71,14 @@ export default function Map({ formData, setFormData }: Props) {
               isEnd={false}
               center={center}
               setCenter={setCenter}
-              nowJuso={nowJuso}
-              setNowJuso={setNowJuso}
+              topJuso={topJuso}
+              setTopJuso={setTopJuso}
               openCursor={openCursor}
               setOpenCursor={setOpenCursor}
               range={range}
               setRange={setRange}
-              juso={juso}
-              setJuso={setJuso}
+              bottomJuso={bottomJuso}
+              setBottomJuso={setBottomJuso}
             />
             <TopAddress
               SidoAddr={false}
@@ -87,14 +87,14 @@ export default function Map({ formData, setFormData }: Props) {
               isEnd={false}
               center={center}
               setCenter={setCenter}
-              nowJuso={nowJuso}
-              setNowJuso={setNowJuso}
+              topJuso={topJuso}
+              setTopJuso={setTopJuso}
               openCursor={openCursor}
               setOpenCursor={setOpenCursor}
               range={range}
               setRange={setRange}
-              juso={juso}
-              setJuso={setJuso}
+              bottomJuso={bottomJuso}
+              setBottomJuso={setBottomJuso}
             />
             <TopAddress
               SidoAddr={false}
@@ -103,14 +103,14 @@ export default function Map({ formData, setFormData }: Props) {
               isEnd={true}
               center={center}
               setCenter={setCenter}
-              nowJuso={nowJuso}
-              setNowJuso={setNowJuso}
+              topJuso={topJuso}
+              setTopJuso={setTopJuso}
               openCursor={openCursor}
               setOpenCursor={setOpenCursor}
               range={range}
               setRange={setRange}
-              juso={juso}
-              setJuso={setJuso}
+              bottomJuso={bottomJuso}
+              setBottomJuso={setBottomJuso}
             />
           </TopBar>
           {openCursor ? (
@@ -122,10 +122,10 @@ export default function Map({ formData, setFormData }: Props) {
               range={range}
               setRange={setRange}
               setOpenCursor={setOpenCursor}
-              nowJuso={nowJuso}
-              setNowJuso={setNowJuso}
-              juso={juso}
-              setJuso={setJuso}
+              topJuso={topJuso}
+              setTopJuso={setTopJuso}
+              bottomJuso={bottomJuso}
+              setBottomJuso={setBottomJuso}
             />
           ) : null}
         </Flex>

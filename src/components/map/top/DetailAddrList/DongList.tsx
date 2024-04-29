@@ -6,17 +6,21 @@ import { css } from '@emotion/react'
 import axios from 'axios'
 
 interface DongListProps {
-  juso: {
+  bottomJuso: {
     sido: string
     gungu: string
     dong: string
   }
-  setJuso: Dispatch<
-    SetStateAction<{ sido: string; gungu: string; dong: string }>
+  setBottomJuso: Dispatch<
+    SetStateAction<{
+      sido: string
+      gungu: string
+      dong: string
+    }>
   >
 }
 
-function DongList({ juso, setJuso }: DongListProps) {
+function DongList({ bottomJuso, setBottomJuso }: DongListProps) {
   const [dongList, setDongList] = useState<string[]>([])
   const handleGetDong = async (siName: string, guName: string) => {
     try {
@@ -29,15 +33,15 @@ function DongList({ juso, setJuso }: DongListProps) {
     }
   }
   const handleClick = (dong: string) => {
-    setJuso({
-      ...juso,
+    setBottomJuso({
+      ...bottomJuso,
       dong: dong,
     })
   }
 
   useEffect(() => {
-    handleGetDong(juso.sido, juso.gungu)
-  }, [juso.sido, juso.gungu])
+    handleGetDong(bottomJuso.sido, bottomJuso.gungu)
+  }, [bottomJuso.sido, bottomJuso.gungu])
 
   return (
     <Flex
@@ -64,9 +68,9 @@ function DongList({ juso, setJuso }: DongListProps) {
                         css={BoxStyle}
                         style={{
                           backgroundColor:
-                            juso.dong === item ? '#F0F0FF' : 'white',
+                            bottomJuso.dong === item ? '#F0F0FF' : 'white',
                           border:
-                            juso.dong === item
+                            bottomJuso.dong === item
                               ? '1px solid #332EFC'
                               : '1px solid #9d9999',
                           cursor: 'pointer',
@@ -77,7 +81,8 @@ function DongList({ juso, setJuso }: DongListProps) {
                       >
                         <Text
                           style={{
-                            color: juso.dong === item ? '#332EFC' : '#000001',
+                            color:
+                              bottomJuso.dong === item ? '#332EFC' : '#000001',
                           }}
                         >
                           {item}

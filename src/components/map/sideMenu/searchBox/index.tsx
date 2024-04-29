@@ -43,11 +43,13 @@ export default function SearchBox({
             address,
           },
           (status: any, response: any) => {
+            console.log(response)
             if (status === naverMaps?.Service?.Status?.ERROR) {
-              return alert('Something wrong!')
+              alert('지하철 혹은 주소를 입력해주세요')
+              return
             }
             const result = response.result.items[0]
-            const { point } = result
+            const { point } = result ?? { point: { x: 0, y: 0 } }
             const { x, y } = point
             setCenter({
               lat: Number(y),

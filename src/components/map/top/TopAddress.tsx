@@ -16,12 +16,12 @@ interface AddressProps {
     lng: number
   }
   setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
-  nowJuso: {
+  topJuso: {
     sido: string
     gungu: string
     dong: string
   }
-  setNowJuso: Dispatch<
+  setTopJuso: Dispatch<
     SetStateAction<{
       sido: string
       gungu: string
@@ -32,12 +32,12 @@ interface AddressProps {
   setOpenCursor: Dispatch<SetStateAction<boolean>>
   range: number
   setRange: Dispatch<SetStateAction<number>>
-  juso: {
+  bottomJuso: {
     sido: string
     gungu: string
     dong: string
   }
-  setJuso: Dispatch<
+  setBottomJuso: Dispatch<
     SetStateAction<{
       sido: string
       gungu: string
@@ -53,33 +53,34 @@ function TopAddress({
   isEnd,
   center,
   setCenter,
-  nowJuso,
-  setNowJuso,
+  topJuso,
+  setTopJuso,
   openCursor,
   setOpenCursor,
   range,
   setRange,
-  juso,
-  setJuso,
+  bottomJuso,
+  setBottomJuso,
 }: AddressProps) {
   const naverMaps = useNavermaps()
   const centerToAddr = useCallback(() => {
     if (naverMaps?.Service?.reverseGeocode !== undefined) {
-      naverMaps.Service.reverseGeocode(
+      naverMaps?.Service?.reverseGeocode(
         {
           location: new naverMaps.LatLng({
             lat: center.lat,
             lng: center.lng,
-          }),
+          }) as any,
         },
         (status: any, response: any) => {
+          console.log(response)
           if (status === naverMaps.Service.Status.ERROR) {
-            return
+            alert('주소 혹은 지하철명을 입력해주세요')
           }
           const result = response.v2.address
           if (result.jibunAddress) {
             const addrToList = result.jibunAddress.split(' ')
-            setNowJuso({
+            setTopJuso({
               sido: addrToList[0],
               gungu: addrToList[1],
               dong: addrToList[2],
@@ -88,12 +89,31 @@ function TopAddress({
         },
       )
     }
-  }, [center, naverMaps, setNowJuso])
+  }, [center, naverMaps, setTopJuso])
 
   useEffect(() => {
     centerToAddr()
   }, [center, centerToAddr])
 
+  const handleTopBottomSync = () => {
+    let newSido: string[] = []
+    if (
+      topJuso.sido.match(/시$/) ||
+      topJuso.sido.match(/경기도$/) ||
+      topJuso.sido.match(/강원특별자치도$/) ||
+      topJuso.sido.match(/제주도$/)
+    ) {
+      newSido.push(topJuso.sido.slice(0, 2))
+    } else if (topJuso.sido.match(/도$/)) {
+      newSido.push(topJuso.sido.slice(0, 1) + topJuso.sido.slice(2, 3))
+    }
+    return newSido
+  }
+  console.log(handleTopBottomSync())
+  useEffect(() => {
+    handleTopBottomSync()
+  }, [topJuso])
+  console.log(bottomJuso)
   return (
     <>
       <Flex css={ContainerStyle}>
@@ -110,7 +130,7 @@ function TopAddress({
             if (SidoAddr) {
               setRange(0)
               setOpenCursor(!openCursor)
-              setJuso({
+              setBottomJuso({
                 sido: '',
                 gungu: '',
                 dong: '',
@@ -118,9 +138,9 @@ function TopAddress({
             } else if (GunguAddr) {
               setRange(1)
               setOpenCursor(!openCursor)
-              setJuso((prev) => {
+              setBottomJuso((prev) => {
                 return {
-                  ...prev,
+                  sido: prev.sido === '' ? handleTopBottomSync()[0] : prev.sido,
                   gungu: '',
                   dong: '',
                 }
@@ -128,7 +148,7 @@ function TopAddress({
             } else if (DongAddr) {
               setRange(2)
               setOpenCursor(!openCursor)
-              setJuso((prev) => {
+              setBottomJuso((prev) => {
                 return {
                   ...prev,
                   dong: '',
@@ -138,7 +158,7 @@ function TopAddress({
           }}
         >
           <Text css={TextStyle}>
-            {SidoAddr ? nowJuso.sido : GunguAddr ? nowJuso.gungu : ''}
+            {SidoAddr ? topJuso.sido : GunguAddr ? topJuso.gungu : ''}
           </Text>
         </Flex>
         {isEnd ? (
@@ -154,7 +174,7 @@ function TopAddress({
               gap: '15px',
             }}
           >
-            <Text css={TextStyle}>{DongAddr ? nowJuso.dong : ''}</Text>
+            <Text css={TextStyle}>{DongAddr ? topJuso.dong : ''}</Text>
             <AddressCursorArrow
               openCursor={openCursor}
               setOpenCursor={setOpenCursor}

@@ -6,19 +6,28 @@ import Spacing from '@/components/shared/Spacing'
 import axios from 'axios'
 
 interface Props {
-  juso: {
+  bottomJuso: {
     sido: string
     gungu: string
     dong: string
   }
-  setJuso: Dispatch<
-    SetStateAction<{ sido: string; gungu: string; dong: string }>
+  setBottomJuso: Dispatch<
+    SetStateAction<{
+      sido: string
+      gungu: string
+      dong: string
+    }>
   >
   range: number
   setRange: Dispatch<SetStateAction<number>>
 }
 
-export default function GunguList({ juso, setJuso, range, setRange }: Props) {
+export default function GunguList({
+  bottomJuso,
+  setBottomJuso,
+  range,
+  setRange,
+}: Props) {
   const [gunguList, setGunguList] = useState<string[]>([])
   const handleGetGungu = async (siName: string) => {
     try {
@@ -31,7 +40,7 @@ export default function GunguList({ juso, setJuso, range, setRange }: Props) {
 
   const handleClick = (gungu: string) => {
     setRange(2)
-    setJuso((prev) => {
+    setBottomJuso((prev) => {
       return {
         ...prev,
         gungu,
@@ -40,8 +49,8 @@ export default function GunguList({ juso, setJuso, range, setRange }: Props) {
   }
 
   useEffect(() => {
-    handleGetGungu(juso.sido)
-  }, [juso.sido])
+    handleGetGungu(bottomJuso.sido)
+  }, [bottomJuso.sido])
   return (
     <>
       <Flex
@@ -68,9 +77,9 @@ export default function GunguList({ juso, setJuso, range, setRange }: Props) {
                           css={BoxStyle}
                           style={{
                             backgroundColor:
-                              juso.gungu === item ? '#F0F0FF' : 'white',
+                              bottomJuso.gungu === item ? '#F0F0FF' : 'white',
                             border:
-                              juso.gungu === item
+                              bottomJuso.gungu === item
                                 ? '1px solid #332EFC'
                                 : '1px solid #9d9999',
                             cursor: 'pointer',
@@ -80,7 +89,9 @@ export default function GunguList({ juso, setJuso, range, setRange }: Props) {
                           <Text
                             style={{
                               color:
-                                juso.gungu === item ? '#332EFC' : '#000001',
+                                bottomJuso.gungu === item
+                                  ? '#332EFC'
+                                  : '#000001',
                             }}
                           >
                             {item}

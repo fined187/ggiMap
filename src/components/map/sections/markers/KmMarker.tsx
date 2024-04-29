@@ -110,7 +110,7 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
                     ${
                       item.interest === 'Y'
                         ? `
-                      <div style="display: flex; width: 15px; height: 16px; flex-direction: column; justify-content: center; flex-shrink: 0; background: green; margin-top: 2px;">
+                      <div style="display: flex; width: 15px; height: 16px; flex-direction: column; justify-content: center; flex-shrink: 0; background: #00A980; margin-top: 2px;">
                         <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 800; line-height: 135%; letter-spacing: -0.1px;">
                           관
                         </span>

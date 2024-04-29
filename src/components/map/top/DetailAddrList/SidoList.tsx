@@ -5,25 +5,34 @@ import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 interface Props {
-  juso: {
+  bottomJuso: {
     sido: string
     gungu: string
     dong: string
   }
-  setJuso: Dispatch<
-    SetStateAction<{ sido: string; gungu: string; dong: string }>
+  setBottomJuso: Dispatch<
+    SetStateAction<{
+      sido: string
+      gungu: string
+      dong: string
+    }>
   >
   range: number
   setRange: Dispatch<SetStateAction<number>>
 }
 
-export default function SidoList({ juso, setJuso, range, setRange }: Props) {
+export default function SidoList({
+  bottomJuso,
+  setBottomJuso,
+  range,
+  setRange,
+}: Props) {
   const [sidoList, setSidoList] = useState<string[]>([])
 
   const handleClick = (sido: string) => {
-    if (juso.sido === sido) {
+    if (bottomJuso.sido === sido) {
       setRange(1)
-      setJuso((prev) => {
+      setBottomJuso((prev) => {
         return {
           ...prev,
           sido,
@@ -31,7 +40,7 @@ export default function SidoList({ juso, setJuso, range, setRange }: Props) {
       })
     } else {
       setRange(1)
-      setJuso((prev) => {
+      setBottomJuso((prev) => {
         return {
           ...prev,
           sido,
@@ -66,9 +75,10 @@ export default function SidoList({ juso, setJuso, range, setRange }: Props) {
                     key={index}
                     css={BoxStyle}
                     style={{
-                      backgroundColor: juso.sido === item ? '#F0F0FF' : 'white',
+                      backgroundColor:
+                        bottomJuso.sido === item ? '#F0F0FF' : 'white',
                       border:
-                        juso.sido === item
+                        bottomJuso.sido === item
                           ? '1px solid #332EFC'
                           : '1px solid #9d9999',
                       cursor: 'pointer',
@@ -77,7 +87,7 @@ export default function SidoList({ juso, setJuso, range, setRange }: Props) {
                   >
                     <Text
                       style={{
-                        color: juso.sido === item ? '#332EFC' : '#000001',
+                        color: bottomJuso.sido === item ? '#332EFC' : '#000001',
                       }}
                     >
                       {item}
