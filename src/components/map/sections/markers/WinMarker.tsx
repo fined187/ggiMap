@@ -1,9 +1,5 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable react-hooks/rules-of-hooks */
 import { Form } from '@/models/Form'
 import { MapItem } from '@/models/MapItem'
-import { NumToHan } from '@/utils/NumToHan'
-import { count } from 'console'
 import { useCallback, useEffect, useState } from 'react'
 import { Marker } from 'react-naver-maps'
 import {
@@ -14,7 +10,6 @@ import {
   UsageIcon,
 } from './Icon/Marker1'
 import { AmountBottomIcon, UsageTopIcon } from './Icon/Marker2'
-
 type PnuProps = {
   pnu: string
   count: number
@@ -27,8 +22,7 @@ interface ItemProps {
     updatedCounts: PnuProps[]
   }
 }
-
-export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
+export default function WinMarker({ item, formData, pnuCounts }: ItemProps) {
   const [count, setCount] = useState<number>(0)
   const handleGetItemPnuCounts = useCallback(() => {
     if (
@@ -57,10 +51,39 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
   useEffect(() => {
     handleGetItemPnuCounts()
   }, [pnuCounts, handleGetItemPnuCounts])
-
   return (
     <>
       {formData.map.zoom === 15 ? (
+        <Marker
+          position={{
+            lat: item.y,
+            lng: item.x,
+          }}
+          icon={{
+            content: `
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+                <g filter="url(#filter0_d_228_707)">
+                  <circle cx="5.5" cy="3.5" r="3.5" fill="#FF4D00"/>
+                  <circle cx="5.5" cy="3.5" r="3.25" stroke="white" stroke-width="0.5"/>
+                </g>
+                <defs>
+                  <filter id="filter0_d_228_707" x="0" y="0" width="11" height="11" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                    <feOffset dy="2"/>
+                    <feGaussianBlur stdDeviation="1"/>
+                    <feComposite in2="hardAlpha" operator="out"/>
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_228_707"/>
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_228_707" result="shape"/>
+                  </filter>
+                </defs>
+              </svg>
+              `,
+            zIndex: 0,
+          }}
+        />
+      ) : formData.map.zoom! === 16 ? (
         <Marker
           position={{
             lat: item.y,
@@ -83,11 +106,11 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
                 ${UsageIcon(item, handleItemUsage, item.type)}
                 ${AmountIcon(item, item.type)}
               </div>
-              `,
+            `,
             zIndex: 100,
           }}
         />
-      ) : formData.map.zoom! > 15 ? (
+      ) : formData.map.zoom! > 16 ? (
         <Marker
           position={{
             lat: item.y,

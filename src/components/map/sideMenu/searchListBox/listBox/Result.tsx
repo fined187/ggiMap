@@ -13,6 +13,7 @@ import { ListData } from '@/models/MapItem'
 import Gmg from './items/GmgItems'
 import Kw from './items/KwItems'
 import { css } from '@emotion/react'
+import Spacing from '@/components/shared/Spacing'
 
 interface ResultProps {
   formData: Form
@@ -138,6 +139,7 @@ function Result({ formData, setFormData, isOpen, setIsOpen }: ResultProps) {
             isLoading={isLoading}
           />
           <ContainerNone isOpen={true}>
+            <Spacing size={20} />
             <Text css={NoResultText}>
               500m 이상에서는 매물 종류(경매/예정/공매)
               <br />와 용도로만 필터링 할 수 있습니다.
@@ -150,12 +152,9 @@ function Result({ formData, setFormData, isOpen, setIsOpen }: ResultProps) {
 }
 
 const ContainerNone = styled.div<{ isOpen: boolean }>`
-  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 35px)' : '0px')};
-  padding: 10px;
+  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 80px)' : '0px')};
   display: flex;
   position: relative;
-  overflow-y: scroll;
-  overflow-x: hidden;
   flex-direction: column;
   justify-content: start;
   align-items: center;
@@ -172,12 +171,11 @@ const Container = styled.div<{ isOpen: boolean }>`
 
 const NoResultText = css`
   color: #545454;
-
   font-family: SUIT;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
-  line-height: 130%; /* 20.8px */
+  line-height: 130%;
   letter-spacing: -0.16px;
 `
 

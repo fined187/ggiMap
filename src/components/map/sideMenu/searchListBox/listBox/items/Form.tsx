@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import Flex from '@/components/shared/Flex'
 import ListRow from '@/components/shared/ListRow'
 import Spacing from '@/components/shared/Spacing'
@@ -92,8 +93,10 @@ function Form({ item }: ItemProps) {
               (isNaN(((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100)
                 ? 0
                 : ((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100
-              ).toFixed(0) +
-              '%)'}
+              ).toFixed(0) ===
+            'Infinity'
+              ? ''
+              : useNum2Han(item.minAmt ?? 0)}
           </Text>
           <Flex direction="row">
             <Text css={appraisalAmtNum}>감정가</Text>

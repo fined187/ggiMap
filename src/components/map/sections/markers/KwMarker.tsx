@@ -1,42 +1,89 @@
 import { Form } from '@/models/Form'
 import { MapItem } from '@/models/MapItem'
-import { NumToHan } from '@/utils/NumToHan'
 import { Marker } from 'react-naver-maps'
+import {
+  AmountIcon,
+  InterestIcon,
+  PnuCountIcon,
+  ShareIcon,
+  UsageIcon,
+} from './Icon/Marker1'
+import { useCallback, useEffect, useState } from 'react'
+
+type PnuProps = {
+  pnu: string
+  count: number
+  type: number
+}
 
 interface KwMarkerProps {
   item: MapItem
   formData: Form
+  pnuCounts: {
+    updatedCounts: PnuProps[]
+  }
 }
 
-export default function KwMarker({ item, formData }: KwMarkerProps) {
+export default function KwMarker({ item, formData, pnuCounts }: KwMarkerProps) {
+  const [count, setCount] = useState<number>(0)
+  const handleGetItemPnuCounts = useCallback(() => {
+    if (
+      pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ??
+      0 > 1
+    ) {
+      setCount(
+        pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ?? 0,
+      )
+    }
+  }, [item, pnuCounts])
+
+  const handleItemUsage = useCallback(() => {
+    if (item.usage.length >= 4) {
+      if (item.usage === '단독,다가구') {
+        return '다가구'
+      } else if (item.usage === '연립.다세대') {
+        return '다세대'
+      }
+      return item.usage.slice(0, 2) + '<br />' + item.usage.slice(2, 4)
+    } else {
+      return item.usage
+    }
+  }, [item.usage])
+
+  useEffect(() => {
+    handleGetItemPnuCounts()
+  }, [pnuCounts, handleGetItemPnuCounts])
   return (
     <>
       {formData.map.zoom! > 15 ? (
         <>
-          {/* // <Marker
-          //   position={{
-          //     lat: item.y,
-          //     lng: item.x,
-          //   }}
-          //   icon={{
-          //     content: `
-          //         <div style="display:flex; flex-direction:row;">
-          //           <svg xmlns="http://www.w3.org/2000/svg" width="35" height="32" viewBox="0 0 35 32" fill="none">
-          //             <mask id="path-1-inside-1_228_711" fill="white">
-          //             <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 0C7.83502 0 0 7.83502 0 17.5V32H17.5H35V0H17.5Z"/>
-          //             </mask>
-          //             <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5 0C7.83502 0 0 7.83502 0 17.5V32H17.5H35V0H17.5Z" fill="white"/>
-          //             <path d="M0 32H-1V33H0V32ZM35 32V33H36V32H35ZM35 0H36V-1H35V0ZM1 17.5C1 8.3873 8.3873 1 17.5 1V-1C7.28273 -1 -1 7.28273 -1 17.5H1ZM1 32V17.5H-1V32H1ZM17.5 31H0V33H17.5V31ZM35 31H17.5V33H35V31ZM34 0V32H36V0H34ZM17.5 1H35V-1H17.5V1Z" fill="#1C8D00" mask="url(#path-1-inside-1_228_711)"/>
-          //           </svg>
-          //           <div style="display:flex; width: 56px; height: 32px; flex-shrink: 0; border-radius: 0px 75px 75px 0px; background: #1C8D00; justify-content:center; align-items:center;">
-          //             <h1 style="font-size: 12px; color: white; font-family: SUIT; font-style: normal; font-weight: 800; line-height: 110%; letter-spacing: -0.24px;">
-          //               ${NumToHan(parseInt(item.amount ?? 0))}
-          //             </h1>
-          //           </div>
-          //         </div>
-          //         `,
-          //   }}
-          // /> */}
+          <Marker
+            position={{
+              lat: item.y,
+              lng: item.x,
+            }}
+            icon={{
+              content: `
+                  <div style="flex-direction: row; display: flex; margin-top: -30px;">
+                    ${
+                      item.interest === 'Y' ? InterestIcon(item, item.type) : ''
+                    }
+                    ${
+                      item.interest != 'Y' && item.share === 'Y'
+                        ? ShareIcon(item, item.type)
+                        : ''
+                    }
+                    ${
+                      item.interest != 'Y' && item.share != 'Y' && count > 1
+                        ? PnuCountIcon(item, count, item.type)
+                        : ''
+                    }
+                    ${UsageIcon(item, handleItemUsage, item.type)}
+                    ${AmountIcon(item, item.type)}
+                  </div>
+                `,
+            }}
+          />
           null
         </>
       ) : formData.map.zoom! <= 15 ? (
@@ -66,7 +113,7 @@ export default function KwMarker({ item, formData }: KwMarkerProps) {
             </defs>
           </svg>
             `,
-            zIndex: 1, // Set the desired z-index value here
+            zIndex: 1,
           }}
         />
       ) : null}

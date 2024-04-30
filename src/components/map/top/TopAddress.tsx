@@ -109,11 +109,9 @@ function TopAddress({
     }
     return newSido
   }
-  console.log(handleTopBottomSync())
   useEffect(() => {
     handleTopBottomSync()
   }, [topJuso])
-  console.log(bottomJuso)
   return (
     <>
       <Flex css={ContainerStyle}>
@@ -171,7 +169,13 @@ function TopAddress({
               alignItems: 'center',
               display: 'flex',
               minWidth: '100px',
-              gap: '15px',
+              gap: DongAddr
+                ? topJuso.dong.length > 3
+                  ? '10px'
+                  : topJuso.dong.length > 4
+                  ? '5px'
+                  : '15px'
+                : '0px',
             }}
           >
             <Text css={TextStyle}>{DongAddr ? topJuso.dong : ''}</Text>

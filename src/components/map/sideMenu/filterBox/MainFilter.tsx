@@ -1,5 +1,4 @@
 import Flex from '@/components/shared/Flex'
-import Text from '@/components/shared/Text'
 import { FILTERS } from '@/constants'
 import { Form } from '@/models/Form'
 import { colors } from '@/styles/colorPalette'
@@ -24,14 +23,14 @@ export default function MainFilter({ formData, setFormData }: SearchBoxProps) {
       />
       <FilterProps
         dataType={formData.gm}
-        colorType={colors.filterGreen}
+        colorType={colors.filterEmerald}
         bgColorType={colors.filterBgGreen}
         onButtonClick={() => setFormData({ ...formData, gm: !formData.gm })}
         textType={FILTERS.CAMCO}
       />
       <FilterProps
         dataType={formData.kw}
-        colorType={colors.filterEmerald}
+        colorType={colors.filterGreen}
         bgColorType={colors.filterBgEmerald}
         onButtonClick={() => setFormData({ ...formData, kw: !formData.kw })}
         textType={FILTERS.EXPRECTED}
@@ -42,6 +41,7 @@ export default function MainFilter({ formData, setFormData }: SearchBoxProps) {
         bgColorType={colors.filterBgDarkBlue}
         onButtonClick={() => setFormData({ ...formData, gg: !formData.gg })}
         textType={FILTERS.SOLD}
+        isDisabled={Boolean(formData.map.zoom! < 15)}
       />
     </Flex>
   )

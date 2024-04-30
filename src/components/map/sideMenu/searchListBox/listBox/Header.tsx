@@ -48,7 +48,16 @@ export default function Header({
           <ListRow
             left={<SearchText isOpen={isOpen}>검색결과</SearchText>}
             right={<BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />}
-            contents={<Text css={NoResultText}>지도를 확대해주세요</Text>}
+            contents={
+              <Text
+                css={NoResultText}
+                style={{
+                  color: isOpen ? '#000001' : '#d21e1b',
+                }}
+              >
+                지도를 확대해주세요
+              </Text>
+            }
             onClick={() => setIsOpen((prev) => !prev)}
           />
         ) : null}

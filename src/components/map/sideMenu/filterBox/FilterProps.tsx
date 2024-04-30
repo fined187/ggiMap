@@ -7,6 +7,7 @@ interface FilterType {
   bgColorType: string
   onButtonClick: () => void
   textType: string
+  isDisabled?: boolean
 }
 
 export default function FilterProps({
@@ -15,7 +16,9 @@ export default function FilterProps({
   bgColorType,
   onButtonClick,
   textType,
+  isDisabled,
 }: FilterType) {
+  console.log(isDisabled)
   return (
     <div
       css={FilterStyle}
@@ -25,7 +28,11 @@ export default function FilterProps({
         borderRadius: '8px',
       }}
       onClick={() => {
-        onButtonClick()
+        if (isDisabled) {
+          return
+        } else {
+          onButtonClick()
+        }
       }}
     >
       <Text
