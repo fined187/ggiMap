@@ -98,6 +98,7 @@ export default function GGMap({
     if (map.bounds === undefined) {
       return
     }
+    console.log(map)
     const ne = map.bounds._ne
     const sw = map.bounds._sw
     setCenter({
@@ -176,6 +177,7 @@ export default function GGMap({
       handleGetPnuCounts()
     }
   }, [mapItems])
+  console.log(NumToHan(202000000))
   return (
     <NaverMap
       center={center}
@@ -206,15 +208,8 @@ export default function GGMap({
           )
         : mapItems
         ? mapItems.map((item, index) =>
-            item.winYn !== 'Y' && item.type === 1 ? (
-              <KmMarker
-                key={index}
-                item={item}
-                formData={formData}
-                pnuCounts={pnuCounts}
-              />
-            ) : item.winYn !== 'Y' && item.type === 2 ? (
-              <GmMarker
+            item.winYn === 'Y' ? (
+              <WinMarker
                 key={index}
                 item={item}
                 formData={formData}
@@ -227,6 +222,13 @@ export default function GGMap({
                 formData={formData}
                 pnuCounts={pnuCounts}
               />
+            ) : item.winYn !== 'Y' && item.type === 2 ? (
+              <GmMarker
+                key={index}
+                item={item}
+                formData={formData}
+                pnuCounts={pnuCounts}
+              />
             ) : item.winYn !== 'Y' && item.type === 4 ? (
               <KwMarker
                 key={index}
@@ -234,8 +236,8 @@ export default function GGMap({
                 formData={formData}
                 pnuCounts={pnuCounts}
               />
-            ) : item.winYn === 'Y' ? (
-              <WinMarker
+            ) : item.winYn !== 'Y' && item.type === 1 ? (
+              <KmMarker
                 key={index}
                 item={item}
                 formData={formData}

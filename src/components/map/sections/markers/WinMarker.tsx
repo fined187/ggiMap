@@ -41,6 +41,14 @@ export default function WinMarker({ item, formData, pnuCounts }: ItemProps) {
         return '다가구'
       } else if (item.usage === '연립.다세대') {
         return '다세대'
+      } else if (item.usage === '전,답,과수') {
+        return '전답과'
+      } else if (item.usage === '기타토지') {
+        return '기타'
+      } else if (item.usage === '상업시설') {
+        return '상업'
+      } else if (item.usage === '공업시설') {
+        return '공업'
       }
       return item.usage.slice(0, 2) + '<br />' + item.usage.slice(2, 4)
     } else {
@@ -61,26 +69,28 @@ export default function WinMarker({ item, formData, pnuCounts }: ItemProps) {
           }}
           icon={{
             content: `
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
-                <g filter="url(#filter0_d_228_707)">
-                  <circle cx="5.5" cy="3.5" r="3.5" fill="#FF4D00"/>
-                  <circle cx="5.5" cy="3.5" r="3.25" stroke="white" stroke-width="0.5"/>
-                </g>
-                <defs>
-                  <filter id="filter0_d_228_707" x="0" y="0" width="11" height="11" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                    <feOffset dy="2"/>
-                    <feGaussianBlur stdDeviation="1"/>
-                    <feComposite in2="hardAlpha" operator="out"/>
-                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
-                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_228_707"/>
-                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_228_707" result="shape"/>
-                  </filter>
-                </defs>
-              </svg>
+              <div style="z-index: 60;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <g filter="url(#filter0_d_228_707)">
+                    <circle cx="5.5" cy="3.5" r="3.5" fill="#FF4D00"/>
+                    <circle cx="5.5" cy="3.5" r="3.25" stroke="white" stroke-width="0.5"/>
+                  </g>
+                  <defs>
+                    <filter id="filter0_d_228_707" x="0" y="0" width="11" height="11" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                      <feOffset dy="2"/>
+                      <feGaussianBlur stdDeviation="1"/>
+                      <feComposite in2="hardAlpha" operator="out"/>
+                      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
+                      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_228_707"/>
+                      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_228_707" result="shape"/>
+                    </filter>
+                  </defs>
+                </svg>
+              </div>
               `,
-            zIndex: 0,
+            zIndex: 60,
           }}
         />
       ) : formData.map.zoom! === 16 ? (
@@ -91,7 +101,7 @@ export default function WinMarker({ item, formData, pnuCounts }: ItemProps) {
           }}
           icon={{
             content: `
-              <div style="flex-direction: row; display: flex; margin-top: -30px;">
+              <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 60;">
                 ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                 ${
                   item.interest != 'Y' && item.share === 'Y'
@@ -118,12 +128,12 @@ export default function WinMarker({ item, formData, pnuCounts }: ItemProps) {
           }}
           icon={{
             content: `
-              <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px;">
+              <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 60;">
                 ${UsageTopIcon(item, count, item.type)}
                 ${AmountBottomIcon(item, item.type)}
               </div>
             `,
-            zIndex: 100,
+            zIndex: 60,
           }}
         />
       ) : null}

@@ -1,12 +1,12 @@
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import NextArrow from '../icons/NextArrow'
 import SidoList from './DetailAddrList/SidoList'
 import GunguList from './DetailAddrList/GunguList'
 import dynamic from 'next/dynamic'
 import getSubway from '@/remote/map/subway/getSubway'
 import DongList from './DetailAddrList/DongList'
-import { useMap } from 'react-naver-maps'
+import { useMap, useNavermaps } from 'react-naver-maps'
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import Spacing from '@/components/shared/Spacing'
@@ -63,11 +63,44 @@ function BottomAddress({
   setTopJuso,
   bottomJuso,
   setBottomJuso,
+  center,
 }: BottomAddressProps) {
-  const map = useMap()
+  const naverMaps = useNavermaps()
+
+  const searchAddrToCoord = useCallback(
+    (address: string) => {
+      if (naverMaps?.Service?.geocode !== undefined) {
+        naverMaps?.Service?.geocode(
+          {
+            address,
+          },
+          (status: any, response: any) => {
+            console.log(response)
+            if (status === naverMaps?.Service?.Status?.ERROR) {
+              alert('지하철 혹은 주소를 입력해주세요')
+              return
+            }
+            const result = response.result.items[0]
+            const { point } = result ?? { point: { x: 0, y: 0 } }
+            const { x, y } = point
+            setCenter({
+              lat: Number(y),
+              lng: Number(x),
+            })
+          },
+        )
+      }
+    },
+    [naverMaps, setCenter],
+  )
 
   const addrToCenter = async (addr: string) => {
-    if (range === 1) {
+    if (
+      range >= 1 &&
+      bottomJuso.sido !== '' &&
+      bottomJuso.gungu !== '' &&
+      bottomJuso.dong === ''
+    ) {
       try {
         const response = await getSubway(bottomJuso.sido + addr + '청')
         if (response.documents.length === 0) {
@@ -82,21 +115,8 @@ function BottomAddress({
       } catch (error) {
         console.error(error)
       }
-    } else {
-      try {
-        const response = await getSubway(addr)
-        if (response.documents.length === 0) {
-          return
-        } else {
-          const { x, y } = response.documents[0]
-          setCenter({
-            lat: Number(y),
-            lng: Number(x),
-          })
-        }
-      } catch (error) {
-        console.error(error)
-      }
+    } else if (range === 2 && bottomJuso.gungu !== '') {
+      searchAddrToCoord(bottomJuso.sido + addr)
     }
   }
   return (

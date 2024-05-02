@@ -73,7 +73,6 @@ function TopAddress({
           }) as any,
         },
         (status: any, response: any) => {
-          console.log(response)
           if (status === naverMaps.Service.Status.ERROR) {
             alert('주소 혹은 지하철명을 입력해주세요')
           }

@@ -43,7 +43,6 @@ export default function SearchBox({
             address,
           },
           (status: any, response: any) => {
-            console.log(response)
             if (status === naverMaps?.Service?.Status?.ERROR) {
               alert('지하철 혹은 주소를 입력해주세요')
               return

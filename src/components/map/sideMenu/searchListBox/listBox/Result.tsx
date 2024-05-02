@@ -152,7 +152,7 @@ function Result({ formData, setFormData, isOpen, setIsOpen }: ResultProps) {
 }
 
 const ContainerNone = styled.div<{ isOpen: boolean }>`
-  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 80px)' : '0px')};
+  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 60px)' : '0px')};
   display: flex;
   position: relative;
   flex-direction: column;

@@ -18,7 +18,6 @@ export default function FilterProps({
   textType,
   isDisabled,
 }: FilterType) {
-  console.log(isDisabled)
   return (
     <div
       css={FilterStyle}

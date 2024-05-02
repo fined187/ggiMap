@@ -26,8 +26,10 @@ export default function ListBox({ formData, setFormData }: ListBoxProps) {
             ? '530px'
             : formData.lastFilter === 4 && formData.isSubFilterBoxOpen
             ? '530px'
-            : '740px'
-          : '70px',
+            : formData.map.zoom! >= 15
+            ? '740px'
+            : '150px'
+          : '60px',
       }}
     >
       <Result
