@@ -208,25 +208,18 @@ export default function GGMap({
     }
     if (clickedMapType.terrain) {
       return naverMaps?.MapTypeId.TERRAIN
-    } else if (!clickedMapType.terrain) {
-      return naverMaps?.MapTypeId.NORMAL
     }
-    if (clickedMapType.satellite) {
+    if (clickedMapType.satellite === true) {
       return naverMaps?.MapTypeId.SATELLITE
-    } else if (!clickedMapType.satellite) {
-      return naverMaps?.MapTypeId.NORMAL
     }
-    if (clickedMapType.cadastral) {
-      return naverMaps?.MapTypeId.CADASTRAL
-    } else if (!clickedMapType.cadastral) {
-      return naverMaps?.MapTypeId.NORMAL
+    if (clickedMapType.cadastral === true) {
+      naverMaps?.CadastralLayer().getMap()
     }
   }, [
-    clickedMapType,
-    naverMaps?.MapTypeId.NORMAL,
-    naverMaps?.MapTypeId.TERRAIN,
-    naverMaps?.MapTypeId.SATELLITE,
-    naverMaps?.MapTypeId.CADASTRAL,
+    clickedMapType.basic,
+    clickedMapType.terrain,
+    clickedMapType.satellite,
+    clickedMapType.cadastral,
   ])
 
   return (

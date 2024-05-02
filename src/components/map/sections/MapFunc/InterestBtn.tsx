@@ -41,15 +41,7 @@ export default function InterestBtn({
         setClickedMapType((prev) => {
           return {
             ...prev,
-            basic: false,
-            terrain: false,
-            satellite: false,
-            cadastral: false,
             interest: !prev.interest,
-            roadView: false,
-            current: false,
-            distance: false,
-            area: false,
           }
         })
       }}

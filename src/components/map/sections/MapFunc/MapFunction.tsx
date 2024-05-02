@@ -2,6 +2,7 @@ import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import { Dispatch, SetStateAction } from 'react'
 import InterestBtn from './InterestBtn'
+import CadastralBtn from './CadastralBtn'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -40,6 +41,10 @@ export default function MapFunction({
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}
       />
+      <CadastralBtn
+        clickedMapType={clickedMapType}
+        setClickedMapType={setClickedMapType}
+      />
     </Flex>
   )
 }
@@ -52,4 +57,5 @@ const ContainerStyle = css`
   position: absolute;
   top: 20%;
   right: 20px;
+  gap: 5px;
 `
