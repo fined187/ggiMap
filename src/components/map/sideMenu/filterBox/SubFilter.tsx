@@ -2,7 +2,7 @@ import Flex from '@/components/shared/Flex'
 import { SUBFILTERS } from '@/constants'
 import { Form } from '@/models/Form'
 import { css } from '@emotion/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import SubFilterProps from './SubFilterProps'
 import Arrow from '../../icons/Arrow'
 
@@ -31,6 +31,7 @@ export default function SubFilter({
   isBoxOpen,
   setIsBoxOpen,
 }: SearchBoxProps) {
+  const [nowChecked, setNowChecked] = useState(1)
   useEffect(() => {
     if (
       !isBoxOpen.usage &&
@@ -60,6 +61,7 @@ export default function SubFilter({
           formData.egm ||
           formData.ekm
         }
+        nowChecked={nowChecked === 1}
         checkedColor="#007AFF"
         textType={SUBFILTERS.FINISHED}
         onButtonClick={() => {
@@ -73,12 +75,14 @@ export default function SubFilter({
             ...formData,
             lastFilter: 1,
           })
+          setNowChecked(1)
         }}
       />
       <SubFilterProps
         isSelected={isBoxOpen.usage || formData.ids.length > 0}
         checkedColor="#007AFF"
         textType={SUBFILTERS.USAGE}
+        nowChecked={nowChecked === 2}
         onButtonClick={() => {
           setIsBoxOpen({
             finished: false,
@@ -90,11 +94,13 @@ export default function SubFilter({
             ...formData,
             lastFilter: 2,
           })
+          setNowChecked(2)
         }}
       />
       <SubFilterProps
         isSelected={isBoxOpen.price || formData.toAppraisalAmount > 0}
         checkedColor="#007AFF"
+        nowChecked={nowChecked === 3}
         textType={SUBFILTERS.PRCIE}
         onButtonClick={() => {
           setIsBoxOpen({
@@ -107,11 +113,13 @@ export default function SubFilter({
             ...formData,
             lastFilter: 3,
           })
+          setNowChecked(3)
         }}
       />
       <SubFilterProps
         isSelected={isBoxOpen.lowPrice || formData.toMinimumAmount > 0}
         checkedColor="#007AFF"
+        nowChecked={nowChecked === 4}
         textType={SUBFILTERS.LOW_PRICE}
         onButtonClick={() => {
           setIsBoxOpen({
@@ -124,6 +132,7 @@ export default function SubFilter({
             ...formData,
             lastFilter: 4,
           })
+          setNowChecked(4)
         }}
       />
       <Arrow

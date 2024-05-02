@@ -1,18 +1,18 @@
 import { Form } from '@/models/Form'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Container, Container as MapDiv, NaverMapProps } from 'react-naver-maps'
 import GGMap from './GGMap'
 import BoxGuard from '../../shared/BoxGuard'
-
 import { useRecoilValue } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
-
 import Flex from '../../shared/Flex'
 import SearchBox from '../sideMenu/searchBox'
 import ListBox from '../sideMenu/searchListBox/listBox/ListBox'
 import TopBar from '../top'
 import TopAddress from '../top/TopAddress'
 import BottomAddress from '../top/BottomAddress'
+import MapType from './mapType/MapType'
+import MapFunction from './MapFunc/MapFunction'
 
 declare global {
   interface Window {
@@ -26,8 +26,19 @@ interface Props {
 }
 
 export default function Map({ formData, setFormData }: Props) {
-  const [zoom, setZoom] = useState<number>(16)
   const user = useRecoilValue(userAtom)
+  const [zoom, setZoom] = useState<number>(16)
+  const [clickedMapType, setClickedMapType] = useState({
+    basic: true,
+    terrain: false,
+    satellite: false,
+    cadastral: false,
+    interest: false,
+    roadView: false,
+    current: false,
+    distance: false,
+    area: false,
+  })
   const [center, setCenter] = useState({
     lat: user.lat,
     lng: user.lng,
@@ -44,6 +55,18 @@ export default function Map({ formData, setFormData }: Props) {
   })
   const [openCursor, setOpenCursor] = useState(false)
   const [range, setRange] = useState(0)
+
+  const handleSyncMap = () => {
+    setFormData((prev) => {
+      return {
+        ...prev,
+        interests: clickedMapType.interest,
+      }
+    })
+  }
+  useEffect(() => {
+    handleSyncMap()
+  }, [clickedMapType])
 
   return (
     <Container>
@@ -136,6 +159,16 @@ export default function Map({ formData, setFormData }: Props) {
           setCenter={setCenter}
           zoom={zoom}
           setZoom={setZoom}
+          clickedMapType={clickedMapType}
+          setClickedMapType={setClickedMapType}
+        />
+        <MapType
+          clickedMapType={clickedMapType}
+          setClickedMapType={setClickedMapType}
+        />
+        <MapFunction
+          clickedMapType={clickedMapType}
+          setClickedMapType={setClickedMapType}
         />
       </MapDiv>
     </Container>

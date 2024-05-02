@@ -7,6 +7,7 @@ interface SubFilter {
   textType: string
   isSelected: boolean
   onButtonClick: () => void
+  nowChecked?: boolean
 }
 
 export default function SubFilterProps({
@@ -14,6 +15,7 @@ export default function SubFilterProps({
   checkedColor,
   textType,
   onButtonClick,
+  nowChecked,
 }: SubFilter) {
   return (
     <div
@@ -26,7 +28,12 @@ export default function SubFilterProps({
       <div
         css={dotStyle}
         style={{
-          backgroundColor: isSelected ? checkedColor : '#545454',
+          backgroundColor:
+            isSelected && nowChecked
+              ? checkedColor
+              : isSelected
+              ? '#545454'
+              : '',
           right:
             textType.length === 2
               ? '7px'
@@ -36,7 +43,13 @@ export default function SubFilterProps({
         }}
       />
       <Text
-        color={isSelected ? 'filterDarkBlue' : 'textGray'}
+        color={
+          isSelected && nowChecked
+            ? 'filterDarkBlue'
+            : isSelected
+            ? 'textGray'
+            : 'textGray'
+        }
         fontWeight="600"
         typography="t4"
       >

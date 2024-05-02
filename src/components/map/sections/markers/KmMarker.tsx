@@ -40,7 +40,6 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
       )
     }
   }, [item, pnuCounts])
-  console.log('item', item)
 
   const handleItemUsage = useCallback(() => {
     if (item.usage.length >= 4) {

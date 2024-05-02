@@ -120,9 +120,6 @@ function Form({ item }: ItemProps) {
               direction="row"
               style={{
                 gap: '5px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
               }}
             >
               {Array.from(item.checkInfo.split(',')).map((info, idx) => (
@@ -130,10 +127,20 @@ function Form({ item }: ItemProps) {
                   css={SpecialText}
                   key={idx}
                   style={{
+                    width: '80px',
                     cursor: 'pointer',
                   }}
                 >
-                  <Text css={SpecialTextStyle}>{info}</Text>
+                  <Text
+                    css={SpecialTextStyle}
+                    style={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {info}
+                  </Text>
                 </Flex>
               ))}
             </Flex>

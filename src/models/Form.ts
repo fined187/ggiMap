@@ -17,7 +17,6 @@ export interface Form {
   x2: number
   y2: number
   awardedMonths: number
-  userId: string
   isSubFilterBoxOpen: boolean
   ids: string[]
   lastFilter: number

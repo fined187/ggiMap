@@ -1,5 +1,4 @@
 import { Form } from '@/models/Form'
-import { mapItem } from '@/models/api/mapItem'
 import postMapItems from '@/remote/map/items/postMapItems'
 import { mapAtom } from '@/store/atom/map'
 import { useMutation } from 'react-query'
@@ -19,7 +18,6 @@ export default function usePostMapItems(formData: Form) {
     x2: formData.x2,
     y2: formData.y2,
     awardedMonths: formData.awardedMonths,
-    userId: formData.userId,
     km: formData.km,
     kw: formData.kw,
     gg: formData.gg,

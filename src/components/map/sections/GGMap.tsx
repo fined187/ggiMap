@@ -26,7 +26,6 @@ import GmMarker from './markers/GmMarker'
 import KwMarker from './markers/KwMarker'
 import GgMarker from './markers/GgMarker'
 import WinMarker from './markers/WinMarker'
-import { NumToHan } from '@/utils/NumToHan'
 
 interface Props {
   formData: Form
@@ -35,6 +34,30 @@ interface Props {
   setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
   zoom: number
   setZoom: Dispatch<SetStateAction<number>>
+  clickedMapType: {
+    basic: boolean
+    terrain: boolean
+    satellite: boolean
+    cadastral: boolean
+    interest: boolean
+    roadView: boolean
+    current: boolean
+    distance: boolean
+    area: boolean
+  }
+  setClickedMapType: Dispatch<
+    SetStateAction<{
+      basic: boolean
+      terrain: boolean
+      satellite: boolean
+      cadastral: boolean
+      interest: boolean
+      roadView: boolean
+      current: boolean
+      distance: boolean
+      area: boolean
+    }>
+  >
 }
 
 type PnuCount = {
@@ -54,6 +77,8 @@ export default function GGMap({
   setCenter,
   zoom,
   setZoom,
+  clickedMapType,
+  setClickedMapType,
 }: Props) {
   const naverMaps = useNavermaps()
   const [map, setMap] = useState<NaverMapProps>({})
@@ -98,7 +123,6 @@ export default function GGMap({
     if (map.bounds === undefined) {
       return
     }
-    console.log(map)
     const ne = map.bounds._ne
     const sw = map.bounds._sw
     setCenter({
@@ -177,13 +201,41 @@ export default function GGMap({
       handleGetPnuCounts()
     }
   }, [mapItems])
-  console.log(NumToHan(202000000))
+
+  const handleMapTypeChange = useCallback(() => {
+    if (clickedMapType.basic) {
+      return naverMaps?.MapTypeId.NORMAL
+    }
+    if (clickedMapType.terrain) {
+      return naverMaps?.MapTypeId.TERRAIN
+    } else if (!clickedMapType.terrain) {
+      return naverMaps?.MapTypeId.NORMAL
+    }
+    if (clickedMapType.satellite) {
+      return naverMaps?.MapTypeId.SATELLITE
+    } else if (!clickedMapType.satellite) {
+      return naverMaps?.MapTypeId.NORMAL
+    }
+    if (clickedMapType.cadastral) {
+      return naverMaps?.MapTypeId.CADASTRAL
+    } else if (!clickedMapType.cadastral) {
+      return naverMaps?.MapTypeId.NORMAL
+    }
+  }, [
+    clickedMapType,
+    naverMaps?.MapTypeId.NORMAL,
+    naverMaps?.MapTypeId.TERRAIN,
+    naverMaps?.MapTypeId.SATELLITE,
+    naverMaps?.MapTypeId.CADASTRAL,
+  ])
+
   return (
     <NaverMap
       center={center}
       zoom={zoom}
       ref={setMap}
       onZoomChanged={handleZoomChanged}
+      mapTypeId={handleMapTypeChange()}
     >
       {mapCount && mapCount.length > 0
         ? mapCount.map(

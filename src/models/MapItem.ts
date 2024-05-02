@@ -33,7 +33,6 @@ export interface ListData {
   toMinimumAmount: number
   interests: boolean
   awardedMonths: number
-  userId: string
 }
 
 export interface MapCounts {

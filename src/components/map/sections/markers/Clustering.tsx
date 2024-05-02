@@ -24,6 +24,7 @@ export default function Clustering({
   setCenter,
   setZoom,
 }: ClusteringProps) {
+  const cityRegex = /^/
   const markerRef = useRef<MarkerProps>(null)
   return (
     <Marker
@@ -47,7 +48,18 @@ export default function Clustering({
                 formData.map.zoom! >= 13
                   ? item.umd
                   : formData.map.zoom! > 10 && formData.map.zoom! < 13
-                  ? item.sgg.replace(/^창원시\s*/, '')
+                  ? item.sgg
+                      .replace(/^창원시\s*/, '')
+                      .replace(/^고양시\s*/, '')
+                      .replace(/^성남시\s*/, '')
+                      .replace(/^용인시\s*/, '')
+                      .replace(/^안양시\s*/, '')
+                      .replace(/^안산시\s*/, '')
+                      .replace(/^수원시\s*/, '')
+                      .replace(/^천안시\s*/, '')
+                      .replace(/^청주시\s*/, '')
+                      .replace(/^전주시\s*/, '')
+                      .replace(/^포항시\s*/, '')
                   : item.sd
               }</span>
             </div>

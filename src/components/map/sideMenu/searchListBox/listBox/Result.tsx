@@ -26,29 +26,7 @@ function Result({ formData, setFormData, isOpen, setIsOpen }: ResultProps) {
   const [listItems, setListItems] = useState<Items | null>(null)
   const [showingList, setShowingList] = useState(false)
 
-  const mapData: ListData = {
-    ids:
-      formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
-    fromAppraisalAmount: formData.fromAppraisalAmount,
-    toAppraisalAmount: formData.toAppraisalAmount,
-    fromMinimumAmount: formData.fromMinimumAmount,
-    toMinimumAmount: formData.toMinimumAmount,
-    interests: formData.interests,
-    x1: formData.x1,
-    y1: formData.y1,
-    x2: formData.x2,
-    y2: formData.y2,
-    awardedMonths: formData.awardedMonths,
-    userId: formData.userId,
-    km: formData.km,
-    kw: formData.kw,
-    gm: formData.gm,
-    gg: formData.gg,
-    ekm: formData.ekm,
-    egm: formData.egm,
-    egg: formData.egg,
-  }
-  const { mutate: list, isLoading } = usePostListItems(mapData, setListItems)
+  const { mutate: list, isLoading } = usePostListItems(formData, setListItems)
 
   useEffect(() => {
     if (formData.map.zoom! >= 15) {
@@ -77,6 +55,7 @@ function Result({ formData, setFormData, isOpen, setIsOpen }: ResultProps) {
     formData.y1,
     formData.x2,
     formData.y2,
+    formData.interests,
   ])
 
   return (

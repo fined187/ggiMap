@@ -10,7 +10,6 @@ export interface mapItem {
   x2: number
   y2: number
   awardedMonths: number
-  userId: string
   km: boolean
   kw: boolean
   gm: boolean
