@@ -11,6 +11,8 @@ import {
 import {
   NaverMap,
   NaverMapProps,
+  Overlay,
+  OverlayProps,
   useListener,
   useNavermaps,
 } from 'react-naver-maps'
@@ -202,6 +204,8 @@ export default function GGMap({
     }
   }, [mapItems])
 
+  console.log(naverMaps)
+
   const handleMapTypeChange = useCallback(() => {
     if (clickedMapType.basic) {
       return naverMaps?.MapTypeId.NORMAL
@@ -213,7 +217,7 @@ export default function GGMap({
       return naverMaps?.MapTypeId.SATELLITE
     }
     if (clickedMapType.cadastral === true) {
-      naverMaps?.CadastralLayer().getMap()
+      naverMaps?.CadastralLayer
     }
   }, [
     clickedMapType.basic,
@@ -221,6 +225,8 @@ export default function GGMap({
     clickedMapType.satellite,
     clickedMapType.cadastral,
   ])
+
+  const cadastral = new naverMaps.CadastralLayer()
 
   return (
     <NaverMap
@@ -230,6 +236,7 @@ export default function GGMap({
       onZoomChanged={handleZoomChanged}
       mapTypeId={handleMapTypeChange()}
     >
+      {clickedMapType.cadastral ? <Overlay element={cadastral} /> : null}
       {mapCount && mapCount.length > 0
         ? mapCount.map(
             (item, index) =>

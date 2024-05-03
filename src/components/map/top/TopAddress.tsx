@@ -162,13 +162,11 @@ function TopAddress({
             onClick={() => {
               setOpenCursor(!openCursor)
             }}
+            css={ContainerStyle}
             style={{
+              display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              display: 'flex',
-              minWidth: '100px',
-              maxWidth: '150px',
-              width: '100%',
               gap: '5px',
             }}
           >
