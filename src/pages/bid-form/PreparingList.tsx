@@ -1,11 +1,13 @@
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 
 export default function PreparingList() {
   const [biddingInfo, setBiddingInfo] = useRecoilState(biddingInfoState)
   const [stateNum, setStateNum] = useRecoilState(stepState)
+  const router = useRouter()
 
   const [list, setList] = useState<any>({
     topBox: [''],
@@ -331,7 +333,13 @@ export default function PreparingList() {
         <Button
           nextText="종료하기"
           handleNextStep={() => {
-            window && window.close()
+            if (window) {
+              if (window.opener === null) {
+                router.push('https://www.ggi.co.kr')
+              } else {
+                window && window.close()
+              }
+            }
           }}
           handlePrevStep={() => {
             setStateNum(stateNum - 1)

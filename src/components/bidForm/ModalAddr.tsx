@@ -301,7 +301,6 @@ export default function ModalAddr({
                             focus:outline-myBlue"
                           onChange={(e) => handleInput(e.target)}
                           onKeyUp={(e) => handleEnter(e)}
-                          autoFocus // Add this line
                         />
                         <button
                           className="

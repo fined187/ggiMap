@@ -99,7 +99,7 @@ export default function KwMarker({ item, formData, pnuCounts }: KwMarkerProps) {
           }}
           icon={{
             content: `
-            <div style="z-index: 95;">
+            <div style="z-index: 1;">
               <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
                 <g filter="url(#filter0_d_228_706)">
                   <circle cx="5.5" cy="3.5" r="3.5" fill="#1C8D00"/>

@@ -10,7 +10,7 @@ import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import { TotalResultType } from '@/models/IpchalType'
 import { format } from 'date-fns'
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 
 export default function CreateFile({ userId }: { userId: string }) {
   const [stateNum, setStateNum] = useRecoilState(stepState)
@@ -195,7 +195,6 @@ export default function CreateFile({ userId }: { userId: string }) {
 
   const handleDownload = (file: Blob) => {
     if (!isMobile) {
-      // PC
       if (window) {
         const url = window.URL.createObjectURL(file)
         const a = document.createElement('a')
@@ -207,6 +206,11 @@ export default function CreateFile({ userId }: { userId: string }) {
     }
   }
 
+  // const handleDownloadMobile = (file: Blob) => {
+  //   if (window) {
+  //     window && window.open(URL.createObjectURL(file), "_blank");
+  //   }
+  // }
   const handleDownloadMobile = (file: Blob) => {
     if (window) {
       window && window.open(URL.createObjectURL(file), '_blank')
@@ -366,7 +370,7 @@ export default function CreateFile({ userId }: { userId: string }) {
                     </div>
                   </div>
                   <div
-                    className="flex w-[25%] h-[40px] bg-mySelect border-solid border-[1px] border-gray-300 justify-center items-center rounded-md"
+                    className="flex w-[25%] h-[40px] bg-mySelect border-[1px] border-gray-300 justify-center items-center rounded-md"
                     onClick={onClickPdf}
                   >
                     <span className="flex text-black text-center md:text-[18px] text-[15px] leading-[135%] tracking-[-2%] not-italic font-semibold font-['suit'] cursor-pointer">

@@ -1,4 +1,4 @@
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -23,7 +23,7 @@ export default function AgentCheck() {
             },
           },
         )
-        if (response.status === 200) {
+        if (response.data.success) {
           setBiddingInfo((prev) => ({
             ...prev,
             mandates: response.data.data.mandates.map((mandate: any) =>
@@ -63,8 +63,10 @@ export default function AgentCheck() {
           },
         },
       )
-      if (response.status === 200) {
+      if (response.data.success) {
         return
+      } else if (response.data.success === false) {
+        alert('대리할 입찰인을 다시 선택해주세요.')
       }
     } catch (error) {
       console.log(error)
@@ -142,7 +144,7 @@ export default function AgentCheck() {
             <div
               className={`flex justify-between md:w-[500px] w-[90%] h-[100px] ${
                 checkedItems[index] ? 'bg-mySelect' : 'bg-unClicked'
-              } justify-between cursor-pointer border-solid border-[1px] border-black`}
+              } justify-between cursor-pointer border border-black`}
               key={index}
               onClick={() => {
                 const newCheckedItems = [...checkedItems]

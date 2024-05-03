@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -32,7 +32,7 @@ export default function TimeInfo() {
           },
         },
       )
-      if (response.status === 200) {
+      if (response.data.success) {
         setBiddingInfo({
           ...biddingInfo,
           mstSeq: response.data.data.mstSeq,
@@ -43,6 +43,8 @@ export default function TimeInfo() {
           setStateNum(stateNum + 1)
           setLoading(false)
         }, 1000)
+      } else if (response.data.success === false) {
+        alert('오류가 발생했습니다. 다시 시도해주세요.')
       }
     } catch (error) {
       console.log(error)

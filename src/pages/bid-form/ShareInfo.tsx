@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -121,7 +121,7 @@ export default function ShareInfo() {
       const response = await axios.get(
         `/ggi/api/bid-form/${biddingInfo.mstSeq}/bidders`,
       )
-      if (response.status === 200) {
+      if (response.data.success) {
         setBiddingInfo({
           ...biddingInfo,
           bidName: response.data.data.bidders.map((item: any) => item.name),
@@ -350,7 +350,7 @@ export default function ShareInfo() {
             return (
               <div
                 key={index}
-                className="flex flex-row gap-[25%] w-[100%] h-[100px] bg-white border-solid border-[1px] border-black rounded-lg relative"
+                className="flex flex-row gap-[25%] w-[100%] h-[100px] bg-white border border-black rounded-lg relative"
               >
                 <div className="flex flex-col w-[40%] justify-center items-start ml-5">
                   <span
@@ -371,7 +371,7 @@ export default function ShareInfo() {
                 <div
                   className={`flex flex-row gap-[10px] w-[95px] justify-center absolute top-[50%] ${
                     biddingInfo.shareWay === 'S'
-                      ? 'border-solid border-b-[1px] border-b-sutTitle'
+                      ? 'border-b-[0.5px] border-b-sutTitle'
                       : 'md:mr-[50px] mr-[25px]'
                   } transform translate-y-[-50%] right-5 mt-[10px]`}
                 >
@@ -384,9 +384,7 @@ export default function ShareInfo() {
                         value={'1'}
                         className={`rounded-md md:text-[20px] text-[15px] font-['suit'] leading-[140%] tracking-[0px] not-italic font-normal text-center text-sutTitle w-[20px] bg-white border-none focus:border-transparent focus:outline-none`}
                       />
-                      <span className="flex justify-center items-center">
-                        /
-                      </span>
+                      <span className="flex">/</span>
                       <input
                         aria-label="denominator"
                         id="denominator"
@@ -413,6 +411,11 @@ export default function ShareInfo() {
                             ? 'text-red-500'
                             : ''
                         } rounded-md md:text-[20px] text-[16px] font-['suit'] leading-[150%] tracking-[-1%] p-[10px] not-italic font-semibold text-center md:h-[40px] md:w-[80px] w-[60px] h-[30px] border-[1px] border-sutTitle focus:border-sutTitle `}
+                        onInput={(e) => {
+                          e.currentTarget.value = e.currentTarget.value
+                            .replace(/[^0-9.]/g, '')
+                            .replace(/(\..*)\./g, '$1')
+                        }}
                         onChange={(e) => {
                           let temp = [...shareList.shareList]
                           temp[index] = {
@@ -447,6 +450,11 @@ export default function ShareInfo() {
                         inputMode="numeric"
                         value={100}
                         className={`rounded-md md:text-[20px] text-[16px] font-['suit'] leading-[150%] tracking-[-1%] p-[10px] text-center md:h-[40px] md:w-[80px] w-[60px] h-[30px] border border-sutTitle`}
+                        onInput={(e) => {
+                          e.currentTarget.value = e.currentTarget.value
+                            .replace(/[^0-9.]/g, '')
+                            .replace(/(\..*)\./g, '$1')
+                        }}
                         onChange={(e) => {
                           let temp = [...shareList.shareList]
                           temp[index] = {

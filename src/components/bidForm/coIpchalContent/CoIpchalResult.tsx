@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
@@ -966,9 +967,9 @@ export default function CoIpchalResult() {
                 </span>
                 <span className="md:text-[11pt] text-[11px] text-left font-batang">
                   9. 공동으로 입찰하는 경우에는 공동입찰신고서를 입찰표와 함께
-                  제출하되, 입찰표의 본인란에는 &quot;별첨 공동입찰자목록 기재와
-                  같음&quot; 이라고 기재한 다음, 입찰표와 공동입찰신고서
-                  사이에는 공동입찰자 전원이 간인 하십시오.
+                  제출하되, 입찰표의 본인란에는 "별첨 공동입찰자목록 기재와
+                  같음" 이라고 기재한 다음, 입찰표와 공동입찰신고서 사이에는
+                  공동입찰자 전원이 간인 하십시오.
                 </span>
                 <span className="md:text-[11pt] text-[11px] text-left font-batang">
                   10. 입찰자 본인 또는 대리인 누구나 보증을 반환 받을 수

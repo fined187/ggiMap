@@ -7,7 +7,7 @@ import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import { TotalResultType } from '@/models/IpchalType'
 import LoadingResult from '@/components/bidForm/LoadingResult'
 import SingleIpchalResult from '@/components/bidForm/singleIpchalContent/SingleIpchalResult'
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 
 export default function IpchalResult() {
   const [biddingInfo, setBiddingInfo] = useRecoilState(biddingInfoState)
@@ -43,7 +43,7 @@ export default function IpchalResult() {
         const response = await axios.get(
           `/ggi/api/bid-form/${biddingInfo.mstSeq}`,
         )
-        if (response.status === 200) {
+        if (response.data.success === true) {
           setBiddingInfo({
             ...biddingInfo,
             reqCourtName: response.data.data.reqCourtName,
@@ -55,6 +55,17 @@ export default function IpchalResult() {
             ),
           })
           setTotalResult(response.data.data)
+        } else if (response.data.success === false) {
+          const confirm =
+            window &&
+            window.confirm(
+              '입찰표 생성 중 오류가 발생했습니다. 다시 시도해주세요.',
+            )
+          if (confirm) {
+            window && window.close()
+          } else {
+            window && window.close()
+          }
         }
       } catch (error) {
         console.log(error)

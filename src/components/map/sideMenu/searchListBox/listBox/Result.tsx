@@ -143,9 +143,12 @@ const Container = styled.div<{ isOpen: boolean }>`
   height: ${({ isOpen }) => (isOpen ? 'calc(100% - 50px)' : '0px')};
   display: flex;
   position: relative;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   flex-direction: column;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `
 
 const NoResultText = css`

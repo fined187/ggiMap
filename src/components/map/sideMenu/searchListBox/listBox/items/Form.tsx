@@ -75,7 +75,7 @@ function Form({ item }: ItemProps) {
         <Flex
           direction="column"
           style={{
-            gap: item.type ? '0px' : '5px',
+            gap: '0px',
             marginLeft: '10px',
           }}
         >
@@ -103,17 +103,19 @@ function Form({ item }: ItemProps) {
             <Spacing direction="horizontal" size={5} />
             <Text css={appraisalAmt}>{useNum2Han(item.appraisalAmt ?? 0)}</Text>
           </Flex>
-          {item.type && (
-            <Flex direction="row">
-              <Text css={appraisalAmtNum}>건물면적</Text>
-              <Spacing direction="horizontal" size={5} />
-              <Text css={appraisalAmt}>{item.buildingArea}</Text>
-            </Flex>
-          )}
+          <Flex direction="row">
+            <Text css={appraisalAmtNum}>건물면적</Text>
+            <Spacing direction="horizontal" size={5} />
+            <Text css={appraisalAmt}>
+              {item.buildingArea !== '' ? item.buildingArea : '-'}
+            </Text>
+          </Flex>
           <Flex direction="row">
             <Text css={appraisalAmtNum}>토지면적</Text>
             <Spacing direction="horizontal" size={5} />
-            <Text css={appraisalAmt}>{item.landArea}</Text>
+            <Text css={appraisalAmt}>
+              {item.landArea !== '' ? item.landArea : '-'}
+            </Text>
           </Flex>
           {item.checkInfo && (
             <Flex

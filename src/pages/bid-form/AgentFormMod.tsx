@@ -1,8 +1,12 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/rules-of-hooks */
 import Spinner from '@/components/bidForm/Spinner'
 import useAgent from '@/components/bidForm/hooks/useAgent'
-import { handleVerifyPhone } from '@/components/bidForm/util/Validation'
-import AgentFormProps from '@/components/shared/AgentFormProps'
+import {
+  handleVerifyIdNum,
+  handleVerifyPhone,
+} from '@/components/bidForm/util/Validation'
+import AgentFormProps from '@/components/bidForm/shared/AgentFormProps'
 import { AgentInfoType } from '@/models/IpchalType'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import { useDisclosure } from '@chakra-ui/react'
@@ -27,6 +31,7 @@ export default function AgentForm() {
     agentAddrDetail: '',
     agentJob: '',
   })
+  const [errControl, setErrControl] = useState(false)
 
   if (typeof window === 'undefined') return null
   window.document.addEventListener('keydown', (e) => {
@@ -66,8 +71,11 @@ export default function AgentForm() {
           },
         },
       )
-      if (response.status === 200) {
+      if (response.data.success) {
         setStateNum(6)
+      } else {
+        setErrControl(true)
+        alert('입력정보를 다시 확인해주세요')
       }
     } catch (error) {
       console.log(error)
@@ -88,10 +96,13 @@ export default function AgentForm() {
     }
   }
   const onSubmit: SubmitHandler<AgentInfoType> = async () => {
-    // if (handleVerifyIdNum(biddingForm.agentIdNum1 + biddingForm.agentIdNum2) === false) {
-    //   alert('주민등록번호를 다시 확인해주세요')
-    //   return
-    // }
+    if (
+      handleVerifyIdNum(biddingForm.agentIdNum1 + biddingForm.agentIdNum2) ===
+      false
+    ) {
+      alert('주민등록번호를 다시 확인해주세요')
+      return
+    }
     if (
       handleVerifyPhone(
         biddingForm.agentPhone1 +
@@ -134,13 +145,12 @@ export default function AgentForm() {
               <span className="md:text-[18px] text-[16px] leading-[135%] tracking-[-1%] font-normal font-['suit'] not-italic text-sutTitle">
                 법인의 대리인인 경우 입찰자와의 관계에
                 <br />
-                &apos;직원&apos;등으로 적습니다
+                '직원'등으로 적습니다
               </span>
             </div>
             <div className="hidden md:flex w-[100%]">
               <span className="md:text-[18px] text-[16px] leading-[135%] tracking-[-1%] font-normal font-['suit'] not-italic text-sutTitle">
-                법인의 대리인인 경우 입찰자와의 관계에 &apos;직원&apos;등으로
-                적습니다
+                법인의 대리인인 경우 입찰자와의 관계에 '직원'등으로 적습니다
               </span>
             </div>
           </div>

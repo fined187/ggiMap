@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -10,6 +10,7 @@ export default function BidderCnt() {
   const [biddingInfo, setBiddingInfo] = useRecoilState(biddingInfoState)
   const [loading, setLoading] = useState<boolean>(false)
   const [errorMsg, setErrorMsg] = useState<boolean>(false)
+  const [isGo, setIsGo] = useState<boolean>(false)
 
   const handleBiddingCnt = async (e: ChangeEvent<HTMLInputElement>) => {
     if (
@@ -31,7 +32,12 @@ export default function BidderCnt() {
             },
           },
         )
-        if (response.status === 200) {
+        if (response.data.success) {
+          setIsGo(true)
+          return
+        } else if (response.data.success === false) {
+          alert('입력을 다시 시도해 주십시오.')
+          setIsGo(false)
         }
       } catch (error) {
         console.log(error)
@@ -88,12 +94,17 @@ export default function BidderCnt() {
   }
 
   const handleNextStep = async () => {
-    if (biddingInfo.bidderNum > 0 && biddingInfo.bidName.length === 0) {
-      if (biddingInfo.bidCorpYn.length !== 0 && biddingInfo.bidName[0] !== '') {
-        setBiddingInfo((prev: any) => ({
-          ...prev,
-          bidCorpYn: prev.bidCorpYn,
-        }))
+    if (biddingInfo.bidderNum > 0 && biddingInfo.bidName?.length === 0) {
+      if (
+        biddingInfo.bidCorpYn?.length !== 0 &&
+        biddingInfo.bidName[0] !== ''
+      ) {
+        setBiddingInfo((prev: any) => {
+          return {
+            ...prev,
+            bidCorpYn: prev.bidCorpYn,
+          }
+        })
       } else {
         setBiddingInfo((prev: any) => ({
           ...prev,
@@ -103,11 +114,14 @@ export default function BidderCnt() {
       setStateNum(stateNum + 1)
       await handleBiddingCntNextBtn()
     } else if (
-      biddingInfo.bidName.length > 0 &&
+      biddingInfo.bidName?.length > 0 &&
       biddingInfo.bidName[0] !== ''
     ) {
       setStateNum(16)
-      if (biddingInfo.bidCorpYn.length !== 0 && biddingInfo.bidName[0] !== '') {
+      if (
+        biddingInfo.bidCorpYn?.length !== 0 &&
+        biddingInfo.bidName[0] !== ''
+      ) {
         setBiddingInfo((prev: any) => ({
           ...prev,
           bidCorpYn: prev.bidCorpYn,
@@ -124,7 +138,7 @@ export default function BidderCnt() {
       biddingInfo.bidderNum === undefined
     ) {
       alert('입찰자는 1명 이상이어야 합니다')
-    } else {
+    } else if (biddingInfo.bidderNum > 0 && biddingInfo.bidName[0] === '') {
       setStateNum(stateNum + 1)
     }
   }

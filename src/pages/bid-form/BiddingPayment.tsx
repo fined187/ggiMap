@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -27,11 +27,14 @@ export default function BiddingPayment() {
           },
         },
       )
-      if (response.status === 200) {
+      if (response.data.success) {
         setTimeout(() => {
           setLoading(false)
           setStateNum(stateNum + 1)
         }, 1000)
+      } else if (response.data.success === false) {
+        alert('접속 허용 시간이 초과되었습니다. 다시 시도해주세요.')
+        return
       }
     } catch (error) {
       setLoading(false)

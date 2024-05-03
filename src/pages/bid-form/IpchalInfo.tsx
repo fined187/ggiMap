@@ -1,4 +1,4 @@
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { stepState } from '@/store/atom/bidForm'
 import { useEffect } from 'react'
 import { useRecoilState } from 'recoil'

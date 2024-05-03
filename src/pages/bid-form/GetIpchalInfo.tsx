@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -31,6 +31,8 @@ export default function GetIpchalInfo({ mstSeq }: { mstSeq: string | null }) {
               mulSeq: response.data.data.mulSeq,
             })
             getData(response.data.data)
+          } else if (response.data.success === false) {
+            alert('사건 정보가 잘못되었습니다. 다시 시도해주세요.')
           }
         } catch (error) {
           console.log(error)
@@ -41,6 +43,35 @@ export default function GetIpchalInfo({ mstSeq }: { mstSeq: string | null }) {
           biddingInfo.caseNo,
           biddingInfo.mulSeq,
         )
+      }
+    }
+    handleGetInfo()
+  }, [])
+  useEffect(() => {
+    const handleGetInfo = async () => {
+      if (
+        biddingInfo.mstSeq > 0 &&
+        biddingInfo.infoId != '' &&
+        biddingInfo.caseNo != '' &&
+        biddingInfo.mulSeq != ''
+      ) {
+        try {
+          const response = await axios.get(
+            `/ggi/api/bid-form/${biddingInfo.mstSeq}/checks`,
+          )
+          if (response.data.success) {
+            setInfo({
+              infoId: response.data.data.infoId,
+              caseNo: response.data.data.caseNo,
+              mulSeq: response.data.data.mulSeq,
+            })
+            getData(response.data.data)
+          } else if (response.data.success === false) {
+            alert('사건 정보가 잘못되었습니다. 다시 시도해주세요.')
+          }
+        } catch (error) {
+          console.log(error)
+        }
       }
     }
     handleGetInfo()
@@ -163,7 +194,7 @@ export default function GetIpchalInfo({ mstSeq }: { mstSeq: string | null }) {
                 },
               },
             )
-            if (response.status === 200) {
+            if (response.data.success) {
               setBiddingInfo((prev) => {
                 return {
                   ...prev,
@@ -210,7 +241,7 @@ export default function GetIpchalInfo({ mstSeq }: { mstSeq: string | null }) {
             },
           },
         )
-        if (response.status === 200) {
+        if (response.data.success) {
           setBiddingInfo((prev) => {
             return {
               ...prev,
@@ -230,6 +261,8 @@ export default function GetIpchalInfo({ mstSeq }: { mstSeq: string | null }) {
               setLoading(false)
             }, 1000)
           }
+        } else if (response.data.success === false) {
+          alert('오류가 발생했습니다. 다시 시도해주세요.')
         }
       } catch (error) {
         console.log(error)
@@ -309,40 +342,7 @@ export default function GetIpchalInfo({ mstSeq }: { mstSeq: string | null }) {
     }
   }
 
-  const handleGetInfo = async () => {
-    if (biddingInfo.mstSeq !== 0) {
-      try {
-        const response = await axios.get(
-          `/ggi/api/bid-form/${biddingInfo.mstSeq}/checks`,
-        )
-        if (response.data.success) {
-          setInfo({
-            infoId: response.data.data.infoId,
-            caseNo: response.data.data.caseNo,
-            mulSeq: response.data.data.mulSeq,
-          })
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    } else {
-      try {
-        const response = await axios.get(`/ggi/api/bid-form/${mstSeq}/checks`)
-        if (response.data.success) {
-          setInfo({
-            infoId: response.data.data.infoId,
-            caseNo: response.data.data.caseNo,
-            mulSeq: response.data.data.mulSeq,
-          })
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  }
-
   useEffect(() => {
-    handleGetInfo()
     handleHeight()
     window.addEventListener('resize', handleHeight)
     return () => {

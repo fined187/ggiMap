@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -17,23 +17,25 @@ export default function BidderInfo() {
       const response = await axios.delete(
         `/ggi/api/bid-form/${biddingInfo.mstSeq}/agents`,
       )
-      if (response.status === 200) {
-        setBiddingInfo({
-          ...biddingInfo,
-          bidder: 'self',
-          agentYn: 'N',
-          agentName: '',
-          agentPhone: '',
-          agentAddr: '',
-          agentIdNum: '',
-          agentIdNum1: '',
-          agentIdNum2: '',
-          agentJob: '',
-          agentPhone1: '',
-          agentPhone2: '',
-          agentPhone3: '',
-          agentRel: '',
-          agentAddrDetail: '',
+      if (response.data.success) {
+        setBiddingInfo((prev) => {
+          return {
+            ...prev,
+            bidder: 'self',
+            agentYn: 'N',
+            agentName: '',
+            agentPhone: '',
+            agentAddr: '',
+            agentIdNum: '',
+            agentIdNum1: '',
+            agentIdNum2: '',
+            agentJob: '',
+            agentPhone1: '',
+            agentPhone2: '',
+            agentPhone3: '',
+            agentRel: '',
+            agentAddrDetail: '',
+          }
         })
       }
     } catch (error) {
@@ -75,22 +77,26 @@ export default function BidderInfo() {
   }
 
   const handleGetInfo = async () => {
-    try {
-      const response = await axios.get(
-        `/ggi/api/bid-form/${biddingInfo.mstSeq}/checks`,
-      )
-      if (response.data.success) {
-        setBiddingInfo((prev) => {
-          return {
-            ...prev,
-            infoId: response.data.data.infoId,
-            caseNo: response.data.data.caseNo,
-            mulSeq: response.data.data.mulSeq,
-          }
-        })
+    if (biddingInfo.mstSeq) {
+      try {
+        const response = await axios.get(
+          `/ggi/api/bid-form/${biddingInfo.mstSeq}/checks`,
+        )
+        if (response.data.success) {
+          setBiddingInfo((prev) => {
+            return {
+              ...prev,
+              infoId: response.data.data.infoId,
+              caseNo: response.data.data.caseNo,
+              mulSeq: response.data.data.mulSeq,
+            }
+          })
+        } else if (response.data.success === false) {
+          return
+        }
+      } catch (error) {
+        console.log(error)
       }
-    } catch (error) {
-      console.log(error)
     }
   }
 
@@ -124,7 +130,16 @@ export default function BidderInfo() {
                 biddingInfo.bidder === 'self' ? 'bg-mySelect' : 'bg-white'
               } relative`}
               onClick={() => {
-                handleDeleteAgent()
+                if (biddingInfo.agentYn === 'Y') {
+                  handleDeleteAgent()
+                }
+                setLoading(true)
+                setBiddingInfo((prev) => {
+                  return {
+                    ...prev,
+                    bidder: 'self',
+                  }
+                })
                 setTimeout(() => {
                   setStateNum(stateNum + 2)
                   setIsSelected(false)

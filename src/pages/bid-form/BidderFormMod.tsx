@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import SearchAddress from '@/components/bidForm/SearchAddress'
 import Spinner from '@/components/bidForm/Spinner'
 import {
@@ -28,6 +29,13 @@ type BiddersProps = {
 }
 
 export default function BidderFormMod2() {
+  //  엔터키 입력 시 주소창 오픈 막기
+  if (typeof window === 'undefined') return null
+  window.document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+    }
+  })
   const [stateNum, setStateNum] = useRecoilState(stepState)
   const [stepNum, setStepNum] = useState<number>(1)
   const [loading, setLoading] = useState(false)
@@ -48,28 +56,6 @@ export default function BidderFormMod2() {
       share: '',
     },
   ]) //  입찰자 정보(서버에서 받아온 값)
-
-  useEffect(() => {
-    handleGetBidders()
-  }, [])
-
-  const {
-    register,
-    handleSubmit,
-    setFocus,
-    reset,
-    setError,
-    setValue,
-    formState: { errors },
-  } = useForm<BiddingInfoType>()
-
-  //  엔터키 입력 시 주소창 오픈 막기
-  if (typeof window === 'undefined') return null
-  window.document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-    }
-  })
 
   // 초기 컴포넌트 마운트 시 서버에 저장된 입찰자 정보를 불러온다.
   const handleGetBidders = async () => {
@@ -352,6 +338,20 @@ export default function BidderFormMod2() {
     }
   }
 
+  useEffect(() => {
+    handleGetBidders()
+  }, [])
+
+  const {
+    register,
+    handleSubmit,
+    setFocus,
+    reset,
+    setError,
+    setValue,
+    formState: { errors },
+  } = useForm<BiddingInfoType>()
+
   const handlePhoneFocusMove = (target: HTMLInputElement) => {
     if (target.value.length === 3 && target.id === 'bidderPhone1') {
       setFocus('bidderPhone2')
@@ -394,7 +394,9 @@ export default function BidderFormMod2() {
           },
         },
       )
-      if (response.status === 200) {
+      if (response.data.success) {
+        return
+      } else if (response.data.success === false) {
         return
       }
     } catch (error) {
@@ -416,7 +418,7 @@ export default function BidderFormMod2() {
             phoneNo: biddingForm?.bidPhone[stepNum - 1],
           },
         )
-        if (response.status === 200) {
+        if (response.data.success) {
           return
         }
       } else if (biddingForm?.bidCorpYn[stepNum - 1] === 'C') {
@@ -432,8 +434,13 @@ export default function BidderFormMod2() {
             phoneNo: biddingForm?.bidPhone[stepNum - 1],
           },
         )
-        if (response.status === 200) {
+        if (response.data.success) {
+          setLoading(false)
           return
+        } else {
+          if (window) {
+            alert('입찰표 입력을 다시 한 번 확인해주세요')
+          }
         }
       }
     } catch (error) {
@@ -460,9 +467,13 @@ export default function BidderFormMod2() {
             },
           },
         )
-        if (response.status === 200) {
+        if (response.data.success) {
           setLoading(false)
           return
+        } else {
+          if (window) {
+            alert('입찰표 입력을 다시 한 번 확인해주세요')
+          }
         }
       } else {
         const response = await axios.post(
@@ -482,9 +493,13 @@ export default function BidderFormMod2() {
             },
           },
         )
-        if (response.status === 200) {
+        if (response.data.success) {
           setLoading(false)
           return
+        } else {
+          if (window) {
+            alert('입찰표 입력을 다시 한 번 확인해주세요')
+          }
         }
       }
     } catch (error) {
@@ -498,7 +513,7 @@ export default function BidderFormMod2() {
     handleUpdateIdNum(stepNum - 1)
     try {
       if (biddingForm.bidderNum === 1) {
-        if (biddingForm.bidderNum > bidderList?.length!) {
+        if (biddingForm.bidderNum > (bidderList?.length ?? 0)) {
           //  서버에 저장된 입찰자 수보다 많을 경우 => 아직 서버에 저장을 하지 못한 경우
           if (biddingForm.agentYn === 'Y') {
             await handleBidderFormSave()
@@ -508,7 +523,7 @@ export default function BidderFormMod2() {
             await handleBidderFormSave()
             setStateNum(9)
           }
-        } else if (biddingForm.bidderNum < bidderList?.length!) {
+        } else if (biddingForm.bidderNum < (bidderList?.length ?? 0)) {
           //  서버에 저장된 입찰자 수보다 적을 경우 => 서버에 저장된 입찰자 수를 줄여야 하는 경우
           if (biddingForm.agentYn === 'Y') {
             await handleBidderFormUpdate()
@@ -518,7 +533,7 @@ export default function BidderFormMod2() {
             await handleBidderFormUpdate()
             setStateNum(9)
           }
-        } else {
+        } else if (biddingForm.bidderNum === (bidderList?.length ?? 0)) {
           if (biddingForm.agentYn === 'Y') {
             await handleBidderFormUpdate()
             await handleRegisterMandate()
@@ -528,15 +543,14 @@ export default function BidderFormMod2() {
             setStateNum(9)
           }
         }
-      } else {
-        if (biddingForm.bidderNum > bidderList?.length!) {
+      } else if (biddingForm.bidderNum > 1) {
+        if (biddingForm.bidderNum > (bidderList?.length ?? 0)) {
           if (biddingForm.agentYn === 'Y') {
             if (stepNum === biddingForm.bidderNum) {
               await handleBidderFormSave()
-              await handleRegisterMandate()
               setStateNum(19)
             } else {
-              if (stepNum > bidderList?.length!) {
+              if (stepNum > (bidderList?.length ?? 0)) {
                 await handleBidderFormSave()
                 setStepNum(stepNum + 1)
                 reset()
@@ -551,7 +565,7 @@ export default function BidderFormMod2() {
               await handleBidderFormSave()
               setStateNum(8)
             } else {
-              if (stepNum > bidderList?.length!) {
+              if (stepNum > (bidderList?.length ?? 0)) {
                 await handleBidderFormSave()
                 setStepNum(stepNum + 1)
                 reset()
@@ -562,11 +576,10 @@ export default function BidderFormMod2() {
               }
             }
           }
-        } else if (biddingForm.bidderNum < bidderList?.length!) {
+        } else if (biddingForm.bidderNum < (bidderList?.length ?? 0)) {
           if (biddingForm.agentYn === 'Y') {
             if (stepNum === biddingForm.bidderNum) {
               await handleBidderFormUpdate()
-              await handleRegisterMandate()
               setStateNum(19)
             } else {
               if (stepNum > biddingForm.bidderNum) {
@@ -595,11 +608,10 @@ export default function BidderFormMod2() {
               }
             }
           }
-        } else if (biddingForm.bidderNum == bidderList?.length!) {
+        } else if (biddingForm.bidderNum === (bidderList?.length ?? 0)) {
           if (biddingForm.agentYn === 'Y') {
             if (stepNum === biddingForm.bidderNum) {
               await handleBidderFormUpdate()
-              await handleRegisterMandate()
               setStateNum(19)
             } else {
               if (stepNum > biddingForm.bidderNum) {
@@ -832,7 +844,12 @@ export default function BidderFormMod2() {
                     value: 2,
                     message: '2글자 이상 입력해주세요',
                   },
+                  maxLength: {
+                    value: 10,
+                    message: '10글자 이하로 입력해주세요',
+                  },
                 })}
+                maxLength={10}
                 value={biddingForm.bidName[stepNum - 1] || ''}
                 id="bidderName"
                 type="text"
@@ -847,6 +864,13 @@ export default function BidderFormMod2() {
                     return { ...prev, bidName: temp }
                   })
                   handleInputChange(e)
+                  if (biddingForm.bidName[stepNum - 1].length > 10) {
+                    setBiddingForm((prev: any) => {
+                      const temp = prev.bidName
+                      temp[stepNum - 1] = e.target.value.slice(0, 10)
+                      return { ...prev, bidName: temp }
+                    })
+                  }
                 }}
               />
             </div>
@@ -999,7 +1023,7 @@ export default function BidderFormMod2() {
                     errors.bidderIdNum2?.type === 'required' &&
                     (biddingForm.bidIdNum[stepNum - 1] === '' ||
                       biddingForm.bidIdNum[stepNum - 1] === undefined) ? (
-                      <div className="flex w-[100%] justify-start h-[15px] mb-1">
+                      <div className="flex w-[100%] justify-start h-[15px] mb-[5px]">
                         <span className="md:text-[20px] text-[16px] font-semibold leading-[135%] tracking-[-2%] font-['suit'] not-italic text-left text-red-500">
                           주민등록번호를 입력해주세요
                         </span>
@@ -1058,6 +1082,13 @@ export default function BidderFormMod2() {
                         })
                         handleIdNumFocusMove(e.target)
                         handleInputChange(e)
+                        if (biddingForm.bidIdNum1[stepNum - 1].length > 6) {
+                          setBiddingForm((prev: any) => {
+                            const temp = prev.bidIdNum1
+                            temp[stepNum - 1] = e.target.value.slice(0, 6)
+                            return { ...prev, bidIdNum1: temp }
+                          })
+                        }
                       }}
                     />
                     <span className="flex text-mygray font-['suit'] font-bold mt-1">
@@ -1094,6 +1125,13 @@ export default function BidderFormMod2() {
                           return { ...prev, bidIdNum: temp }
                         })
                         handleInputChange(e)
+                        if (biddingForm.bidIdNum2[stepNum - 1].length > 7) {
+                          setBiddingForm((prev: any) => {
+                            const temp = prev.bidIdNum2
+                            temp[stepNum - 1] = e.target.value.slice(0, 7)
+                            return { ...prev, bidIdNum2: temp }
+                          })
+                        }
                       }}
                     />
                     <div
@@ -1368,36 +1406,44 @@ export default function BidderFormMod2() {
             <div
               className={`flex flex-col w-[100%] h-[60px] bg-mybg gap-1 relative`}
             >
-              {biddingForm.agentYn === 'Y' && (
-                <div className="flex flex-col w-[100%] gap-1">
-                  <div className="flex justify-between w-[100%]">
-                    <div className="flex flex-row justify-start w-[100%]">
-                      <label
-                        htmlFor="bidderJob"
-                        className="md:text-[20px] text-[16px] font-semibold leading-[135%] tracking-[-2%] font-['suit'] not-italic text-left"
-                      >
-                        직업
-                      </label>
+              {biddingForm.agentYn === 'Y' &&
+                biddingForm.bidCorpYn[stepNum - 1] !== 'C' && (
+                  <div className="flex flex-col w-[100%] gap-1">
+                    <div className="flex justify-between w-[100%]">
+                      <div className="flex flex-row justify-start w-[100%]">
+                        <label
+                          htmlFor="bidderJob"
+                          className="md:text-[20px] text-[16px] font-semibold leading-[135%] tracking-[-2%] font-['suit'] not-italic text-left"
+                        >
+                          직업
+                        </label>
+                      </div>
                     </div>
+                    <input
+                      value={biddingForm.bidJob[stepNum - 1] || ''}
+                      id="bidderJob"
+                      maxLength={10}
+                      name="bidderJob"
+                      type="text"
+                      className="border border-gray-300 focus:outline-2 focus:outline-myBlue rounded-md md:text-[20px] text-[16px] font-semibold leading-[135%] tracking-[-2%] font-['suit'] not-italic text-left h-[40px] px-2"
+                      placeholder="직업을 입력해주세요(예: 회사원, 농부)"
+                      onChange={(e) => {
+                        setBiddingForm((prev: any) => {
+                          const temp = prev.bidJob
+                          temp[stepNum - 1] = e.target.value
+                          return { ...prev, bidJob: temp }
+                        })
+                        if (biddingForm.bidJob[stepNum - 1].length > 10) {
+                          setBiddingForm((prev: any) => {
+                            const temp = prev.bidJob
+                            temp[stepNum - 1] = e.target.value.slice(0, 10)
+                            return { ...prev, bidJob: temp }
+                          })
+                        }
+                      }}
+                    />
                   </div>
-                  <input
-                    value={biddingForm.bidJob[stepNum - 1] || ''}
-                    id="bidderJob"
-                    maxLength={10}
-                    name="bidderJob"
-                    type="text"
-                    className="border border-gray-300 focus:outline-2 focus:outline-myBlue rounded-md md:text-[20px] text-[16px] font-semibold leading-[135%] tracking-[-2%] font-['suit'] not-italic text-left h-[40px] px-2"
-                    placeholder="직업을 입력해주세요(예: 회사원, 농부)"
-                    onChange={(e) => {
-                      setBiddingForm((prev: any) => {
-                        const temp = prev.bidJob
-                        temp[stepNum - 1] = e.target.value
-                        return { ...prev, bidJob: temp }
-                      })
-                    }}
-                  />
-                </div>
-              )}
+                )}
               <SearchAddress
                 stepNum={stepNum}
                 register={register}

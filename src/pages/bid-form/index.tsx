@@ -1,6 +1,4 @@
 import { useRecoilState } from 'recoil'
-
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import StartIpchal from './StartIpchal'
@@ -18,7 +16,7 @@ import IpchalInfo from './IpchalInfo'
 import IpchalResult from './IpchalResult'
 import CreateFile from './CreateFile'
 import PreparingList from './PreparingList'
-import BidderFormMod2 from './BidderFormMod'
+import BidderFormMod from './BidderFormMod'
 import AgentFormMod from './AgentFormMod'
 import AgentCheck from './AgentCheck'
 import { GetServerSidePropsContext } from 'next'
@@ -40,33 +38,6 @@ export default function BidForm({
   mstSeq,
   lastPathPart,
 }: BidFormProps) {
-  function handleErrorResponse() {
-    // 사용자에게 알리고 창을 닫음
-    // eslint-disable-next-line prettier/prettier
-    const confirmed = window.confirm(
-      '허용접속시간이 초과하여 종료합니다. 메뉴의 고객라운지 - 물건관리 - 입찰표관리에서 저장된 내용을 확인하세요.',
-    )
-    if (confirmed) {
-      window.close()
-    }
-  }
-  axios.interceptors.response.use(
-    function (response) {
-      if (!isCheck && response.data.code === 40005) {
-        isCheck = true
-        // eslint-disable-next-line prettier/prettier
-        handleErrorResponse()
-      }
-      console.log(response)
-      return response
-    },
-    function (error) {
-      // eslint-disable-next-line prettier/prettier
-      handleErrorResponse()
-      console.log(error)
-      return null
-    },
-  )
   const [stateNum, setStateNum] = useRecoilState(stepState)
   const [biddingForm, setBiddingForm] = useRecoilState(biddingInfoState)
   const [loading, setLoading] = useState<boolean>(false)
@@ -122,187 +93,228 @@ export default function BidForm({
             },
           },
         )
-        if (response.status === 200) {
-          setBidders({
-            ...bidders,
-            state: response.data.data.state ?? 0,
-            mulNo: response.data.data.mulNo ?? '',
-            caseYear: response.data.data.caseYear ?? '',
-            caseDetail: response.data.data.caseDetail ?? '',
-            startYear: response.data.data.startYear ?? '',
-            startMonth: response.data.data.startMonth ?? '',
-            startDay: response.data.data.startDay ?? '',
-            reqCourtName: response.data.data.reqCourtName ?? '',
-            biddingDate: response.data.data.biddingDate ?? '',
-            bidPrice: response.data.data.bidPrice ?? 0,
-            bidDeposit: response.data.data.bidDeposit ?? 0,
-            depositType: response.data.data.depositType ?? '',
-            agentYn: response.data.data.agentYn ?? '',
-            agent: response.data.data.agent ?? '',
-            bidderCount: response.data.data.bidderCount ?? 0,
-            bidders: response.data.data.bidders ?? [],
+        if (response.data.success) {
+          setBidders((prev) => {
+            return {
+              ...prev,
+              state: response.data.data.state ?? 0,
+              mulNo: response.data.data.mulNo ?? '',
+              caseYear: response.data.data.caseYear ?? '',
+              caseDetail: response.data.data.caseDetail ?? '',
+              startYear: response.data.data.startYear ?? '',
+              startMonth: response.data.data.startMonth ?? '',
+              startDay: response.data.data.startDay ?? '',
+              reqCourtName: response.data.data.reqCourtName ?? '',
+              biddingDate: response.data.data.biddingDate ?? '',
+              bidPrice: response.data.data.bidPrice ?? 0,
+              bidDeposit: response.data.data.bidDeposit ?? 0,
+              depositType: response.data.data.depositType ?? '',
+              agentYn: response.data.data.agentYn ?? '',
+              agent: response.data.data.agent ?? '',
+              bidderCount: response.data.data.bidderCount ?? 0,
+              bidders: response.data.data.bidders ?? [],
+            }
           })
-          setBiddingForm({
-            ...biddingForm,
-            mstSeq: Number(mstSeq),
-            state: response.data.data?.state,
-            mulNo:
-              response.data.data?.mulNo === ''
-                ? '1'
-                : response.data.data?.mulNo,
-
-            sagunNum:
-              response.data.data?.caseYear +
-              ' 타경 ' +
-              response.data.data.caseDetail,
-            reqCourtName: response.data.data?.reqCourtName,
-            ipchalDate:
-              response.data.data.startYear +
-              '년 ' +
-              (response.data.data.startMonth.length !== 2
-                ? '0' + response.data.data.startMonth
-                : response.data.data.startMonth) +
-              '월 ' +
-              (response.data.data.startDay.length !== 2
-                ? '0' + response.data.data.startDay
-                : response.data.data.startDay) +
-              '일',
-            biddingDate: response.data.data?.biddingDate,
-            biddingPrice: response.data.data?.bidPrice ?? 0,
-            depositPrice: response.data.data.bidDeposit ?? 0,
-            bidWay: response.data.data?.depositType,
-            agentName: response.data.data?.agent
-              ? response.data.data.agent.name
-              : '',
-            agentPhone: response.data.data?.agent
-              ? response.data.data.agent.phoneNo
-              : '',
-            agentRel: response.data.data?.agent
-              ? response.data.data.agent.relationship
-              : '',
-            agentAddr: response.data.data?.agent
-              ? response.data.data.agent.address
-              : '',
-            agentJob: response.data.data?.agent
-              ? response.data.data.agent.job
-              : '',
-            bidderNum: response.data.data?.bidderCount ?? 0,
-            bidder: response.data.data?.agentYn === 'Y' ? 'agent' : 'self',
-            bidders: response.data.data?.bidders,
-            bidName: response.data.data?.bidders.map(
-              (bidder: any) => bidder.name,
-            ),
-            bidPhone: response.data.data?.bidders.map(
-              (bidder: any) => bidder.phoneNo,
-            ),
-            bidPhone1: response.data.data?.bidders.map((bidder: any) =>
-              bidder.phoneNo.length === 10
-                ? bidder.phoneNo.substring(0, 2)
-                : bidder.phoneNo.substring(0, 3),
-            ),
-            bidPhone2: response.data.data?.bidders.map((bidder: any) =>
-              bidder.phoneNo.substring(3, 7),
-            ),
-            bidPhone3: response.data.data?.bidders.map((bidder: any) =>
-              bidder.phoneNo.substring(7, 11),
-            ),
-            agentPhone1:
-              response.data.data.agent !== null
-                ? response.data.data.agent.phoneNo.length === 10
-                  ? response.data.data.agent.phoneNo.substring(0, 2)
-                  : response.data.data.agent.phoneNo.substring(0, 3)
+          setBiddingForm((prev) => {
+            return {
+              ...prev,
+              mstSeq: Number(mstSeq),
+              state: response.data.data?.state,
+              mulNo:
+                response.data.data?.mulNo === ''
+                  ? '1'
+                  : response.data.data?.mulNo,
+              sagunNum:
+                response.data.data?.caseYear +
+                ' 타경 ' +
+                response.data.data.caseDetail,
+              reqCourtName: response.data.data?.reqCourtName,
+              ipchalDate:
+                response.data.data.startYear +
+                '년 ' +
+                (response.data.data.startMonth.length !== 2
+                  ? '0' + response.data.data.startMonth
+                  : response.data.data.startMonth) +
+                '월 ' +
+                (response.data.data.startDay.length !== 2
+                  ? '0' + response.data.data.startDay
+                  : response.data.data.startDay) +
+                '일',
+              biddingDate: response.data.data?.biddingDate,
+              biddingPrice: response.data.data?.bidPrice ?? 0,
+              depositPrice: response.data.data.bidDeposit ?? 0,
+              bidWay: response.data.data?.depositType,
+              agentName: response.data.data?.agent
+                ? response.data.data.agent.name
                 : '',
-            agentPhone2:
-              response.data.data.agent !== null
-                ? response.data.data.agent.phoneNo.length === 10
-                  ? response.data.data.agent.phoneNo.substring(3, 6)
-                  : response.data.data.agent.phoneNo.substring(3, 7)
+              agentPhone: response.data.data?.agent
+                ? response.data.data.agent.phoneNo
                 : '',
-            agentPhone3:
-              response.data.data.agent !== null
-                ? response.data.data.agent.phoneNo.length === 10
-                  ? response.data.data.agent.phoneNo.substring(6, 10)
-                  : response.data.data.agent.phoneNo.substring(7, 11)
+              agentRel: response.data.data?.agent
+                ? response.data.data.agent.relationship
                 : '',
-            bidAddr: response.data.data?.bidders
-              ? response.data.data?.bidders.map((bidder: any) => bidder.address)
-              : [''],
-            bidJob: response.data.data?.bidders
-              ? response.data.data?.bidders?.map((bidder: any) => bidder.job)
-              : [''],
-            bidCorpNum: response.data.data?.bidders
-              ? response.data.data?.bidders?.map(
-                  (bidder: any) => bidder.companyNo,
-                )
-              : [''],
-            bidCorpNum1: response.data.data?.bidders
-              ? response.data.data?.bidders?.map(
-                  (bidder: any) => bidder.companyNo?.substring(0, 3),
-                )
-              : [''],
-            bidCorpNum2: response.data.data?.bidders
-              ? response.data.data?.bidders?.map(
-                  (bidder: any) => bidder.companyNo?.substring(3, 5),
-                )
-              : [''],
-            bidCorpNum3: response.data.data?.bidders
-              ? response.data.data?.bidders?.map(
-                  (bidder: any) => bidder.companyNo?.substring(5, 10),
-                )
-              : [''],
-            bidCorpRegiNum: response.data.data?.bidders
-              ? response.data.data?.bidders?.map(
-                  (bidder: any) => bidder.corporationNo,
-                )
-              : [''],
-            bidCorpRegiNum1: response.data.data?.bidders
-              ? response.data.data?.bidders?.map(
-                  (bidder: any) => bidder.corporationNo?.substring(0, 6),
-                )
-              : [''],
-            bidCorpRegiNum2: response.data.data?.bidders
-              ? response.data.data?.bidders?.map(
-                  (bidder: any) => bidder.corporationNo?.substring(6, 13),
-                )
-              : [''],
-            bidCorpYn: response.data.data?.bidders
-              ? response.data.data?.bidders.map(
-                  (bidder: any) => bidder.bidderType,
-                )
-              : [''],
-            numerator: response.data.data?.bidders
-              ? response.data.data?.bidders.map(
-                  (bidder: any) => bidder.share?.split('/')[0],
-                )
-              : [''],
-            denominator: response.data.data?.bidders
-              ? response.data.data?.bidders.map(
-                  (bidder: any) => bidder.share?.split('/')[1],
-                )
-              : [''],
-            shareWay: response.data.data?.bidders
-              ? response.data.data?.bidders.every(
-                  (ele: any) =>
-                    ele.share === response.data.data?.bidders[0].share,
-                )
-                ? 'S'
-                : 'N'
-              : 'S',
-            sagunAddr: response.data.data?.address ?? '',
-            biddingInfos: response.data.data?.biddingInfo,
-            biddingInfo: response.data.data?.biddingInfo,
-            mandates: response.data.data?.bidders.map((bidder: any) => {
-              return {
-                name: bidder.name,
-                peopleSeq: bidder.peopleSeq,
-                mandateYn: bidder.mandateYn,
-              }
-            }),
-            agentYn: response.data.data?.agentYn,
-            usage: response.data.data?.usage,
-            etcAddress: response.data.data?.etcAddress,
-            roadAddress: response.data.data?.roadAddress,
-            courtFullName: response.data.data?.courtFullName,
+              agentAddr: response.data.data?.agent
+                ? response.data.data.agent.address
+                : '',
+              agentJob: response.data.data?.agent
+                ? response.data.data.agent.job
+                : '',
+              bidderNum: response.data.data?.bidderCount ?? 0,
+              bidder: response.data.data?.agentYn === 'Y' ? 'agent' : 'self',
+              bidders: response.data.data?.bidders,
+              bidName:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders.map(
+                      (bidder: any) => bidder.name,
+                    )
+                  : [''],
+              bidPhone:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders.map(
+                      (bidder: any) => bidder.phoneNo,
+                    )
+                  : [''],
+              bidPhone1:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders.map((bidder: any) =>
+                      bidder.phoneNo.length === 10
+                        ? bidder.phoneNo.substring(0, 2)
+                        : bidder.phoneNo.substring(0, 3),
+                    )
+                  : [''],
+              bidPhone2:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders.map((bidder: any) =>
+                      bidder.phoneNo.length === 10
+                        ? bidder.phoneNo.substring(2, 6)
+                        : bidder.phoneNo.substring(3, 7),
+                    )
+                  : [''],
+              bidPhone3:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders.map((bidder: any) =>
+                      bidder.phoneNo.length === 10
+                        ? bidder.phoneNo.substring(6, 10)
+                        : bidder.phoneNo.substring(7, 11),
+                    )
+                  : [''],
+              agentPhone1:
+                response.data.data.agent !== null
+                  ? response.data.data.agent.phoneNo.length === 10
+                    ? response.data.data.agent.phoneNo.substring(0, 2)
+                    : response.data.data.agent.phoneNo.substring(0, 3)
+                  : '',
+              agentPhone2:
+                response.data.data.agent !== null
+                  ? response.data.data.agent.phoneNo.length === 10
+                    ? response.data.data.agent.phoneNo.substring(3, 6)
+                    : response.data.data.agent.phoneNo.substring(3, 7)
+                  : '',
+              agentPhone3:
+                response.data.data.agent !== null
+                  ? response.data.data.agent.phoneNo.length === 10
+                    ? response.data.data.agent.phoneNo.substring(6, 10)
+                    : response.data.data.agent.phoneNo.substring(7, 11)
+                  : '',
+              bidAddr:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders.map(
+                      (bidder: any) => bidder.address,
+                    )
+                  : [''],
+              bidJob:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders?.map(
+                      (bidder: any) => bidder.job,
+                    )
+                  : [''],
+              bidCorpNum:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders?.map(
+                      (bidder: any) => bidder.companyNo,
+                    )
+                  : [''],
+              bidCorpNum1:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders?.map(
+                      (bidder: any) => bidder.companyNo?.substring(0, 3),
+                    )
+                  : [''],
+              bidCorpNum2:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders?.map(
+                      (bidder: any) => bidder.companyNo?.substring(3, 5),
+                    )
+                  : [''],
+              bidCorpNum3:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders?.map(
+                      (bidder: any) => bidder.companyNo?.substring(5, 10),
+                    )
+                  : [''],
+              bidCorpRegiNum:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders?.map(
+                      (bidder: any) => bidder.corporationNo,
+                    )
+                  : [''],
+              bidCorpRegiNum1:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders?.map(
+                      (bidder: any) => bidder.corporationNo?.substring(0, 6),
+                    )
+                  : [''],
+              bidCorpRegiNum2:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders?.map(
+                      (bidder: any) => bidder.corporationNo?.substring(6, 13),
+                    )
+                  : [''],
+              bidCorpYn:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders.map(
+                      (bidder: any) => bidder.bidderType,
+                    )
+                  : response.data.data?.bidderCount > 0
+                  ? Array(Number(response.data.data?.bidderCount)).fill('I')
+                  : ['I'],
+              numerator:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders.map(
+                      (bidder: any) => bidder.share?.split('/')[0],
+                    )
+                  : [''],
+              denominator:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders.map(
+                      (bidder: any) => bidder.share?.split('/')[1],
+                    )
+                  : [''],
+              shareWay:
+                response.data.data?.bidders.length > 0
+                  ? response.data.data?.bidders.every(
+                      (ele: any) =>
+                        ele.share === response.data.data?.bidders[0].share,
+                    )
+                    ? 'S'
+                    : 'N'
+                  : 'S',
+              sagunAddr: response.data.data?.address ?? '',
+              biddingInfos: response.data.data?.biddingInfo,
+              biddingInfo: response.data.data?.biddingInfo,
+              mandates: response.data.data?.bidders.map((bidder: any) => {
+                return {
+                  name: bidder.name,
+                  peopleSeq: bidder.peopleSeq,
+                  mandateYn: bidder.mandateYn,
+                }
+              }),
+              agentYn: response.data.data?.agentYn,
+              usage: response.data.data?.usage,
+              etcAddress: response.data.data?.etcAddress,
+              roadAddress: response.data.data?.roadAddress,
+              courtFullName: response.data.data?.courtFullName,
+            }
           })
           setLoading(false)
           if (window) {
@@ -327,6 +339,9 @@ export default function BidForm({
       (bidders.state === 1 || bidders.state === 2) &&
       bidders.agentYn === 'Y'
     ) {
+      if (bidders.agent.name === '') {
+        setStateNum(5)
+      }
       setStateNum(17)
     } else if (
       (bidders.state === 1 || bidders.state === 2) &&
@@ -334,9 +349,17 @@ export default function BidForm({
     ) {
       setStateNum(6)
     } else if (bidders.state >= 4 && bidders.agentYn === 'Y') {
-      setStateNum(17)
+      if (bidders.agent.name === '') {
+        setStateNum(5)
+      } else {
+        setStateNum(17)
+      }
     } else if (bidders.state >= 4 && bidders.agentYn !== 'Y') {
-      setStateNum(16)
+      if (bidders.bidders?.length === 0) {
+        setStateNum(7)
+      } else {
+        setStateNum(16)
+      }
     } else if (bidders.state === 9) {
       setStateNum(0)
     }
@@ -357,44 +380,46 @@ export default function BidForm({
         },
       )
       if (response.status === 200) {
-        setBiddingForm({
-          ...biddingForm,
-          caseNo: response.data.data.caseNo,
-          infoId: response.data.data.infoId,
-          sagunNum:
-            response.data.data.caseYear +
-            ' 타경 ' +
-            response.data.data.caseDetail,
-          mulNo:
-            response.data.data.mulNo === '' ? '1' : response.data.data.mulNo,
-          mulSeq: response.data.data.mulSeq,
-          ipchalDate:
-            response.data.data.startYear +
-            '년 ' +
-            (response.data.data.startMonth.length !== 2
-              ? '0' + response.data.data.startMonth
-              : response.data.data.startMonth) +
-            '월 ' +
-            (response.data.data.startDay.length !== 2
-              ? '0' + response.data.data.startDay
-              : response.data.data.startDay) +
-            '일',
-          biddingDate:
-            response.data.data.startYear +
-            (response.data.data.startMonth.length !== 2
-              ? '0' + response.data.data.startMonth
-              : response.data.data.startMonth) +
-            (response.data.data.startDay.length !== 2
-              ? '0' + response.data.data.startDay
-              : response.data.data.startDay),
-          sagunAddr: response.data.data.address,
-          usage: response.data.data.usage,
-          etcAddress: response.data.data.etcAddress,
-          roadAddress: response.data.data.roadAddress,
-          biddingInfos: response.data.data.biddingInfos,
-          idcode: idcode as string,
-          courtFullName: response.data.data.courtFullName,
-          reqCourtName: response.data.data.reqCourtName,
+        setBiddingForm((prev) => {
+          return {
+            ...prev,
+            caseNo: response.data.data.caseNo,
+            infoId: response.data.data.infoId,
+            sagunNum:
+              response.data.data.caseYear +
+              ' 타경 ' +
+              response.data.data.caseDetail,
+            mulNo:
+              response.data.data.mulNo === '' ? '1' : response.data.data.mulNo,
+            mulSeq: response.data.data.mulSeq,
+            ipchalDate:
+              response.data.data.startYear +
+              '년 ' +
+              (response.data.data.startMonth.length !== 2
+                ? '0' + response.data.data.startMonth
+                : response.data.data.startMonth) +
+              '월 ' +
+              (response.data.data.startDay.length !== 2
+                ? '0' + response.data.data.startDay
+                : response.data.data.startDay) +
+              '일',
+            biddingDate:
+              response.data.data.startYear +
+              (response.data.data.startMonth.length !== 2
+                ? '0' + response.data.data.startMonth
+                : response.data.data.startMonth) +
+              (response.data.data.startDay.length !== 2
+                ? '0' + response.data.data.startDay
+                : response.data.data.startDay),
+            sagunAddr: response.data.data.address,
+            usage: response.data.data.usage,
+            etcAddress: response.data.data.etcAddress,
+            roadAddress: response.data.data.roadAddress,
+            biddingInfos: response.data.data.biddingInfos,
+            idcode: idcode as string,
+            courtFullName: response.data.data.courtFullName,
+            reqCourtName: response.data.data.reqCourtName,
+          }
         })
         setLoading(false)
         if (window) {
@@ -499,9 +524,9 @@ export default function BidForm({
           {(bidders.state >= 4 || bidders.state <= 6) &&
           bidders.agentYn !== 'Y' &&
           stateNum === 16 ? (
-            <BidderFormMod2 />
+            <BidderFormMod />
           ) : (
-            stateNum === 16 && <BidderFormMod2 />
+            stateNum === 16 && <BidderFormMod />
           )}
           {(bidders.state >= 1 || bidders.state <= 6) &&
           bidders.agentYn === 'Y' &&

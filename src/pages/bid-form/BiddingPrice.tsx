@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -100,8 +100,10 @@ export default function BiddingPrice() {
               },
             },
           )
-          if (response.status === 200) {
+          if (response.data.success) {
             return
+          } else if (response.data.success === false) {
+            alert('입찰가격 / 보증금을 다시 확인해주세요.')
           }
         } catch (error) {
           console.log(error)
@@ -330,7 +332,8 @@ export default function BiddingPrice() {
   const handleNextStep = () => {
     if (
       biddingForm.biddingPrice > 0 &&
-      biddingForm.biddingPrice >= paymentsInfo.minimumAmount * 2
+      biddingForm.biddingPrice >= paymentsInfo.minimumAmount * 2 &&
+      biddingForm.depositPrice >= paymentsInfo.bidDeposit
     ) {
       if (
         window.confirm(
@@ -339,9 +342,17 @@ export default function BiddingPrice() {
       ) {
         setErrorMsg(false)
         handleGetBiddingFormUpdate()
+      } else if (
+        biddingForm.biddingPrice > 0 &&
+        biddingForm.biddingPrice >= paymentsInfo.minimumAmount * 2 &&
+        biddingForm.depositPrice < paymentsInfo.bidDeposit
+      ) {
+        alert('보증금액을 최저가 이상으로 입력해주세요')
       } else {
         setErrorMsg(true)
-        alert('최저가 이상으로 입력해주세요')
+        alert(
+          '입찰금액 또는 보증금액을 최저가 / 최저가의 10% 이상으로 입력해주세요',
+        )
         return
       }
       setErrorMsg(false)
@@ -351,7 +362,7 @@ export default function BiddingPrice() {
       biddingForm.biddingPrice > 0
     ) {
       setErrorMsg(true)
-      alert('최저가 이상으로 입력해주세요')
+      alert('입찰금액을 최저가 이상으로 입력해주세요')
     } else if (biddingForm.biddingPrice == 0) {
       if (
         window.confirm(

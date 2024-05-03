@@ -39,7 +39,7 @@ export default function StartIpchal({ isOk }: Props) {
               },
             },
           )
-          if (response.status === 200) {
+          if (response.data.data.isBiddingStatus) {
             setBiddingStatus(response.data.data.isBiddingStatus)
             setBiddingInfo({
               ...biddingInfo,
@@ -47,8 +47,8 @@ export default function StartIpchal({ isOk }: Props) {
               aesUserId: (userId as string) ?? null,
             })
             return true
-          } else {
-            return false
+          } else if (response.data.data.isBiddingStatus === false) {
+            alert('사건 정보를 다시 확인해주세요')
           }
         } catch (error) {
           console.log(error)

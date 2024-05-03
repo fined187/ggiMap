@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/shared/BidButton'
+import Button from '@/components/bidForm/shared/BidButton'
 import { SearchResultType } from '@/models/IpchalType'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
@@ -87,7 +87,7 @@ export default function SearchIpchal() {
           },
         },
       )
-      if (response.status === 200) {
+      if (response.data.success) {
         setBiddingInfo((prev) => {
           return {
             ...prev,

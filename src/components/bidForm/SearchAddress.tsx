@@ -66,6 +66,12 @@ export default function SearchAddress({
     }
   }
 
+  const handleGetLetterNum = (addr: string) => {
+    if (addr) {
+      return 50 - addr.length
+    }
+  }
+
   return (
     <>
       <div className="flex flex-col w-[full]  gap-1">
@@ -128,7 +134,7 @@ export default function SearchAddress({
             />
           )}
           <button
-            className="text-black bg-mySelect focus:outline-2 rounded-md w-[25%] h-[40px] border-solid border-[1px] border-black"
+            className="text-black bg-mySelect focus:outline-2 focus:outline-sutTitle rounded-md w-[25%] h-[40px] border border-sutTitle"
             onClick={() => {
               handleModal && handleModal()
             }}
@@ -140,10 +146,11 @@ export default function SearchAddress({
         </div>
         {/* 상세주소 */}
         <div className="flex flex-col w-[100%] bg-mybg gap-1">
-          {register && (
+          {register && stepNum && (
             <input
               id="bidAddrDetail"
               type="text"
+              maxLength={handleGetLetterNum(biddingForm.bidAddr[stepNum - 1])}
               readOnly
               className="border border-gray-300 focus:outline-2 focus:outline-myBlue rounded-md md:text-[20px] text-[16px] font-semibold font-['suit'] not-italic leading-[135%] tracking-[-2%] text-left h-[40px] px-2 w-[100%]"
               value={
@@ -157,6 +164,7 @@ export default function SearchAddress({
             <input
               id="agentAddrDetail"
               type="text"
+              maxLength={handleGetLetterNum(biddingForm.agentAddr)}
               readOnly
               className="border border-gray-300 focus:outline-2 focus:outline-myBlue rounded-md md:text-[20px] text-[16px] font-semibold font-['suit'] not-italic leading-[135%] tracking-[-2%] text-left h-[40px] px-2 w-[100%]"
               value={biddingForm.agentAddrDetail}
