@@ -19,17 +19,17 @@ export default function ListBox({ formData, setFormData }: ListBoxProps) {
       style={{
         height: isOpen
           ? formData.lastFilter === 1 && formData.isSubFilterBoxOpen
-            ? '520px'
+            ? 'calc(100vh - 390px)'
             : formData.lastFilter === 2 && formData.isSubFilterBoxOpen
-            ? '470px'
+            ? 'calc(100vh - 440px)'
             : formData.lastFilter === 3 && formData.isSubFilterBoxOpen
-            ? '530px'
+            ? 'calc(100vh - 380px)'
             : formData.lastFilter === 4 && formData.isSubFilterBoxOpen
-            ? '530px'
+            ? 'calc(100vh - 380px)'
             : formData.map.zoom! >= 15
-            ? '740px'
+            ? '750px'
             : '150px'
-          : '60px',
+          : '70px',
       }}
     >
       <Result

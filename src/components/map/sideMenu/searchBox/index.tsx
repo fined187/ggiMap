@@ -107,8 +107,8 @@ export default function SearchBox({
         style={{
           gap: '10px',
           height: '60px',
-          borderBottom: `1px solid ${colors.gray200}`,
           width: '100%',
+          boxShadow: '2px 2px 2px 0px rgba(198, 198, 198, 0.10)',
         }}
       >
         <Logo />
@@ -121,7 +121,7 @@ export default function SearchBox({
           onChange={handleKeyword}
           onKeyDown={(e) => handleEnter(e)}
         />
-        <Search right="20" top="25" />
+        <Search right="25" top="25" />
       </Flex>
       <Spacing size={10} />
       <MainFilter formData={formData} setFormData={setFormData} />
@@ -172,8 +172,6 @@ const ContainerStyle = css`
   z-index: 10;
   background-color: white;
   width: 370px;
-  min-height: 200px;
-  max-height: 530px;
   border-radius: 16px;
   border: 1px solid #e0e0e0;
   transition: all 0.3s ease-in-out;

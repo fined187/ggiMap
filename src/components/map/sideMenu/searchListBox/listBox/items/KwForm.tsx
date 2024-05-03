@@ -10,85 +10,88 @@ import styled from '@emotion/styled'
 
 function KwForm({ item }: { item: KwItems }) {
   return (
-    <Flex direction="column" css={ContainerStyle}>
-      <ListRow
-        left={<LeftTextStyle color={'#00926F'}>{'예정'}</LeftTextStyle>}
-        contents={<LeftTextStyle color="#000">{item.caseNo}</LeftTextStyle>}
-        right={<Interest interest={item.interest ?? false} />}
-        style={ListLeftStyle}
-      />
-      <Flex
-        direction="column"
-        style={{
-          position: 'absolute',
-          top: 60,
-          left: 10,
-        }}
-      >
-        <Text css={TextStyle}>청구액</Text>
-        <Text css={ClaimStyle}>{`${useNum2Han(parseInt(item.claim))}`}</Text>
-        <Spacing size={10} />
+    <>
+      <Flex direction="column" css={ContainerStyle}>
+        <ListRow
+          left={<LeftTextStyle color={'#00926F'}>{'예정'}</LeftTextStyle>}
+          contents={<LeftTextStyle color="#000">{item.caseNo}</LeftTextStyle>}
+          right={<Interest interest={item.interest ?? ''} />}
+          style={ListLeftStyle}
+        />
         <Flex
-          direction="row"
-          justify="start"
-          align="center"
+          direction="column"
           style={{
-            display: 'flex',
-            gap: '10px',
+            width: '90%',
+            position: 'absolute',
+            top: 60,
           }}
         >
-          <Text css={TextStyle}>현재상태</Text>
-          <Text
-            css={ClaimStyle}
+          <Text css={TextStyle}>청구액</Text>
+          <Text css={ClaimStyle}>{`${useNum2Han(parseInt(item.claim))}`}</Text>
+          <Spacing size={10} />
+          <Flex
+            direction="row"
+            justify="start"
+            align="center"
             style={{
-              fontSize: '14px',
-            }}
-          >{`대기`}</Text>
-        </Flex>
-        <Flex
-          direction="row"
-          justify="start"
-          align="center"
-          style={{
-            display: 'flex',
-            gap: '5px',
-          }}
-        >
-          <Text css={TextStyle}>경매개시일</Text>
-          <Text
-            css={ClaimStyle}
-            style={{
-              fontSize: '14px',
+              display: 'flex',
+              gap: '10px',
             }}
           >
-            {item.date}
-          </Text>
-          <Spacing direction="horizontal" size={5} />
-          <Text css={TextStyle}>배당종기일</Text>
-          <Text
-            css={ClaimStyle}
+            <Text css={TextStyle}>현재상태</Text>
+            <Text
+              css={ClaimStyle}
+              style={{
+                fontSize: '14px',
+              }}
+            >{`대기`}</Text>
+          </Flex>
+          <Flex
+            direction="row"
+            justify="start"
+            align="center"
             style={{
-              fontSize: '14px',
+              display: 'flex',
+              gap: '5px',
             }}
           >
-            {item.date}
-          </Text>
+            <Text css={TextStyle}>경매개시일</Text>
+            <Text
+              css={ClaimStyle}
+              style={{
+                fontSize: '14px',
+              }}
+            >
+              {item.date}
+            </Text>
+            <Spacing direction="horizontal" size={5} />
+            <Text css={TextStyle}>배당종기일</Text>
+            <Text
+              css={ClaimStyle}
+              style={{
+                fontSize: '14px',
+              }}
+            >
+              {item.date}
+            </Text>
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
+    </>
   )
 }
 
 const ContainerStyle = css`
   display: flex;
   position: relative;
-  border-bottom: 1px solid #e0e0e0;
   background: #fff;
   gap: 10px;
-  padding: 10px;
-  width: 100%;
+  padding: 10px 0 10px 0;
+  width: 350px;
   height: 165px;
   flex-shrink: 0;
+  border-top: 0.5px solid #e0e0e0;
+  left: 10px;
 `
 
 const TextStyle = css`
@@ -102,7 +105,8 @@ const TextStyle = css`
 `
 
 const ListLeftStyle = css`
-  width: 90%;
+  width: 95%;
+  flex: 1;
 `
 const LeftTextStyle = styled.span<{ color: string }>`
   color: ${({ color }) => color};

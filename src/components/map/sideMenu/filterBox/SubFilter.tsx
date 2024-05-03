@@ -55,13 +55,13 @@ export default function SubFilter({
     <Flex direction="row" align="center" justify="center" css={ContainerStyle}>
       <SubFilterProps
         isSelected={
-          isBoxOpen.finished ||
           formData.awardedMonths > 0 ||
           formData.egg ||
           formData.egm ||
           formData.ekm
         }
         nowChecked={nowChecked === 1}
+        isBoxOpen={isBoxOpen.finished}
         checkedColor="#007AFF"
         textType={SUBFILTERS.FINISHED}
         onButtonClick={() => {
@@ -79,10 +79,11 @@ export default function SubFilter({
         }}
       />
       <SubFilterProps
-        isSelected={isBoxOpen.usage || formData.ids.length > 0}
+        isSelected={formData.ids.length > 0}
         checkedColor="#007AFF"
         textType={SUBFILTERS.USAGE}
         nowChecked={nowChecked === 2}
+        isBoxOpen={isBoxOpen.usage}
         onButtonClick={() => {
           setIsBoxOpen({
             finished: false,
@@ -98,10 +99,11 @@ export default function SubFilter({
         }}
       />
       <SubFilterProps
-        isSelected={isBoxOpen.price || formData.toAppraisalAmount > 0}
+        isSelected={formData.toAppraisalAmount > 0}
         checkedColor="#007AFF"
         nowChecked={nowChecked === 3}
         textType={SUBFILTERS.PRCIE}
+        isBoxOpen={isBoxOpen.price}
         onButtonClick={() => {
           setIsBoxOpen({
             lowPrice: false,
@@ -117,10 +119,11 @@ export default function SubFilter({
         }}
       />
       <SubFilterProps
-        isSelected={isBoxOpen.lowPrice || formData.toMinimumAmount > 0}
+        isSelected={formData.toMinimumAmount > 0}
         checkedColor="#007AFF"
         nowChecked={nowChecked === 4}
         textType={SUBFILTERS.LOW_PRICE}
+        isBoxOpen={isBoxOpen.lowPrice}
         onButtonClick={() => {
           setIsBoxOpen({
             usage: false,

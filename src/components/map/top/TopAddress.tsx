@@ -118,10 +118,9 @@ function TopAddress({
           style={{
             justifyContent: 'center',
             alignItems: 'center',
-            display: `${DongAddr ? 'none' : 'flex'}`,
+            display: 'flex',
             width: '100%',
-            marginLeft: `${SidoAddr ? '10px' : '0px'}`,
-            marginRight: `${SidoAddr ? '10px' : '0px'}`,
+            padding: '0 5px',
           }}
           onClick={() => {
             if (SidoAddr) {
@@ -164,17 +163,13 @@ function TopAddress({
               setOpenCursor(!openCursor)
             }}
             style={{
-              justifyContent: 'end',
+              justifyContent: 'center',
               alignItems: 'center',
               display: 'flex',
               minWidth: '100px',
-              gap: DongAddr
-                ? topJuso.dong.length > 3
-                  ? '10px'
-                  : topJuso.dong.length > 4
-                  ? '5px'
-                  : '15px'
-                : '0px',
+              maxWidth: '150px',
+              width: '100%',
+              gap: '5px',
             }}
           >
             <Text css={TextStyle}>{DongAddr ? topJuso.dong : ''}</Text>

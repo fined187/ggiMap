@@ -46,7 +46,7 @@ export default function DetailBox({
           formData.lastFilter === 1
             ? '220px'
             : formData.lastFilter === 2
-            ? '270px'
+            ? '250px'
             : formData.lastFilter === 3
             ? '210px'
             : formData.lastFilter === 4
@@ -105,6 +105,6 @@ const ResetStyle = css`
   display: flex;
   gap: 5px;
   position: absolute;
-  bottom: 0px;
-  right: 0px;
+  bottom: 10px;
+  right: 7px;
 `

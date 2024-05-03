@@ -186,6 +186,7 @@ export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
 const ContainerStyle = css`
   display: flex;
   width: 100%;
+  height: 40px;
   background-color: white;
 `
 

@@ -19,7 +19,6 @@ function Form({ item }: ItemProps) {
   const url = usePathUrl()
   return (
     <Flex direction="column" css={ContainerStyle}>
-      <Spacing direction="horizontal" size={30} />
       <ListRow
         left={
           <LeftTextStyle
@@ -54,7 +53,6 @@ function Form({ item }: ItemProps) {
         style={{
           position: 'absolute',
           top: 45,
-          left: 10,
         }}
       >
         <Image
@@ -64,19 +62,19 @@ function Form({ item }: ItemProps) {
               : url + item.path
           }
           alt="KM image"
-          width={150}
+          width={180}
           height={135}
           style={{
-            objectFit: 'cover',
-            width: '150px',
-            height: '135px',
+            borderRadius: '5px',
           }}
         />
         <Flex
           direction="column"
           style={{
-            gap: '0px',
             marginLeft: '10px',
+            width: '160px',
+            height: '135px',
+            gap: '1px',
           }}
         >
           <Text
@@ -98,11 +96,13 @@ function Form({ item }: ItemProps) {
               ? ''
               : useNum2Han(item.minAmt ?? 0)}
           </Text>
+          <Spacing direction="horizontal" size={2} />
           <Flex direction="row">
             <Text css={appraisalAmtNum}>감정가</Text>
             <Spacing direction="horizontal" size={5} />
             <Text css={appraisalAmt}>{useNum2Han(item.appraisalAmt ?? 0)}</Text>
           </Flex>
+          <Spacing direction="horizontal" size={4} />
           <Flex direction="row">
             <Text css={appraisalAmtNum}>건물면적</Text>
             <Spacing direction="horizontal" size={5} />
@@ -110,6 +110,7 @@ function Form({ item }: ItemProps) {
               {item.buildingArea !== '' ? item.buildingArea : '-'}
             </Text>
           </Flex>
+          <Spacing direction="horizontal" size={4} />
           <Flex direction="row">
             <Text css={appraisalAmtNum}>토지면적</Text>
             <Spacing direction="horizontal" size={5} />
@@ -117,22 +118,17 @@ function Form({ item }: ItemProps) {
               {item.landArea !== '' ? item.landArea : '-'}
             </Text>
           </Flex>
+          <Spacing direction="horizontal" size={10} />
           {item.checkInfo && (
             <Flex
               direction="row"
               style={{
                 gap: '5px',
+                overflow: 'hidden',
               }}
             >
               {Array.from(item.checkInfo.split(',')).map((info, idx) => (
-                <Flex
-                  css={SpecialText}
-                  key={idx}
-                  style={{
-                    width: '80px',
-                    cursor: 'pointer',
-                  }}
-                >
+                <Flex css={SpecialText} key={idx}>
                   <Text
                     css={SpecialTextStyle}
                     style={{
@@ -156,17 +152,18 @@ function Form({ item }: ItemProps) {
 const ContainerStyle = css`
   display: flex;
   position: relative;
-  border-bottom: 1px solid #e0e0e0;
   background: #fff;
   gap: 10px;
-  padding: 10px;
-  width: 100%;
+  padding: 10px 0 10px 0;
+  width: 350px;
   height: 208px;
   flex-shrink: 0;
+  border-top: 0.5px solid #e0e0e0;
+  left: 10px;
 `
 
 const ListLeftStyle = css`
-  width: 90%;
+  width: 95%;
   flex: 1;
 `
 const LeftTextStyle = styled.span<{ color: string }>`
@@ -221,20 +218,16 @@ const appraisalAmt = css`
 `
 
 const SpecialText = css`
-  display: flex;
-  min-width: 50px;
-  max-width: 100px;
-  padding: 5px 2px;
+  border-radius: 3px;
+  border: 0.5px solid #f00;
+
+  background: #fff;
+  display: inline-flex;
+  height: 23px;
+  padding: 2px 4px;
   justify-content: center;
   align-items: center;
   gap: 5px;
-  border-radius: 3px;
-  border: 0.5px solid #f00;
-  background: #fff;
-  height: 30px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  nowrap: white-space;
 `
 
 const SpecialTextStyle = css`

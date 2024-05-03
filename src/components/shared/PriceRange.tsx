@@ -124,7 +124,7 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
           }
           style={{
             height: '25px',
-            width: '90px',
+            width: '100px',
             borderTop: '1px solid #9d9999',
             borderBottom: '1px solid #9d9999',
           }}
@@ -203,7 +203,7 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
           }
           style={{
             height: '25px',
-            width: '90px',
+            width: '100px',
             borderTop: '1px solid #9d9999',
             borderBottom: '1px solid #9d9999',
           }}

@@ -8,6 +8,7 @@ interface SubFilter {
   isSelected: boolean
   onButtonClick: () => void
   nowChecked?: boolean
+  isBoxOpen?: boolean
 }
 
 export default function SubFilterProps({
@@ -16,7 +17,9 @@ export default function SubFilterProps({
   textType,
   onButtonClick,
   nowChecked,
+  isBoxOpen,
 }: SubFilter) {
+  console.log(isSelected)
   return (
     <div
       css={FilterStyle}
@@ -29,7 +32,7 @@ export default function SubFilterProps({
         css={dotStyle}
         style={{
           backgroundColor:
-            isSelected && nowChecked
+            isSelected && isBoxOpen
               ? checkedColor
               : isSelected
               ? '#545454'
@@ -44,9 +47,9 @@ export default function SubFilterProps({
       />
       <Text
         color={
-          isSelected && nowChecked
+          nowChecked && isBoxOpen
             ? 'filterDarkBlue'
-            : isSelected
+            : isSelected && !isBoxOpen
             ? 'textGray'
             : 'textGray'
         }
