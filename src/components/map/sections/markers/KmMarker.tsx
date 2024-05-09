@@ -13,6 +13,7 @@ import {
 } from './Icon/Marker1'
 import { AmountBottomIcon, UsageTopIcon } from './Icon/Marker2'
 import Layer from '../Layer/Layer'
+import useGetKmItemdetail from '../Layer/hooks/info/useGetKmItemdetail'
 
 type PnuProps = {
   pnu: string
@@ -28,12 +29,12 @@ interface ItemProps {
 }
 
 export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
-  const map = useMap()
-  const naverMaps = useNavermaps()
-  console.log(naverMaps)
   const [openLayer, setOpenLayer] = useState<boolean>(false)
   const [clickedItem, setClickedItem] = useState<MapItem | null>(null)
   const [count, setCount] = useState<number>(0)
+
+  const KmItems = useGetKmItemdetail(item.id)
+  console.log(KmItems)
   const handleGetItemPnuCounts = useCallback(() => {
     if (
       pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ??
@@ -86,7 +87,6 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
       setClickedItem(item)
     }
   }
-  console.log(item)
   return (
     <>
       {formData.map.zoom === 15 ? (
@@ -118,7 +118,12 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
           />
         </>
       ) : formData.map.zoom! > 15 ? (
-        <>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           <Marker
             position={{
               lat: item.y,
@@ -136,8 +141,8 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
               handleMarkerClick(item.id)
             }}
           />
-          {openLayer && <Layer clickedItem={clickedItem} />}
-        </>
+          {openLayer && <Layer items={KmItems} />}
+        </div>
       ) : null}
     </>
   )

@@ -37,16 +37,30 @@ export const handleVerifyIdNum = (idNum: string) => {
       })
 
     const idNumArr3 =
-      idNumArr2 && idNumArr2.reduce((acc: any, cur: any) => acc + cur)
-    const idNumArr4 = idNumArr3 && (idNumArr3 - idNumArr2[12]!) % 11
-    const idNumArr5 = idNumArr4 && 11 - idNumArr4
-    const idNumArr6 = idNumArr5 && idNumArr5 % 10
+      idNumArr2 && idNumArr2.reduce((acc: any, cur: any) => acc + cur) // 13자리 합
+    const idNumArr4 = idNumArr3 && (idNumArr3 - idNumArr2[12]!) % 11 // 13자리 합 % 11
+    const idNumArr5 = idNumArr4 && 11 - idNumArr4 // 11 - 13자리 합 % 11
+    const idNumArr6 = idNumArr5 && idNumArr5 % 10 //  10의 자리
     if (idNumArr6 === (idNumArr1 && idNumArr1[12])) {
+      //  10의 자리와 13번째 자리가 같으면 true
       return true
     } else {
       return false
     }
   }
+}
+
+export const handleIdNum = (idNum: string) => {
+  let total = 0
+  const jumin = idNum.replace('-', '').split('')
+  const lastNum = parseInt(jumin[jumin.length - 1])
+  const bits = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5]
+  let sum = 0
+  for (let i = 0; i < bits.length; i++) {
+    sum += Number(jumin[i]) * bits[i]
+  }
+  const checkNum = (11 - (total % 11)) % 10
+  return lastNum == checkNum ? true : false
 }
 
 //  사업자 등록 번호 검증

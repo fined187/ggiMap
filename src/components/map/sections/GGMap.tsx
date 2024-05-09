@@ -12,7 +12,6 @@ import {
   NaverMap,
   NaverMapProps,
   Overlay,
-  OverlayProps,
   useListener,
   useNavermaps,
 } from 'react-naver-maps'
@@ -47,19 +46,6 @@ interface Props {
     distance: boolean
     area: boolean
   }
-  setClickedMapType: Dispatch<
-    SetStateAction<{
-      basic: boolean
-      terrain: boolean
-      satellite: boolean
-      cadastral: boolean
-      interest: boolean
-      roadView: boolean
-      current: boolean
-      distance: boolean
-      area: boolean
-    }>
-  >
 }
 
 type PnuCount = {
@@ -80,7 +66,6 @@ export default function GGMap({
   zoom,
   setZoom,
   clickedMapType,
-  setClickedMapType,
 }: Props) {
   const naverMaps = useNavermaps()
   const [map, setMap] = useState<NaverMapProps>({})
@@ -96,7 +81,6 @@ export default function GGMap({
   )
   const [user, setUser] = useRecoilState(userAtom)
   const debouncedSearch = useDebounce(formData, 500)
-  const projection = new naverMaps.Projection()
   const searchAddrToCoord = (address: string) => {
     if (naverMaps?.Service?.geocode !== undefined) {
       naverMaps?.Service?.geocode(
@@ -105,7 +89,7 @@ export default function GGMap({
         },
         (status: any, response: any) => {
           if (status === naverMaps?.Service?.Status?.ERROR) {
-            return alert('Something wrong!')
+            return alert('주소가 잘못되었습니다.')
           }
           const result = response.result.items[0]
           const { point } = result
@@ -142,17 +126,7 @@ export default function GGMap({
       y2: ne._lat,
     })
   }
-
-  console.log(map)
-
-  const handleResize = () => {
-    if (map) {
-      map.size = new naverMaps.Size(window.innerWidth - 400, window.innerHeight)
-    }
-  }
-
   useListener(map, 'idle', getBounds)
-  useListener(map, 'resize', handleResize)
 
   useEffect(() => {
     if (debouncedSearch) {
@@ -235,6 +209,18 @@ export default function GGMap({
     clickedMapType.satellite,
     clickedMapType.cadastral,
   ])
+
+  const handleResizeMap = () => {
+    if (map) {
+      map.size = new naverMaps.Size(window.innerWidth - 400, window.innerHeight)
+    }
+  }
+
+  useEffect(() => {
+    handleResizeMap()
+  }, [map])
+
+  console.log(map.size)
 
   return (
     <NaverMap

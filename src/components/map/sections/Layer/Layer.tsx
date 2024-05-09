@@ -1,38 +1,33 @@
 import LayerTop from './LayerTop'
-import LayerBottom from './LayerBottom'
-import { MapItem } from '@/models/MapItem'
 import styled from '@emotion/styled'
+import { DetailItems } from '@/models/DetailItems'
+import useGetKmSelected from './hooks/selected/useGetKmSelected'
 
-interface ItemProps {
-  clickedItem: MapItem | null
-  position?: {
-    top?: number
-    left?: number
-    right?: number
-    bottom?: number
-  }
+interface LayterProps {
+  items: DetailItems
 }
 
-export default function Layer({ clickedItem, position }: ItemProps) {
-  console.log(window.innerWidth - 380, window.innerHeight)
+export default function Layer({ items }: LayterProps) {
+  const selectedItems = useGetKmSelected(items.idCode)
+  console.log(selectedItems)
   return (
-    <LayerContainerStyle>
-      <LayerTop clickedItem={clickedItem} />
-      <LayerBottom />
-    </LayerContainerStyle>
+    <Container>
+      <LayerTop />
+    </Container>
   )
 }
 
-const LayerContainerStyle = styled.div`
+const Container = styled.div`
   width: 300px;
-  height: 325px;
-  background-color: white;
+  height: 180px;
+  border-radius: 8px 8px 0px 0px;
   flex-shrink: 0;
-  border-radius: 8px 8px 8px 8px;
   border: 0.5px solid #9d9999;
+  background-color: #fff;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
   flex-direction: column;
-  z-index: 100;
-  position: absolute;
-  top: 50%;
-  left: 50%;
 `
