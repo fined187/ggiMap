@@ -1,12 +1,23 @@
-import Flex from '@/components/shared/Flex'
 import LayerTop from './LayerTop'
 import LayerBottom from './LayerBottom'
-import { styled } from 'twin.macro'
+import { MapItem } from '@/models/MapItem'
+import styled from '@emotion/styled'
 
-export default function Layer() {
+interface ItemProps {
+  clickedItem: MapItem | null
+  position?: {
+    top?: number
+    left?: number
+    right?: number
+    bottom?: number
+  }
+}
+
+export default function Layer({ clickedItem, position }: ItemProps) {
+  console.log(window.innerWidth - 380, window.innerHeight)
   return (
     <LayerContainerStyle>
-      <LayerTop />
+      <LayerTop clickedItem={clickedItem} />
       <LayerBottom />
     </LayerContainerStyle>
   )
@@ -17,7 +28,11 @@ const LayerContainerStyle = styled.div`
   height: 325px;
   background-color: white;
   flex-shrink: 0;
-  border-radius: 0px 0px 8px 8px;
+  border-radius: 8px 8px 8px 8px;
   border: 0.5px solid #9d9999;
   flex-direction: column;
+  z-index: 100;
+  position: absolute;
+  top: 50%;
+  left: 50%;
 `

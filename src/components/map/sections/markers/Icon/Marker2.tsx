@@ -65,9 +65,11 @@ export const UsageTopIcon = (item: MapItem, count: number, type: number) => {
     };">
       ${item.winYn === 'Y' ? WinIcon() : ''}
       ${item.interest === 'Y' ? InterestIcon() : ''}
-      ${item.share === 'Y' ? ShareIcon(item, type, '-10') : ''}
+      ${item.share === 'Y' ? ShareIcon(item, type, '-5') : ''}
       ${
-        item.share != 'Y' && count > 1
+        item.share === 'Y'
+          ? ShareIcon(item, type, '-5')
+          : count > 1
           ? PnuCountIcon(item, count, type, '-5')
           : ''
       }

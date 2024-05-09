@@ -2,10 +2,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Form } from '@/models/Form'
 import { MapItem } from '@/models/MapItem'
-import { NumToHan } from '@/utils/NumToHan'
-import { count } from 'console'
 import { useCallback, useEffect, useState } from 'react'
-import { Marker } from 'react-naver-maps'
+import { Marker, useMap, useNavermaps } from 'react-naver-maps'
 import {
   AmountIcon,
   InterestIcon,
@@ -14,6 +12,7 @@ import {
   UsageIcon,
 } from './Icon/Marker1'
 import { AmountBottomIcon, UsageTopIcon } from './Icon/Marker2'
+import Layer from '../Layer/Layer'
 
 type PnuProps = {
   pnu: string
@@ -29,6 +28,11 @@ interface ItemProps {
 }
 
 export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
+  const map = useMap()
+  const naverMaps = useNavermaps()
+  console.log(naverMaps)
+  const [openLayer, setOpenLayer] = useState<boolean>(false)
+  const [clickedItem, setClickedItem] = useState<MapItem | null>(null)
   const [count, setCount] = useState<number>(0)
   const handleGetItemPnuCounts = useCallback(() => {
     if (
@@ -66,16 +70,34 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
     handleGetItemPnuCounts()
   }, [pnuCounts, handleGetItemPnuCounts])
 
+  const handleMarkerClick = (idCode: string) => {
+    if (openLayer) {
+      if (clickedItem?.id === idCode) {
+        setOpenLayer(false)
+        setClickedItem(null)
+      } else if (clickedItem?.id !== idCode) {
+        setOpenLayer(false)
+        setClickedItem(null)
+        setOpenLayer(true)
+        setClickedItem(item)
+      }
+    } else {
+      setOpenLayer(true)
+      setClickedItem(item)
+    }
+  }
+  console.log(item)
   return (
     <>
       {formData.map.zoom === 15 ? (
-        <Marker
-          position={{
-            lat: item.y,
-            lng: item.x,
-          }}
-          icon={{
-            content: `
+        <>
+          <Marker
+            position={{
+              lat: item.y,
+              lng: item.x,
+            }}
+            icon={{
+              content: `
               <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 100;">
                 ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                 ${
@@ -92,23 +114,30 @@ export default function KmMarker({ item, formData, pnuCounts }: ItemProps) {
                 ${AmountIcon(item, item.type)}
               </div>
               `,
-          }}
-        />
+            }}
+          />
+        </>
       ) : formData.map.zoom! > 15 ? (
-        <Marker
-          position={{
-            lat: item.y,
-            lng: item.x,
-          }}
-          icon={{
-            content: `
+        <>
+          <Marker
+            position={{
+              lat: item.y,
+              lng: item.x,
+            }}
+            icon={{
+              content: `
               <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 100;">
                 ${UsageTopIcon(item, count, item.type)}
                 ${AmountBottomIcon(item, item.type)}
               </div>
             `,
-          }}
-        />
+            }}
+            onClick={() => {
+              handleMarkerClick(item.id)
+            }}
+          />
+          {openLayer && <Layer clickedItem={clickedItem} />}
+        </>
       ) : null}
     </>
   )

@@ -1,8 +1,13 @@
 import Flex from '@/components/shared/Flex'
+import { MapItem } from '@/models/MapItem'
 import { css } from '@emotion/react'
 
-export default function LayerTop() {
-  return <Flex css={LayerTopStyle}></Flex>
+interface LayerTopProps {
+  clickedItem: MapItem | null
+}
+
+export default function LayerTop({ clickedItem }: LayerTopProps) {
+  return <Flex css={LayerTopStyle}>{clickedItem?.id}</Flex>
 }
 
 const LayerTopStyle = css`

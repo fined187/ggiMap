@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction } from 'react'
 import InterestBtn from './InterestBtn'
 import CadastralBtn from './CadastralBtn'
 import RoadviewBtn from './RoadviewBtn'
+import CurrentBtn from './CurrentBtn'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -30,11 +31,15 @@ interface MapTypeProps {
       area: boolean
     }>
   >
+  center: { lat: number; lng: number }
+  setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
 }
 
 export default function MapFunction({
   clickedMapType,
   setClickedMapType,
+  center,
+  setCenter,
 }: MapTypeProps) {
   return (
     <Flex css={ContainerStyle}>
@@ -50,6 +55,7 @@ export default function MapFunction({
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}
       />
+      <CurrentBtn center={center} setCenter={setCenter} />
     </Flex>
   )
 }
@@ -57,7 +63,6 @@ export default function MapFunction({
 const ContainerStyle = css`
   width: 45px;
   height: 330px;
-  background-color: white;
   flex-direction: column;
   position: absolute;
   top: 20%;

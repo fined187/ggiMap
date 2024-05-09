@@ -34,7 +34,6 @@ export default function RoadviewBtn({
   clickedMapType,
   setClickedMapType,
 }: MapTypeProps) {
-  console.log(clickedMapType.roadView)
   return (
     <ContainerStyle
       roadview={clickedMapType.roadView}
@@ -58,15 +57,15 @@ export default function RoadviewBtn({
           <path
             d="M14.7863 6.43025C14.7863 9.63167 9.00056 17.3588 9.00056 17.3588C9.00056 17.3588 3.21484 9.63167 3.21484 6.43025C3.21484 4.89578 3.82441 3.42416 4.90944 2.33913C5.99447 1.2541 7.46609 0.644531 9.00056 0.644531C10.535 0.644531 12.0066 1.2541 13.0917 2.33913C14.1767 3.42416 14.7863 4.89578 14.7863 6.43025V6.43025Z"
             stroke="#000001"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
           <path
             d="M8.99888 8.35714C10.064 8.35714 10.9275 7.49369 10.9275 6.42857C10.9275 5.36345 10.064 4.5 8.99888 4.5C7.93376 4.5 7.07031 5.36345 7.07031 6.42857C7.07031 7.49369 7.93376 8.35714 8.99888 8.35714Z"
             fill="#00CF15"
             stroke="#000001"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       ) : (
@@ -80,15 +79,15 @@ export default function RoadviewBtn({
           <path
             d="M14.7863 6.43025C14.7863 9.63167 9.00056 17.3588 9.00056 17.3588C9.00056 17.3588 3.21484 9.63167 3.21484 6.43025C3.21484 4.89578 3.82441 3.42416 4.90944 2.33913C5.99447 1.2541 7.46609 0.644531 9.00056 0.644531C10.535 0.644531 12.0066 1.2541 13.0917 2.33913C14.1767 3.42416 14.7863 4.89578 14.7863 6.43025V6.43025Z"
             stroke="white"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
           <path
             d="M8.99888 8.35714C10.064 8.35714 10.9275 7.49369 10.9275 6.42857C10.9275 5.36345 10.064 4.5 8.99888 4.5C7.93376 4.5 7.07031 5.36345 7.07031 6.42857C7.07031 7.49369 7.93376 8.35714 8.99888 8.35714Z"
             fill="white"
             stroke="white"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       )}

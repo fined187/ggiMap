@@ -13,7 +13,6 @@ import TopAddress from '../top/TopAddress'
 import BottomAddress from '../top/BottomAddress'
 import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
-
 declare global {
   interface Window {
     naver: any
@@ -152,16 +151,23 @@ export default function Map({ formData, setFormData }: Props) {
             />
           ) : null}
         </Flex>
-        <GGMap
-          formData={formData}
-          setFormData={setFormData}
-          center={center}
-          setCenter={setCenter}
-          zoom={zoom}
-          setZoom={setZoom}
-          clickedMapType={clickedMapType}
-          setClickedMapType={setClickedMapType}
-        />
+        <Flex
+          style={{
+            width: 'calc(100vw - 400px)',
+            height: '100vh',
+          }}
+        >
+          <GGMap
+            formData={formData}
+            setFormData={setFormData}
+            center={center}
+            setCenter={setCenter}
+            zoom={zoom}
+            setZoom={setZoom}
+            clickedMapType={clickedMapType}
+            setClickedMapType={setClickedMapType}
+          />
+        </Flex>
         <MapType
           clickedMapType={clickedMapType}
           setClickedMapType={setClickedMapType}
@@ -169,6 +175,8 @@ export default function Map({ formData, setFormData }: Props) {
         <MapFunction
           clickedMapType={clickedMapType}
           setClickedMapType={setClickedMapType}
+          center={center}
+          setCenter={setCenter}
         />
       </MapDiv>
     </Container>

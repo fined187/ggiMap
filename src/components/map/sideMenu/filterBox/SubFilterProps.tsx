@@ -19,7 +19,6 @@ export default function SubFilterProps({
   nowChecked,
   isBoxOpen,
 }: SubFilter) {
-  console.log(isSelected)
   return (
     <div
       css={FilterStyle}

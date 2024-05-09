@@ -8,10 +8,10 @@ export const PnuCountIcon = (
   top?: string,
 ) => {
   return `
-  <div style="position: absolute; right: 0px; top: ${
+  <div style="position: absolute; z-index: 0; right: 0px; top: ${
     top ? `${top}px` : '-40px'
-  };">
-    <div style="display: inline-flex; min-width: 25px; max-width: 30px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${
+  }; ">
+    <div style="display: inline-flex; z-index: 0; min-width: 25px; max-width: 30px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${
       item.winYn === 'Y'
         ? '1px solid #FF4D00'
         : type === 1
@@ -134,10 +134,10 @@ export const AmountIcon = (item: MapItem, type: number) => {
 
 export const ShareIcon = (item: MapItem, type: number, top?: string) => {
   return `
-  <div style="position: absolute; right: 0px; top: ${
+  <div style="position: absolute; z-index: 100; right: 0px; top: ${
     top ? `${top}px` : '-45px'
   };">
-    <div style="display: inline-flex; padding: 0px 6px 1px 6px; justify-content: center; align-items: center; border-radius: 100px; border: ${
+    <div style="display: inline-flex; z-index: 100; padding: 0px 6px 1px 6px; justify-content: center; align-items: center; border-radius: 100px; border: ${
       item.winYn === 'Y'
         ? '1px solid #FF4D00'
         : type === 1

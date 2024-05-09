@@ -88,12 +88,15 @@ export default function GGMap({
   const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
   const [pnuCounts, setPnuCounts] = useState<pnuCounts>({ updatedCounts: [] })
   const { mutate: getMapItems } = usePostMapItems(formData)
+  const cadastral = new naverMaps.CadastralLayer()
+  const roadview = new naverMaps.StreetLayer()
   const { mutate: getMapCounts } = useMapCounts(
     formData,
     setMapCount as Dispatch<SetStateAction<MapCountsResponse[]>>,
   )
   const [user, setUser] = useRecoilState(userAtom)
   const debouncedSearch = useDebounce(formData, 500)
+  const projection = new naverMaps.Projection()
   const searchAddrToCoord = (address: string) => {
     if (naverMaps?.Service?.geocode !== undefined) {
       naverMaps?.Service?.geocode(
@@ -140,7 +143,16 @@ export default function GGMap({
     })
   }
 
+  console.log(map)
+
+  const handleResize = () => {
+    if (map) {
+      map.size = new naverMaps.Size(window.innerWidth - 400, window.innerHeight)
+    }
+  }
+
   useListener(map, 'idle', getBounds)
+  useListener(map, 'resize', handleResize)
 
   useEffect(() => {
     if (debouncedSearch) {
@@ -204,8 +216,6 @@ export default function GGMap({
     }
   }, [mapItems])
 
-  console.log(naverMaps)
-
   const handleMapTypeChange = useCallback(() => {
     if (clickedMapType.basic) {
       return naverMaps?.MapTypeId.NORMAL
@@ -225,9 +235,6 @@ export default function GGMap({
     clickedMapType.satellite,
     clickedMapType.cadastral,
   ])
-
-  const cadastral = new naverMaps.CadastralLayer()
-  const roadview = new naverMaps.StreetLayer()
 
   return (
     <NaverMap
