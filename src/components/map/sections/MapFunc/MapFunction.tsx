@@ -3,6 +3,7 @@ import { css } from '@emotion/react'
 import { Dispatch, SetStateAction } from 'react'
 import InterestBtn from './InterestBtn'
 import CadastralBtn from './CadastralBtn'
+import RoadviewBtn from './RoadviewBtn'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -42,6 +43,10 @@ export default function MapFunction({
         setClickedMapType={setClickedMapType}
       />
       <CadastralBtn
+        clickedMapType={clickedMapType}
+        setClickedMapType={setClickedMapType}
+      />
+      <RoadviewBtn
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}
       />

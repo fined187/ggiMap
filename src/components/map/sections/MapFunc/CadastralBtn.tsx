@@ -41,11 +41,7 @@ export default function CadastralBtn({
         setClickedMapType((prev) => {
           return {
             ...prev,
-            basic: false,
-            terrain: false,
-            satellite: false,
             cadastral: !prev.cadastral,
-            roadView: false,
           }
         })
       }}

@@ -227,6 +227,7 @@ export default function GGMap({
   ])
 
   const cadastral = new naverMaps.CadastralLayer()
+  const roadview = new naverMaps.StreetLayer()
 
   return (
     <NaverMap
@@ -237,6 +238,7 @@ export default function GGMap({
       mapTypeId={handleMapTypeChange()}
     >
       {clickedMapType.cadastral ? <Overlay element={cadastral} /> : null}
+      {clickedMapType.roadView ? <Overlay element={roadview} /> : null}
       {mapCount && mapCount.length > 0
         ? mapCount.map(
             (item, index) =>
