@@ -34,6 +34,7 @@ const RAW_RUNTIME_STATE =
           ["@emotion/styled", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:11.11.5"],\
           ["@types/babel-plugin-macros", "npm:3.1.3"],\
           ["@types/body-parser", "npm:1.19.5"],\
+          ["@types/navermaps", "npm:3.7.5"],\
           ["@types/node", "npm:20.8.9"],\
           ["@types/react", "npm:18.2.33"],\
           ["@types/react-dom", "npm:18.2.14"],\
@@ -67,6 +68,7 @@ const RAW_RUNTIME_STATE =
           ["react-query", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:3.39.3"],\
           ["recoil", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:0.7.7"],\
           ["swiper", "npm:11.0.3"],\
+          ["swr", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:2.2.5"],\
           ["tailwind-scrollbar-hide", "npm:1.1.7"],\
           ["tailwindcss", "npm:3.4.3"],\
           ["twin.macro", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:3.4.1"],\
@@ -4580,6 +4582,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@types/geojson", [\
+      ["npm:7946.0.14", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@types-geojson-npm-7946.0.14-cb659a9fdf-10c0.zip/node_modules/@types/geojson/",\
+        "packageDependencies": [\
+          ["@types/geojson", "npm:7946.0.14"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@types/js-cookie", [\
       ["npm:2.2.7", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@types-js-cookie-npm-2.2.7-025262d629-10c0.zip/node_modules/@types/js-cookie/",\
@@ -4622,6 +4633,16 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@types/lodash.mergewith", "npm:4.6.7"],\
           ["@types/lodash", "npm:4.17.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@types/navermaps", [\
+      ["npm:3.7.5", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@types-navermaps-npm-3.7.5-2bb3f0d90f-10c0.zip/node_modules/@types/navermaps/",\
+        "packageDependencies": [\
+          ["@types/navermaps", "npm:3.7.5"],\
+          ["@types/geojson", "npm:7946.0.14"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -9682,6 +9703,7 @@ const RAW_RUNTIME_STATE =
           ["@emotion/styled", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:11.11.5"],\
           ["@types/babel-plugin-macros", "npm:3.1.3"],\
           ["@types/body-parser", "npm:1.19.5"],\
+          ["@types/navermaps", "npm:3.7.5"],\
           ["@types/node", "npm:20.8.9"],\
           ["@types/react", "npm:18.2.33"],\
           ["@types/react-dom", "npm:18.2.14"],\
@@ -9715,6 +9737,7 @@ const RAW_RUNTIME_STATE =
           ["react-query", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:3.39.3"],\
           ["recoil", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:0.7.7"],\
           ["swiper", "npm:11.0.3"],\
+          ["swr", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:2.2.5"],\
           ["tailwind-scrollbar-hide", "npm:1.1.7"],\
           ["tailwindcss", "npm:3.4.3"],\
           ["twin.macro", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:3.4.1"],\
@@ -11482,6 +11505,30 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["swr", [\
+      ["npm:2.2.5", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/swr-npm-2.2.5-3ab48a667d-10c0.zip/node_modules/swr/",\
+        "packageDependencies": [\
+          ["swr", "npm:2.2.5"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:2.2.5", {\
+        "packageLocation": "./.yarn/__virtual__/swr-virtual-c0b1e37b75/3/Users/woota/AppData/Local/Yarn/Berry/cache/swr-npm-2.2.5-3ab48a667d-10c0.zip/node_modules/swr/",\
+        "packageDependencies": [\
+          ["swr", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:2.2.5"],\
+          ["@types/react", "npm:18.2.33"],\
+          ["client-only", "npm:0.0.1"],\
+          ["react", "npm:18.2.0"],\
+          ["use-sync-external-store", "virtual:c0b1e37b7534cff6259b6a5f9c7514467bbbce5fb0e15de6fb20de52bbd96d5b0d1867aae285870d7c70e9e975ede2ca5cd49abd84ea2e1752134daa0cfb51a9#npm:1.2.2"]\
+        ],\
+        "packagePeers": [\
+          "@types/react",\
+          "react"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["synckit", [\
       ["npm:0.8.5", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/synckit-npm-0.8.5-40a594eb38-10c0.zip/node_modules/synckit/",\
@@ -12079,6 +12126,28 @@ const RAW_RUNTIME_STATE =
           ["detect-node-es", "npm:1.1.0"],\
           ["react", "npm:18.2.0"],\
           ["tslib", "npm:2.6.2"]\
+        ],\
+        "packagePeers": [\
+          "@types/react",\
+          "react"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["use-sync-external-store", [\
+      ["npm:1.2.2", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/use-sync-external-store-npm-1.2.2-7923c915e1-10c0.zip/node_modules/use-sync-external-store/",\
+        "packageDependencies": [\
+          ["use-sync-external-store", "npm:1.2.2"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:c0b1e37b7534cff6259b6a5f9c7514467bbbce5fb0e15de6fb20de52bbd96d5b0d1867aae285870d7c70e9e975ede2ca5cd49abd84ea2e1752134daa0cfb51a9#npm:1.2.2", {\
+        "packageLocation": "./.yarn/__virtual__/use-sync-external-store-virtual-a24309c601/3/Users/woota/AppData/Local/Yarn/Berry/cache/use-sync-external-store-npm-1.2.2-7923c915e1-10c0.zip/node_modules/use-sync-external-store/",\
+        "packageDependencies": [\
+          ["use-sync-external-store", "virtual:c0b1e37b7534cff6259b6a5f9c7514467bbbce5fb0e15de6fb20de52bbd96d5b0d1867aae285870d7c70e9e975ede2ca5cd49abd84ea2e1752134daa0cfb51a9#npm:1.2.2"],\
+          ["@types/react", "npm:18.2.33"],\
+          ["react", "npm:18.2.0"]\
         ],\
         "packagePeers": [\
           "@types/react",\

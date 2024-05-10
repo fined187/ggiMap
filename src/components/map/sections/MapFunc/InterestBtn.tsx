@@ -34,7 +34,6 @@ export default function InterestBtn({
   clickedMapType,
   setClickedMapType,
 }: MapTypeProps) {
-  window.close()
   return (
     <ContainerStyle
       interest={clickedMapType.interest}

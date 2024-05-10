@@ -14,30 +14,41 @@ import Gmg from './items/GmgItems'
 import Kw from './items/KwItems'
 import { css } from '@emotion/react'
 import Spacing from '@/components/shared/Spacing'
+import useSWR from 'swr'
+import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 
 interface ResultProps {
   formData: Form
   setFormData: React.Dispatch<React.SetStateAction<Form>>
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setListItems: React.Dispatch<React.SetStateAction<Items | null>>
+  listItems?: Items | null
 }
 
-function Result({ formData, setFormData, isOpen, setIsOpen }: ResultProps) {
-  const [listItems, setListItems] = useState<Items | null>(null)
+function Result({
+  formData,
+  setFormData,
+  isOpen,
+  setIsOpen,
+  setListItems,
+  listItems,
+}: ResultProps) {
+  const { data: map } = useSWR(MAP_KEY)
   const [showingList, setShowingList] = useState(false)
 
   const { mutate: list, isLoading } = usePostListItems(formData, setListItems)
 
   useEffect(() => {
-    if (formData.map.zoom! >= 15) {
+    if (map && map.zoom! >= 15) {
       setShowingList(true)
       list()
-    } else {
+    } else if (map && map.zoom! < 15) {
       setShowingList(false)
       setIsOpen(true)
     }
   }, [
-    formData.map.zoom,
+    map && map.zoom,
     formData.ids,
     formData.km,
     formData.gg,
@@ -68,45 +79,64 @@ function Result({ formData, setFormData, isOpen, setIsOpen }: ResultProps) {
       }}
     >
       {showingList ? (
-        <>
-          <Header
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            formData={formData}
-            setFormData={setFormData}
-            listItems={listItems}
-            isLoading={isLoading}
-          />
-          <Container isOpen={isOpen}>
-            {listItems
-              ? listItems?.kmItems?.map((item, index) =>
-                  isLoading ? (
-                    <ListSkeleton key={index} />
-                  ) : (
-                    <Km key={index} kmItem={item} />
-                  ),
-                )
-              : null}
-            {listItems
-              ? listItems?.kwItems?.map((item, index) =>
-                  isLoading ? (
-                    <ListSkeleton key={index} />
-                  ) : (
-                    <Kw key={index} kwItem={item} />
-                  ),
-                )
-              : null}
-            {listItems
-              ? listItems?.gmgItems?.map((item, index) =>
-                  isLoading ? (
-                    <ListSkeleton key={index} />
-                  ) : (
-                    <Gmg key={index} gmgItem={item} />
-                  ),
-                )
-              : null}
-          </Container>
-        </>
+        listItems?.gmgItems || listItems?.kmItems || listItems?.kwItems ? (
+          <>
+            <Header
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              formData={formData}
+              setFormData={setFormData}
+              listItems={listItems}
+              isLoading={isLoading}
+            />
+            <Container isOpen={isOpen}>
+              {listItems
+                ? listItems?.kmItems?.map((item, index) =>
+                    isLoading ? (
+                      <ListSkeleton key={index} />
+                    ) : (
+                      <Km key={index} kmItem={item} />
+                    ),
+                  )
+                : null}
+              {listItems
+                ? listItems?.kwItems?.map((item, index) =>
+                    isLoading ? (
+                      <ListSkeleton key={index} />
+                    ) : (
+                      <Kw key={index} kwItem={item} />
+                    ),
+                  )
+                : null}
+              {listItems
+                ? listItems?.gmgItems?.map((item, index) =>
+                    isLoading ? (
+                      <ListSkeleton key={index} />
+                    ) : (
+                      <Gmg key={index} gmgItem={item} />
+                    ),
+                  )
+                : null}
+            </Container>
+          </>
+        ) : (
+          <>
+            <Header
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              formData={formData}
+              setFormData={setFormData}
+              listItems={listItems as Items}
+              isLoading={isLoading}
+            />
+            <ContainerNone isOpen={true}>
+              <Spacing size={20} />
+              <Text css={NoResultText}>
+                검색 결과가 없습니다. 좌표를 이동해주세요.
+              </Text>
+            </ContainerNone>
+          </>
+        )
       ) : (
         <>
           <Header
@@ -114,7 +144,7 @@ function Result({ formData, setFormData, isOpen, setIsOpen }: ResultProps) {
             setIsOpen={setIsOpen}
             formData={formData}
             setFormData={setFormData}
-            listItems={listItems}
+            listItems={listItems as Items}
             isLoading={isLoading}
           />
           <ContainerNone isOpen={true}>

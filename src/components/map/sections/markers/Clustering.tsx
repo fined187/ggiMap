@@ -1,9 +1,19 @@
 import { Form } from '@/models/Form'
-import { Dispatch, SetStateAction, useRef } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { Marker, MarkerProps, NaverMapProps } from 'react-naver-maps'
+import useSWR from 'swr'
+import { MAP_KEY } from '../hooks/useMap'
+import { NaverMap } from '@/models/Map'
 
+type ItemProps = {
+  sd: string
+  sgg: string
+  umd: string
+  count?: number
+  x: number
+  y: number
+}
 interface ClusteringProps {
-  formData: Form
   item: {
     sd: string
     sgg: string
@@ -12,42 +22,30 @@ interface ClusteringProps {
     x: number
     y: number
   }
-  map: NaverMapProps
-  setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
-  setZoom: Dispatch<SetStateAction<number>>
+  map: NaverMap
 }
 
-export default function Clustering({
-  formData,
-  item,
-  map,
-  setCenter,
-  setZoom,
-}: ClusteringProps) {
-  const cityRegex = /^/
-  const markerRef = useRef<MarkerProps>(null)
-  return (
-    <Marker
-      ref={markerRef}
-      position={{
-        lat: item.y,
-        lng: item.x,
-      }}
-      title={
-        formData.map.zoom! >= 13
-          ? item.umd
-          : formData.map.zoom! > 10 && formData.map.zoom! < 13
-          ? item.sgg.replace(/시$/, '')
-          : item.sd
-      }
-      icon={{
-        content: `
-          <div style="display: flex; width: 80px; height: 50px; justify-content:center; align-items:center; flex-direction:column;">
+export default function Clustering({ item, map }: ClusteringProps) {
+  const [zoom, setZoom] = useState(0)
+  useEffect(() => {
+    if (map) {
+      setZoom(map.getZoom() as number)
+    }
+  }, [map])
+  useEffect(() => {
+    let marker1: naver.maps.Marker | null = null
+    if (map) {
+      marker1 = new naver.maps.Marker({
+        map: map,
+        position: new naver.maps.LatLng(item.y, item.x),
+        icon: {
+          content: `
+            <div style="display: flex; width: 80px; height: 50px; justify-content:center; align-items:center; flex-direction:column;">
             <div style="display:flex; width:100%; height: 25px; background: #332EFC; justify-content: center; align-items: center; border-radius: 12px 12px 0px 0px; border-left: 1px solid #332EFC; border-top: 1px solid #332EFC; border-right: 1px solid #332EFC;">
               <span style="font-size: 12px; text-align: center; color:white; font-family: SUIT; font-style: normal; font-weight: 600; line-height: 100%; letter-spacing: -0.24px;">${
-                formData.map.zoom! >= 13
+                zoom >= 13
                   ? item.umd
-                  : formData.map.zoom! > 10 && formData.map.zoom! < 13
+                  : zoom > 10 && zoom < 13
                   ? item.sgg
                       .replace(/^창원시\s*/, '')
                       .replace(/^고양시\s*/, '')
@@ -69,12 +67,16 @@ export default function Clustering({
               }</span>
             </div>
           </div>
-        `,
-      }}
-      onClick={() => {
-        setCenter({ lat: item.y, lng: item.x })
-        setZoom(map.zoom! + 1)
-      }}
-    />
-  )
+          `,
+          anchor: new naver.maps.Point(12, 12),
+        },
+      })
+    }
+    return () => {
+      if (marker1) {
+        marker1.setMap(null)
+      }
+    }
+  }, [zoom])
+  return null
 }

@@ -90,7 +90,6 @@ export default function WinMarker({ item, formData, pnuCounts }: ItemProps) {
                 </svg>
               </div>
               `,
-            zIndex: 60,
           }}
         />
       ) : formData.map.zoom! === 16 ? (
@@ -117,7 +116,6 @@ export default function WinMarker({ item, formData, pnuCounts }: ItemProps) {
                 ${AmountIcon(item, item.type)}
               </div>
             `,
-            zIndex: 100,
           }}
         />
       ) : formData.map.zoom! > 16 ? (
@@ -133,7 +131,6 @@ export default function WinMarker({ item, formData, pnuCounts }: ItemProps) {
                 ${AmountBottomIcon(item, item.type)}
               </div>
             `,
-            zIndex: 60,
           }}
         />
       ) : null}

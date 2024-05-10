@@ -1,4 +1,5 @@
 import BigArrow from '@/components/map/icons/BigArrow'
+import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import Flex from '@/components/shared/Flex'
 import ListRow from '@/components/shared/ListRow'
 import Skeleton from '@/components/shared/Skeleton'
@@ -7,6 +8,7 @@ import { Form } from '@/models/Form'
 import { Items } from '@/models/ListItems'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
+import useSWR from 'swr'
 
 interface Props {
   isOpen: boolean
@@ -25,6 +27,7 @@ export default function Header({
   listItems,
   isLoading,
 }: Props) {
+  const { data: map } = useSWR(MAP_KEY)
   return (
     <>
       <Flex direction="row" css={ContainerStyle}>
@@ -35,7 +38,7 @@ export default function Header({
             contents={<Skeleton width={63} height={32} />}
             onClick={() => setIsOpen((prev) => !prev)}
           />
-        ) : formData.map.zoom! >= 15 ? (
+        ) : map && map.zoom! >= 15 ? (
           <ListRow
             left={<SearchText isOpen={isOpen}>검색결과</SearchText>}
             right={<BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />}
@@ -44,7 +47,7 @@ export default function Header({
             }
             onClick={() => setIsOpen((prev) => !prev)}
           />
-        ) : formData.map.zoom! < 15 ? (
+        ) : map && map.zoom! < 15 ? (
           <ListRow
             left={<SearchText isOpen={isOpen}>검색결과</SearchText>}
             right={<BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />}

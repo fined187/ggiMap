@@ -6,10 +6,11 @@ import GunguList from './DetailAddrList/GunguList'
 import dynamic from 'next/dynamic'
 import getSubway from '@/remote/map/subway/getSubway'
 import DongList from './DetailAddrList/DongList'
-import { useMap, useNavermaps } from 'react-naver-maps'
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import Spacing from '@/components/shared/Spacing'
+import useSWR from 'swr'
+import { MAP_KEY } from '../sections/hooks/useMap'
 
 const FixedInBoxButton = dynamic(
   () => import('@/components/shared/FixedInBoxButton'),
@@ -65,25 +66,22 @@ function BottomAddress({
   setBottomJuso,
   center,
 }: BottomAddressProps) {
-  const naverMaps = useNavermaps()
-
+  const { data: map } = useSWR(MAP_KEY)
   const searchAddrToCoord = useCallback(
     (address: string) => {
-      if (naverMaps?.Service?.geocode !== undefined) {
-        naverMaps?.Service?.geocode(
+      if (window.naver.maps?.Service?.geocode !== undefined) {
+        window.naver.maps?.Service?.geocode(
           {
-            address,
+            query: address,
           },
           (status: any, response: any) => {
-            console.log(response)
-            if (status === naverMaps?.Service?.Status?.ERROR) {
+            if (status === window.naver.maps?.Service?.Status?.ERROR) {
               alert('지하철 혹은 주소를 입력해주세요')
               return
             }
-            const result = response.result.items[0]
-            const { point } = result ?? { point: { x: 0, y: 0 } }
-            const { x, y } = point
-            setCenter({
+            const result = response.v2.addresses[0]
+            const { x, y } = result ?? { point: { x: 0, y: 0 } }
+            map.setCenter({
               lat: Number(y),
               lng: Number(x),
             })
@@ -91,7 +89,7 @@ function BottomAddress({
         )
       }
     },
-    [naverMaps, setCenter],
+    [map.center, setCenter],
   )
 
   const addrToCenter = async (addr: string) => {
@@ -119,6 +117,7 @@ function BottomAddress({
       searchAddrToCoord(bottomJuso.sido + addr)
     }
   }
+
   return (
     <Flex direction="column" css={ContainerStyle}>
       <Flex
@@ -236,9 +235,7 @@ function BottomAddress({
     </Flex>
   )
 }
-//  24a10950974a42238f83 892966514bba4216a627
 
-//  ab7a0fbd-9d5a-49b0-b56f-f5d6b51859e5
 const ContainerStyle = css`
   background-color: #fff;
   width: 360px;

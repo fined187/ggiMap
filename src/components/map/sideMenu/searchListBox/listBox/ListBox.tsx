@@ -3,6 +3,9 @@ import { Form } from '@/models/Form'
 import { css } from '@emotion/react'
 import { useState } from 'react'
 import Result from './Result'
+import useSWR from 'swr'
+import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
+import { Items } from '@/models/ListItems'
 
 interface ListBoxProps {
   formData: Form
@@ -11,7 +14,8 @@ interface ListBoxProps {
 
 export default function ListBox({ formData, setFormData }: ListBoxProps) {
   const [isOpen, setIsOpen] = useState(false)
-
+  const [listItems, setListItems] = useState<Items | null>(null)
+  const { data: map } = useSWR(MAP_KEY)
   return (
     <Flex
       css={ContainerStyle}
@@ -26,7 +30,7 @@ export default function ListBox({ formData, setFormData }: ListBoxProps) {
             ? 'calc(100vh - 380px)'
             : formData.lastFilter === 4 && formData.isSubFilterBoxOpen
             ? 'calc(100vh - 380px)'
-            : formData.map.zoom! >= 15
+            : map && map.zoom! >= 15 && listItems?.totalCount! > 0
             ? '750px'
             : '150px'
           : '70px',
@@ -37,6 +41,8 @@ export default function ListBox({ formData, setFormData }: ListBoxProps) {
         setFormData={setFormData}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
+        setListItems={setListItems}
+        listItems={listItems}
       />
     </Flex>
   )

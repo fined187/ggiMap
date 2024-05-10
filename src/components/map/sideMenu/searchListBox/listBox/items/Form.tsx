@@ -86,13 +86,15 @@ function Form({ item }: ItemProps) {
             {item.winAmt != 0 ? '낙찰가' : '최저가'}
           </Text>
           <Text css={minPriceNum}>
-            {useNum2Han(item.minAmt ?? 0) +
-              '(' +
-              (isNaN(((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100)
-                ? 0
-                : ((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100
-              ).toFixed(0) ===
-            'Infinity'
+            {item.winAmt != 0
+              ? useNum2Han(item.winAmt ?? 0)
+              : useNum2Han(item.minAmt ?? 0) +
+                  '(' +
+                  (isNaN(((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100)
+                    ? 0
+                    : ((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100
+                  ).toFixed(0) ===
+                'Infinity'
               ? ''
               : useNum2Han(item.minAmt ?? 0)}
           </Text>

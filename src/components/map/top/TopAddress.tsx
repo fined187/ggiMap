@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { css } from '@emotion/react'
 import AddressArrow from '../icons/AddressArrow'
 import AddressCursorArrow from '../icons/AddressCursorArrow'
@@ -5,7 +6,14 @@ import { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useNavermaps } from 'react-naver-maps'
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
+import useSWR from 'swr'
+import { MAP_KEY } from '../sections/hooks/useMap'
 
+declare global {
+  interface Window {
+    naver: any
+  }
+}
 interface AddressProps {
   SidoAddr: boolean
   GunguAddr: boolean
@@ -62,37 +70,40 @@ function TopAddress({
   bottomJuso,
   setBottomJuso,
 }: AddressProps) {
-  const naverMaps = useNavermaps()
-  const centerToAddr = useCallback(() => {
-    if (naverMaps?.Service?.reverseGeocode !== undefined) {
-      naverMaps?.Service?.reverseGeocode(
+  const { data: map } = useSWR(MAP_KEY)
+
+  function searchCoordinateToAddress(lat: number, lng: number) {
+    if (window.naver.maps?.Service?.geocode !== undefined) {
+      window.naver.maps?.Service?.reverseGeocode(
         {
-          location: new naverMaps.LatLng({
-            lat: center.lat,
-            lng: center.lng,
-          }) as any,
+          location: new window.naver.maps.LatLng(lat, lng),
         },
         (status: any, response: any) => {
-          if (status === naverMaps.Service.Status.ERROR) {
-            alert('주소 혹은 지하철명을 입력해주세요')
+          if (status === window.naver.maps?.Service?.Status?.ERROR) {
+            alert('주소를 찾을 수 없습니다.')
+            return
           }
-          const result = response.v2.address
-          if (result.jibunAddress) {
-            const addrToList = result.jibunAddress.split(' ')
-            setTopJuso({
-              sido: addrToList[0],
-              gungu: addrToList[1],
-              dong: addrToList[2],
-            })
-          }
+          const result = response.result.items[0].addrdetail
+          setTopJuso({
+            sido: result.sido,
+            gungu: result.sigugun.split(' ')[0],
+            dong: result.dongmyun,
+          })
         },
       )
     }
-  }, [center, naverMaps, setTopJuso])
+  }
 
   useEffect(() => {
-    centerToAddr()
-  }, [center, centerToAddr])
+    if (map) {
+      const mapCenter = map.getCenter()
+      const center: { lat: number; lng: number } = {
+        lat: mapCenter.lat(),
+        lng: mapCenter.lng(),
+      }
+      searchCoordinateToAddress(center.lat, center.lng)
+    }
+  }, [map && map.center])
 
   const handleTopBottomSync = () => {
     let newSido: string[] = []
@@ -108,9 +119,16 @@ function TopAddress({
     }
     return newSido
   }
-  useEffect(() => {
-    handleTopBottomSync()
-  }, [topJuso])
+
+  const handleTopBottomSyncGungu = () => {
+    let newGungu: string[] = []
+    if (topJuso.gungu.match(/시$/) || topJuso.gungu.match(/군$/)) {
+      newGungu.push(topJuso.gungu.slice(0, topJuso.gungu.length - 1))
+    } else if (topJuso.gungu.match(/구$/)) {
+      newGungu.push(topJuso.gungu.slice(0, topJuso.gungu.length))
+    }
+    return newGungu
+  }
   return (
     <>
       <Flex css={ContainerStyle}>
@@ -136,8 +154,9 @@ function TopAddress({
               setOpenCursor(!openCursor)
               setBottomJuso((prev) => {
                 return {
-                  sido: prev.sido === '' ? handleTopBottomSync()[0] : prev.sido,
-                  gungu: '',
+                  ...prev,
+                  sido: handleTopBottomSync()[0],
+                  gungu: handleTopBottomSyncGungu()[0],
                   dong: '',
                 }
               })

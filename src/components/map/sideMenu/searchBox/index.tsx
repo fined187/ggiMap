@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import Flex from '@/components/shared/Flex'
 import Input from '@/components/shared/Input'
 import Spacing from '@/components/shared/Spacing'
@@ -12,12 +13,19 @@ import { useNavermaps } from 'react-naver-maps'
 import getSubway from '@/remote/map/subway/getSubway'
 import Logo from '../../icons/Logo'
 import Search from '../../icons/Search'
+import useSWR from 'swr'
+import { MAP_KEY } from '../../sections/hooks/useMap'
 
 interface SearchBoxProps {
   formData: Form
   setFormData: React.Dispatch<React.SetStateAction<Form>>
   center: { lat: number; lng: number }
   setCenter: React.Dispatch<React.SetStateAction<{ lat: number; lng: number }>>
+}
+declare global {
+  interface Window {
+    naver: any
+  }
 }
 
 export default function SearchBox({
@@ -26,47 +34,41 @@ export default function SearchBox({
   center,
   setCenter,
 }: SearchBoxProps) {
+  const { data: map } = useSWR(MAP_KEY)
   const [keyword, setKeyword] = useState('')
-  const naverMaps = useNavermaps()
   const [isBoxOpen, setIsBoxOpen] = useState({
     finished: false,
     usage: false,
     lowPrice: false,
     price: false,
   })
+  if (!map) return null
 
-  const searchAddrToCoord = useCallback(
-    (address: string) => {
-      if (naverMaps?.Service?.geocode !== undefined) {
-        naverMaps?.Service?.geocode(
-          {
-            address,
-          },
-          (status: any, response: any) => {
-            if (status === naverMaps?.Service?.Status?.ERROR) {
-              alert('지하철 혹은 주소를 입력해주세요')
-              return
-            }
-            const result = response.result.items[0]
-            const { point } = result ?? { point: { x: 0, y: 0 } }
-            const { x, y } = point
-            setCenter({
-              lat: Number(y),
-              lng: Number(x),
-            })
-          },
-        )
-      }
-    },
-    [naverMaps, setCenter],
-  )
+  const searchAddrToCoord = (address: string) => {
+    if (window.naver.maps?.Service?.geocode !== undefined) {
+      window.naver.maps?.Service?.geocode(
+        {
+          query: address,
+        },
+        (status: any, response: any) => {
+          if (status === window.naver.maps?.Service?.Status?.ERROR) {
+            alert('지하철 혹은 주소를 입력해주세요')
+            return
+          }
+          const result = response.v2.addresses[0]
+          const { x, y } = result ?? { point: { x: 0, y: 0 } }
+          map.setCenter({
+            lat: Number(y),
+            lng: Number(x),
+          })
+        },
+      )
+    }
+  }
 
-  const handleKeyword = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setKeyword(e.target.value)
-    },
-    [setKeyword, keyword],
-  )
+  const handleKeyword = (e: ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value)
+  }
 
   const handleEnter = async (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -78,7 +80,7 @@ export default function SearchBox({
             return
           } else {
             const { x, y } = response.documents[0]
-            setCenter({
+            map.setCenter({
               lat: Number(y),
               lng: Number(x),
             })

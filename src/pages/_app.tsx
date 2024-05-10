@@ -13,17 +13,12 @@ export default function App({ Component, pageProps }: AppProps) {
   const lastPathPart = pageProps.lastPathPart
   return (
     <RecoilRoot>
-      <NavermapsProvider
-        ncpClientId={`${process.env.NEXT_PUBLIC_NAVER_MAP_API}`}
-        submodules={['geocoder']}
-      >
-        <Layout lastPathPart={lastPathPart}>
-          <Global styles={globalSteyls} />
-          <QueryClientProvider client={client}>
-            <Component {...pageProps} />
-          </QueryClientProvider>
-        </Layout>
-      </NavermapsProvider>
+      <Layout lastPathPart={lastPathPart}>
+        <Global styles={globalSteyls} />
+        <QueryClientProvider client={client}>
+          <Component {...pageProps} />
+        </QueryClientProvider>
+      </Layout>
     </RecoilRoot>
   )
 }

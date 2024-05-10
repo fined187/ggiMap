@@ -1,4 +1,4 @@
-import Map from '@/components/map/sections/Map'
+import Map from '@/components/map/sections/MapSection'
 import { Form } from '@/models/Form'
 import { mapItem } from '@/models/api/mapItem'
 import getAddress from '@/remote/map/auth/getAddress'
@@ -7,6 +7,7 @@ import { GetServerSidePropsContext } from 'next'
 import { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import axios from 'axios'
+import MapSection from '@/components/map/sections/MapSection'
 
 interface Props {
   data?: {
@@ -14,6 +15,11 @@ interface Props {
     authorities: string[] | null
   }
   token: string | null
+}
+declare global {
+  interface Window {
+    naver: any
+  }
 }
 
 function MapComponent({ token }: Props) {
@@ -100,7 +106,7 @@ function MapComponent({ token }: Props) {
 
   return (
     <>
-      <Map formData={formData} setFormData={setFormData} />
+      <MapSection formData={formData} setFormData={setFormData} />
     </>
   )
 }
