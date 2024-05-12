@@ -9,6 +9,7 @@ import { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
 import { MapCountsResponse } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
 import { mapAtom } from '@/store/atom/map'
+import useDebounce from '@/components/shared/hooks/useDebounce'
 
 declare global {
   interface Window {
@@ -58,6 +59,7 @@ export default function GGIMap({
   )
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const mapRef = useRef<NaverMap | null>(null)
+  const debouncedSearch = useDebounce(formData, 500)
 
   const searchAddrToCoord = (address: string) => {
     if (window.naver?.maps.Service?.geocode !== undefined) {
@@ -157,14 +159,16 @@ export default function GGIMap({
   }, [user.address])
 
   useEffect(() => {
-    if (mapRef?.current && mapRef.current.getZoom() >= 15) {
-      getMapItems()
-      setMapCount && setMapCount([])
-    } else {
-      getMapCounts()
-      setMapItems([])
+    if (debouncedSearch) {
+      if (mapRef?.current?.getZoom()! >= 15) {
+        getMapItems()
+        setMapCount && setMapCount([])
+      } else {
+        getMapCounts()
+        setMapItems([])
+      }
     }
-  }, [mapRef?.current, mapRef.current?.getZoom()])
+  }, [debouncedSearch, mapRef.current?.getZoom()])
 
   return (
     <>

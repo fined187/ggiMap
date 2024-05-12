@@ -23,9 +23,10 @@ import TopAddress from '../top/TopAddress'
 import BottomAddress from '../top/BottomAddress'
 import Markers from './markers/Markers'
 import { mapAtom } from '@/store/atom/map'
-import { MapCountsResponse } from '@/models/MapItem'
+import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import useSWR from 'swr'
 import Clusterings from './markers/Clusterings'
+import Overlay from './Overlay'
 
 interface MapProps {
   formData: Form
@@ -43,12 +44,13 @@ type pnuCounts = {
 }
 
 export default function MapSection({ formData, setFormData }: MapProps) {
-  const { data: map } = useSWR(MAP_KEY)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [pnuCounts, setPnuCounts] = useState<pnuCounts>({ updatedCounts: [] })
   const user = useRecoilValue(userAtom)
   const [zoom, setZoom] = useState<number>(16)
   const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
+  const [openOverlay, setOpenOverlay] = useState(false)
+  const [clickedItem, setClickedItem] = useState<MapItem | null>(null)
 
   const [clickedMapType, setClickedMapType] = useState({
     basic: true,
@@ -138,7 +140,8 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       handleGetPnuCounts()
     }
   }, [mapItems])
-  console.log(mapCount)
+
+  const handleGetOffset = useCallback((x: number, y: number) => {}, [])
   return (
     <>
       <Map
@@ -239,8 +242,17 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         center={center}
         setCenter={setCenter}
       />
-      <Markers pnuCounts={pnuCounts} />
+      <Markers
+        pnuCounts={pnuCounts}
+        openOverlay={openOverlay}
+        setOpenOverlay={setOpenOverlay}
+        clickedItem={clickedItem}
+        setClickedItem={setClickedItem}
+      />
       <Clusterings formData={formData} item={mapCount} />
+      {openOverlay && (
+        <Overlay clickedItem={clickedItem} setClickedItem={setClickedItem} />
+      )}
     </>
   )
 }

@@ -20,12 +20,11 @@ interface ClusteringProps {
 }
 
 export default function Clusterings({ formData, item }: ClusteringProps) {
-  const { data: map } = useSWR(MAP_KEY)
   return (
     <>
       {item && item.length > 0
         ? item?.map((item, index) => {
-            return <Clustering key={index} item={item} map={map as NaverMap} />
+            return <Clustering key={index} item={item} />
           })
         : null}
     </>

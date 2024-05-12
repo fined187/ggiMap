@@ -16,7 +16,7 @@ interface ItemProps {
 }
 
 function Form({ item }: ItemProps) {
-  const url = usePathUrl()
+  const url = usePathUrl(item.type ?? 1)
   return (
     <Flex direction="column" css={ContainerStyle}>
       <ListRow
@@ -56,11 +56,7 @@ function Form({ item }: ItemProps) {
         }}
       >
         <Image
-          src={
-            item.type === 2 || item.type === 3
-              ? 'http://file.ggi.co.kr/Gongmae/Pic/' + item.path
-              : url + item.path
-          }
+          src={url + item?.path}
           alt="KM image"
           width={180}
           height={135}

@@ -1,6 +1,13 @@
 import { NaverMap } from '@/models/Map'
 import { MapItem } from '@/models/MapItem'
-import { useCallback, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
+
 import {
   AmountIcon,
   InterestIcon,
@@ -24,11 +31,21 @@ interface MarkerProps {
   pnuCounts: {
     updatedCounts: PnuProps[]
   }
+  openOverlay: boolean
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
+  clickedItem: any
+  setClickedItem: any
 }
 
-const Marker = ({ item, map, pnuCounts }: MarkerProps) => {
-  const [openLayer, setOpenLayer] = useState<boolean>(false)
-  const [clickedItem, setClickedItem] = useState<MapItem | null>(null)
+const Marker = ({
+  item,
+  map,
+  pnuCounts,
+  openOverlay,
+  setOpenOverlay,
+  clickedItem,
+  setClickedItem,
+}: MarkerProps) => {
   const [count, setCount] = useState<number>(0)
 
   const handleGetItemPnuCounts = useCallback(() => {
@@ -67,19 +84,18 @@ const Marker = ({ item, map, pnuCounts }: MarkerProps) => {
     handleGetItemPnuCounts()
   }, [pnuCounts, handleGetItemPnuCounts])
 
-  const handleMarkerClick = (idCode: string) => {
-    if (openLayer) {
-      if (clickedItem?.id === idCode) {
-        setOpenLayer(false)
-        setClickedItem(null)
-      } else if (clickedItem?.id !== idCode) {
-        setOpenLayer(false)
-        setClickedItem(null)
-        setOpenLayer(true)
-        setClickedItem(item)
-      }
-    } else {
-      setOpenLayer(true)
+  const handleMarkerClick = (item: MapItem) => {
+    if (!openOverlay && clickedItem === null) {
+      setOpenOverlay(true)
+      setClickedItem(item)
+    } else if (openOverlay && clickedItem === item) {
+      setOpenOverlay(false)
+      setClickedItem(null)
+    } else if (openOverlay && clickedItem !== item) {
+      setOpenOverlay(true)
+      setClickedItem(item)
+    } else if (!openOverlay && clickedItem !== item) {
+      setOpenOverlay(true)
       setClickedItem(item)
     }
   }
@@ -335,6 +351,18 @@ const Marker = ({ item, map, pnuCounts }: MarkerProps) => {
             }))
           : null
       }
+      if (marker1) {
+        naver.maps.Event?.addListener(marker1, 'click', (e) => {
+          handleMarkerClick(item)
+          console.log(e.offset)
+        })
+      }
+      if (marker2) {
+        naver.maps.Event?.addListener(marker2, 'click', (e) => {
+          handleMarkerClick(item)
+          console.log(e.offset)
+        })
+      }
     }
     return () => {
       if (marker1) {
@@ -344,7 +372,7 @@ const Marker = ({ item, map, pnuCounts }: MarkerProps) => {
         marker2?.setMap(null)
       }
     }
-  }, [map, item, count, handleItemUsage])
+  }, [map, item, count, handleItemUsage, pnuCounts, openOverlay, clickedItem])
   return null
 }
 

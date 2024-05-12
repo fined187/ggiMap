@@ -67,7 +67,7 @@ const RAW_RUNTIME_STATE =
           ["react-naver-maps", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:0.1.3"],\
           ["react-query", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:3.39.3"],\
           ["recoil", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:0.7.7"],\
-          ["swiper", "npm:11.0.3"],\
+          ["swiper", "npm:11.1.1"],\
           ["swr", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:2.2.5"],\
           ["tailwind-scrollbar-hide", "npm:1.1.7"],\
           ["tailwindcss", "npm:3.4.3"],\
@@ -9736,7 +9736,7 @@ const RAW_RUNTIME_STATE =
           ["react-naver-maps", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:0.1.3"],\
           ["react-query", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:3.39.3"],\
           ["recoil", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:0.7.7"],\
-          ["swiper", "npm:11.0.3"],\
+          ["swiper", "npm:11.1.1"],\
           ["swr", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:2.2.5"],\
           ["tailwind-scrollbar-hide", "npm:1.1.7"],\
           ["tailwindcss", "npm:3.4.3"],\
@@ -11497,10 +11497,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["swiper", [\
-      ["npm:11.0.3", {\
-        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/swiper-npm-11.0.3-637c1114ef-10c0.zip/node_modules/swiper/",\
+      ["npm:11.1.1", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/swiper-npm-11.1.1-fbb4753780-10c0.zip/node_modules/swiper/",\
         "packageDependencies": [\
-          ["swiper", "npm:11.0.3"]\
+          ["swiper", "npm:11.1.1"]\
         ],\
         "linkType": "HARD"\
       }]\
