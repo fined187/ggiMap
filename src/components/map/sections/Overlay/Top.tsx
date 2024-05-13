@@ -1,7 +1,7 @@
 import Flex from '@/components/shared/Flex'
 import { ItemDetail } from '@/models/ItemDetail'
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import usePathUrl from '../../sideMenu/searchListBox/listBox/hooks/usePathUrl'
 import Image from 'next/image'
@@ -10,6 +10,8 @@ import Text from '@/components/shared/Text'
 import { MapItem } from '@/models/MapItem'
 import Interest from '../../icons/Interest'
 import MiniMap from './MiniMap'
+import { useRecoilState } from 'recoil'
+import { mapAtom } from '@/store/atom/map'
 
 interface TopProps {
   clickedInfo: ItemDetail | null
@@ -25,7 +27,7 @@ export default function Top({
   setClickedItem,
 }: TopProps) {
   const pathUrl = usePathUrl(clickedItem?.type || 1)
-  console.log(clickedItem)
+
   return (
     <Flex css={ContainerStyle}>
       {clickedItem?.type !== 4 && (
@@ -53,17 +55,16 @@ export default function Top({
                   <Text css={TextStyle}>지분</Text>
                 </ShareType>
               )}
-              {(clickedItem?.type === 4 && clickedInfo?.winAmt) ??
-                (0 > 0 && (
-                  <WinType
-                    style={{
-                      backgroundColor: '#FF4D00',
-                    }}
-                    shareYn={clickedInfo?.share === 'Y' ? true : false}
-                  >
-                    <Text css={TextStyle}>낙찰</Text>
-                  </WinType>
-                ))}
+              {clickedItem?.winYn === 'Y' && (
+                <WinType
+                  shareYn={clickedInfo?.share === 'Y'}
+                  style={{
+                    backgroundColor: '#FF4D00',
+                  }}
+                >
+                  <Text css={TextStyle}>낙찰</Text>
+                </WinType>
+              )}
               <Flex
                 style={{
                   position: 'absolute',

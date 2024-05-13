@@ -29,7 +29,7 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
         const container = document.getElementById('miniMap')
         const options = {
           center: new window.kakao.maps.LatLng(clickedItem?.y, clickedItem?.x),
-          level: 5,
+          level: 2,
         }
         const map = new window.kakao.maps.Map(container, options)
         map.addOverlayMapTypeId(window.kakao.maps.MapTypeId.USE_DISTRICT)
@@ -39,7 +39,7 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
     return () => {
       document.head.removeChild(script)
     }
-  }, [clickedItem?.x, clickedItem?.y])
+  }, [clickedItem, KAKAO_SDK_URL])
 
   useEffect(() => {
     const handleGetPolypath = async () => {
@@ -56,7 +56,6 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
   useEffect(() => {
     const drawPolyline = () => {
       if (path.length === 0 || !mapRef.current) return
-
       let polyline = new window.kakao.maps.Polyline({
         path: path.map(
           (coord) => new window.kakao.maps.LatLng(coord[0], coord[1]),

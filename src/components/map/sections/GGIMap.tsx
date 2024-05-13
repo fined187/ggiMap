@@ -1,12 +1,19 @@
 import usePostMapItems from '@/hooks/items/usePostMapItems'
 import { Form } from '@/models/Form'
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef } from 'react'
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react'
 import { useRecoilState } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
 import { Coordinates, NaverMap } from '@/models/Map'
 import Script from 'next/script'
 import { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
-import { MapCountsResponse } from '@/models/MapItem'
+import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
 import { mapAtom } from '@/store/atom/map'
 import useDebounce from '@/components/shared/hooks/useDebounce'
@@ -38,6 +45,10 @@ interface Props {
   onLoad?: (map: NaverMap) => void
   mapCount?: MapCountsResponse[]
   setMapCount?: Dispatch<SetStateAction<MapCountsResponse[]>>
+  markerClickedRef: MutableRefObject<boolean>
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
+  clickedItem: MapItem | null
+  setClickedItem: Dispatch<SetStateAction<MapItem | null>>
 }
 
 export default function GGIMap({
@@ -47,9 +58,13 @@ export default function GGIMap({
   mapId = 'map',
   initialCenter = INITIAL_CENTER,
   zoom = INITIAL_ZOOM,
+  setOpenOverlay,
   onLoad,
   mapCount,
   setMapCount,
+  markerClickedRef,
+  clickedItem,
+  setClickedItem,
 }: Props) {
   const [user, setUser] = useRecoilState(userAtom)
   const { mutate: getMapItems } = usePostMapItems(formData)
@@ -178,7 +193,23 @@ export default function GGIMap({
         src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NAVER_MAP_API}&submodules=geocoder`}
         onReady={initializeMap}
       />
-      <div id={mapId} style={{ width: '100vw', height: '100vh' }} />
+      <div
+        id={mapId}
+        style={{ width: '100vw', height: '100vh' }}
+        onClick={() => {
+          if (markerClickedRef.current === true) {
+            setOpenOverlay(false)
+            markerClickedRef.current = false
+            setClickedItem(null)
+          } else if (
+            markerClickedRef.current === false &&
+            clickedItem != null
+          ) {
+            setOpenOverlay(true)
+            markerClickedRef.current = true
+          }
+        }}
+      />
     </>
   )
 }

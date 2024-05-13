@@ -24,7 +24,7 @@ function AddressCursorArrow({
         >
           <path
             d="M14 7.25L7.57071 0.820712C7.53166 0.781659 7.46834 0.781659 7.42929 0.820711L1 7.25"
-            stroke="#7676A3"
+            stroke="#332EFC"
             strokeWidth="1.5"
             strokeLinecap="round"
           />

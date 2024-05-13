@@ -5,7 +5,7 @@ import { PnuCountIcon, ShareIcon } from './Marker1'
 export const WinIcon = () => {
   return `
     <div style="display: flex; width: 15px; height: 16px; flex-direction: column; justify-content: center; flex-shrink: 0; background: #FF4D00;">
-      <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 800; line-height: 135%; letter-spacing: -0.1px;">
+      <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
         낙
       </span>
     </div>
@@ -15,7 +15,7 @@ export const WinIcon = () => {
 export const InterestIcon = () => {
   return `
     <div style="display: flex; width: 15px; height: 16px; flex-direction: column; justify-content: center; flex-shrink: 0; background: #00A980;">
-      <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 800; line-height: 135%; letter-spacing: -0.1px;">
+      <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
         관
       </span>
     </div>

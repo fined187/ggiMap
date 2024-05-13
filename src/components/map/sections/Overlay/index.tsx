@@ -19,6 +19,8 @@ import {
 } from '@/remote/map/info/getDetail'
 import { ItemDetail } from '@/models/ItemDetail'
 import { MapItem } from '@/models/MapItem'
+import { useRecoilState } from 'recoil'
+import { mapAtom } from '@/store/atom/map'
 
 interface OverlayProps {
   clickedItem: MapItem | null
@@ -37,9 +39,29 @@ export default function Overlay({
 }: OverlayProps) {
   const [clickedInfo, setClickedInfo] = useState<ItemDetail | null>(null)
   const ref = useRef<HTMLDivElement>(null)
+  const [mapItems, setMapItems] = useRecoilState(mapAtom)
+  const [imagesUrl, setImagesUrl] = useState<string[]>([])
+  const [idArr, setIdArr] = useState<string[]>([])
+  const handleGetIds = (pnu: string) => {
+    let ids: string[] = []
+    for (const pnus of mapItems) {
+      if (pnus.pnu === pnu) {
+        ids.push(pnus.id)
+      }
+    }
+    return ids
+  }
+
+  console.log(clickedInfo)
 
   const handleCallApi = async () => {
     if (clickedItem?.type === 1) {
+      // const data = await Promise.all(
+      //   handleGetIds(clickedItem?.pnu || '').map(
+      //     async (id) => await getKmDetail(id),
+      //   ),
+      // )
+      // setClickedInfo(data)
       const data = await getKmDetail(clickedItem?.id)
       setClickedInfo(data)
     } else if (clickedItem?.type === 2) {
@@ -53,32 +75,6 @@ export default function Overlay({
       setClickedInfo(data)
     }
   }
-  console.log(markerClickedRef.current)
-  console.log(ref.current)
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (ref.current === null && !markerClickedRef.current) {
-        setOpenOverlay(true)
-      } else if (
-        ref.current &&
-        ref.current.contains(e.target as Node) &&
-        markerClickedRef.current
-      ) {
-        setOpenOverlay(true)
-      } else if (
-        (ref.current && ref.current.contains(e.target as Node)) ||
-        markerClickedRef.current
-      ) {
-        setOpenOverlay(false)
-      } else if (ref.current === null && markerClickedRef.current) {
-        setOpenOverlay(true)
-      }
-    }
-    document && document.addEventListener('click', handleClickOutside)
-    return () => {
-      document.removeEventListener('click', handleClickOutside)
-    }
-  }, [clickedItem, markerClickedRef])
 
   useEffect(() => {
     handleCallApi()

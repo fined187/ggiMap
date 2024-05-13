@@ -72,9 +72,9 @@ export default function Header({
 const ContainerStyle = css`
   display: flex;
   width: 100%;
-  height: 70px;
+  height: 60px;
   position: 'sticky';
-  padding: 18px;
+  padding: 15px;
   border-bottom: 1px solid #e0e0e0;
 `
 

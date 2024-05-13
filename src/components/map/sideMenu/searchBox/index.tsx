@@ -170,7 +170,7 @@ const animation = css`
 
 const ContainerStyle = css`
   position: relative;
-  padding: 10px 20px 10px 20px;
+  padding: 5px 10px 5px 10px;
   z-index: 10;
   background-color: white;
   width: 370px;

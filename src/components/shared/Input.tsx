@@ -2,7 +2,7 @@ import { colors } from '@styles/colorPalette'
 import styled from '@emotion/styled'
 
 const Input = styled.input`
-  padding: 0 16px;
+  padding: 0 5px;
   font-size: 15px;
   height: 48px;
   font-weight: 500;

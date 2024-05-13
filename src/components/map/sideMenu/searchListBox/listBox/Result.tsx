@@ -160,7 +160,7 @@ function Result({
 }
 
 const ContainerNone = styled.div<{ isOpen: boolean }>`
-  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 70px)' : '0px')};
+  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 60px)' : '0px')};
   display: flex;
   position: relative;
   flex-direction: column;
@@ -169,7 +169,7 @@ const ContainerNone = styled.div<{ isOpen: boolean }>`
 `
 
 const Container = styled.div<{ isOpen: boolean }>`
-  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 70px)' : '0px')};
+  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 60px)' : '0px')};
   display: flex;
   position: relative;
   overflow-y: auto;

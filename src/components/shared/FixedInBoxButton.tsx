@@ -45,7 +45,7 @@ const Container = styled.div`
   left: 10;
   right: 10;
   bottom: 10px;
-  width: 90%;
+  width: 335px;
   justify-content: center;
   akign-items: center;
   background-color: ${colors.white};

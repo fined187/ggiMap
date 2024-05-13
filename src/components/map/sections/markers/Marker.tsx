@@ -158,7 +158,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 80;">
+                <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 90;">
                 ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                 ${
                   item.interest != 'Y' && item.share === 'Y'
@@ -183,7 +183,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 80;">
+                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 90;">
                 ${UsageTopIcon(item, count, item.type)}
                 ${AmountBottomIcon(item, item.type)}
               </div>
@@ -198,7 +198,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 70;">
+                <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 80;">
                   ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                   ${
                     item.interest != 'Y' && item.share === 'Y'
@@ -223,7 +223,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 70;">
+                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 80;">
                   ${UsageTopIcon(item, count, item.type)}
                   ${AmountBottomIcon(item, item.type)}
                 </div>
@@ -259,31 +259,31 @@ const Marker = ({
                 anchor: new naver.maps.Point(12, 12),
               },
             }))
-          : map.getZoom() <= 15
+          : map.getZoom() === 15
           ? (marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                  <div style="z-index: 1;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
-                      <g filter="url(#filter0_d_228_706)">
-                        <circle cx="5.5" cy="3.5" r="3.5" fill="#1C8D00"/>
-                        <circle cx="5.5" cy="3.5" r="3.25" stroke="white" stroke-width="0.5"/>
+                  <div style="z-index: 95;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <g filter="url(#filter0_d_905_254)">
+                        <circle cx="8" cy="6" r="6" fill="#1C8D00"/>
+                        <circle cx="8" cy="6" r="5.75" stroke="white" stroke-width="0.5"/>
                       </g>
                       <defs>
-                        <filter id="filter0_d_228_706" x="0" y="0" width="11" height="11" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                        <filter id="filter0_d_905_254" x="0" y="0" width="16" height="16" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
                           <feFlood flood-opacity="0" result="BackgroundImageFix"/>
                           <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
                           <feOffset dy="2"/>
                           <feGaussianBlur stdDeviation="1"/>
                           <feComposite in2="hardAlpha" operator="out"/>
                           <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
-                          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_228_706"/>
-                          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_228_706" result="shape"/>
+                          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_905_254"/>
+                          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_905_254" result="shape"/>
                         </filter>
                       </defs>
-                    </svg> 
+                    </svg>
                   </div>
             `,
               },
@@ -296,22 +296,22 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="z-index: 60;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
-                    <g filter="url(#filter0_d_228_707)">
-                      <circle cx="5.5" cy="3.5" r="3.5" fill="#FF4D00"/>
-                      <circle cx="5.5" cy="3.5" r="3.25" stroke="white" stroke-width="0.5"/>
+                <div style="z-index: 70;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <g filter="url(#filter0_d_905_256)">
+                      <circle cx="8" cy="6" r="6" fill="#FF4D00"/>
+                      <circle cx="8" cy="6" r="5.75" stroke="white" stroke-width="0.5"/>
                     </g>
                     <defs>
-                      <filter id="filter0_d_228_707" x="0" y="0" width="11" height="11" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                      <filter id="filter0_d_905_256" x="0" y="0" width="16" height="16" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
                         <feFlood flood-opacity="0" result="BackgroundImageFix"/>
                         <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
                         <feOffset dy="2"/>
                         <feGaussianBlur stdDeviation="1"/>
                         <feComposite in2="hardAlpha" operator="out"/>
                         <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
-                        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_228_707"/>
-                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_228_707" result="shape"/>
+                        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_905_256"/>
+                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_905_256" result="shape"/>
                       </filter>
                     </defs>
                   </svg>
@@ -326,7 +326,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 60;">
+                <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 70;">
                   ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                   ${
                     item.interest != 'Y' && item.share === 'Y'

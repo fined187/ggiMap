@@ -1,17 +1,22 @@
 import styled from '@emotion/styled'
 import { useState } from 'react'
 
-function TopBar({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false)
-  return <Container isOpen={isOpen}>{children}</Container>
+function TopBar({
+  children,
+  openCursor,
+}: {
+  children: React.ReactNode
+  openCursor: boolean
+}) {
+  return <Container openCursor={openCursor}>{children}</Container>
 }
 
-const Container = styled.div<{ isOpen: boolean }>`
+const Container = styled.div<{ openCursor: boolean }>`
   position: absolute;
   min-width: 200px;
   max-width: 450px;
   top: 30px;
-  left: calc(50% + 180px);
+  left: calc(50% + 100px);
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
@@ -20,8 +25,8 @@ const Container = styled.div<{ isOpen: boolean }>`
   align-items: center;
   border-radius: 20px;
   background: #fff;
-  border: ${({ isOpen }) =>
-    isOpen ? '1px solid #332EFC' : '1px solid #000001'};
+  border: ${({ openCursor }) =>
+    openCursor ? '1px solid #332EFC' : '1px solid #000001'};
 `
 
 export default TopBar

@@ -55,7 +55,7 @@ const FilterStyle = css`
   color: #333333;
   justify-content: center;
   align-items: center;
-  width: 75px;
+  width: 80px;
   height: 47px;
   text-align: center;
   line-height: 21.6px;

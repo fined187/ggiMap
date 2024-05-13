@@ -157,6 +157,10 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         setZoom={setZoom}
         mapCount={mapCount}
         setMapCount={setMapCount}
+        markerClickedRef={markerClickedRef}
+        setOpenOverlay={setOpenOverlay}
+        clickedItem={clickedItem}
+        setClickedItem={setClickedItem}
       />
       <BoxGuard>
         <SearchBox
@@ -168,7 +172,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         <ListBox formData={formData} setFormData={setFormData} />
       </BoxGuard>
       <Flex direction="column">
-        <TopBar>
+        <TopBar openCursor={openCursor}>
           <TopAddress
             SidoAddr={true}
             GunguAddr={false}

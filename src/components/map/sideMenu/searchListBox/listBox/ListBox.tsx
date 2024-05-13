@@ -13,7 +13,7 @@ interface ListBoxProps {
 }
 
 export default function ListBox({ formData, setFormData }: ListBoxProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
   const [listItems, setListItems] = useState<Items | null>(null)
   const { data: map } = useSWR(MAP_KEY)
   return (
@@ -33,7 +33,7 @@ export default function ListBox({ formData, setFormData }: ListBoxProps) {
             : map && map.zoom! >= 15 && listItems?.totalCount! > 0
             ? '750px'
             : '150px'
-          : '70px',
+          : '59px',
       }}
     >
       <Result

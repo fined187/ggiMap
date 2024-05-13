@@ -105,7 +105,7 @@ function BottomAddress({
           return
         } else {
           const { x, y } = response.documents[0]
-          setCenter({
+          map.setCenter({
             lat: Number(y),
             lng: Number(x),
           })
@@ -241,13 +241,13 @@ const ContainerStyle = css`
   width: 360px;
   max-height: 400px;
   display: flex;
-  left: calc(50% + 180px);
+  left: calc(50% + 100px);
   transform: translateX(-50%);
   top: 75px;
   position: absolute;
   border-radius: 10px;
   padding: 10px;
-  align-items: center;
+  align-items: start;
 `
 
 const TextStyle = css`
