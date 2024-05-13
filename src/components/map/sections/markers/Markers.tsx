@@ -4,7 +4,7 @@ import { MAP_KEY } from '../hooks/useMap'
 import { useRecoilState } from 'recoil'
 import { mapAtom } from '@/store/atom/map'
 import Marker from './Marker'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 
 type PnuProps = {
   pnu: string
@@ -20,6 +20,7 @@ interface MarkersProps {
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
   clickedItem: any
   setClickedItem: any
+  markerClickedRef: MutableRefObject<boolean>
 }
 
 export default function Markers({
@@ -28,6 +29,7 @@ export default function Markers({
   setOpenOverlay,
   clickedItem,
   setClickedItem,
+  markerClickedRef,
 }: MarkersProps) {
   const { data: map } = useSWR<NaverMap>(MAP_KEY)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
@@ -47,6 +49,7 @@ export default function Markers({
                 setOpenOverlay={setOpenOverlay}
                 clickedItem={clickedItem}
                 setClickedItem={setClickedItem}
+                markerClickedRef={markerClickedRef}
               />
             )
           })

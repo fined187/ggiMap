@@ -9,6 +9,7 @@ import styled from '@emotion/styled'
 import Text from '@/components/shared/Text'
 import { MapItem } from '@/models/MapItem'
 import Interest from '../../icons/Interest'
+import MiniMap from './MiniMap'
 
 interface TopProps {
   clickedInfo: ItemDetail | null
@@ -24,70 +25,118 @@ export default function Top({
   setClickedItem,
 }: TopProps) {
   const pathUrl = usePathUrl(clickedItem?.type || 1)
-  console.log(clickedInfo)
   console.log(clickedItem)
   return (
     <Flex css={ContainerStyle}>
-      <Swiper>
-        <SwiperSlide>
+      {clickedItem?.type !== 4 && (
+        <Swiper>
+          <SwiperSlide>
+            <Flex
+              style={{
+                position: 'relative',
+                width: '300px',
+              }}
+            >
+              <TypeStyle type={clickedItem?.type || 1}>
+                <Text css={TextStyle}>
+                  {clickedItem?.type === 1
+                    ? '경매'
+                    : clickedItem?.type === 2
+                    ? '캠코'
+                    : clickedItem?.type === 3
+                    ? '기관'
+                    : ''}
+                </Text>
+              </TypeStyle>
+              {clickedInfo?.share === 'Y' && (
+                <ShareType>
+                  <Text css={TextStyle}>지분</Text>
+                </ShareType>
+              )}
+              {(clickedItem?.type === 4 && clickedInfo?.winAmt) ??
+                (0 > 0 && (
+                  <WinType
+                    style={{
+                      backgroundColor: '#FF4D00',
+                    }}
+                    shareYn={clickedInfo?.share === 'Y' ? true : false}
+                  >
+                    <Text css={TextStyle}>낙찰</Text>
+                  </WinType>
+                ))}
+              <Flex
+                style={{
+                  position: 'absolute',
+                  top: 14,
+                  right: 14,
+                }}
+              >
+                <Interest interest={clickedInfo?.interest || ''} />
+              </Flex>
+              <Image
+                src={`${pathUrl}${clickedInfo?.path}`}
+                alt="image1"
+                width={300}
+                height={180}
+                style={{
+                  borderRadius: '8px 8px 0px 0px',
+                  width: '299px',
+                  height: '180px',
+                }}
+              />
+              <BottomBox
+                style={{
+                  flexDirection: 'row',
+                }}
+              >
+                <Text css={BottomTextStyle}>{clickedInfo?.usage}</Text>
+                &nbsp;
+                <Text css={BottomTextStyle}>
+                  {clickedItem?.type === 1
+                    ? clickedInfo?.caseNo
+                    : clickedItem?.type === 2 || 3
+                    ? clickedInfo?.manageNo
+                    : ''}
+                </Text>
+              </BottomBox>
+            </Flex>
+          </SwiperSlide>
+        </Swiper>
+      )}
+      {clickedItem?.type === 4 && (
+        <>
           <Flex
             style={{
               position: 'relative',
               width: '300px',
             }}
           >
+            <MiniMap
+              clickedItem={clickedItem}
+              setClickedItem={setClickedItem}
+            />
             <TypeStyle type={clickedItem?.type || 1}>
-              <Text css={TextStyle}>
-                {clickedItem?.type === 1
-                  ? '경매'
-                  : clickedItem?.type === 2
-                  ? '캠코'
-                  : clickedItem?.type === 3
-                  ? '기관'
-                  : clickedItem?.type === 4
-                  ? '예정'
-                  : ''}
-              </Text>
+              <Text css={TextStyle}>예정</Text>
             </TypeStyle>
             {clickedInfo?.share === 'Y' && (
               <ShareType>
                 <Text css={TextStyle}>지분</Text>
               </ShareType>
             )}
-            {clickedInfo?.winAmt ??
-              (0 > 0 && (
-                <WinType
-                  style={{
-                    backgroundColor: '#FF4D00',
-                  }}
-                  shareYn={clickedInfo?.share === 'Y' ? true : false}
-                >
-                  <Text css={TextStyle}>낙찰</Text>
-                </WinType>
-              ))}
             <Flex
               style={{
                 position: 'absolute',
                 top: 14,
                 right: 14,
+                zIndex: 1,
               }}
             >
-              <Interest interest={clickedInfo?.interest || ''} />
+              <Interest interest={clickedInfo?.interest as string} />
             </Flex>
-            <Image
-              src={`${pathUrl}${clickedInfo?.path}`}
-              alt="image1"
-              width={300}
-              height={180}
-              style={{
-                borderRadius: '8px 8px 0px 0px',
-                width: '300px',
-                height: '180px',
-              }}
-            />
             <BottomBox
               style={{
                 flexDirection: 'row',
+                zIndex: 1,
               }}
             >
               <Text css={BottomTextStyle}>{clickedInfo?.usage}</Text>
@@ -95,8 +144,8 @@ export default function Top({
               <Text css={BottomTextStyle}>{clickedInfo?.caseNo}</Text>
             </BottomBox>
           </Flex>
-        </SwiperSlide>
-      </Swiper>
+        </>
+      )}
     </Flex>
   )
 }
@@ -119,7 +168,7 @@ const TextStyle = css`
 `
 
 const BottomBox = styled.div`
-  width: 300px;
+  width: 299px;
   height: 30px;
   flex-shrink: 0;
   border: 0px solid #fff;

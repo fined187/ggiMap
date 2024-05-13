@@ -1,7 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import Top from './Top'
 import Bottom from './Bottom'
 import {
@@ -16,13 +23,22 @@ import { MapItem } from '@/models/MapItem'
 interface OverlayProps {
   clickedItem: MapItem | null
   setClickedItem: Dispatch<SetStateAction<MapItem | null>>
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
+  markerClickedRef: MutableRefObject<boolean>
+  openOverlay: boolean
 }
 
-export default function Overlay({ clickedItem, setClickedItem }: OverlayProps) {
+export default function Overlay({
+  clickedItem,
+  setClickedItem,
+  setOpenOverlay,
+  markerClickedRef,
+  openOverlay,
+}: OverlayProps) {
   const [clickedInfo, setClickedInfo] = useState<ItemDetail | null>(null)
+  const ref = useRef<HTMLDivElement>(null)
 
   const handleCallApi = async () => {
-    // Make the function async
     if (clickedItem?.type === 1) {
       const data = await getKmDetail(clickedItem?.id)
       setClickedInfo(data)
@@ -37,13 +53,39 @@ export default function Overlay({ clickedItem, setClickedItem }: OverlayProps) {
       setClickedInfo(data)
     }
   }
+  console.log(markerClickedRef.current)
+  console.log(ref.current)
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current === null && !markerClickedRef.current) {
+        setOpenOverlay(true)
+      } else if (
+        ref.current &&
+        ref.current.contains(e.target as Node) &&
+        markerClickedRef.current
+      ) {
+        setOpenOverlay(true)
+      } else if (
+        (ref.current && ref.current.contains(e.target as Node)) ||
+        markerClickedRef.current
+      ) {
+        setOpenOverlay(false)
+      } else if (ref.current === null && markerClickedRef.current) {
+        setOpenOverlay(true)
+      }
+    }
+    document && document.addEventListener('click', handleClickOutside)
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [clickedItem, markerClickedRef])
 
   useEffect(() => {
     handleCallApi()
   }, [clickedItem])
 
   return (
-    <Flex css={Overlaytop}>
+    <Flex css={Overlaytop} ref={ref}>
       <Top
         clickedInfo={clickedInfo}
         setClickedInfo={setClickedInfo}

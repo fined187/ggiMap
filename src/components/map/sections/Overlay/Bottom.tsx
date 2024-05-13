@@ -143,37 +143,65 @@ export default function Bottom({
               position: 'relative',
             }}
           >
-            <div
-              css={dotStyle}
-              style={{
-                backgroundColor: '#545454',
-                position: 'absolute',
-                left: 0,
-                top: 7.5,
-              }}
-            />
-            &nbsp;&nbsp;&nbsp;
-            <Text css={DetailTextStyle}>
-              {clickedItem?.landArea === '' ? '토지 -' : clickedItem?.landArea}
-            </Text>
-            <Text
-              style={{
-                color: '#CBCBCB',
-                fontFamily: 'SUIT',
-                fontSize: '14px',
-                fontStyle: 'normal',
-                fontWeight: '600',
-                lineHeight: '140%',
-                letterSpacing: '-0.14px',
-              }}
-            >
-              &nbsp;{' | '}&nbsp;
-            </Text>
-            <Text css={DetailTextStyle}>
-              {clickedItem?.buildingArea === ''
-                ? '건물 -'
-                : clickedItem?.buildingArea}
-            </Text>
+            {clickedInfo?.landArea ??
+              (0 > 0 ||
+                (clickedInfo?.buildingArea ??
+                  (0 > 0 ? (
+                    <div
+                      css={dotStyle}
+                      style={{
+                        backgroundColor: '#545454',
+                        position: 'absolute',
+                        left: 0,
+                        top: 7.5,
+                      }}
+                    >
+                      &nbsp;&nbsp;&nbsp;
+                    </div>
+                  ) : (
+                    <div
+                      css={dotStyle}
+                      style={{
+                        backgroundColor: '#545454',
+                        position: 'absolute',
+                        left: 0,
+                        top: 7.5,
+                      }}
+                    />
+                  ))))}
+            {clickedInfo?.landArea ??
+              (0 > 0 && (
+                <>
+                  <Text css={DetailTextStyle}>
+                    {clickedItem?.landArea === ''
+                      ? '토지 -'
+                      : clickedItem?.landArea}
+                  </Text>
+                  <Text
+                    style={{
+                      color: '#CBCBCB',
+                      fontFamily: 'SUIT',
+                      fontSize: '14px',
+                      fontStyle: 'normal',
+                      fontWeight: '600',
+                      lineHeight: '140%',
+                      letterSpacing: '-0.14px',
+                    }}
+                  >
+                    &nbsp;{' | '}&nbsp;
+                  </Text>
+                </>
+              ))}
+            {clickedInfo?.buildingArea ??
+              (0 > 0 && (
+                <>
+                  <Text css={DetailTextStyle}>
+                    {clickedItem?.buildingArea === ''
+                      ? '건물 -'
+                      : clickedItem?.buildingArea}
+                  </Text>
+                </>
+              ))}
           </Flex>
         )}
         {clickedItem?.type !== 4 && (
@@ -214,25 +242,31 @@ export default function Bottom({
             >
               &nbsp;{' | '}&nbsp;
             </Text>
-            <Text css={DetailTextStyle}>
-              {'토지 ' + clickedInfo?.landArea ?? '-'}
-            </Text>
-            <Text
-              style={{
-                color: '#CBCBCB',
-                fontFamily: 'SUIT',
-                fontSize: '14px',
-                fontStyle: 'normal',
-                fontWeight: '600',
-                lineHeight: '140%',
-                letterSpacing: '-0.14px',
-              }}
-            >
-              &nbsp;{' | '}&nbsp;
-            </Text>
-            <Text css={DetailTextStyle}>
-              {'건물 ' + clickedInfo?.buildingArea ?? '-'}
-            </Text>
+            {clickedInfo?.landArea != '' && (
+              <>
+                <Text css={DetailTextStyle}>
+                  {'토지 ' + clickedInfo?.landArea}
+                </Text>
+                <Text
+                  style={{
+                    color: '#CBCBCB',
+                    fontFamily: 'SUIT',
+                    fontSize: '14px',
+                    fontStyle: 'normal',
+                    fontWeight: '600',
+                    lineHeight: '140%',
+                    letterSpacing: '-0.14px',
+                  }}
+                >
+                  &nbsp;{' | '}&nbsp;
+                </Text>
+              </>
+            )}
+            {clickedInfo?.buildingArea != '' && (
+              <Text css={DetailTextStyle}>
+                {'건물 ' + clickedInfo?.buildingArea ?? '-'}
+              </Text>
+            )}
           </Flex>
         )}
         {clickedItem?.type === 4 && (

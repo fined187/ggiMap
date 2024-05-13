@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -51,6 +52,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
   const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
   const [openOverlay, setOpenOverlay] = useState(false)
   const [clickedItem, setClickedItem] = useState<MapItem | null>(null)
+  const markerClickedRef = useRef(false)
 
   const [clickedMapType, setClickedMapType] = useState({
     basic: true,
@@ -248,10 +250,17 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         setOpenOverlay={setOpenOverlay}
         clickedItem={clickedItem}
         setClickedItem={setClickedItem}
+        markerClickedRef={markerClickedRef}
       />
       <Clusterings formData={formData} item={mapCount} />
       {openOverlay && (
-        <Overlay clickedItem={clickedItem} setClickedItem={setClickedItem} />
+        <Overlay
+          clickedItem={clickedItem}
+          setClickedItem={setClickedItem}
+          openOverlay={openOverlay}
+          setOpenOverlay={setOpenOverlay}
+          markerClickedRef={markerClickedRef}
+        />
       )}
     </>
   )

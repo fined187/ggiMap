@@ -2,6 +2,7 @@ import { NaverMap } from '@/models/Map'
 import { MapItem } from '@/models/MapItem'
 import {
   Dispatch,
+  MutableRefObject,
   SetStateAction,
   useCallback,
   useEffect,
@@ -35,6 +36,7 @@ interface MarkerProps {
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
   clickedItem: any
   setClickedItem: any
+  markerClickedRef: MutableRefObject<boolean>
 }
 
 const Marker = ({
@@ -45,6 +47,7 @@ const Marker = ({
   setOpenOverlay,
   clickedItem,
   setClickedItem,
+  markerClickedRef,
 }: MarkerProps) => {
   const [count, setCount] = useState<number>(0)
 
@@ -87,18 +90,23 @@ const Marker = ({
   const handleMarkerClick = (item: MapItem) => {
     if (!openOverlay && clickedItem === null) {
       setOpenOverlay(true)
+      markerClickedRef.current = true
       setClickedItem(item)
     } else if (openOverlay && clickedItem === item) {
       setOpenOverlay(false)
+      markerClickedRef.current = false
       setClickedItem(null)
     } else if (openOverlay && clickedItem !== item) {
       setOpenOverlay(true)
+      markerClickedRef.current = true
       setClickedItem(item)
     } else if (!openOverlay && clickedItem !== item) {
       setOpenOverlay(true)
+      markerClickedRef.current = true
       setClickedItem(item)
     }
   }
+
   useEffect(() => {
     let marker1: naver.maps.Marker | null = null
     let marker2: naver.maps.Marker | null = null

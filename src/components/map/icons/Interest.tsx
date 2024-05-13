@@ -1,7 +1,7 @@
 function Interest({ interest }: { interest: string }) {
   return (
     <>
-      {interest ? (
+      {interest === 'Y' ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="26"
