@@ -1,5 +1,7 @@
 import styled from '@emotion/styled'
 import { Dispatch, SetStateAction } from 'react'
+import useSWR from 'swr'
+import { MAP_KEY } from '../hooks/useMap'
 
 interface CurrentBtnProps {
   center: { lat: number; lng: number }
@@ -7,10 +9,12 @@ interface CurrentBtnProps {
 }
 
 export default function CurrentBtn({ center, setCenter }: CurrentBtnProps) {
+  const { data: map } = useSWR(MAP_KEY)
   const handleMoveCurrentLocation = () => {
     navigator?.geolocation?.getCurrentPosition((position) => {
+      console.log(position)
       const { latitude, longitude } = position.coords
-      setCenter({ lat: latitude, lng: longitude })
+      map.setCenter({ lat: latitude, lng: longitude })
     })
   }
   return (

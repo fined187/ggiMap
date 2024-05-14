@@ -1,10 +1,11 @@
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useCallback } from 'react'
 import InterestBtn from './InterestBtn'
 import CadastralBtn from './CadastralBtn'
 import RoadviewBtn from './RoadviewBtn'
 import CurrentBtn from './CurrentBtn'
+import ToolsBtn from './ToolsBtn'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -56,6 +57,10 @@ export default function MapFunction({
         setClickedMapType={setClickedMapType}
       />
       <CurrentBtn center={center} setCenter={setCenter} />
+      <ToolsBtn
+        clickedMapType={clickedMapType}
+        setClickedMapType={setClickedMapType}
+      />
     </Flex>
   )
 }

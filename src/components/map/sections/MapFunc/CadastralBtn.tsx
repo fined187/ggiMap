@@ -1,7 +1,9 @@
 import Text from '@/components/shared/Text'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
+import useSWR from 'swr'
+import { MAP_KEY } from '../hooks/useMap'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -34,6 +36,8 @@ export default function CadastralBtn({
   clickedMapType,
   setClickedMapType,
 }: MapTypeProps) {
+  const { data: map } = useSWR(MAP_KEY)
+
   return (
     <ContainerStyle
       cadastral={clickedMapType.cadastral}

@@ -25,9 +25,9 @@ import BottomAddress from '../top/BottomAddress'
 import Markers from './markers/Markers'
 import { mapAtom } from '@/store/atom/map'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
-import useSWR from 'swr'
 import Clusterings from './markers/Clusterings'
 import Overlay from './Overlay'
+import useSWR from 'swr'
 
 interface MapProps {
   formData: Form
@@ -53,6 +53,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
   const [openOverlay, setOpenOverlay] = useState(false)
   const [clickedItem, setClickedItem] = useState<MapItem | null>(null)
   const markerClickedRef = useRef(false)
+  const { data: map } = useSWR(MAP_KEY)
 
   const [clickedMapType, setClickedMapType] = useState({
     basic: true,
@@ -161,6 +162,8 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         setOpenOverlay={setOpenOverlay}
         clickedItem={clickedItem}
         setClickedItem={setClickedItem}
+        setClickedMapType={setClickedMapType}
+        center={center}
       />
       <BoxGuard>
         <SearchBox
@@ -238,16 +241,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
           />
         ) : null}
       </Flex>
-      <MapType
-        clickedMapType={clickedMapType}
-        setClickedMapType={setClickedMapType}
-      />
-      <MapFunction
-        clickedMapType={clickedMapType}
-        setClickedMapType={setClickedMapType}
-        center={center}
-        setCenter={setCenter}
-      />
       <Markers
         pnuCounts={pnuCounts}
         openOverlay={openOverlay}

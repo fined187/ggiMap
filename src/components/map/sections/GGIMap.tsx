@@ -17,6 +17,8 @@ import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
 import { mapAtom } from '@/store/atom/map'
 import useDebounce from '@/components/shared/hooks/useDebounce'
+import MapType from './mapType/MapType'
+import MapFunction from './MapFunc/MapFunction'
 
 declare global {
   interface Window {
@@ -49,6 +51,20 @@ interface Props {
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
   clickedItem: MapItem | null
   setClickedItem: Dispatch<SetStateAction<MapItem | null>>
+  setClickedMapType: Dispatch<
+    SetStateAction<{
+      basic: boolean
+      terrain: boolean
+      satellite: boolean
+      cadastral: boolean
+      interest: boolean
+      roadView: boolean
+      current: boolean
+      distance: boolean
+      area: boolean
+    }>
+  >
+  center: { lat: number; lng: number }
 }
 
 export default function GGIMap({
@@ -65,6 +81,9 @@ export default function GGIMap({
   markerClickedRef,
   clickedItem,
   setClickedItem,
+  setCenter,
+  setClickedMapType,
+  center,
 }: Props) {
   const [user, setUser] = useRecoilState(userAtom)
   const { mutate: getMapItems } = usePostMapItems(formData)
@@ -111,15 +130,13 @@ export default function GGIMap({
     }
     const map = new window.naver.maps.Map(mapId, mapOptions)
     mapRef.current = map
-
     window.naver.maps.Event.addListener(map, 'idle', handleGetBounds)
-
     if (onLoad) {
       onLoad(map)
     }
   }
 
-  const handleGetBounds = () => {
+  const handleGetBounds = useCallback(() => {
     if (mapRef.current) {
       const bounds = mapRef.current.getBounds() as any
       const sw = bounds.getSW()
@@ -139,33 +156,13 @@ export default function GGIMap({
       })
     }
     getMapItems()
-  }
+  }, [setFormData, getMapItems])
 
   useEffect(() => {
     return () => {
       mapRef.current?.destroy()
     }
   }, [])
-
-  const handleMapTypeChange = useCallback(() => {
-    if (clickedMapType.basic) {
-      return naver.maps?.MapTypeId.NORMAL
-    }
-    if (clickedMapType.terrain) {
-      return naver.maps?.MapTypeId.TERRAIN
-    }
-    if (clickedMapType.satellite === true) {
-      return naver.maps?.MapTypeId.SATELLITE
-    }
-    if (clickedMapType.cadastral === true) {
-      naver.maps?.CadastralLayer
-    }
-  }, [
-    clickedMapType.basic,
-    clickedMapType.terrain,
-    clickedMapType.satellite,
-    clickedMapType.cadastral,
-  ])
 
   useEffect(() => {
     if (user.address) {
@@ -209,6 +206,16 @@ export default function GGIMap({
             markerClickedRef.current = true
           }
         }}
+      />
+      <MapType
+        clickedMapType={clickedMapType}
+        setClickedMapType={setClickedMapType}
+      />
+      <MapFunction
+        clickedMapType={clickedMapType}
+        setClickedMapType={setClickedMapType}
+        center={center}
+        setCenter={setCenter}
       />
     </>
   )

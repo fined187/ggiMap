@@ -1,7 +1,9 @@
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useCallback } from 'react'
+import useSWR from 'swr'
+import { MAP_KEY } from '../hooks/useMap'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -34,20 +36,54 @@ export default function MapType({
   clickedMapType,
   setClickedMapType,
 }: MapTypeProps) {
+  const { data: map } = useSWR(MAP_KEY)
+  const handleMapTypeChange = useCallback(
+    (type: string) => {
+      if (type === 'basic') {
+        setClickedMapType((prev) => {
+          return {
+            ...prev,
+            basic: true,
+            terrain: false,
+            satellite: false,
+            cadastral: false,
+          }
+        })
+        map?.setMapTypeId(window.naver.maps?.MapTypeId.NORMAL)
+      }
+      if (type === 'terrain') {
+        setClickedMapType((prev) => {
+          return {
+            ...prev,
+            basic: false,
+            terrain: true,
+            satellite: false,
+            cadastral: false,
+          }
+        })
+        map?.setMapTypeId(window.naver.maps?.MapTypeId.TERRAIN)
+      }
+      if (type === 'satellite') {
+        setClickedMapType((prev) => {
+          return {
+            ...prev,
+            basic: false,
+            terrain: false,
+            satellite: true,
+            cadastral: false,
+          }
+        })
+        map?.setMapTypeId(window.naver.maps?.MapTypeId.HYBRID)
+      }
+    },
+    [map, setClickedMapType],
+  )
   return (
     <Flex css={ContainerStyle}>
       <MapTypeBox
         mapType={clickedMapType.basic}
         onClick={() => {
-          setClickedMapType((prev) => {
-            return {
-              ...prev,
-              basic: true,
-              terrain: false,
-              satellite: false,
-              cadastral: false,
-            }
-          })
+          handleMapTypeChange('basic')
         }}
       >
         <TextStyle mapType={clickedMapType.basic}>기본지도</TextStyle>
@@ -55,15 +91,7 @@ export default function MapType({
       <MapTypeBox
         mapType={clickedMapType.terrain}
         onClick={() => {
-          setClickedMapType((prev) => {
-            return {
-              ...prev,
-              basic: false,
-              terrain: true,
-              satellite: false,
-              cadastral: false,
-            }
-          })
+          handleMapTypeChange('terrain')
         }}
       >
         <TextStyle mapType={clickedMapType.terrain}>지형도</TextStyle>
@@ -71,15 +99,7 @@ export default function MapType({
       <MapTypeBox
         mapType={clickedMapType.satellite}
         onClick={() => {
-          setClickedMapType((prev) => {
-            return {
-              ...prev,
-              basic: false,
-              terrain: false,
-              satellite: true,
-              cadastral: false,
-            }
-          })
+          handleMapTypeChange('satellite')
         }}
       >
         <TextStyle mapType={clickedMapType.satellite}>위성지도</TextStyle>
