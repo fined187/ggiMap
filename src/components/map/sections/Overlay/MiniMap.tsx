@@ -75,7 +75,7 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
       <div
         id="miniMap"
         style={{
-          width: '298px',
+          width: '299px',
           height: '100%',
           borderRadius: '8px 8px 0px 0px',
         }}

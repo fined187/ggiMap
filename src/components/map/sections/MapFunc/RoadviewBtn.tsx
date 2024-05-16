@@ -1,7 +1,9 @@
 import Text from '@/components/shared/Text'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useEffect } from 'react'
+import useSWR from 'swr'
+import { MAP_KEY } from '../hooks/useMap'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -34,6 +36,18 @@ export default function RoadviewBtn({
   clickedMapType,
   setClickedMapType,
 }: MapTypeProps) {
+  const { data: map } = useSWR(MAP_KEY)
+  useEffect(() => {
+    if (map) {
+      const roadview = new window.naver.maps.StreetLayer()
+      if (clickedMapType.roadView === true) {
+        roadview.setMap(map)
+      } else {
+        roadview.setMap(map)
+        roadview.setMap(null)
+      }
+    }
+  }, [clickedMapType.roadView, map])
   return (
     <ContainerStyle
       roadview={clickedMapType.roadView}

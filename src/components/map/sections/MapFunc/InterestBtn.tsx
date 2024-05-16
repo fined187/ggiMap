@@ -96,8 +96,8 @@ export default function InterestBtn({
                 d="M9.00534 15.0933L1.79105 8.5586C-2.12977 4.63778 3.63383 -2.89018 9.00534 3.20015C14.3769 -2.89018 20.1143 4.66392 16.2196 8.5586L9.00534 15.0933Z"
                 fill="#ECECEC"
                 stroke="#9D9999"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           </div>

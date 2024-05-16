@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import Text from '@/components/shared/Text'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
+import { NaverMap } from '@/models/Map'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -37,6 +39,17 @@ export default function CadastralBtn({
   setClickedMapType,
 }: MapTypeProps) {
   const { data: map } = useSWR(MAP_KEY)
+  useEffect(() => {
+    if (map) {
+      const cadastral = new window.naver.maps.CadastralLayer()
+      if (clickedMapType.cadastral === true) {
+        cadastral.setMap(map as NaverMap)
+      } else {
+        cadastral.setMap(map as NaverMap)
+        cadastral.setMap(null)
+      }
+    }
+  }, [clickedMapType.cadastral, map])
 
   return (
     <ContainerStyle

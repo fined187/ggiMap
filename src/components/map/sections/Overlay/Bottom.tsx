@@ -10,8 +10,8 @@ import styled from '@emotion/styled'
 import { Dispatch, SetStateAction } from 'react'
 
 interface BottomProps {
-  clickedInfo: ItemDetail | null
-  setClickedInfo: Dispatch<SetStateAction<ItemDetail | null>>
+  clickedInfo: ItemDetail[] | null
+  setClickedInfo: Dispatch<SetStateAction<ItemDetail[] | null>>
   clickedItem: MapItem | null
   setClickedItem: Dispatch<SetStateAction<MapItem | null>>
 }
@@ -36,15 +36,7 @@ export default function Bottom({
       }}
     >
       <AmountContainer>
-        <Text css={AmountTextStyle}>
-          {clickedInfo?.winAmt === 0 && clickedInfo?.minAmt !== 0
-            ? useNum2Han(clickedInfo?.minAmt ?? 0)
-            : clickedInfo?.claimAmt ?? 0 > 0
-            ? useNum2Han(clickedInfo?.claimAmt ?? 0)
-            : useNum2Han(clickedInfo?.winAmt ?? 0)}
-          &nbsp;
-          {clickedItem?.type != 4 && '(' + clickedInfo?.ratio + '%)'}
-        </Text>
+        <Text css={AmountTextStyle}></Text>
         <Flex
           style={{
             width: '20px',
@@ -66,29 +58,29 @@ export default function Bottom({
             <path
               d="M10 19H17.6154C17.9826 19 18.3348 18.842 18.5945 18.5607C18.8541 18.2794 19 17.8978 19 17.5V2.5C19 2.10218 18.8541 1.72064 18.5945 1.43934C18.3348 1.15804 17.9826 1 17.6154 1H2.38461C2.01739 1 1.66521 1.15804 1.40554 1.43934C1.14588 1.72064 1 2.10218 1 2.5V10"
               stroke="#000001"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M19 5.84619H1"
               stroke="#000001"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M6.53857 13.4614L1.00011 18.9999"
               stroke="#000001"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M2.38477 13.4614H6.53861V16.2307V17.6153"
               stroke="black"
-              stroke-width="1.5"
-              stroke-linecap="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
             />
           </svg>
         </Flex>
@@ -110,7 +102,7 @@ export default function Bottom({
             }}
           />
           &nbsp;&nbsp;&nbsp;
-          <Text css={DetailTextStyle}>{clickedInfo?.usage ?? ''}</Text>
+          <Text css={DetailTextStyle}></Text>
         </Flex>
         {(clickedItem?.type === 1 ||
           clickedItem?.type === 2 ||
@@ -131,9 +123,7 @@ export default function Bottom({
               }}
             />
             &nbsp;&nbsp;&nbsp;
-            <Text css={DetailTextStyle}>
-              {'감정가 ' + useNum2Han(clickedInfo?.appraisalAmt ?? 0)}
-            </Text>
+            <Text css={DetailTextStyle}></Text>
           </Flex>
         )}
         {clickedItem?.type === 4 && (
@@ -142,67 +132,7 @@ export default function Bottom({
               flexDirection: 'row',
               position: 'relative',
             }}
-          >
-            {clickedInfo?.landArea ??
-              (0 > 0 ||
-                (clickedInfo?.buildingArea ??
-                  (0 > 0 ? (
-                    <div
-                      css={dotStyle}
-                      style={{
-                        backgroundColor: '#545454',
-                        position: 'absolute',
-                        left: 0,
-                        top: 7.5,
-                      }}
-                    >
-                      &nbsp;&nbsp;&nbsp;
-                    </div>
-                  ) : (
-                    <div
-                      css={dotStyle}
-                      style={{
-                        backgroundColor: '#545454',
-                        position: 'absolute',
-                        left: 0,
-                        top: 7.5,
-                      }}
-                    />
-                  ))))}
-            {clickedInfo?.landArea ??
-              (0 > 0 && (
-                <>
-                  <Text css={DetailTextStyle}>
-                    {clickedItem?.landArea === ''
-                      ? '토지 -'
-                      : clickedItem?.landArea}
-                  </Text>
-                  <Text
-                    style={{
-                      color: '#CBCBCB',
-                      fontFamily: 'SUIT',
-                      fontSize: '14px',
-                      fontStyle: 'normal',
-                      fontWeight: '600',
-                      lineHeight: '140%',
-                      letterSpacing: '-0.14px',
-                    }}
-                  >
-                    &nbsp;{' | '}&nbsp;
-                  </Text>
-                </>
-              ))}
-            {clickedInfo?.buildingArea ??
-              (0 > 0 && (
-                <>
-                  <Text css={DetailTextStyle}>
-                    {clickedItem?.buildingArea === ''
-                      ? '건물 -'
-                      : clickedItem?.buildingArea}
-                  </Text>
-                </>
-              ))}
-          </Flex>
+          ></Flex>
         )}
         {clickedItem?.type !== 4 && (
           <Flex
@@ -226,9 +156,7 @@ export default function Bottom({
               style={{
                 color: '#E9413E',
               }}
-            >
-              {'유찰 ' + clickedInfo?.failCount + '회'}
-            </Text>
+            ></Text>
             <Text
               style={{
                 color: '#CBCBCB',
@@ -242,31 +170,6 @@ export default function Bottom({
             >
               &nbsp;{' | '}&nbsp;
             </Text>
-            {clickedInfo?.landArea != '' && (
-              <>
-                <Text css={DetailTextStyle}>
-                  {'토지 ' + clickedInfo?.landArea}
-                </Text>
-                <Text
-                  style={{
-                    color: '#CBCBCB',
-                    fontFamily: 'SUIT',
-                    fontSize: '14px',
-                    fontStyle: 'normal',
-                    fontWeight: '600',
-                    lineHeight: '140%',
-                    letterSpacing: '-0.14px',
-                  }}
-                >
-                  &nbsp;{' | '}&nbsp;
-                </Text>
-              </>
-            )}
-            {clickedInfo?.buildingArea != '' && (
-              <Text css={DetailTextStyle}>
-                {'건물 ' + clickedInfo?.buildingArea ?? '-'}
-              </Text>
-            )}
           </Flex>
         )}
         {clickedItem?.type === 4 && (
@@ -300,7 +203,7 @@ export default function Bottom({
             >
               &nbsp;{' | '}&nbsp;
             </Text>
-            <Text css={DetailTextStyle}>{clickedInfo?.startDate}</Text>
+            <Text css={DetailTextStyle}></Text>
           </Flex>
         )}
         <Flex
@@ -326,9 +229,7 @@ export default function Bottom({
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
             }}
-          >
-            {clickedInfo?.shortAddress}
-          </Text>
+          ></Text>
         </Flex>
       </DetailContainer>
     </div>

@@ -2,10 +2,16 @@ import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 import { NaverMap } from '@/models/Map'
+
+declare global {
+  interface Window {
+    naver: any
+  }
+}
 
 interface ToolsBtnProps {
   clickedMapType: {
@@ -39,34 +45,18 @@ export default function ToolsBtn({
   setClickedMapType,
 }: ToolsBtnProps) {
   const { data: map } = useSWR(MAP_KEY)
-  // 지도 내 거리재기 함수
-  const startMode = (mode: string) => {
-    if (!mode) return
-    if (mode === 'distance') {
-    } else if (mode === 'area') {
-    }
-  }
 
-  const startDistance = () => {
-    if (map) {
-      const distanceListeners = [
-        naver.maps.Event.addListener(map, 'click', (e) => {
-          console.log(e.coord)
-        }),
-      ]
-    }
-  }
-
-  const onClickDistance = (e: any) => {}
   return (
     <Flex css={ContainerStyle}>
       <Distance
+        id="distance"
         distance={clickedMapType.distance}
         onClick={() => {
           setClickedMapType((prev) => {
             return {
               ...prev,
               distance: !prev.distance,
+              area: false,
             }
           })
         }}
@@ -87,38 +77,38 @@ export default function ToolsBtn({
             <path
               d="M5.92578 6.62109L8.04729 4.49959"
               stroke={`${clickedMapType.distance ? 'white' : '#000001'}`}
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M1.60547 6.54688L14.0303 18.9718"
               stroke={`${clickedMapType.distance ? 'white' : '#000001'}`}
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M5.84766 2.30469L18.2725 14.7296"
               stroke={`${clickedMapType.distance ? 'white' : '#000001'}`}
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M8.60156 9.29688L10.7231 7.17537"
               stroke={`${clickedMapType.distance ? 'white' : '#000001'}`}
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M11.2773 11.9766L13.3989 9.85506"
               stroke={`${clickedMapType.distance ? 'white' : '#000001'}`}
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M13.9531 14.6523L16.0746 12.5308"
               stroke={`${clickedMapType.distance ? 'white' : '#000001'}`}
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M1.79688 6.73828L6.03989 2.49527"
@@ -139,6 +129,7 @@ export default function ToolsBtn({
             return {
               ...prev,
               area: !prev.area,
+              distance: false,
             }
           })
         }}

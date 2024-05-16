@@ -1,21 +1,18 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import Flex from '@/components/shared/Flex'
 import { ItemDetail } from '@/models/ItemDetail'
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction, useState } from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import usePathUrl from '../../sideMenu/searchListBox/listBox/hooks/usePathUrl'
-import Image from 'next/image'
+import { Dispatch, SetStateAction } from 'react'
 import styled from '@emotion/styled'
 import Text from '@/components/shared/Text'
 import { MapItem } from '@/models/MapItem'
 import Interest from '../../icons/Interest'
 import MiniMap from './MiniMap'
-import { useRecoilState } from 'recoil'
-import { mapAtom } from '@/store/atom/map'
+import Carousel from './Carousel'
 
 interface TopProps {
-  clickedInfo: ItemDetail | null
-  setClickedInfo: Dispatch<SetStateAction<ItemDetail | null>>
+  clickedInfo: ItemDetail[] | null
+  setClickedInfo: Dispatch<SetStateAction<ItemDetail[] | null>>
   clickedItem: MapItem | null
   setClickedItem: Dispatch<SetStateAction<MapItem | null>>
 }
@@ -26,90 +23,15 @@ export default function Top({
   clickedItem,
   setClickedItem,
 }: TopProps) {
-  const pathUrl = usePathUrl(clickedItem?.type || 1)
-
   return (
     <Flex css={ContainerStyle}>
-      {clickedItem?.type !== 4 && (
-        <Swiper>
-          <SwiperSlide>
-            <Flex
-              style={{
-                position: 'relative',
-                width: '300px',
-              }}
-            >
-              <TypeStyle type={clickedItem?.type || 1}>
-                <Text css={TextStyle}>
-                  {clickedItem?.type === 1
-                    ? '경매'
-                    : clickedItem?.type === 2
-                    ? '캠코'
-                    : clickedItem?.type === 3
-                    ? '기관'
-                    : ''}
-                </Text>
-              </TypeStyle>
-              {clickedInfo?.share === 'Y' && (
-                <ShareType>
-                  <Text css={TextStyle}>지분</Text>
-                </ShareType>
-              )}
-              {clickedItem?.winYn === 'Y' && (
-                <WinType
-                  shareYn={clickedInfo?.share === 'Y'}
-                  style={{
-                    backgroundColor: '#FF4D00',
-                  }}
-                >
-                  <Text css={TextStyle}>낙찰</Text>
-                </WinType>
-              )}
-              <Flex
-                style={{
-                  position: 'absolute',
-                  top: 14,
-                  right: 14,
-                }}
-              >
-                <Interest interest={clickedInfo?.interest || ''} />
-              </Flex>
-              <Image
-                src={`${pathUrl}${clickedInfo?.path}`}
-                alt="image1"
-                width={300}
-                height={180}
-                style={{
-                  borderRadius: '8px 8px 0px 0px',
-                  width: '299px',
-                  height: '180px',
-                }}
-              />
-              <BottomBox
-                style={{
-                  flexDirection: 'row',
-                }}
-              >
-                <Text css={BottomTextStyle}>{clickedInfo?.usage}</Text>
-                &nbsp;
-                <Text css={BottomTextStyle}>
-                  {clickedItem?.type === 1
-                    ? clickedInfo?.caseNo
-                    : clickedItem?.type === 2 || 3
-                    ? clickedInfo?.manageNo
-                    : ''}
-                </Text>
-              </BottomBox>
-            </Flex>
-          </SwiperSlide>
-        </Swiper>
-      )}
-      {clickedItem?.type === 4 && (
+      {clickedItem?.type === 4 ? (
         <>
           <Flex
             style={{
               position: 'relative',
               width: '300px',
+              height: '180px',
             }}
           >
             <MiniMap
@@ -119,11 +41,9 @@ export default function Top({
             <TypeStyle type={clickedItem?.type || 1}>
               <Text css={TextStyle}>예정</Text>
             </TypeStyle>
-            {clickedInfo?.share === 'Y' && (
-              <ShareType>
-                <Text css={TextStyle}>지분</Text>
-              </ShareType>
-            )}
+            <ShareType>
+              <Text css={TextStyle}>지분</Text>
+            </ShareType>
             <Flex
               style={{
                 position: 'absolute',
@@ -132,7 +52,7 @@ export default function Top({
                 zIndex: 1,
               }}
             >
-              <Interest interest={clickedInfo?.interest as string} />
+              <Interest interest={clickedInfo?.[0].interest ?? ''} />
             </Flex>
             <BottomBox
               style={{
@@ -140,12 +60,14 @@ export default function Top({
                 zIndex: 1,
               }}
             >
-              <Text css={BottomTextStyle}>{clickedInfo?.usage}</Text>
-              &nbsp;
-              <Text css={BottomTextStyle}>{clickedInfo?.caseNo}</Text>
+              <Text css={BottomTextStyle}>
+                {clickedInfo && clickedInfo[0]?.caseNo}
+              </Text>
             </BottomBox>
           </Flex>
         </>
+      ) : (
+        <Carousel clickedInfo={clickedInfo} clickedItem={clickedItem} />
       )}
     </Flex>
   )
@@ -154,7 +76,6 @@ export default function Top({
 const ContainerStyle = css`
   width: 300px;
   height: 180px;
-  flex-shrink: 0;
   border-radius: 8px 8px 0px 0px;
 `
 
@@ -178,16 +99,6 @@ const BottomBox = styled.div`
   bottom: 0;
   padding: 5px 0px 5px 14px;
   flex-direction: row;
-`
-
-const BottomTextStyle = css`
-  color: #fff;
-  font-family: SUIT;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 140%;
-  letter-spacing: -0.14px;
 `
 
 const TypeStyle = styled.div<{ type: number }>`
@@ -226,17 +137,12 @@ const ShareType = styled.div`
   top: 13px;
   left: 60px;
 `
-
-const WinType = styled.div<{ shareYn: boolean }>`
-  display: flex;
-  width: 39px;
-  padding: 2px 6px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  border: 0.5px solid #fff;
-  background: #f00;
-  position: absolute;
-  top: 13px;
-  left: ${({ shareYn }) => (shareYn ? '106px' : '60px')};
+const BottomTextStyle = css`
+  color: #fff;
+  font-family: SUIT;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%;
+  letter-spacing: -0.14px;
 `
