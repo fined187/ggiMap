@@ -24,21 +24,14 @@ interface OverlayProps {
   openOverlay: boolean
 }
 
-export default function Overlay({
-  clickedItem,
-  setClickedItem,
-  setOpenOverlay,
-  markerClickedRef,
-  openOverlay,
-}: OverlayProps) {
+export default function Overlay({ clickedItem, setClickedItem }: OverlayProps) {
   const [clickedInfo, setClickedInfo] = useState<ItemDetail[] | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
-  const [imagesUrl, setImagesUrl] = useState<string[]>([])
-  const [idArr, setIdArr] = useState<string[]>([])
+  const [nowIndex, setNowIndex] = useState<number>(0)
   const handleGetIds = (pnu: string) => {
     let ids: string[] = []
-    for (const pnus of mapItems) {
+    for (const pnus of mapItems ?? []) {
       if (pnus.pnu === pnu) {
         ids.push(pnus.id)
       }
@@ -58,12 +51,16 @@ export default function Overlay({
         setClickedInfo={setClickedInfo}
         clickedItem={clickedItem}
         setClickedItem={setClickedItem}
+        nowIndex={nowIndex}
+        setNowIndex={setNowIndex}
       />
       <Bottom
         clickedInfo={clickedInfo}
         setClickedInfo={setClickedInfo}
         clickedItem={clickedItem}
         setClickedItem={setClickedItem}
+        nowIndex={nowIndex}
+        setNowIndex={setNowIndex}
       />
     </Flex>
   )
@@ -74,7 +71,7 @@ const Overlaytop = css`
   height: 326px;
   border-radius: 8px 8px 8px 8px;
   border: 0.5px solid #9d9999;
-  z-index: 100;
+  z-index: 10;
   position: absolute;
   top: 50%;
   left: 50%;

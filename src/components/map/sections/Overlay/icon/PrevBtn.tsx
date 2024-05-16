@@ -24,7 +24,7 @@ export default function PrevBtn() {
         viewBox="0 0 25 25"
         fill="none"
       >
-        <circle cx="12.5" cy="12.5" r="12.5" fill="black" fill-opacity="0.44" />
+        <circle cx="12.5" cy="12.5" r="12.5" fill="black" fillOpacity="0.44" />
         <path
           d="M15 7.5L7.81202 12.292C7.66359 12.3909 7.66359 12.6091 7.81202 12.708L15 17.5"
           stroke="white"

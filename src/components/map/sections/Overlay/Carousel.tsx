@@ -1,6 +1,6 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import usePathUrl from '../../sideMenu/searchListBox/listBox/hooks/usePathUrl'
 import { ItemDetail } from '@/models/ItemDetail'
@@ -20,15 +20,19 @@ import Interest from '../../icons/Interest'
 export default function Carousel({
   clickedInfo,
   clickedItem,
+  nowIndex,
+  setNowIndex,
 }: {
   clickedInfo: ItemDetail[] | null
   clickedItem: MapItem | null
+  nowIndex: number
+  setNowIndex: Dispatch<SetStateAction<number>>
 }) {
   const [image, setImage] = useState<string[]>([])
   const pathUrl = usePathUrl(clickedItem?.type || 1)
   useEffect(() => {
     if (clickedInfo) {
-      setImage(clickedInfo.map((info) => pathUrl + info.path))
+      setImage(clickedInfo.map((info) => pathUrl + info.path ?? ''))
     }
   }, [clickedInfo, pathUrl])
   return (
@@ -40,6 +44,9 @@ export default function Carousel({
         style={{
           width: '299px',
           height: '180px',
+        }}
+        onSlideChange={(swiper) => {
+          setNowIndex(swiper.activeIndex)
         }}
       >
         {image.map((img, index) => (
@@ -88,7 +95,7 @@ export default function Carousel({
             <LazyLoadImage
               src={img}
               alt="image"
-              width="100%"
+              width="299px"
               height="100%"
               css={imageStyles}
             />

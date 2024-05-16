@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Flex from '@/components/shared/Flex'
-import Spacing from '@/components/shared/Spacing'
 import Text from '@/components/shared/Text'
 import { ItemDetail } from '@/models/ItemDetail'
 import { MapItem } from '@/models/MapItem'
@@ -14,6 +13,8 @@ interface BottomProps {
   setClickedInfo: Dispatch<SetStateAction<ItemDetail[] | null>>
   clickedItem: MapItem | null
   setClickedItem: Dispatch<SetStateAction<MapItem | null>>
+  nowIndex: number
+  setNowIndex: Dispatch<SetStateAction<number>>
 }
 
 export default function Bottom({
@@ -21,6 +22,8 @@ export default function Bottom({
   setClickedInfo,
   clickedItem,
   setClickedItem,
+  nowIndex,
+  setNowIndex,
 }: BottomProps) {
   return (
     <div
@@ -36,7 +39,13 @@ export default function Bottom({
       }}
     >
       <AmountContainer>
-        <Text css={AmountTextStyle}></Text>
+        <Text css={AmountTextStyle}>
+          {clickedItem?.type === 4
+            ? useNum2Han(clickedInfo?.[nowIndex].claimAmt || 0)
+            : clickedItem?.winYn === 'Y'
+            ? useNum2Han(clickedInfo?.[nowIndex].winAmt || 0)
+            : useNum2Han(clickedInfo?.[nowIndex].minAmt || 0)}
+        </Text>
         <Flex
           style={{
             width: '20px',
@@ -102,7 +111,7 @@ export default function Bottom({
             }}
           />
           &nbsp;&nbsp;&nbsp;
-          <Text css={DetailTextStyle}></Text>
+          <Text css={DetailTextStyle}>{clickedInfo?.[nowIndex].usage}</Text>
         </Flex>
         {(clickedItem?.type === 1 ||
           clickedItem?.type === 2 ||
@@ -123,17 +132,34 @@ export default function Bottom({
               }}
             />
             &nbsp;&nbsp;&nbsp;
-            <Text css={DetailTextStyle}></Text>
+            <Text css={DetailTextStyle}>
+              {'감정가 ' +
+                useNum2Han(clickedInfo?.[nowIndex].appraisalAmt || 0)}
+            </Text>
           </Flex>
         )}
-        {clickedItem?.type === 4 && (
-          <Flex
-            style={{
-              flexDirection: 'row',
-              position: 'relative',
-            }}
-          ></Flex>
-        )}
+        {clickedItem?.type === 4 &&
+          clickedInfo &&
+          clickedInfo?.[nowIndex].landArea && (
+            <>
+              <Text
+                style={{
+                  color: '#CBCBCB',
+                  fontFamily: 'SUIT',
+                  fontSize: '14px',
+                  fontStyle: 'normal',
+                  fontWeight: '600',
+                  lineHeight: '140%',
+                  letterSpacing: '-0.14px',
+                }}
+              >
+                &nbsp;{' | '}&nbsp;
+              </Text>
+              <Text css={DetailTextStyle}>
+                {'토지 ' + clickedInfo?.[nowIndex].landArea}
+              </Text>
+            </>
+          )}
         {clickedItem?.type !== 4 && (
           <Flex
             style={{
@@ -156,20 +182,49 @@ export default function Bottom({
               style={{
                 color: '#E9413E',
               }}
-            ></Text>
-            <Text
-              style={{
-                color: '#CBCBCB',
-                fontFamily: 'SUIT',
-                fontSize: '14px',
-                fontStyle: 'normal',
-                fontWeight: '600',
-                lineHeight: '140%',
-                letterSpacing: '-0.14px',
-              }}
             >
-              &nbsp;{' | '}&nbsp;
+              {'유찰 ' + clickedInfo?.[nowIndex].failCount + '회'}
             </Text>
+            {clickedInfo?.[nowIndex].landArea && (
+              <>
+                <Text
+                  style={{
+                    color: '#CBCBCB',
+                    fontFamily: 'SUIT',
+                    fontSize: '14px',
+                    fontStyle: 'normal',
+                    fontWeight: '600',
+                    lineHeight: '140%',
+                    letterSpacing: '-0.14px',
+                  }}
+                >
+                  &nbsp;{' | '}&nbsp;
+                </Text>
+                <Text css={DetailTextStyle}>
+                  {'토지 ' + clickedInfo?.[nowIndex].landArea}
+                </Text>
+              </>
+            )}
+            {clickedInfo?.[nowIndex].buildingArea && (
+              <>
+                <Text
+                  style={{
+                    color: '#CBCBCB',
+                    fontFamily: 'SUIT',
+                    fontSize: '14px',
+                    fontStyle: 'normal',
+                    fontWeight: '600',
+                    lineHeight: '140%',
+                    letterSpacing: '-0.14px',
+                  }}
+                >
+                  &nbsp;{' | '}&nbsp;
+                </Text>
+                <Text css={DetailTextStyle}>
+                  {'건물 ' + clickedInfo?.[nowIndex].buildingArea}
+                </Text>
+              </>
+            )}
           </Flex>
         )}
         {clickedItem?.type === 4 && (
@@ -203,7 +258,9 @@ export default function Bottom({
             >
               &nbsp;{' | '}&nbsp;
             </Text>
-            <Text css={DetailTextStyle}></Text>
+            <Text css={DetailTextStyle}>
+              {clickedInfo?.[nowIndex].startDate}
+            </Text>
           </Flex>
         )}
         <Flex
@@ -229,7 +286,9 @@ export default function Bottom({
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
             }}
-          ></Text>
+          >
+            {clickedInfo?.[nowIndex].shortAddress}
+          </Text>
         </Flex>
       </DetailContainer>
     </div>

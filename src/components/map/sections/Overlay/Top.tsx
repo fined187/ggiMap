@@ -15,6 +15,8 @@ interface TopProps {
   setClickedInfo: Dispatch<SetStateAction<ItemDetail[] | null>>
   clickedItem: MapItem | null
   setClickedItem: Dispatch<SetStateAction<MapItem | null>>
+  nowIndex: number
+  setNowIndex: Dispatch<SetStateAction<number>>
 }
 
 export default function Top({
@@ -22,6 +24,8 @@ export default function Top({
   setClickedInfo,
   clickedItem,
   setClickedItem,
+  nowIndex,
+  setNowIndex,
 }: TopProps) {
   return (
     <Flex css={ContainerStyle}>
@@ -67,7 +71,12 @@ export default function Top({
           </Flex>
         </>
       ) : (
-        <Carousel clickedInfo={clickedInfo} clickedItem={clickedItem} />
+        <Carousel
+          clickedInfo={clickedInfo}
+          clickedItem={clickedItem}
+          nowIndex={nowIndex}
+          setNowIndex={setNowIndex}
+        />
       )}
     </Flex>
   )
