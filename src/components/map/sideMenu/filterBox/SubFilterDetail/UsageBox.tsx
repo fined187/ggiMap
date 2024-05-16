@@ -44,6 +44,12 @@ export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
                 )
                   ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
+                borderLeft:
+                  index === 0
+                    ? Object.keys(USAGE)[index + 4].toString()
+                      ? `1px solid ${colors.selectedFilter}`
+                      : `1px solid ${colors.borderGray}`
+                    : '',
               }}
             >
               <Text
@@ -83,6 +89,12 @@ export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
                 )
                   ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
+                borderLeft:
+                  index === 0
+                    ? Object.keys(USAGE)[index + 4].toString()
+                      ? `1px solid ${colors.selectedFilter}`
+                      : `1px solid ${colors.borderGray}`
+                    : '',
               }}
             >
               <Text
@@ -122,6 +134,12 @@ export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
                 )
                   ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
+                borderLeft:
+                  index === 0
+                    ? Object.keys(USAGE)[index + 4].toString()
+                      ? `1px solid ${colors.selectedFilter}`
+                      : `1px solid ${colors.borderGray}`
+                    : '',
               }}
             >
               <Text
@@ -158,6 +176,12 @@ export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
                 )
                   ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
+                borderLeft:
+                  index === 0
+                    ? Object.keys(USAGE)[index + 4].toString()
+                      ? `1px solid ${colors.selectedFilter}`
+                      : `1px solid ${colors.borderGray}`
+                    : '',
               }}
               onClick={() => {
                 handleAddUsage(Number(Object.keys(USAGE)[index + 10]))

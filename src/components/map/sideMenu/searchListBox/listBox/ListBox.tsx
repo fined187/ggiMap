@@ -10,10 +10,16 @@ import { Items } from '@/models/ListItems'
 interface ListBoxProps {
   formData: Form
   setFormData: React.Dispatch<React.SetStateAction<Form>>
+  isOpen: boolean
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function ListBox({ formData, setFormData }: ListBoxProps) {
-  const [isOpen, setIsOpen] = useState(true)
+export default function ListBox({
+  formData,
+  setFormData,
+  isOpen,
+  setIsOpen,
+}: ListBoxProps) {
   const [listItems, setListItems] = useState<Items | null>(null)
   const { data: map } = useSWR(MAP_KEY)
   return (

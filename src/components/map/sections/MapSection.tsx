@@ -10,11 +10,9 @@ import {
 } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
-import { Coordinates, NaverMap } from '@/models/Map'
+import { NaverMap } from '@/models/Map'
 import useMap, { INITIAL_CENTER, INITIAL_ZOOM, MAP_KEY } from './hooks/useMap'
 import Map from './GGIMap'
-import MapType from './mapType/MapType'
-import MapFunction from './MapFunc/MapFunction'
 import BoxGuard from '@/components/shared/BoxGuard'
 import SearchBox from '../sideMenu/searchBox'
 import ListBox from '../sideMenu/searchListBox/listBox/ListBox'
@@ -53,7 +51,15 @@ export default function MapSection({ formData, setFormData }: MapProps) {
   const [openOverlay, setOpenOverlay] = useState(false)
   const [clickedItem, setClickedItem] = useState<MapItem | null>(null)
   const markerClickedRef = useRef(false)
-  const { data: map } = useSWR(MAP_KEY)
+  const [isOpen, setIsOpen] = useState(true)
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const { data: map } = useSWR<NaverMap>(MAP_KEY)
+  const [style, setStyle] = useState({
+    position: 'absolute',
+    width: '300px',
+    height: '326px',
+    zIndex: 999,
+  })
 
   const [clickedMapType, setClickedMapType] = useState({
     basic: true,
@@ -144,7 +150,56 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     }
   }, [mapItems])
 
-  const handleGetOffset = useCallback((x: number, y: number) => {}, [])
+  useEffect(() => {
+    const handleGetPosition = (x: number, y: number) => {
+      if (window !== undefined) {
+        // 1. 왼쪽에 300px 이상 여유가 있으면서 아래에 326px 이상 여유가 있을 때 -> x값 그대로, y값 + 170px
+        if (innerWidth - x > 300 && innerHeight - y > 500) {
+          console.log('1')
+          console.log(innerHeight - y)
+          setStyle((prev) => {
+            return {
+              ...prev,
+              left: x + 340 + 'px',
+              top: y + 400 + 'px',
+            }
+          })
+        } // 2. 왼쪽에 300px 이상 여유가 있으면서 아래에 326px 미만 여유가 있을 때 -> x값 그대로, y값  + 170px
+        else if (innerWidth - x > 300 && innerHeight - y <= 500) {
+          console.log('2')
+          setStyle((prev) => {
+            return {
+              ...prev,
+              left: x + 340 + 'px',
+              top: y - 80 + 'px',
+            }
+          })
+        } // 3. 왼쪽에 300px 미만 여유가 있으면서 아래에 326px 이상 여유가 있을 때 -> x값 - 300px, y값 그대로
+        else if (innerWidth - x <= 300 && innerHeight - y > 500) {
+          console.log('3')
+          setStyle((prev) => {
+            return {
+              ...prev,
+              left: x - 300,
+              top: y + 170,
+            }
+          })
+        } // 4. 왼쪽에 300px 미만 여유가 있으면서 아래에 326px 미만 여유가 있을 때 -> x값 - 300px, y값 - 170px
+        else if (innerWidth - x <= 300 && innerHeight - y <= 500) {
+          console.log('4')
+          setStyle((prev) => {
+            return {
+              ...prev,
+              left: x - 300,
+              top: y - 170,
+            }
+          })
+        }
+      }
+    }
+    handleGetPosition(offset.x, offset.y)
+    console.log(offset)
+  }, [offset])
   return (
     <>
       <Map
@@ -165,14 +220,19 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         setClickedMapType={setClickedMapType}
         center={center}
       />
-      <BoxGuard>
+      <BoxGuard isOpen={isOpen} setIsOpen={setIsOpen}>
         <SearchBox
           formData={formData}
           setFormData={setFormData}
           center={center}
           setCenter={setCenter}
         />
-        <ListBox formData={formData} setFormData={setFormData} />
+        <ListBox
+          formData={formData}
+          setFormData={setFormData}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
       </BoxGuard>
       <Flex direction="column">
         <TopBar openCursor={openCursor}>
@@ -248,6 +308,8 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         clickedItem={clickedItem}
         setClickedItem={setClickedItem}
         markerClickedRef={markerClickedRef}
+        offset={offset}
+        setOffset={setOffset}
       />
       <Clusterings formData={formData} item={mapCount} />
       {openOverlay && (
@@ -257,6 +319,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
           openOverlay={openOverlay}
           setOpenOverlay={setOpenOverlay}
           markerClickedRef={markerClickedRef}
+          style={style}
         />
       )}
     </>

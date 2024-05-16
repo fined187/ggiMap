@@ -43,8 +43,8 @@ export default function Bottom({
           {clickedItem?.type === 4
             ? useNum2Han(clickedInfo?.[nowIndex].claimAmt || 0)
             : clickedItem?.winYn === 'Y'
-            ? useNum2Han(clickedInfo?.[nowIndex].winAmt || 0)
-            : useNum2Han(clickedInfo?.[nowIndex].minAmt || 0)}
+            ? useNum2Han(clickedInfo?.[nowIndex]?.winAmt || 0)
+            : useNum2Han(clickedInfo?.[nowIndex]?.minAmt || 0)}
         </Text>
         <Flex
           style={{

@@ -22,9 +22,14 @@ interface OverlayProps {
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
   markerClickedRef: MutableRefObject<boolean>
   openOverlay: boolean
+  style: any
 }
 
-export default function Overlay({ clickedItem, setClickedItem }: OverlayProps) {
+export default function Overlay({
+  clickedItem,
+  setClickedItem,
+  style,
+}: OverlayProps) {
   const [clickedInfo, setClickedInfo] = useState<ItemDetail[] | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
@@ -45,7 +50,15 @@ export default function Overlay({ clickedItem, setClickedItem }: OverlayProps) {
   )
 
   return (
-    <Flex css={Overlaytop} ref={ref}>
+    <Flex
+      css={Overlaytop}
+      ref={ref}
+      style={{
+        left: style.left,
+        top: style.top,
+        position: 'absolute',
+      }}
+    >
       <Top
         clickedInfo={clickedInfo}
         setClickedInfo={setClickedInfo}

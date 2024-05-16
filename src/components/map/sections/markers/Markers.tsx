@@ -21,6 +21,8 @@ interface MarkersProps {
   clickedItem: any
   setClickedItem: any
   markerClickedRef: MutableRefObject<boolean>
+  offset: { x: number; y: number }
+  setOffset: Dispatch<SetStateAction<{ x: number; y: number }>>
 }
 
 export default function Markers({
@@ -30,6 +32,8 @@ export default function Markers({
   clickedItem,
   setClickedItem,
   markerClickedRef,
+  offset,
+  setOffset,
 }: MarkersProps) {
   const { data: map } = useSWR<NaverMap>(MAP_KEY)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
@@ -50,6 +54,8 @@ export default function Markers({
                 clickedItem={clickedItem}
                 setClickedItem={setClickedItem}
                 markerClickedRef={markerClickedRef}
+                offset={offset}
+                setOffset={setOffset}
               />
             )
           })

@@ -1,13 +1,25 @@
 import { css } from '@emotion/react'
 import Flex from './Flex'
 
-export default function BoxGuard({ children }: { children: React.ReactNode }) {
+export default function BoxGuard({
+  children,
+  isOpen,
+  setIsOpen,
+}: {
+  children: React.ReactNode
+  isOpen: boolean
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+}) {
   return (
     <Flex
       justify="start"
       align="center"
       direction="column"
       css={ContainerStyle}
+      style={{
+        height: isOpen ? '98%' : '',
+        gap: isOpen ? '10px' : '19px',
+      }}
     >
       {children}
     </Flex>
@@ -15,11 +27,9 @@ export default function BoxGuard({ children }: { children: React.ReactNode }) {
 }
 
 const ContainerStyle = css`
-  height: 98vh;
   top: 1%;
   left: 1%;
   z-index: 10;
   background-color: none;
   position: absolute;
-  transition: all 0.5s ease-in-out;
 `

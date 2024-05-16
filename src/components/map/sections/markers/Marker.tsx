@@ -6,6 +6,7 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 
@@ -37,6 +38,8 @@ interface MarkerProps {
   clickedItem: any
   setClickedItem: any
   markerClickedRef: MutableRefObject<boolean>
+  offset: { x: number; y: number }
+  setOffset: Dispatch<SetStateAction<{ x: number; y: number }>>
 }
 
 const Marker = ({
@@ -48,8 +51,11 @@ const Marker = ({
   clickedItem,
   setClickedItem,
   markerClickedRef,
+  offset,
+  setOffset,
 }: MarkerProps) => {
   const [count, setCount] = useState<number>(0)
+  const mapRef = useRef<NaverMap | null>(null)
 
   const handleGetItemPnuCounts = useCallback(() => {
     if (
@@ -362,13 +368,15 @@ const Marker = ({
       if (marker1) {
         naver.maps.Event?.addListener(marker1, 'click', (e) => {
           handleMarkerClick(item)
-          console.log(e.offset)
         })
       }
       if (marker2) {
         naver.maps.Event?.addListener(marker2, 'click', (e) => {
           handleMarkerClick(item)
-          console.log(e.offset)
+          const clickedPosition = marker2?.getPosition()
+          const projection = map.getProjection()
+          const pixelPosition = projection.fromCoordToOffset(clickedPosition!)
+          setOffset({ x: pixelPosition.x, y: pixelPosition.y })
         })
       }
     }

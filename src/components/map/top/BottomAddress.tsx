@@ -248,6 +248,7 @@ const ContainerStyle = css`
   border-radius: 10px;
   padding: 10px;
   align-items: start;
+  z-index: 100;
 `
 
 const TextStyle = css`
