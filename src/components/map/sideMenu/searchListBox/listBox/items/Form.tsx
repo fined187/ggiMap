@@ -13,12 +13,19 @@ import Interest from '@/components/map/icons/Interest'
 
 interface ItemProps {
   item: Partial<GmgItems | KmItems | KwItems>
+  index: number
 }
 
-function Form({ item }: ItemProps) {
+function Form({ item, index }: ItemProps) {
   const url = usePathUrl(item.type ?? 1)
   return (
-    <Flex direction="column" css={ContainerStyle}>
+    <Flex
+      direction="column"
+      css={ContainerStyle}
+      style={{
+        borderTop: `${index === 0 ? '' : '0.5px solid #e0e0e0 '}`,
+      }}
+    >
       <ListRow
         left={
           <LeftTextStyle
@@ -156,7 +163,6 @@ const ContainerStyle = css`
   width: 350px;
   height: 208px;
   flex-shrink: 0;
-  border-top: 0.5px solid #e0e0e0;
   left: 10px;
 `
 

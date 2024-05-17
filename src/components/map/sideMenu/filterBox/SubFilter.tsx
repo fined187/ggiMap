@@ -39,10 +39,11 @@ export default function SubFilter({
       !isBoxOpen.lowPrice &&
       !isBoxOpen.finished
     ) {
-      setFormData({
-        ...formData,
-        lastFilter: 0,
-        isSubFilterBoxOpen: false,
+      setFormData((prev) => {
+        return {
+          ...prev,
+          isSubFilterBoxOpen: false,
+        }
       })
     } else {
       setFormData({
@@ -141,6 +142,9 @@ export default function SubFilter({
       <Arrow
         isOpenArrow={formData.isSubFilterBoxOpen}
         setIsOpenArrow={setFormData}
+        isBoxOpen={isBoxOpen}
+        setIsBoxOpen={setIsBoxOpen}
+        formData={formData}
       />
     </Flex>
   )

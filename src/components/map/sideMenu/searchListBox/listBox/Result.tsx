@@ -94,7 +94,7 @@ function Result({
                     isLoading ? (
                       <ListSkeleton key={index} />
                     ) : (
-                      <Km key={index} kmItem={item} />
+                      <Km key={index} kmItem={item} index={index} />
                     ),
                   )
                 : null}
@@ -103,7 +103,7 @@ function Result({
                     isLoading ? (
                       <ListSkeleton key={index} />
                     ) : (
-                      <Kw key={index} kwItem={item} />
+                      <Kw key={index} kwItem={item} index={index} />
                     ),
                   )
                 : null}
@@ -112,7 +112,7 @@ function Result({
                     isLoading ? (
                       <ListSkeleton key={index} />
                     ) : (
-                      <Gmg key={index} gmgItem={item} />
+                      <Gmg key={index} gmgItem={item} index={index} />
                     ),
                   )
                 : null}

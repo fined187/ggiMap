@@ -1,25 +1,113 @@
 import { Form } from '@/models/Form'
+import { useEffect } from 'react'
 
-export default function Arrow({
-  isOpenArrow,
-  setIsOpenArrow,
-}: {
+interface ArrowProps {
+  isBoxOpen: {
+    finished: boolean
+    usage: boolean
+    lowPrice: boolean
+    price: boolean
+  }
+  setIsBoxOpen: React.Dispatch<
+    React.SetStateAction<{
+      finished: boolean
+      usage: boolean
+      lowPrice: boolean
+      price: boolean
+    }>
+  >
   isOpenArrow: boolean
   setIsOpenArrow: React.Dispatch<React.SetStateAction<Form>>
-}) {
+  formData: Form
+}
+
+export default function Arrow({
+  isBoxOpen,
+  setIsBoxOpen,
+  isOpenArrow,
+  setIsOpenArrow,
+  formData,
+}: ArrowProps) {
+  useEffect(() => {
+    if (formData.lastFilter === 1) {
+      if (isOpenArrow) {
+        setIsBoxOpen((prev) => {
+          return {
+            ...prev,
+            finished: true,
+          }
+        })
+      } else {
+        setIsBoxOpen((prev) => {
+          return {
+            ...prev,
+            finished: false,
+          }
+        })
+      }
+    } else if (formData.lastFilter === 2) {
+      if (isOpenArrow) {
+        setIsBoxOpen((prev) => {
+          return {
+            ...prev,
+            usage: true,
+          }
+        })
+      } else {
+        setIsBoxOpen((prev) => {
+          return {
+            ...prev,
+            usage: false,
+          }
+        })
+      }
+    } else if (formData.lastFilter === 3) {
+      if (isOpenArrow) {
+        setIsBoxOpen((prev) => {
+          return {
+            ...prev,
+            price: true,
+          }
+        })
+      } else {
+        setIsBoxOpen((prev) => {
+          return {
+            ...prev,
+            price: false,
+          }
+        })
+      }
+    } else if (formData.lastFilter === 4) {
+      if (isOpenArrow) {
+        setIsBoxOpen((prev) => {
+          return {
+            ...prev,
+            lowPrice: true,
+          }
+        })
+      } else {
+        setIsBoxOpen((prev) => {
+          return {
+            ...prev,
+            lowPrice: false,
+          }
+        })
+      }
+    }
+  }, [isOpenArrow])
   return (
     <div
       style={{
         cursor: 'pointer',
       }}
-      onClick={() =>
+      onClick={() => {
         setIsOpenArrow((prev) => {
           return {
             ...prev,
             isSubFilterBoxOpen: !prev.isSubFilterBoxOpen,
           }
         })
-      }
+      }}
     >
       {isOpenArrow ? (
         <svg

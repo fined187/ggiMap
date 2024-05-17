@@ -106,14 +106,14 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     initializeMap(map)
   }
 
-  const handleSyncMap = () => {
+  const handleSyncMap = useCallback(() => {
     setFormData((prev) => {
       return {
         ...prev,
         interests: clickedMapType.interest,
       }
     })
-  }
+  }, [clickedMapType])
 
   const handleGetPnuCounts = useCallback(() => {
     const countsMap: {
@@ -150,56 +150,15 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     }
   }, [mapItems])
 
-  useEffect(() => {
-    const handleGetPosition = (x: number, y: number) => {
-      if (window !== undefined) {
-        // 1. 왼쪽에 300px 이상 여유가 있으면서 아래에 326px 이상 여유가 있을 때 -> x값 그대로, y값 + 170px
-        if (innerWidth - x > 300 && innerHeight - y > 500) {
-          console.log('1')
-          console.log(innerHeight - y)
-          setStyle((prev) => {
-            return {
-              ...prev,
-              left: x + 340 + 'px',
-              top: y + 400 + 'px',
-            }
-          })
-        } // 2. 왼쪽에 300px 이상 여유가 있으면서 아래에 326px 미만 여유가 있을 때 -> x값 그대로, y값  + 170px
-        else if (innerWidth - x > 300 && innerHeight - y <= 500) {
-          console.log('2')
-          setStyle((prev) => {
-            return {
-              ...prev,
-              left: x + 340 + 'px',
-              top: y - 80 + 'px',
-            }
-          })
-        } // 3. 왼쪽에 300px 미만 여유가 있으면서 아래에 326px 이상 여유가 있을 때 -> x값 - 300px, y값 그대로
-        else if (innerWidth - x <= 300 && innerHeight - y > 500) {
-          console.log('3')
-          setStyle((prev) => {
-            return {
-              ...prev,
-              left: x - 300,
-              top: y + 170,
-            }
-          })
-        } // 4. 왼쪽에 300px 미만 여유가 있으면서 아래에 326px 미만 여유가 있을 때 -> x값 - 300px, y값 - 170px
-        else if (innerWidth - x <= 300 && innerHeight - y <= 500) {
-          console.log('4')
-          setStyle((prev) => {
-            return {
-              ...prev,
-              left: x - 300,
-              top: y - 170,
-            }
-          })
-        }
-      }
+  const handleGetPageXY = (e: MouseEvent) => {
+    if (window !== undefined) {
+      setOffset({
+        x: e.pageX,
+        y: e.pageY,
+      })
     }
-    handleGetPosition(offset.x, offset.y)
-    console.log(offset)
-  }, [offset])
+  }
+
   return (
     <>
       <Map

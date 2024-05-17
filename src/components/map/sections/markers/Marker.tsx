@@ -55,8 +55,6 @@ const Marker = ({
   setOffset,
 }: MarkerProps) => {
   const [count, setCount] = useState<number>(0)
-  const mapRef = useRef<NaverMap | null>(null)
-
   const handleGetItemPnuCounts = useCallback(() => {
     if (
       pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ??
@@ -122,6 +120,7 @@ const Marker = ({
           ? (marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
+              zIndex: 100,
               icon: {
                 content: `
               <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 100;">
@@ -162,6 +161,7 @@ const Marker = ({
           ? (marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
+              zIndex: 100,
               icon: {
                 content: `
                 <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 90;">
@@ -187,6 +187,7 @@ const Marker = ({
           ? (marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
+              zIndex: 90,
               icon: {
                 content: `
                 <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 90;">
@@ -202,6 +203,7 @@ const Marker = ({
           ? (marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
+              zIndex: 80,
               icon: {
                 content: `
                 <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 80;">
@@ -242,6 +244,7 @@ const Marker = ({
           ? (marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
+              zIndex: 95,
               icon: {
                 content: `
                   <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 95;">
@@ -269,6 +272,7 @@ const Marker = ({
           ? (marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
+              zIndex: 95,
               icon: {
                 content: `
                   <div style="z-index: 95;">
@@ -300,9 +304,10 @@ const Marker = ({
           ? (marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
+              zIndex: 70,
               icon: {
                 content: `
-                <div style="z-index: 70;">
+                <div id='winMarker' style="z-index: 70;">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <g filter="url(#filter0_d_905_256)">
                       <circle cx="8" cy="6" r="6" fill="#FF4D00"/>
@@ -330,9 +335,10 @@ const Marker = ({
           ? (marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
+              zIndex: 70,
               icon: {
                 content: `
-                <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 70;">
+                <div id='winMarker' style="flex-direction: row; display: flex; margin-top: -30px; z-index: 70;">
                   ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                   ${
                     item.interest != 'Y' && item.share === 'Y'
@@ -354,6 +360,7 @@ const Marker = ({
           ? (marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
+              zIndex: 60,
               icon: {
                 content: `
                 <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 60;">
@@ -369,15 +376,27 @@ const Marker = ({
         naver.maps.Event?.addListener(marker1, 'click', (e) => {
           handleMarkerClick(item)
         })
+        if (item.winYn === 'Y') {
+          naver.maps.Event?.addListener(marker1, 'mouseover', (e) => {
+            marker1?.setZIndex(110)
+          })
+          naver.maps.Event?.addListener(marker1, 'mouseout', (e) => {
+            marker1?.setZIndex(70)
+          })
+        }
       }
       if (marker2) {
         naver.maps.Event?.addListener(marker2, 'click', (e) => {
           handleMarkerClick(item)
-          const clickedPosition = marker2?.getPosition()
-          const projection = map.getProjection()
-          const pixelPosition = projection.fromCoordToOffset(clickedPosition!)
-          setOffset({ x: pixelPosition.x, y: pixelPosition.y })
         })
+        if (item.winYn === 'Y') {
+          naver.maps.Event?.addListener(marker2, 'mouseover', (e) => {
+            marker2?.setZIndex(110)
+          })
+          naver.maps.Event?.addListener(marker2, 'mouseout', (e) => {
+            marker2?.setZIndex(70)
+          })
+        }
       }
     }
     return () => {
