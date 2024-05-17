@@ -9,7 +9,7 @@ export const PnuCountIcon = (
 ) => {
   return `
   <div style="position: absolute; z-index: 100; right: 0px; top: ${
-    top ? `${top}px` : '-40px'
+    top ? `${top}px` : '-42px'
   }; ">
     <div style="display: inline-flex; z-index: 100; width: 32px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${
       item.winYn === 'Y'

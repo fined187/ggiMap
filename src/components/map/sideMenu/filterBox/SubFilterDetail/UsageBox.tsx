@@ -31,6 +31,7 @@ export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
               key={index}
               css={BoxStyle}
               onClick={() => {
+                console.log(index)
                 handleAddUsage(Number(Object.keys(USAGE)[index + 1]))
               }}
               style={{
@@ -39,17 +40,26 @@ export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
                 )
                   ? `${colors.selectedUsageType}`
                   : 'white',
-                border: formData.ids.includes(
+                borderLeft: formData.ids.includes(
+                  Object.keys(USAGE)[index + 1].toString(),
+                )
+                  ? `1px solid ${colors.selectedFilter}`
+                  : formData.ids.includes(Object.keys(USAGE)[index].toString())
+                  ? `1px solid ${colors.selectedFilter}`
+                  : `1px solid ${colors.borderGray}`,
+                borderTop: formData.ids.includes(
                   Object.keys(USAGE)[index + 1].toString(),
                 )
                   ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
-                borderLeft:
-                  index === 0
-                    ? Object.keys(USAGE)[index + 4].toString()
+                borderRight:
+                  index === 2
+                    ? formData.ids.includes(
+                        Object.keys(USAGE)[index + 1].toString(),
+                      )
                       ? `1px solid ${colors.selectedFilter}`
                       : `1px solid ${colors.borderGray}`
-                    : '',
+                    : ``,
               }}
             >
               <Text
@@ -84,17 +94,32 @@ export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
                 )
                   ? `${colors.selectedUsageType}`
                   : 'white',
-                border: formData.ids.includes(
+                borderLeft: formData.ids.includes(
                   Object.keys(USAGE)[index + 4].toString(),
                 )
                   ? `1px solid ${colors.selectedFilter}`
+                  : formData.ids.includes(
+                      Object.keys(USAGE)[index + 3].toString(),
+                    )
+                  ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
-                borderLeft:
-                  index === 0
-                    ? Object.keys(USAGE)[index + 4].toString()
+                borderTop:
+                  formData.ids.includes(
+                    Object.keys(USAGE)[index + 4].toString(),
+                  ) ||
+                  formData.ids.includes(
+                    Object.keys(USAGE)[index + 1].toString(),
+                  )
+                    ? `1px solid ${colors.selectedFilter}`
+                    : `1px solid ${colors.borderGray}`,
+                borderRight:
+                  index === 2
+                    ? formData.ids.includes(
+                        Object.keys(USAGE)[index + 4].toString(),
+                      )
                       ? `1px solid ${colors.selectedFilter}`
                       : `1px solid ${colors.borderGray}`
-                    : '',
+                    : ``,
               }}
             >
               <Text
@@ -129,17 +154,32 @@ export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
                 )
                   ? `${colors.selectedUsageType}`
                   : 'white',
-                border: formData.ids.includes(
+                borderLeft: formData.ids.includes(
                   Object.keys(USAGE)[index + 7].toString(),
                 )
                   ? `1px solid ${colors.selectedFilter}`
+                  : formData.ids.includes(
+                      Object.keys(USAGE)[index + 6].toString(),
+                    )
+                  ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
-                borderLeft:
-                  index === 0
-                    ? Object.keys(USAGE)[index + 4].toString()
+                borderTop:
+                  formData.ids.includes(
+                    Object.keys(USAGE)[index + 7].toString(),
+                  ) ||
+                  formData.ids.includes(
+                    Object.keys(USAGE)[index + 4].toString(),
+                  )
+                    ? `1px solid ${colors.selectedFilter}`
+                    : `1px solid ${colors.borderGray}`,
+                borderRight:
+                  index === 2
+                    ? formData.ids.includes(
+                        Object.keys(USAGE)[index + 7].toString(),
+                      )
                       ? `1px solid ${colors.selectedFilter}`
                       : `1px solid ${colors.borderGray}`
-                    : '',
+                    : ``,
               }}
             >
               <Text
@@ -171,17 +211,37 @@ export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
                 )
                   ? `${colors.selectedUsageType}`
                   : 'white',
-                border: formData.ids.includes(
+                borderLeft: formData.ids.includes(
+                  Object.keys(USAGE)[index + 10].toString(),
+                )
+                  ? `1px solid ${colors.selectedFilter}`
+                  : formData.ids.includes(
+                      Object.keys(USAGE)[index + 9].toString(),
+                    )
+                  ? `1px solid ${colors.selectedFilter}`
+                  : `1px solid ${colors.borderGray}`,
+                borderTop:
+                  formData.ids.includes(
+                    Object.keys(USAGE)[index + 10].toString(),
+                  ) ||
+                  formData.ids.includes(
+                    Object.keys(USAGE)[index + 7].toString(),
+                  )
+                    ? `1px solid ${colors.selectedFilter}`
+                    : `1px solid ${colors.borderGray}`,
+                borderRight:
+                  index === 2
+                    ? formData.ids.includes(
+                        Object.keys(USAGE)[index + 10].toString(),
+                      )
+                      ? `1px solid ${colors.selectedFilter}`
+                      : `1px solid ${colors.borderGray}`
+                    : ``,
+                borderBottom: formData.ids.includes(
                   Object.keys(USAGE)[index + 10].toString(),
                 )
                   ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
-                borderLeft:
-                  index === 0
-                    ? Object.keys(USAGE)[index + 4].toString()
-                      ? `1px solid ${colors.selectedFilter}`
-                      : `1px solid ${colors.borderGray}`
-                    : '',
               }}
               onClick={() => {
                 handleAddUsage(Number(Object.keys(USAGE)[index + 10]))

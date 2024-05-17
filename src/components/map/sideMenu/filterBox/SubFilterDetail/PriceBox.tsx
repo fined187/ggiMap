@@ -65,7 +65,7 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
       })
     }
   }
-
+  console.log(formData.fromAppraisalAmount, formData.toAppraisalAmount)
   return (
     <Flex
       justify="start"
@@ -81,7 +81,25 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
               key={index}
               css={BoxStyle}
               style={{
-                border: `${
+                borderLeft: `${
+                  formData.fromAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index]) ||
+                  formData.toAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index]) ||
+                  formData.fromAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index - 1]) ||
+                  formData.toAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index - 1])
+                    ? '1px solid #007AFF'
+                    : formData.fromAppraisalAmount !== 0 &&
+                      formData.fromAppraisalAmount <
+                        parseInt(Object.keys(PRICE)[index]) &&
+                      formData.toAppraisalAmount >=
+                        parseInt(Object.keys(PRICE)[index])
+                    ? '1px solid #007AFF'
+                    : '1px solid #e5e5e5'
+                }`,
+                borderTop: `${
                   formData.fromAppraisalAmount ===
                     parseInt(Object.keys(PRICE)[index]) ||
                   formData.toAppraisalAmount ===
@@ -94,6 +112,22 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
                         parseInt(Object.keys(PRICE)[index])
                     ? '1px solid #007AFF'
                     : '1px solid #e5e5e5'
+                }`,
+                borderRight: `${
+                  index === 3
+                    ? formData.fromAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index]) ||
+                      formData.toAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : formData.fromAppraisalAmount !== 0 &&
+                        formData.fromAppraisalAmount <
+                          parseInt(Object.keys(PRICE)[index]) &&
+                        formData.toAppraisalAmount >=
+                          parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : '1px solid #e5e5e5'
+                    : ''
                 }`,
                 backgroundColor: `${
                   formData.fromAppraisalAmount ===
@@ -111,6 +145,7 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
                 }`,
               }}
               onClick={() => {
+                console.log(index)
                 handleFromToPrice(parseInt(Object.keys(PRICE)[index]))
               }}
             >
@@ -147,7 +182,26 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
               key={index}
               css={BoxStyle}
               style={{
-                border: `${
+                borderLeft: `${
+                  formData.fromAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index + 4]) ||
+                  formData.toAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index + 4]) ||
+                  formData.fromAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index + 3]) ||
+                  (formData.toAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index + 3]) &&
+                    formData.toAppraisalAmount !== 300000000)
+                    ? '1px solid #007AFF'
+                    : formData.fromAppraisalAmount !== 0 &&
+                      formData.fromAppraisalAmount <
+                        parseInt(Object.keys(PRICE)[index + 4]) &&
+                      formData.toAppraisalAmount >=
+                        parseInt(Object.keys(PRICE)[index + 4])
+                    ? '1px solid #007AFF'
+                    : '1px solid #e5e5e5'
+                }`,
+                borderTop: `${
                   formData.fromAppraisalAmount ===
                     parseInt(Object.keys(PRICE)[index + 4]) ||
                   formData.toAppraisalAmount ===
@@ -160,6 +214,40 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
                         parseInt(Object.keys(PRICE)[index + 4])
                     ? '1px solid #007AFF'
                     : '1px solid #e5e5e5'
+                }`,
+                borderBottom: `${
+                  formData.fromAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index + 4]) ||
+                  formData.toAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index + 4])
+                    ? '1px solid #007AFF'
+                    : formData.fromAppraisalAmount !== 0 &&
+                      formData.fromAppraisalAmount <
+                        parseInt(Object.keys(PRICE)[index + 4]) &&
+                      formData.toAppraisalAmount >=
+                        parseInt(Object.keys(PRICE)[index + 4])
+                    ? '1px solid #007AFF'
+                    : '1px solid #e5e5e5'
+                }`,
+                borderRight: `${
+                  index === 3
+                    ? formData.fromAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index + 4]) ||
+                      formData.toAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index + 4]) ||
+                      formData.fromAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index + 5]) ||
+                      formData.toAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index + 5])
+                      ? '1px solid #007AFF'
+                      : formData.fromAppraisalAmount !== 0 &&
+                        formData.fromAppraisalAmount <
+                          parseInt(Object.keys(PRICE)[index + 4]) &&
+                        formData.toAppraisalAmount >=
+                          parseInt(Object.keys(PRICE)[index + 4])
+                      ? '1px solid #007AFF'
+                      : '1px solid #e5e5e5'
+                    : ''
                 }`,
                 backgroundColor: `${
                   formData.fromAppraisalAmount ===
@@ -177,6 +265,7 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
                 }`,
               }}
               onClick={() => {
+                console.log(index)
                 handleFromToPrice(parseInt(Object.keys(PRICE)[index + 4]))
               }}
             >

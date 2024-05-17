@@ -32,7 +32,7 @@ export default function Carousel({
   const pathUrl = usePathUrl(clickedItem?.type || 1)
   useEffect(() => {
     if (clickedInfo) {
-      setImage(clickedInfo.map((info) => pathUrl + info.path ?? ''))
+      setImage(clickedInfo.map((info) => pathUrl + info?.path ?? ''))
     }
   }, [clickedInfo, pathUrl])
   return (

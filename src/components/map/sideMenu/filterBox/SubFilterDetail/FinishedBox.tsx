@@ -4,29 +4,17 @@ import Text from '@/components/shared/Text'
 import { MULGUN, MULGUN_SUB } from '@/constants/SubFilter'
 import { Form } from '@/models/Form'
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
 interface FinishedBoxProps {
   formData: Form
   setFormData: Dispatch<SetStateAction<Form>>
 }
 
-interface GubunSelect {
-  ekm: boolean
-  egm: boolean
-  egg: boolean
-}
-
 export default function FinishedBox({
   formData,
   setFormData,
 }: FinishedBoxProps) {
-  const [gubunSelect, setGubunSelect] = useState<GubunSelect>({
-    ekm: false,
-    egm: false,
-    egg: false,
-  })
-  const [selectedValue, setSelectedValue] = useState<number>(0)
   const handleGubunBoxClick = (index: number) => {
     if (index === 0) {
       setFormData({
@@ -84,7 +72,19 @@ export default function FinishedBox({
                   handleGubunBoxClick(index)
                 }}
                 style={{
-                  border:
+                  // border:
+                  //   index === 0
+                  //     ? formData.ekm
+                  //       ? '1px solid #332EFC'
+                  //       : '1px solid #E5E5E5'
+                  //     : index === 1
+                  //     ? formData.egm
+                  //       ? '1px solid #332EFC'
+                  //       : '1px solid #E5E5E5'
+                  //     : formData.egg
+                  //     ? '1px solid #332EFC'
+                  //     : '1px solid #E5E5E5',
+                  borderLeft:
                     index === 0
                       ? formData.ekm
                         ? '1px solid #332EFC'
@@ -93,9 +93,53 @@ export default function FinishedBox({
                       ? formData.egm
                         ? '1px solid #332EFC'
                         : '1px solid #E5E5E5'
-                      : formData.egg
-                      ? '1px solid #332EFC'
-                      : '1px solid #E5E5E5',
+                      : index === 2
+                      ? formData.egg
+                        ? '1px solid #332EFC'
+                        : '1px solid #E5E5E5'
+                      : 'none',
+                  borderRight:
+                    index === 0
+                      ? formData.ekm && !formData.egm
+                        ? '1px solid #332EFC'
+                        : ''
+                      : index === 1
+                      ? formData.egm && !formData.egg
+                        ? '1px solid #332EFC'
+                        : ''
+                      : index === 2
+                      ? formData.egg
+                        ? '1px solid #332EFC'
+                        : '1px solid #E5E5E5'
+                      : 'none',
+                  borderTop:
+                    index === 0
+                      ? formData.ekm
+                        ? '1px solid #332EFC'
+                        : '1px solid #E5E5E5'
+                      : index === 1
+                      ? formData.egm
+                        ? '1px solid #332EFC'
+                        : '1px solid #E5E5E5'
+                      : index === 2
+                      ? formData.egg
+                        ? '1px solid #332EFC'
+                        : '1px solid #E5E5E5'
+                      : 'none',
+                  borderBottom:
+                    index === 0
+                      ? formData.ekm
+                        ? '1px solid #332EFC'
+                        : '1px solid #E5E5E5'
+                      : index === 1
+                      ? formData.egm
+                        ? '1px solid #332EFC'
+                        : '1px solid #E5E5E5'
+                      : index === 2
+                      ? formData.egg
+                        ? '1px solid #332EFC'
+                        : '1px solid #E5E5E5'
+                      : 'none',
                   backgroundColor:
                     index === 0
                       ? formData.ekm
@@ -155,7 +199,12 @@ export default function FinishedBox({
                   handleFinishedBoxClick(index)
                 }}
                 style={{
-                  border:
+                  borderLeft:
+                    formData.awardedMonths ===
+                    Number(Object.keys(MULGUN)[index])
+                      ? '1px solid #332EFC'
+                      : '1px solid #E5E5E5',
+                  borderTop:
                     formData.awardedMonths ===
                     Number(Object.keys(MULGUN)[index])
                       ? '1px solid #332EFC'
@@ -165,6 +214,15 @@ export default function FinishedBox({
                     Number(Object.keys(MULGUN)[index])
                       ? '#F0F0FF'
                       : 'white',
+                  borderRight:
+                    Number(Object.keys(MULGUN)[index]) === 9
+                      ? formData.awardedMonths === 9
+                        ? '1px solid #332EFC'
+                        : '1px solid #E5E5E5'
+                      : formData.awardedMonths ===
+                        Number(Object.keys(MULGUN)[index])
+                      ? '1px solid #332EFC'
+                      : '',
                 }}
               >
                 <Text
@@ -196,11 +254,32 @@ export default function FinishedBox({
                   handleFinishedBoxClick(index + 3)
                 }}
                 style={{
-                  border:
+                  borderLeft:
                     formData.awardedMonths ===
                     Number(Object.keys(MULGUN)[index + 3])
                       ? '1px solid #332EFC'
                       : '1px solid #E5E5E5',
+                  borderTop:
+                    formData.awardedMonths ===
+                      Number(Object.keys(MULGUN)[index + 3]) ||
+                    formData.awardedMonths ===
+                      Number(Object.keys(MULGUN)[index])
+                      ? '1px solid #332EFC'
+                      : '1px solid #E5E5E5',
+                  borderBottom:
+                    formData.awardedMonths ===
+                    Number(Object.keys(MULGUN)[index + 3])
+                      ? '1px solid #332EFC'
+                      : '1px solid #E5E5E5',
+                  borderRight:
+                    Number(Object.keys(MULGUN)[index + 3]) === 60
+                      ? formData.awardedMonths === 60
+                        ? '1px solid #332EFC'
+                        : '1px solid #E5E5E5'
+                      : formData.awardedMonths ===
+                        Number(Object.keys(MULGUN)[index + 3])
+                      ? '1px solid #332EFC'
+                      : '',
                   backgroundColor:
                     formData.awardedMonths ===
                     Number(Object.keys(MULGUN)[index + 3])
@@ -237,7 +316,6 @@ const ContainerStyle = css`
 
 const BoxStyle = css`
   display: flex;
-  border: 1px solid #e5e5e5;
   width: 110px;
   height: 40px;
   cursor: pointer;
