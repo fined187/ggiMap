@@ -42,11 +42,21 @@ export default function GunguList({
   const handleGetGungu = async (siName: string) => {
     try {
       const response = await axios.get(`/ggi/api/location/${siName}/sggs`)
-      setGunguList(response.data.data.sggs)
-      const addArray = Array(3 - (response.data.data.sggs.length % 3)).fill(' ')
-      setGunguList((prev) => {
-        return [...prev, ...addArray]
-      })
+      if (response.data.success === true) {
+        setGunguList(response.data.data.sggs)
+        const addArray =
+          response.data.data.sggs.length % 3 === 0
+            ? null
+            : Array(3 - (response.data.data.sggs.length % 3)).fill(' ')
+        setGunguList((prev) => {
+          return [...prev, ...(addArray === null ? [] : addArray)]
+        })
+        if (bottomJuso.gungu === '') {
+          setSelectedGunguIndex(null)
+        } else if (gunguList.indexOf(bottomJuso.gungu) > 0) {
+          setSelectedGunguIndex(gunguList.indexOf(bottomJuso.gungu))
+        }
+      }
     } catch (error) {
       console.error(error)
     }
@@ -64,6 +74,7 @@ export default function GunguList({
     },
     [setBottomJuso, setSelectedGunguIndex],
   )
+
   useEffect(() => {
     handleGetGungu(bottomJuso.sido)
   }, [bottomJuso.sido])

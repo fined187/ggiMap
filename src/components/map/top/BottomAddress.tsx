@@ -1,5 +1,11 @@
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import NextArrow from '../icons/NextArrow'
 import SidoList from './DetailAddrList/SidoList'
 import GunguList from './DetailAddrList/GunguList'
@@ -51,6 +57,7 @@ interface BottomAddressProps {
       dong: string
     }>
   >
+  openCursor?: boolean
 }
 
 function BottomAddress({
@@ -64,6 +71,7 @@ function BottomAddress({
   setTopJuso,
   bottomJuso,
   setBottomJuso,
+  openCursor,
   center,
 }: BottomAddressProps) {
   const { data: map } = useSWR(MAP_KEY)
@@ -124,7 +132,6 @@ function BottomAddress({
       searchAddrToCoord(bottomJuso.sido + addr)
     }
   }
-
   return (
     <Flex direction="column" css={ContainerStyle}>
       <Flex
@@ -183,7 +190,7 @@ function BottomAddress({
             cursor: 'pointer',
           }}
           onClick={() => {
-            if (bottomJuso.gungu === '') {
+            if (bottomJuso.gungu === '' || selectedGunguIndex === null) {
               alert('시 / 군 / 구를 먼저 선택해주세요.')
               return
             }

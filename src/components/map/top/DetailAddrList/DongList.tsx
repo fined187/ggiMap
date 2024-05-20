@@ -34,9 +34,12 @@ function DongList({
         `/ggi/api/location/${siName}/${guName}/umds`,
       )
       setDongList(response.data.data.umds)
-      const addArray = Array(3 - (response.data.data.umds.length % 3)).fill(' ')
+      const addArray =
+        response.data.data.umds.length % 3 === 0
+          ? null
+          : Array(3 - (response.data.data.umds.length % 3)).fill(' ')
       setDongList((prev) => {
-        return [...prev, ...addArray]
+        return [...prev, ...(addArray === null ? [] : addArray)]
       })
     } catch (error) {
       console.error(error)

@@ -67,10 +67,17 @@ export default function SidoList({
   const handleGetSidoList = async () => {
     try {
       const response = await axios.get(`/ggi/api/location/sds`)
-      setSidoList(response.data.data.sds)
-      setSidoList((prev) => {
-        return [...prev, ' ']
-      })
+      if (response.data.success === true) {
+        setSidoList(response.data.data.sds)
+        setSidoList((prev) => {
+          return [...prev, ' ']
+        })
+        if (bottomJuso.sido === '') {
+          setSelectedIndex(null)
+        } else if (sidoList.indexOf(bottomJuso.sido) > 0) {
+          setSelectedIndex(sidoList.indexOf(bottomJuso.sido))
+        }
+      }
     } catch (error) {
       console.error(error)
     }
@@ -91,9 +98,10 @@ export default function SidoList({
                   const isSelected = bottomJuso.sido === item
                   const borderColor = isSelected ? '#332EFC' : '#E5E5E5'
                   const shouldHighlightTop =
-                    selectedIndex != null &&
-                    (actualIndex === selectedIndex ||
-                      actualIndex === selectedIndex + 3)
+                    selectedIndex != null
+                      ? actualIndex === selectedIndex ||
+                        actualIndex === selectedIndex + 3
+                      : false
                   return (
                     <Flex
                       direction="row"

@@ -150,15 +150,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     }
   }, [mapItems])
 
-  const handleGetPageXY = (e: MouseEvent) => {
-    if (window !== undefined) {
-      setOffset({
-        x: e.pageX,
-        y: e.pageY,
-      })
-    }
-  }
-
   return (
     <>
       <Map
@@ -252,6 +243,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
             setZoom={setZoom}
             range={range}
             setRange={setRange}
+            openCursor={openCursor}
             setOpenCursor={setOpenCursor}
             topJuso={topJuso}
             setTopJuso={setTopJuso}

@@ -2,7 +2,13 @@
 import { css } from '@emotion/react'
 import AddressArrow from '../icons/AddressArrow'
 import AddressCursorArrow from '../icons/AddressCursorArrow'
-import { Dispatch, SetStateAction, useEffect } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import useSWR from 'swr'
@@ -70,7 +76,6 @@ function TopAddress({
   setBottomJuso,
 }: AddressProps) {
   const { data: map } = useSWR(MAP_KEY)
-
   function searchCoordinateToAddress(lat: number, lng: number) {
     if (window.naver.maps?.Service?.geocode !== undefined) {
       window.naver.maps?.Service?.reverseGeocode(
@@ -93,17 +98,6 @@ function TopAddress({
     }
   }
 
-  useEffect(() => {
-    if (map) {
-      const mapCenter = map.getCenter()
-      const center: { lat: number; lng: number } = {
-        lat: mapCenter.lat(),
-        lng: mapCenter.lng(),
-      }
-      searchCoordinateToAddress(center.lat, center.lng)
-    }
-  }, [map && map.center])
-
   const handleTopBottomSync = () => {
     let newSido: string[] = []
     if (
@@ -120,14 +114,59 @@ function TopAddress({
   }
 
   const handleTopBottomSyncGungu = () => {
-    let newGungu: string[] = []
+    if (!topJuso.gungu) return []
+    console.log('실행')
+    let newGungu = []
     if (topJuso.gungu.match(/시$/) || topJuso.gungu.match(/군$/)) {
       newGungu.push(topJuso.gungu.slice(0, topJuso.gungu.length - 1))
-    } else if (topJuso.gungu.match(/구$/)) {
-      newGungu.push(topJuso.gungu.slice(0, topJuso.gungu.length))
+    } else {
+      newGungu.push(topJuso.gungu)
     }
+
     return newGungu
   }
+
+  const handleControlTopBar = () => {
+    if (SidoAddr) {
+      setRange(0)
+      setOpenCursor(!openCursor)
+      setBottomJuso({
+        sido: '',
+        gungu: '',
+        dong: '',
+      })
+    } else if (GunguAddr) {
+      setRange(1)
+      setOpenCursor(!openCursor)
+      setBottomJuso((prev) => {
+        return {
+          ...prev,
+          sido: handleTopBottomSync()[0],
+          gungu: '',
+          dong: '',
+        }
+      })
+    } else {
+      setRange(2)
+      setOpenCursor(!openCursor)
+      setBottomJuso({
+        sido: handleTopBottomSync()[0],
+        gungu: handleTopBottomSyncGungu()[0],
+        dong: '',
+      })
+    }
+  }
+  useEffect(() => {
+    if (map) {
+      const mapCenter = map.getCenter()
+      const center: { lat: number; lng: number } = {
+        lat: mapCenter.lat(),
+        lng: mapCenter.lng(),
+      }
+      searchCoordinateToAddress(center.lat, center.lng)
+    }
+  }, [map && map.center])
+  if (!map) return null
   return (
     <>
       <Flex css={ContainerStyle}>
@@ -141,35 +180,7 @@ function TopAddress({
             marginLeft: '5px',
           }}
           onClick={() => {
-            if (SidoAddr) {
-              setRange(0)
-              setOpenCursor(!openCursor)
-              setBottomJuso({
-                sido: '',
-                gungu: '',
-                dong: '',
-              })
-            } else if (GunguAddr) {
-              setRange(1)
-              setOpenCursor(!openCursor)
-              setBottomJuso((prev) => {
-                return {
-                  ...prev,
-                  sido: handleTopBottomSync()[0],
-                  gungu: handleTopBottomSyncGungu()[0],
-                  dong: '',
-                }
-              })
-            } else if (DongAddr) {
-              setRange(2)
-              setOpenCursor(!openCursor)
-              setBottomJuso((prev) => {
-                return {
-                  ...prev,
-                  dong: '',
-                }
-              })
-            }
+            handleControlTopBar()
           }}
         >
           <Text css={TextStyle}>
@@ -180,6 +191,7 @@ function TopAddress({
           <Flex
             onClick={() => {
               setOpenCursor(!openCursor)
+              handleControlTopBar()
             }}
             css={ContainerStyle}
             style={{
