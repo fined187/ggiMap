@@ -67,6 +67,13 @@ function BottomAddress({
   center,
 }: BottomAddressProps) {
   const { data: map } = useSWR(MAP_KEY)
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const [selectedGunguIndex, setSelectedGunguIndex] = useState<number | null>(
+    null,
+  )
+  const [selectedDongIndex, setSelectedDongIndex] = useState<number | null>(
+    null,
+  )
   const searchAddrToCoord = useCallback(
     (address: string) => {
       if (window.naver.maps?.Service?.geocode !== undefined) {
@@ -193,6 +200,8 @@ function BottomAddress({
           setBottomJuso={setBottomJuso}
           range={range}
           setRange={setRange}
+          selectedIndex={selectedIndex}
+          setSelectedIndex={setSelectedIndex}
         />
       )}
       {range === 1 && (
@@ -201,10 +210,17 @@ function BottomAddress({
           setBottomJuso={setBottomJuso}
           range={range}
           setRange={setRange}
+          selectedGunguIndex={selectedGunguIndex}
+          setSelectedGunguIndex={setSelectedGunguIndex}
         />
       )}
       {range === 2 && (
-        <DongList bottomJuso={bottomJuso} setBottomJuso={setBottomJuso} />
+        <DongList
+          bottomJuso={bottomJuso}
+          setBottomJuso={setBottomJuso}
+          selectedDongIndex={selectedDongIndex}
+          setSelectedDongIndex={setSelectedDongIndex}
+        />
       )}
       {bottomJuso.gungu !== '' && bottomJuso.dong === '' && (
         <>

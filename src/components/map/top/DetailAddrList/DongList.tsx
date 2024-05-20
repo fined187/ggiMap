@@ -1,7 +1,6 @@
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import jusoAddr from '@/mock/Sigungu.json'
 import { css } from '@emotion/react'
 import axios from 'axios'
 
@@ -18,9 +17,16 @@ interface DongListProps {
       dong: string
     }>
   >
+  selectedDongIndex: number | null
+  setSelectedDongIndex: Dispatch<SetStateAction<number | null>>
 }
 
-function DongList({ bottomJuso, setBottomJuso }: DongListProps) {
+function DongList({
+  bottomJuso,
+  setBottomJuso,
+  selectedDongIndex,
+  setSelectedDongIndex,
+}: DongListProps) {
   const [dongList, setDongList] = useState<string[]>([])
   const handleGetDong = async (siName: string, guName: string) => {
     try {
@@ -28,11 +34,16 @@ function DongList({ bottomJuso, setBottomJuso }: DongListProps) {
         `/ggi/api/location/${siName}/${guName}/umds`,
       )
       setDongList(response.data.data.umds)
+      const addArray = Array(3 - (response.data.data.umds.length % 3)).fill(' ')
+      setDongList((prev) => {
+        return [...prev, ...addArray]
+      })
     } catch (error) {
       console.error(error)
     }
   }
-  const handleClick = (dong: string) => {
+  const handleClick = (dong: string, actualIndex: number) => {
+    setSelectedDongIndex(actualIndex)
     setBottomJuso({
       ...bottomJuso,
       dong: dong,
@@ -59,24 +70,73 @@ function DongList({ bottomJuso, setBottomJuso }: DongListProps) {
             <Flex direction="row" key={index}>
               {Array.from(dongList)
                 .slice(index, index + 3)
-                .map(
-                  (item, index) =>
+                .map((item, subIndex) => {
+                  const actualIndex = index + subIndex
+                  const isSelected = bottomJuso.gungu === item
+                  const borderColor = isSelected ? '#332EFC' : '#E5E5E5'
+                  const shouldHighlightTop =
+                    selectedDongIndex != null &&
+                    (actualIndex === selectedDongIndex ||
+                      actualIndex === selectedDongIndex + 3)
+                  return (
                     item !== '' && (
                       <Flex
                         direction="row"
-                        key={index}
+                        key={actualIndex}
                         css={BoxStyle}
                         style={{
                           backgroundColor:
                             bottomJuso.dong === item ? '#F0F0FF' : 'white',
-                          border:
-                            bottomJuso.dong === item
+                          borderTop: shouldHighlightTop
+                            ? `1px solid #332EFC`
+                            : '1px solid #E5E5E5',
+                          borderBottom:
+                            item ===
+                            dongList[
+                              Math.ceil(dongList.length / 3) * 3 - 3 + subIndex
+                            ]
+                              ? dongList[
+                                  Math.ceil(dongList.length / 3) * 3 -
+                                    3 +
+                                    subIndex
+                                ] === ' '
+                                ? ''
+                                : bottomJuso.dong === item
+                                ? '1px solid #332EFC'
+                                : '1px solid #E5E5E5'
+                              : '',
+                          borderRight:
+                            dongList[Math.ceil(dongList.length / 3) * 3 - 1] ===
+                              ' ' &&
+                            actualIndex ===
+                              Math.ceil(dongList.length / 3) * 3 - 1
+                              ? ''
+                              : bottomJuso.dong === item
                               ? '1px solid #332EFC'
-                              : '1px solid #9d9999',
+                              : actualIndex % 3 === 2 && item !== ' '
+                              ? '1px solid #E5E5E5'
+                              : actualIndex % 3 === 1 && item !== ' '
+                              ? '1px solid #E5E5E5'
+                              : '',
+                          borderLeft:
+                            subIndex % 3 === 0
+                              ? bottomJuso.dong === item
+                                ? '1px solid #332EFC'
+                                : '1px solid #E5E5E5'
+                              : subIndex % 3 === 1
+                              ? bottomJuso.dong === item
+                                ? '1px solid #332EFC'
+                                : '1px solid #E5E5E5'
+                              : subIndex % 3 === 2
+                              ? bottomJuso.dong === item
+                                ? '1px solid #332EFC'
+                                : ''
+                              : '',
                           cursor: 'pointer',
                         }}
                         onClick={() => {
-                          handleClick(item)
+                          if (item === ' ') return
+                          handleClick(item, actualIndex)
                         }}
                       >
                         <Text
@@ -88,8 +148,9 @@ function DongList({ bottomJuso, setBottomJuso }: DongListProps) {
                           {item}
                         </Text>
                       </Flex>
-                    ),
-                )}
+                    )
+                  )
+                })}
             </Flex>
           ),
       )}

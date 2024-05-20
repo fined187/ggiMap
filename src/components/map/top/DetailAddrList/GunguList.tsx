@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import Text from '@/components/shared/Text'
@@ -20,6 +26,8 @@ interface Props {
   >
   range: number
   setRange: Dispatch<SetStateAction<number>>
+  selectedGunguIndex: number | null
+  setSelectedGunguIndex: Dispatch<SetStateAction<number | null>>
 }
 
 export default function GunguList({
@@ -27,27 +35,35 @@ export default function GunguList({
   setBottomJuso,
   range,
   setRange,
+  selectedGunguIndex,
+  setSelectedGunguIndex,
 }: Props) {
   const [gunguList, setGunguList] = useState<string[]>([])
   const handleGetGungu = async (siName: string) => {
     try {
       const response = await axios.get(`/ggi/api/location/${siName}/sggs`)
       setGunguList(response.data.data.sggs)
+      const addArray = Array(3 - (response.data.data.sggs.length % 3)).fill(' ')
+      setGunguList((prev) => {
+        return [...prev, ...addArray]
+      })
     } catch (error) {
       console.error(error)
     }
   }
 
-  const handleClick = (gungu: string) => {
-    setRange(2)
-    setBottomJuso((prev) => {
-      return {
-        ...prev,
-        gungu,
-      }
-    })
-  }
-
+  const handleClick = useCallback(
+    (gungu: string, actualIndex: number) => {
+      setSelectedGunguIndex(actualIndex)
+      setBottomJuso((prev) => {
+        return {
+          ...prev,
+          gungu,
+        }
+      })
+    },
+    [setBottomJuso, setSelectedGunguIndex],
+  )
   useEffect(() => {
     handleGetGungu(bottomJuso.sido)
   }, [bottomJuso.sido])
@@ -68,23 +84,78 @@ export default function GunguList({
               <Flex direction="row" key={index}>
                 {Array.from(gunguList)
                   .slice(index, index + 3)
-                  .map(
-                    (item, index) =>
+                  .map((item, subIndex) => {
+                    const actualIndex = index + subIndex
+                    const isSelected = bottomJuso.gungu === item
+                    const borderColor = isSelected ? '#332EFC' : '#E5E5E5'
+                    const shouldHighlightTop =
+                      selectedGunguIndex != null &&
+                      (actualIndex === selectedGunguIndex ||
+                        actualIndex === selectedGunguIndex + 3)
+                    return (
                       item !== '' && (
                         <Flex
                           direction="row"
-                          key={index}
+                          key={actualIndex}
                           css={BoxStyle}
                           style={{
-                            backgroundColor:
-                              bottomJuso.gungu === item ? '#F0F0FF' : 'white',
-                            border:
-                              bottomJuso.gungu === item
+                            backgroundColor: isSelected ? '#F0F0FF' : 'white',
+                            borderTop: shouldHighlightTop
+                              ? `1px solid #332EFC`
+                              : '1px solid #E5E5E5',
+                            borderRight:
+                              gunguList[
+                                Math.ceil(gunguList.length / 3) * 3 - 1
+                              ] === ' ' &&
+                              actualIndex ===
+                                Math.ceil(gunguList.length / 3) * 3 - 1
+                                ? ''
+                                : bottomJuso.gungu === item
                                 ? '1px solid #332EFC'
-                                : '1px solid #9d9999',
-                            cursor: 'pointer',
+                                : actualIndex % 3 === 2 && item !== ' '
+                                ? '1px solid #E5E5E5'
+                                : actualIndex % 3 === 1 && item !== ' '
+                                ? '1px solid #E5E5E5'
+                                : '',
+                            borderLeft:
+                              subIndex % 3 === 0
+                                ? bottomJuso.gungu === item
+                                  ? '1px solid #332EFC'
+                                  : '1px solid #E5E5E5'
+                                : subIndex % 3 === 1
+                                ? bottomJuso.gungu === item
+                                  ? '1px solid #332EFC'
+                                  : '1px solid #E5E5E5'
+                                : subIndex % 3 === 2
+                                ? bottomJuso.gungu === item
+                                  ? '1px solid #332EFC'
+                                  : ''
+                                : '',
+                            borderBottom:
+                              item ===
+                              gunguList[
+                                Math.ceil(gunguList.length / 3) * 3 -
+                                  3 +
+                                  subIndex
+                              ]
+                                ? gunguList[
+                                    Math.ceil(gunguList.length / 3) * 3 -
+                                      3 +
+                                      subIndex
+                                  ] === ' '
+                                  ? ''
+                                  : bottomJuso.gungu === item
+                                  ? '1px solid #332EFC'
+                                  : '1px solid #E5E5E5'
+                                : '',
+                            cursor: item === ' ' ? 'default' : 'pointer',
                           }}
-                          onClick={() => handleClick(item)}
+                          onClick={() => {
+                            if (item !== ' ') {
+                              handleClick(item, actualIndex)
+                            }
+                            return
+                          }}
                         >
                           <Text
                             style={{
@@ -97,8 +168,9 @@ export default function GunguList({
                             {item}
                           </Text>
                         </Flex>
-                      ),
-                  )}
+                      )
+                    )
+                  })}
               </Flex>
             ),
         )}
