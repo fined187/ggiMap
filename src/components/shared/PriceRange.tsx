@@ -107,6 +107,11 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
           onClick={(e) => {
             handlePriceBtn(e.currentTarget.id)
           }}
+          style={{
+            borderLeft: '1px solid #9d9999',
+            borderTop: '1px solid #9d9999',
+            borderBottom: '1px solid #9d9999',
+          }}
         >
           -
         </Flex>
@@ -124,7 +129,7 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
           }
           style={{
             height: '25px',
-            width: '100px',
+            width: '110px',
             borderTop: '1px solid #9d9999',
             borderBottom: '1px solid #9d9999',
           }}
@@ -142,6 +147,11 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
           css={BoxStyle}
           onClick={(e) => {
             handlePriceBtn(e.currentTarget.id)
+          }}
+          style={{
+            borderRight: '1px solid #9d9999',
+            borderTop: '1px solid #9d9999',
+            borderBottom: '1px solid #9d9999',
           }}
         >
           +
@@ -186,6 +196,11 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
           onClick={(e) => {
             handlePriceBtn(e.currentTarget.id)
           }}
+          style={{
+            borderLeft: '1px solid #9d9999',
+            borderTop: '1px solid #9d9999',
+            borderBottom: '1px solid #9d9999',
+          }}
         >
           -
         </Flex>
@@ -203,7 +218,7 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
           }
           style={{
             height: '25px',
-            width: '100px',
+            width: '110px',
             borderTop: '1px solid #9d9999',
             borderBottom: '1px solid #9d9999',
           }}
@@ -222,6 +237,11 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
           onClick={(e) => {
             handlePriceBtn(e.currentTarget.id)
           }}
+          style={{
+            borderRight: '1px solid #9d9999',
+            borderTop: '1px solid #9d9999',
+            borderBottom: '1px solid #9d9999',
+          }}
         >
           +
         </Flex>
@@ -231,7 +251,7 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
 }
 
 const ContainerStyle = css`
-  width: 320px;
+  width: 350px;
   height: 40px;
   background-color: white;
   display: flex;
@@ -240,7 +260,6 @@ const ContainerStyle = css`
 const BoxStyle = css`
   width: 25px;
   height: 25px;
-  border: 0.5px solid #9d9999;
   background: #ececec;
   cursor: pointer;
 `

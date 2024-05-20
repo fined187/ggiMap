@@ -4,7 +4,8 @@ import Text from '@/components/shared/Text'
 import { PRICE } from '@/constants/SubFilter'
 import { Form } from '@/models/Form'
 import { css } from '@emotion/react'
-import { useState } from 'react'
+import styled from '@emotion/styled'
+import React, { useState } from 'react'
 
 interface LowPriceBoxProps {
   formData: Form
@@ -76,19 +77,110 @@ export default function LowPriceBox({
       align="center"
       css={ContainerStyle}
     >
-      <Flex direction="row" justify="center">
-        {Object.values(PRICE)
-          .slice(0, 4)
-          .map((value, index) => (
-            <Flex
-              key={index}
-              css={BoxStyle}
+      <FlexContainer>
+        {Object.values(PRICE).map((value, index) => (
+          <React.Fragment key={index}>
+            <FlexItem
               style={{
-                border: `${
+                borderLeft: `${
                   formData.fromMinimumAmount ===
                     parseInt(Object.keys(PRICE)[index]) ||
                   formData.toMinimumAmount ===
-                    parseInt(Object.keys(PRICE)[index])
+                    parseInt(Object.keys(PRICE)[index]) ||
+                  formData.fromMinimumAmount ===
+                    parseInt(Object.keys(PRICE)[index - 1]) ||
+                  (formData.toMinimumAmount ===
+                    parseInt(Object.keys(PRICE)[index - 1]) &&
+                    formData.toMinimumAmount !== 300000000)
+                    ? '1px solid #007AFF'
+                    : formData.fromMinimumAmount !== 0 &&
+                      formData.fromMinimumAmount <
+                        parseInt(Object.keys(PRICE)[index]) &&
+                      formData.toMinimumAmount >=
+                        parseInt(Object.keys(PRICE)[index])
+                    ? '1px solid #007AFF'
+                    : '1px solid #e5e5e5'
+                }`,
+                borderTop: `${
+                  index <= 3
+                    ? formData.fromMinimumAmount ===
+                        parseInt(Object.keys(PRICE)[index]) ||
+                      formData.toMinimumAmount ===
+                        parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : formData.fromMinimumAmount !== 0 &&
+                        formData.fromMinimumAmount <
+                          parseInt(Object.keys(PRICE)[index]) &&
+                        formData.toMinimumAmount >=
+                          parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : '1px solid #e5e5e5'
+                    : index >= 4
+                    ? formData.fromMinimumAmount ===
+                        parseInt(Object.keys(PRICE)[index]) ||
+                      formData.toMinimumAmount ===
+                        parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : formData.fromMinimumAmount !== 0 &&
+                        formData.fromMinimumAmount <
+                          parseInt(Object.keys(PRICE)[index]) &&
+                        formData.toMinimumAmount >=
+                          parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : formData.fromMinimumAmount ===
+                          parseInt(Object.keys(PRICE)[index - 4]) ||
+                        formData.toMinimumAmount ===
+                          parseInt(Object.keys(PRICE)[index - 4])
+                      ? '1px solid #007AFF'
+                      : formData.fromMinimumAmount !== 0 &&
+                        formData.fromMinimumAmount <
+                          parseInt(Object.keys(PRICE)[index - 4]) &&
+                        formData.toMinimumAmount >=
+                          parseInt(Object.keys(PRICE)[index - 4]) &&
+                        formData.fromMinimumAmount !==
+                          parseInt(Object.keys(PRICE)[index - 4]) &&
+                        formData.toMinimumAmount !==
+                          parseInt(Object.keys(PRICE)[index - 4])
+                      ? '1px solid #007AFF'
+                      : '1px solid #e5e5e5'
+                    : ''
+                }`,
+                borderRight: `${
+                  index === 3
+                    ? formData.fromMinimumAmount ===
+                        parseInt(Object.keys(PRICE)[index]) ||
+                      formData.toMinimumAmount ===
+                        parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : formData.fromMinimumAmount !== 0 &&
+                        formData.fromMinimumAmount <
+                          parseInt(Object.keys(PRICE)[index]) &&
+                        formData.toMinimumAmount >=
+                          parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : '1px solid #e5e5e5'
+                    : index === 7
+                    ? formData.fromMinimumAmount ===
+                        parseInt(Object.keys(PRICE)[index]) ||
+                      formData.toMinimumAmount ===
+                        parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : formData.fromMinimumAmount !== 0 &&
+                        formData.fromMinimumAmount <
+                          parseInt(Object.keys(PRICE)[index]) &&
+                        formData.toMinimumAmount >=
+                          parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : '1px solid #e5e5e5'
+                    : ''
+                }`,
+                borderBottom: `${
+                  index <= 3
+                    ? ''
+                    : formData.fromMinimumAmount ===
+                        parseInt(Object.keys(PRICE)[index]) ||
+                      formData.toMinimumAmount ===
+                        parseInt(Object.keys(PRICE)[index])
                     ? '1px solid #007AFF'
                     : formData.fromMinimumAmount !== 0 &&
                       formData.fromMinimumAmount <
@@ -139,75 +231,11 @@ export default function LowPriceBox({
               >
                 {value}
               </Text>
-            </Flex>
-          ))}
-      </Flex>
-      <Flex direction="row" justify="center">
-        {Object.values(PRICE)
-          .slice(4, 8)
-          .map((value, index) => (
-            <Flex
-              key={index}
-              css={BoxStyle}
-              style={{
-                border: `${
-                  formData.fromMinimumAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4]) ||
-                  formData.toMinimumAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4])
-                    ? '1px solid #007AFF'
-                    : formData.fromMinimumAmount !== 0 &&
-                      formData.fromMinimumAmount <
-                        parseInt(Object.keys(PRICE)[index + 4]) &&
-                      formData.toMinimumAmount >=
-                        parseInt(Object.keys(PRICE)[index + 4])
-                    ? '1px solid #007AFF'
-                    : '1px solid #e5e5e5'
-                }`,
-                backgroundColor: `${
-                  formData.fromMinimumAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4]) ||
-                  formData.toMinimumAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4])
-                    ? '#F0F0FF'
-                    : formData.fromMinimumAmount !== 0 &&
-                      formData.fromMinimumAmount <
-                        parseInt(Object.keys(PRICE)[index + 4]) &&
-                      formData.toMinimumAmount >=
-                        parseInt(Object.keys(PRICE)[index + 4])
-                    ? '#F0F0FF'
-                    : 'white'
-                }`,
-              }}
-              onClick={() => {
-                handleFromToPrice(parseInt(Object.keys(PRICE)[index + 4]))
-              }}
-            >
-              <Text
-                fontWeight="500"
-                typography="t5"
-                style={{
-                  color: `${
-                    formData.fromMinimumAmount ===
-                      parseInt(Object.keys(PRICE)[index + 4]) ||
-                    formData.toMinimumAmount ===
-                      parseInt(Object.keys(PRICE)[index + 4])
-                      ? '#007AFF'
-                      : formData.fromMinimumAmount !== 0 &&
-                        formData.fromMinimumAmount <
-                          parseInt(Object.keys(PRICE)[index + 4]) &&
-                        formData.toMinimumAmount >=
-                          parseInt(Object.keys(PRICE)[index + 4])
-                      ? '#007AFF'
-                      : 'black'
-                  }`,
-                }}
-              >
-                {value}
-              </Text>
-            </Flex>
-          ))}
-      </Flex>
+            </FlexItem>
+            {(index + 1) % 4 === 0 && <br />}
+          </React.Fragment>
+        ))}
+      </FlexContainer>
       <PriceRange formData={formData} setFormData={setFormData} />
     </Flex>
   )
@@ -217,6 +245,25 @@ const ContainerStyle = css`
   display: flex;
   width: 100%;
   background-color: white;
+`
+
+const FlexContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`
+
+const FlexItem = styled.div`
+  display: flex;
+  width: 80px;
+  height: 45px;
+  flex: 1 0 21%;
+  padding: 8px 8px 8px 4px;
+  justify-content: center;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+  cursor: pointer;
+  box-sizing: border-box;
 `
 
 const BoxStyle = css`

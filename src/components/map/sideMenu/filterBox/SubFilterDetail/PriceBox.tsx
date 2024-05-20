@@ -4,7 +4,8 @@ import Text from '@/components/shared/Text'
 import { PRICE } from '@/constants/SubFilter'
 import { Form } from '@/models/Form'
 import { css } from '@emotion/react'
-import { useState } from 'react'
+import styled from '@emotion/styled'
+import React, { useState } from 'react'
 
 interface PriceBoxProps {
   formData: Form
@@ -65,7 +66,6 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
       })
     }
   }
-  console.log(formData.fromAppraisalAmount, formData.toAppraisalAmount)
   return (
     <Flex
       justify="start"
@@ -73,13 +73,10 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
       align="center"
       css={ContainerStyle}
     >
-      <Flex direction="row" justify="center">
-        {Object.values(PRICE)
-          .slice(0, 4)
-          .map((value, index) => (
-            <Flex
-              key={index}
-              css={BoxStyle}
+      <FlexContainer>
+        {Object.values(PRICE).map((value, index) => (
+          <React.Fragment key={index}>
+            <FlexItem
               style={{
                 borderLeft: `${
                   formData.fromAppraisalAmount ===
@@ -88,8 +85,9 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
                     parseInt(Object.keys(PRICE)[index]) ||
                   formData.fromAppraisalAmount ===
                     parseInt(Object.keys(PRICE)[index - 1]) ||
-                  formData.toAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index - 1])
+                  (formData.toAppraisalAmount ===
+                    parseInt(Object.keys(PRICE)[index - 1]) &&
+                    formData.toAppraisalAmount !== 300000000)
                     ? '1px solid #007AFF'
                     : formData.fromAppraisalAmount !== 0 &&
                       formData.fromAppraisalAmount <
@@ -100,18 +98,48 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
                     : '1px solid #e5e5e5'
                 }`,
                 borderTop: `${
-                  formData.fromAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index]) ||
-                  formData.toAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index])
-                    ? '1px solid #007AFF'
-                    : formData.fromAppraisalAmount !== 0 &&
-                      formData.fromAppraisalAmount <
-                        parseInt(Object.keys(PRICE)[index]) &&
-                      formData.toAppraisalAmount >=
+                  index <= 3
+                    ? formData.fromAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index]) ||
+                      formData.toAppraisalAmount ===
                         parseInt(Object.keys(PRICE)[index])
-                    ? '1px solid #007AFF'
-                    : '1px solid #e5e5e5'
+                      ? '1px solid #007AFF'
+                      : formData.fromAppraisalAmount !== 0 &&
+                        formData.fromAppraisalAmount <
+                          parseInt(Object.keys(PRICE)[index]) &&
+                        formData.toAppraisalAmount >=
+                          parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : '1px solid #e5e5e5'
+                    : index >= 4
+                    ? formData.fromAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index]) ||
+                      formData.toAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : formData.fromAppraisalAmount !== 0 &&
+                        formData.fromAppraisalAmount <
+                          parseInt(Object.keys(PRICE)[index]) &&
+                        formData.toAppraisalAmount >=
+                          parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : formData.fromAppraisalAmount ===
+                          parseInt(Object.keys(PRICE)[index - 4]) ||
+                        formData.toAppraisalAmount ===
+                          parseInt(Object.keys(PRICE)[index - 4])
+                      ? '1px solid #007AFF'
+                      : formData.fromAppraisalAmount !== 0 &&
+                        formData.fromAppraisalAmount <
+                          parseInt(Object.keys(PRICE)[index - 4]) &&
+                        formData.toAppraisalAmount >=
+                          parseInt(Object.keys(PRICE)[index - 4]) &&
+                        formData.fromAppraisalAmount !==
+                          parseInt(Object.keys(PRICE)[index - 4]) &&
+                        formData.toAppraisalAmount !==
+                          parseInt(Object.keys(PRICE)[index - 4])
+                      ? '1px solid #007AFF'
+                      : '1px solid #e5e5e5'
+                    : ''
                 }`,
                 borderRight: `${
                   index === 3
@@ -127,7 +155,36 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
                           parseInt(Object.keys(PRICE)[index])
                       ? '1px solid #007AFF'
                       : '1px solid #e5e5e5'
+                    : index === 7
+                    ? formData.fromAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index]) ||
+                      formData.toAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : formData.fromAppraisalAmount !== 0 &&
+                        formData.fromAppraisalAmount <
+                          parseInt(Object.keys(PRICE)[index]) &&
+                        formData.toAppraisalAmount >=
+                          parseInt(Object.keys(PRICE)[index])
+                      ? '1px solid #007AFF'
+                      : '1px solid #e5e5e5'
                     : ''
+                }`,
+                borderBottom: `${
+                  index <= 3
+                    ? ''
+                    : formData.fromAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index]) ||
+                      formData.toAppraisalAmount ===
+                        parseInt(Object.keys(PRICE)[index])
+                    ? '1px solid #007AFF'
+                    : formData.fromAppraisalAmount !== 0 &&
+                      formData.fromAppraisalAmount <
+                        parseInt(Object.keys(PRICE)[index]) &&
+                      formData.toAppraisalAmount >=
+                        parseInt(Object.keys(PRICE)[index])
+                    ? '1px solid #007AFF'
+                    : '1px solid #e5e5e5'
                 }`,
                 backgroundColor: `${
                   formData.fromAppraisalAmount ===
@@ -145,7 +202,6 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
                 }`,
               }}
               onClick={() => {
-                console.log(index)
                 handleFromToPrice(parseInt(Object.keys(PRICE)[index]))
               }}
             >
@@ -171,148 +227,37 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
               >
                 {value}
               </Text>
-            </Flex>
-          ))}
-      </Flex>
-      <Flex direction="row" justify="center">
-        {Object.values(PRICE)
-          .slice(4, 8)
-          .map((value, index) => (
-            <Flex
-              key={index}
-              css={BoxStyle}
-              style={{
-                borderLeft: `${
-                  formData.fromAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4]) ||
-                  formData.toAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4]) ||
-                  formData.fromAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index + 3]) ||
-                  (formData.toAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index + 3]) &&
-                    formData.toAppraisalAmount !== 300000000)
-                    ? '1px solid #007AFF'
-                    : formData.fromAppraisalAmount !== 0 &&
-                      formData.fromAppraisalAmount <
-                        parseInt(Object.keys(PRICE)[index + 4]) &&
-                      formData.toAppraisalAmount >=
-                        parseInt(Object.keys(PRICE)[index + 4])
-                    ? '1px solid #007AFF'
-                    : '1px solid #e5e5e5'
-                }`,
-                borderTop: `${
-                  formData.fromAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4]) ||
-                  formData.toAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4])
-                    ? '1px solid #007AFF'
-                    : formData.fromAppraisalAmount !== 0 &&
-                      formData.fromAppraisalAmount <
-                        parseInt(Object.keys(PRICE)[index + 4]) &&
-                      formData.toAppraisalAmount >=
-                        parseInt(Object.keys(PRICE)[index + 4])
-                    ? '1px solid #007AFF'
-                    : '1px solid #e5e5e5'
-                }`,
-                borderBottom: `${
-                  formData.fromAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4]) ||
-                  formData.toAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4])
-                    ? '1px solid #007AFF'
-                    : formData.fromAppraisalAmount !== 0 &&
-                      formData.fromAppraisalAmount <
-                        parseInt(Object.keys(PRICE)[index + 4]) &&
-                      formData.toAppraisalAmount >=
-                        parseInt(Object.keys(PRICE)[index + 4])
-                    ? '1px solid #007AFF'
-                    : '1px solid #e5e5e5'
-                }`,
-                borderRight: `${
-                  index === 3
-                    ? formData.fromAppraisalAmount ===
-                        parseInt(Object.keys(PRICE)[index + 4]) ||
-                      formData.toAppraisalAmount ===
-                        parseInt(Object.keys(PRICE)[index + 4]) ||
-                      formData.fromAppraisalAmount ===
-                        parseInt(Object.keys(PRICE)[index + 5]) ||
-                      formData.toAppraisalAmount ===
-                        parseInt(Object.keys(PRICE)[index + 5])
-                      ? '1px solid #007AFF'
-                      : formData.fromAppraisalAmount !== 0 &&
-                        formData.fromAppraisalAmount <
-                          parseInt(Object.keys(PRICE)[index + 4]) &&
-                        formData.toAppraisalAmount >=
-                          parseInt(Object.keys(PRICE)[index + 4])
-                      ? '1px solid #007AFF'
-                      : '1px solid #e5e5e5'
-                    : ''
-                }`,
-                backgroundColor: `${
-                  formData.fromAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4]) ||
-                  formData.toAppraisalAmount ===
-                    parseInt(Object.keys(PRICE)[index + 4])
-                    ? '#F0F0FF'
-                    : formData.fromAppraisalAmount !== 0 &&
-                      formData.fromAppraisalAmount <
-                        parseInt(Object.keys(PRICE)[index + 4]) &&
-                      formData.toAppraisalAmount >=
-                        parseInt(Object.keys(PRICE)[index + 4])
-                    ? '#F0F0FF'
-                    : 'white'
-                }`,
-              }}
-              onClick={() => {
-                console.log(index)
-                handleFromToPrice(parseInt(Object.keys(PRICE)[index + 4]))
-              }}
-            >
-              <Text
-                style={{
-                  color: `${
-                    formData.fromAppraisalAmount ===
-                      parseInt(Object.keys(PRICE)[index + 4]) ||
-                    formData.toAppraisalAmount ===
-                      parseInt(Object.keys(PRICE)[index + 4])
-                      ? '#007AFF'
-                      : formData.fromAppraisalAmount !== 0 &&
-                        formData.fromAppraisalAmount <
-                          parseInt(Object.keys(PRICE)[index + 4]) &&
-                        formData.toAppraisalAmount >=
-                          parseInt(Object.keys(PRICE)[index + 4])
-                      ? '#007AFF'
-                      : 'black'
-                  }`,
-                }}
-                fontWeight="500"
-                typography="t5"
-              >
-                {value}
-              </Text>
-            </Flex>
-          ))}
-      </Flex>
+            </FlexItem>
+            {(index + 1) % 4 === 0 && <br />}
+          </React.Fragment>
+        ))}
+      </FlexContainer>
       <PriceRange formData={formData} setFormData={setFormData} />
     </Flex>
   )
 }
 
-const ContainerStyle = css`
+const FlexContainer = styled.div`
   display: flex;
-  width: 100%;
-  background-color: white;
+  flex-wrap: wrap;
 `
 
-const BoxStyle = css`
+const FlexItem = styled.div`
   display: flex;
   width: 80px;
   height: 45px;
+  flex: 1 0 21%;
   padding: 8px 8px 8px 4px;
   justify-content: center;
   align-items: center;
   gap: 1px;
   flex-shrink: 0;
   cursor: pointer;
+  box-sizing: border-box;
+`
+
+const ContainerStyle = css`
+  display: flex;
+  width: 100%;
+  background-color: white;
 `

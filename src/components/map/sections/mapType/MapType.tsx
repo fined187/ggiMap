@@ -1,7 +1,7 @@
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Dispatch, SetStateAction, useCallback } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 
@@ -37,6 +37,7 @@ export default function MapType({
   setClickedMapType,
 }: MapTypeProps) {
   const { data: map } = useSWR(MAP_KEY)
+  const [indexNum, setIndexNum] = useState(0)
   const handleMapTypeChange = useCallback(
     (type: string) => {
       if (type === 'basic') {
@@ -80,34 +81,39 @@ export default function MapType({
   )
   return (
     <Flex css={ContainerStyle}>
-      <MapTypeBox
-        mapType={clickedMapType.basic}
+      <NormalType
+        index={indexNum}
+        clicked={clickedMapType.basic}
         onClick={() => {
           handleMapTypeChange('basic')
+          setIndexNum(0)
         }}
       >
-        <TextStyle mapType={clickedMapType.basic}>기본지도</TextStyle>
-      </MapTypeBox>
-      <MapTypeBox
-        mapType={clickedMapType.terrain}
+        <TextStyle clicked={clickedMapType.basic}>기본지도</TextStyle>
+      </NormalType>
+      <TerrainType
+        index={indexNum}
+        clicked={clickedMapType.terrain}
         onClick={() => {
           handleMapTypeChange('terrain')
+          setIndexNum(1)
         }}
       >
-        <TextStyle mapType={clickedMapType.terrain}>지형도</TextStyle>
-      </MapTypeBox>
-      <MapTypeBox
-        mapType={clickedMapType.satellite}
+        <TextStyle clicked={clickedMapType.terrain}>지형도</TextStyle>
+      </TerrainType>
+      <SatelliteType
+        index={indexNum}
+        clicked={clickedMapType.satellite}
         onClick={() => {
           handleMapTypeChange('satellite')
+          setIndexNum(2)
         }}
       >
-        <TextStyle mapType={clickedMapType.satellite}>위성지도</TextStyle>
-      </MapTypeBox>
+        <TextStyle clicked={clickedMapType.satellite}>위성지도</TextStyle>
+      </SatelliteType>
     </Flex>
   )
 }
-
 const ContainerStyle = css`
   position: absolute;
   top: 10px;
@@ -121,14 +127,55 @@ const ContainerStyle = css`
   flex-shrink: 0;
   background: #fbfbfb;
   flex-direction: row;
+  border-radius: 5px;
 `
 
-const MapTypeBox = styled.div<{
-  mapType: boolean
+const NormalType = styled.div<{
+  index: number
+  clicked: boolean
 }>`
-  background: ${({ mapType }) => (mapType ? '#F0F0FF' : 'white')};
-  border: ${({ mapType }) =>
-    mapType ? '1px solid #332EFC' : '1px solid #333333'};
+  background-color: ${({ clicked }) => (clicked ? '#F0F0FF' : 'white')};
+  border-left: ${({ clicked }) =>
+    clicked ? '1px solid #332EFC' : '1px solid #333333'};
+  border-top: ${({ clicked }) =>
+    clicked ? '1px solid #332EFC' : '1px solid #333333'};
+  border-bottom: ${({ clicked }) =>
+    clicked ? '1px solid #332EFC' : '1px solid #333333'};
+  width: 50px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+`
+
+const TerrainType = styled.div<{
+  index: number
+  clicked: boolean
+}>`
+  background-color: ${({ clicked }) => (clicked ? '#F0F0FF' : 'white')};
+  border-left: ${({ clicked, index }) =>
+    index === 1 && clicked
+      ? '1px solid #332EFC'
+      : index === 0 && !clicked
+      ? '1px solid #332EFC'
+      : '1px solid #333333'};
+  border-top: ${({ clicked }) =>
+    clicked ? '1px solid #332EFC' : '1px solid #333333'};
+  border-bottom: ${({ clicked }) =>
+    clicked ? '1px solid #332EFC' : '1px solid #333333'};
+  border-right: ${({ clicked, index }) =>
+    clicked
+      ? '1px solid #332EFC'
+      : index === 1 && !clicked
+      ? '1px solid #333333'
+      : index === 2 && !clicked
+      ? '1px solid #332EFC'
+      : index === 0 && !clicked
+      ? '1px solid #333333'
+      : 'none'};
   width: 50px;
   height: 30px;
   display: flex;
@@ -136,8 +183,30 @@ const MapTypeBox = styled.div<{
   align-items: center;
   cursor: pointer;
 `
-const TextStyle = styled.span<{ mapType: boolean }>`
-  color: ${({ mapType }) => (mapType ? '#332EFC' : '#333333')};
+
+const SatelliteType = styled.div<{
+  index: number
+  clicked: boolean
+}>`
+  background-color: ${({ clicked }) => (clicked ? '#F0F0FF' : 'white')};
+  border-left: 'none';
+  border-top: ${({ clicked }) =>
+    clicked ? '1px solid #332EFC' : '1px solid #333333'};
+  border-bottom: ${({ clicked }) =>
+    clicked ? '1px solid #332EFC' : '1px solid #333333'};
+  border-right: ${({ clicked }) =>
+    clicked ? '1px solid #332EFC' : '1px solid #333333'};
+  width: 50px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+`
+
+const TextStyle = styled.span<{ clicked: boolean }>`
   text-align: center;
   font-family: SUIT;
   font-size: 11px;
@@ -145,4 +214,5 @@ const TextStyle = styled.span<{ mapType: boolean }>`
   font-weight: 600;
   line-height: 135%;
   letter-spacing: -0.11px;
+  color: ${({ clicked }) => (clicked ? '#332EFC' : '#333333')};
 `
