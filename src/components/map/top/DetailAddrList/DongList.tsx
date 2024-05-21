@@ -19,6 +19,7 @@ interface DongListProps {
   >
   selectedDongIndex: number | null
   setSelectedDongIndex: Dispatch<SetStateAction<number | null>>
+  addrToCenter: (addr: string) => void
 }
 
 function DongList({
@@ -26,6 +27,7 @@ function DongList({
   setBottomJuso,
   selectedDongIndex,
   setSelectedDongIndex,
+  addrToCenter,
 }: DongListProps) {
   const [dongList, setDongList] = useState<string[]>([])
   const handleGetDong = async (siName: string, guName: string) => {
@@ -140,6 +142,13 @@ function DongList({
                         onClick={() => {
                           if (item === ' ') return
                           handleClick(item, actualIndex)
+                          addrToCenter(
+                            bottomJuso.sido +
+                              ' ' +
+                              bottomJuso.gungu +
+                              ' ' +
+                              item,
+                          )
                         }}
                       >
                         <Text

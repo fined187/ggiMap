@@ -109,17 +109,45 @@ function Form({ item, index }: ItemProps) {
           </Flex>
           <Spacing direction="horizontal" size={4} />
           <Flex direction="row">
-            <Text css={appraisalAmtNum}>건물면적</Text>
+            <Text
+              css={appraisalAmtNum}
+              style={{
+                width: '55px',
+              }}
+            >
+              건물면적
+            </Text>
             <Spacing direction="horizontal" size={5} />
-            <Text css={appraisalAmt}>
+            <Text
+              css={appraisalAmt}
+              style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
               {item.buildingArea !== '' ? item.buildingArea : '-'}
             </Text>
           </Flex>
           <Spacing direction="horizontal" size={4} />
           <Flex direction="row">
-            <Text css={appraisalAmtNum}>토지면적</Text>
-            <Spacing direction="horizontal" size={5} />
-            <Text css={appraisalAmt}>
+            <Text
+              css={appraisalAmtNum}
+              style={{
+                width: '55px',
+              }}
+            >
+              토지면적
+            </Text>
+            <Spacing direction="horizontal" size={4} />
+            <Text
+              css={appraisalAmt}
+              style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
               {item.landArea !== '' ? item.landArea : '-'}
             </Text>
           </Flex>

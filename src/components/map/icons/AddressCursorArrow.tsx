@@ -32,7 +32,6 @@ function AddressCursorArrow({
       setOpenCursor(false)
     }
   }
-  console.log('openCursor', openCursor)
   return (
     <>
       {openCursor ? (

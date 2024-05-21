@@ -108,12 +108,7 @@ function BottomAddress({
   )
 
   const addrToCenter = async (addr: string) => {
-    if (
-      range >= 1 &&
-      bottomJuso.sido !== '' &&
-      bottomJuso.gungu !== '' &&
-      bottomJuso.dong === ''
-    ) {
+    if (range === 1 && bottomJuso.sido !== '' && bottomJuso.gungu !== '') {
       try {
         const response = await getSubway(bottomJuso.sido + addr + '청')
         if (response.documents.length === 0) {
@@ -129,7 +124,7 @@ function BottomAddress({
         console.error(error)
       }
     } else if (range === 2 && bottomJuso.gungu !== '') {
-      searchAddrToCoord(bottomJuso.sido + addr)
+      searchAddrToCoord(addr)
     }
   }
   return (
@@ -213,6 +208,7 @@ function BottomAddress({
           setRange={setRange}
           selectedGunguIndex={selectedGunguIndex}
           setSelectedGunguIndex={setSelectedGunguIndex}
+          addrToCenter={addrToCenter}
         />
       )}
       {range === 2 && (
@@ -221,6 +217,7 @@ function BottomAddress({
           setBottomJuso={setBottomJuso}
           selectedDongIndex={selectedDongIndex}
           setSelectedDongIndex={setSelectedDongIndex}
+          addrToCenter={addrToCenter}
         />
       )}
     </Flex>

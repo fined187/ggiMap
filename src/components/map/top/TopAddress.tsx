@@ -76,7 +76,7 @@ function TopAddress({
   setBottomJuso,
 }: AddressProps) {
   const { data: map } = useSWR(MAP_KEY)
-  const [getGungu, setGetGungu] = useState<string[]>([])
+  const [getGungu, setGetGungu] = useState<string>('')
   function searchCoordinateToAddress(lat: number, lng: number) {
     if (window.naver.maps?.Service?.geocode !== undefined) {
       window.naver.maps?.Service?.reverseGeocode(
@@ -89,17 +89,28 @@ function TopAddress({
             return
           }
           const result = response.result.items[0].addrdetail
+          console.log(result)
           setTopJuso({
             sido: result.sido,
             gungu: result.sigugun.split(' ')[0],
             dong: result.dongmyun,
           })
-          setGetGungu(result.sigugun.split(' ')[1])
+          if (
+            result.sigugun.split(' ')[0].match(/시$/) &&
+            result.sigugun.split(' ')[1] === undefined
+          ) {
+            setGetGungu(result.sigugun.split(' ')[0])
+          } else if (
+            result.sigugun.split(' ')[1] !== undefined &&
+            result.sigugun.split(' ')[1].match(/구$/)
+          ) {
+            setGetGungu(result.sigugun.split(' ')[1])
+          }
         },
       )
     }
   }
-
+  console.log(getGungu)
   const handleTopBottomSync = () => {
     let newSido: string[] = []
     if (
@@ -114,7 +125,6 @@ function TopAddress({
     }
     return newSido
   }
-
   const handleTopBottomSyncGungu = () => {
     if (!topJuso.gungu) return []
     let newGungu = []
@@ -122,7 +132,11 @@ function TopAddress({
       topJuso.gungu.slice(topJuso.gungu.length - 1, topJuso.gungu.length) ===
       '시'
     ) {
-      newGungu.push(topJuso.gungu + ' ' + getGungu)
+      if (getGungu.match(/구$/)) {
+        newGungu.push(topJuso.gungu + ' ' + getGungu)
+      } else {
+        newGungu.push(topJuso.gungu)
+      }
       return newGungu
     }
     newGungu.push(topJuso.gungu)
@@ -159,6 +173,7 @@ function TopAddress({
       })
     }
   }
+
   useEffect(() => {
     if (map) {
       const mapCenter = map.getCenter()
