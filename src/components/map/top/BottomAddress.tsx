@@ -163,10 +163,7 @@ function BottomAddress({
         <Text
           css={TextStyle}
           style={{
-            color:
-              bottomJuso.gungu !== '' || topJuso.gungu !== ''
-                ? '#000001'
-                : '#9d9999',
+            color: bottomJuso.gungu !== '' ? '#000001' : '#9d9999',
             cursor: 'pointer',
           }}
           onClick={() => {
@@ -183,10 +180,7 @@ function BottomAddress({
         <Text
           css={TextStyle}
           style={{
-            color:
-              bottomJuso.dong !== '' || topJuso.dong !== ''
-                ? '#000001'
-                : '#9d9999',
+            color: bottomJuso.dong !== '' ? '#000001' : '#9d9999',
             cursor: 'pointer',
           }}
           onClick={() => {
@@ -228,32 +222,6 @@ function BottomAddress({
           selectedDongIndex={selectedDongIndex}
           setSelectedDongIndex={setSelectedDongIndex}
         />
-      )}
-      {bottomJuso.gungu !== '' && bottomJuso.dong === '' && (
-        <>
-          <Spacing direction="vertical" size={50} />
-          <FixedInBoxButton
-            label={`${bottomJuso.gungu} 지도 보기`}
-            onClick={() => {
-              addrToCenter(bottomJuso.gungu)
-              setZoom(14)
-              setOpenCursor && setOpenCursor(false)
-            }}
-          />
-        </>
-      )}
-      {bottomJuso.dong !== '' && (
-        <>
-          <Spacing direction="vertical" size={50} />
-          <FixedInBoxButton
-            label={`${bottomJuso.dong} 지도 보기`}
-            onClick={() => {
-              addrToCenter(bottomJuso.gungu + bottomJuso.dong)
-              setZoom(17)
-              setOpenCursor && setOpenCursor(false)
-            }}
-          />
-        </>
       )}
     </Flex>
   )

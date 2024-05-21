@@ -98,7 +98,6 @@ export default function GunguList({
                   .map((item, subIndex) => {
                     const actualIndex = index + subIndex
                     const isSelected = bottomJuso.gungu === item
-                    const borderColor = isSelected ? '#332EFC' : '#E5E5E5'
                     const shouldHighlightTop =
                       selectedGunguIndex != null &&
                       (actualIndex === selectedGunguIndex ||

@@ -37,7 +37,6 @@ function Result({
   const [showingList, setShowingList] = useState(false)
 
   const { mutate: list, isLoading } = usePostListItems(formData, setListItems)
-
   useEffect(() => {
     if (map && map.zoom! >= 15) {
       setShowingList(true)
@@ -78,14 +77,16 @@ function Result({
       }}
     >
       {showingList ? (
-        listItems?.gmgItems || listItems?.kmItems || listItems?.kwItems ? (
+        listItems?.gmgItems !== null ||
+        listItems?.kmItems.length > 0 ||
+        listItems?.kwItems !== null ? (
           <>
             <Header
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               formData={formData}
               setFormData={setFormData}
-              listItems={listItems}
+              listItems={listItems as Items}
               isLoading={isLoading}
             />
             <Container isOpen={isOpen}>

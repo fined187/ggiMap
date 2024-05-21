@@ -1,11 +1,9 @@
 import Flex from '@/components/shared/Flex'
-import Text from '@/components/shared/Text'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
-import { NaverMap } from '@/models/Map'
 
 declare global {
   interface Window {

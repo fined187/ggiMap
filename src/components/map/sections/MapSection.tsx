@@ -149,7 +149,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       handleGetPnuCounts()
     }
   }, [mapItems])
-
   return (
     <>
       <Map

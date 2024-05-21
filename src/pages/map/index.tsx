@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import axios from 'axios'
 import MapSection from '@/components/map/sections/MapSection'
+import useSWR from 'swr'
+import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 
 interface Props {
   data?: {
@@ -23,6 +25,7 @@ declare global {
 }
 
 function MapComponent({ token }: Props) {
+  const { data: map } = useSWR(MAP_KEY)
   const [user, setUser] = useRecoilState(userAtom)
   const [formData, setFormData] = useState<Form>({
     usageCodes: '',
@@ -102,8 +105,10 @@ function MapComponent({ token }: Props) {
     if (window) {
       window.history.pushState({}, '', '/map')
     }
-    handleGetAddress()
-  }, [token])
+    if (map) {
+      handleGetAddress()
+    }
+  }, [token, map])
 
   return (
     <>
