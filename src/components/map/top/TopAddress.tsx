@@ -92,7 +92,10 @@ function TopAddress({
           console.log(result)
           setTopJuso({
             sido: result.sido,
-            gungu: result.sigugun.split(' ')[0],
+            gungu:
+              result.sigugun.split(' ')[0] === ''
+                ? '세종시'
+                : result.sigugun.split(' ')[0],
             dong: result.dongmyun,
           })
           if (
@@ -110,18 +113,27 @@ function TopAddress({
       )
     }
   }
-  console.log(getGungu)
   const handleTopBottomSync = () => {
     let newSido: string[] = []
     if (
       topJuso.sido.match(/시$/) ||
       topJuso.sido.match(/경기도$/) ||
       topJuso.sido.match(/강원특별자치도$/) ||
-      topJuso.sido.match(/제주도$/)
+      topJuso.sido.match(/제주도$/) ||
+      topJuso.sido.match(/제주특별자치도$/)
     ) {
       newSido.push(topJuso.sido.slice(0, 2))
     } else if (topJuso.sido.match(/도$/)) {
       newSido.push(topJuso.sido.slice(0, 1) + topJuso.sido.slice(2, 3))
+    } else if (topJuso.sido.match(/세종특별자치시$/)) {
+      console.log('세종')
+      newSido.push('세종')
+      setTopJuso((prev) => {
+        return {
+          ...prev,
+          sido: '세종시',
+        }
+      })
     }
     return newSido
   }
@@ -184,7 +196,7 @@ function TopAddress({
       searchCoordinateToAddress(center.lat, center.lng)
     }
   }, [map && map.center])
-
+  console.log(topJuso)
   if (!map) return null
   return (
     <>

@@ -58,7 +58,7 @@ function DongList({
   useEffect(() => {
     handleGetDong(bottomJuso.sido, bottomJuso.gungu)
   }, [bottomJuso.sido, bottomJuso.gungu])
-
+  console.log(bottomJuso)
   return (
     <Flex
       direction="column"
@@ -142,6 +142,9 @@ function DongList({
                         onClick={() => {
                           if (item === ' ') return
                           handleClick(item, actualIndex)
+                          if (bottomJuso.sido === '세종') {
+                            addrToCenter(bottomJuso.gungu + ' ' + item)
+                          }
                           addrToCenter(
                             bottomJuso.sido +
                               ' ' +

@@ -64,6 +64,7 @@ export default function SidoList({
     },
     [bottomJuso, setBottomJuso, setRange, setSelectedIndex],
   )
+
   const handleGetSidoList = async () => {
     try {
       const response = await axios.get(`/ggi/api/location/sds`)
@@ -85,6 +86,13 @@ export default function SidoList({
   useEffect(() => {
     handleGetSidoList()
   }, [])
+
+  useEffect(() => {
+    if (sidoList.length > 0) {
+      const index = sidoList.indexOf(bottomJuso.sido)
+      setSelectedIndex(index !== -1 ? index : null)
+    }
+  }, [bottomJuso.sido, setSelectedIndex, sidoList])
   return (
     <Flex direction="column">
       {Array.from(sidoList).map(

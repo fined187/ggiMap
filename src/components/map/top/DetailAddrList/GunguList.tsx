@@ -80,6 +80,13 @@ export default function GunguList({
   useEffect(() => {
     handleGetGungu(bottomJuso.sido)
   }, [bottomJuso.sido])
+
+  useEffect(() => {
+    if (gunguList.length > 0) {
+      const index = gunguList.indexOf(bottomJuso.gungu)
+      setSelectedGunguIndex(index !== -1 ? index : null)
+    }
+  }, [bottomJuso.gungu, gunguList, setSelectedGunguIndex])
   return (
     <>
       <Flex

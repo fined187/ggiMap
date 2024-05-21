@@ -18,10 +18,6 @@ import Spacing from '@/components/shared/Spacing'
 import useSWR from 'swr'
 import { MAP_KEY } from '../sections/hooks/useMap'
 
-const FixedInBoxButton = dynamic(
-  () => import('@/components/shared/FixedInBoxButton'),
-)
-
 interface BottomAddressProps {
   center?: {
     lat: number
@@ -127,6 +123,7 @@ function BottomAddress({
       searchAddrToCoord(addr)
     }
   }
+
   return (
     <Flex direction="column" css={ContainerStyle}>
       <Flex
