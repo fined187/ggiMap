@@ -54,6 +54,9 @@ export default function SearchBox({
           if (status === window.naver.maps?.Service?.Status?.ERROR) {
             alert('지하철 혹은 주소를 입력해주세요')
             return
+          } else if (response.v2.meta.totalCount === 0) {
+            alert('검색 결과가 없습니다. 주소를 다시 입력해주세요.')
+            return
           }
           const result = response.v2.addresses[0]
           const { x, y } = result ?? { point: { x: 0, y: 0 } }
@@ -91,11 +94,22 @@ export default function SearchBox({
       } else if (
         keyword.match(/시$/) ||
         keyword.match(/구$/) ||
-        keyword.match(/동$/)
+        keyword.match(/동$/) ||
+        keyword.match(/읍$/) ||
+        keyword.match(/면$/) ||
+        keyword.match(/리$/) ||
+        keyword.match(/가$/) ||
+        keyword.match(/로$/) ||
+        keyword.match(/길$/) ||
+        keyword.match(/도$/) ||
+        keyword.match(/번길$/) ||
+        keyword.match(/길$/) ||
+        keyword.match(/[0-9]$/)
       ) {
         searchAddrToCoord(keyword)
       } else {
         alert('지하철역 혹은 주소를 입력해주세요')
+        // searchAddrToCoord(keyword)
       }
     }
   }

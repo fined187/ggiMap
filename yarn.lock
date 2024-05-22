@@ -2635,7 +2635,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jquery@npm:*":
+"@types/jquery@npm:*, @types/jquery@npm:^3":
   version: 3.5.30
   resolution: "@types/jquery@npm:3.5.30"
   dependencies:
@@ -5959,6 +5959,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jquery@npm:^3.7.1":
+  version: 3.7.1
+  resolution: "jquery@npm:3.7.1"
+  checksum: 10c0/808cfbfb758438560224bf26e17fcd5afc7419170230c810dd11f5c1792e2263e2970cca8d659eb84fcd9acc301edb6d310096e450277d54be4f57071b0c82d9
+  languageName: node
+  linkType: hard
+
 "js-cookie@npm:^2.2.1":
   version: 2.2.1
   resolution: "js-cookie@npm:2.2.1"
@@ -7042,6 +7049,7 @@ __metadata:
     "@emotion/styled": "npm:^11.11.5"
     "@types/babel-plugin-macros": "npm:^3"
     "@types/body-parser": "npm:^1"
+    "@types/jquery": "npm:^3"
     "@types/navermaps": "npm:^3.7.5"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
@@ -7064,6 +7072,7 @@ __metadata:
     firebase: "npm:^10.5.2"
     framer-motion: "npm:^11.1.5"
     handlebars: "npm:^4.7.8"
+    jquery: "npm:^3.7.1"
     jspdf: "npm:^2.5.1"
     next: "npm:^13.0.0"
     postcss: "npm:^8"

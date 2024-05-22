@@ -89,7 +89,6 @@ function TopAddress({
             return
           }
           const result = response.result.items[0].addrdetail
-          console.log(result)
           setTopJuso({
             sido: result.sido,
             gungu:
@@ -196,7 +195,6 @@ function TopAddress({
       searchCoordinateToAddress(center.lat, center.lng)
     }
   }, [map && map.center])
-  console.log(topJuso)
   if (!map) return null
   return (
     <>

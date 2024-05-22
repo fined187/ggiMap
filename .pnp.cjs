@@ -34,6 +34,7 @@ const RAW_RUNTIME_STATE =
           ["@emotion/styled", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:11.11.5"],\
           ["@types/babel-plugin-macros", "npm:3.1.3"],\
           ["@types/body-parser", "npm:1.19.5"],\
+          ["@types/jquery", "npm:3.5.30"],\
           ["@types/navermaps", "npm:3.7.5"],\
           ["@types/node", "npm:20.8.9"],\
           ["@types/react", "npm:18.2.33"],\
@@ -56,6 +57,7 @@ const RAW_RUNTIME_STATE =
           ["firebase", "npm:10.5.2"],\
           ["framer-motion", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:11.1.5"],\
           ["handlebars", "npm:4.7.8"],\
+          ["jquery", "npm:3.7.1"],\
           ["jspdf", "npm:2.5.1"],\
           ["next", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:13.5.6"],\
           ["postcss", "npm:8.4.38"],\
@@ -8610,6 +8612,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["jquery", [\
+      ["npm:3.7.1", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/jquery-npm-3.7.1-eeeac0f21e-10c0.zip/node_modules/jquery/",\
+        "packageDependencies": [\
+          ["jquery", "npm:3.7.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["js-cookie", [\
       ["npm:2.2.1", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/js-cookie-npm-2.2.1-e879cd2148-10c0.zip/node_modules/js-cookie/",\
@@ -9823,6 +9834,7 @@ const RAW_RUNTIME_STATE =
           ["@emotion/styled", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:11.11.5"],\
           ["@types/babel-plugin-macros", "npm:3.1.3"],\
           ["@types/body-parser", "npm:1.19.5"],\
+          ["@types/jquery", "npm:3.5.30"],\
           ["@types/navermaps", "npm:3.7.5"],\
           ["@types/node", "npm:20.8.9"],\
           ["@types/react", "npm:18.2.33"],\
@@ -9845,6 +9857,7 @@ const RAW_RUNTIME_STATE =
           ["firebase", "npm:10.5.2"],\
           ["framer-motion", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:11.1.5"],\
           ["handlebars", "npm:4.7.8"],\
+          ["jquery", "npm:3.7.1"],\
           ["jspdf", "npm:2.5.1"],\
           ["next", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:13.5.6"],\
           ["postcss", "npm:8.4.38"],\
@@ -11302,8 +11315,8 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/__virtual__/slick-carousel-virtual-0289458c97/3/Users/woota/AppData/Local/Yarn/Berry/cache/slick-carousel-npm-1.8.1-8382d373c2-10c0.zip/node_modules/slick-carousel/",\
         "packageDependencies": [\
           ["slick-carousel", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:1.8.1"],\
-          ["@types/jquery", null],\
-          ["jquery", null]\
+          ["@types/jquery", "npm:3.5.30"],\
+          ["jquery", "npm:3.7.1"]\
         ],\
         "packagePeers": [\
           "@types/jquery",\

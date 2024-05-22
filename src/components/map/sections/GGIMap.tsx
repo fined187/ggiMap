@@ -181,7 +181,6 @@ export default function GGIMap({
       }
     }
   }, [debouncedSearch, mapRef.current?.getZoom()])
-
   return (
     <>
       <Script

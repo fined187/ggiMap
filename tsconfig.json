@@ -39,7 +39,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "withTwin.js"  ],
+, "withTwin.js", "src/components/map/sections/MapFunc/test.js"  ],
   "exclude": [
     "node_modules"
   ]

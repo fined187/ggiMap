@@ -9,10 +9,12 @@ export function NumToHan(num: number) {
     const man = Math.round((num % 100000000) / 10000000)
     return man ? `${eok}.${man}억` : `${eok}억`
   } else if (num >= 1000000000) {
+    //  10억 이상
     const eok = Math.floor(num / 100000000).toFixed(0)
     const man = Math.round((num % 100000000) / 10000000)
     return man ? `${eok}.${man.toString().replace('0', '')}억` : `${eok}억`
   } else if (num >= 100000000) {
+    //  1억 이상
     const eok = Math.floor(num / 100000000).toFixed(0)
     const man = Math.round((num % 100000000) / 10000000)
     if (man.toString().length > 1) {
@@ -23,12 +25,21 @@ export function NumToHan(num: number) {
       return `${eok}.${man.toString().replace('0', '')}억`
     }
   } else if (num >= 10000000) {
-    const man = Math.floor(num / 10000) // 만 단위
-    return `${man}만`
-  } else if (num >= 10000) {
-    const man = Math.floor(num / 10000) // 만 단위
-    return `${man}만`
+    //  1천만 이상
+    const chunMan = Math.floor(num / 10000000)
+    const baekMan = Math.round((num % 10000000) / 1000000)
+    return baekMan ? `${chunMan}.${baekMan}천만` : `${chunMan}천만`
+  } else if (num >= 1000000) {
+    //  100만 이상
+    const baekMan = Math.floor(num / 1000000)
+    const shipMan = Math.round((num % 1000000) / 100000)
+    return shipMan ? `${baekMan}.${shipMan}백만` : `${baekMan}백만`
+  } else if (num >= 100000) {
+    //  10만 이상
+    const shipMan = Math.floor(num / 10000)
+    return `${shipMan}만`
   } else {
-    return '1만원'
+    //  1만
+    return `${Math.floor(num / 10000)}만`
   }
 }
