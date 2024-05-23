@@ -18,7 +18,6 @@ interface ItemProps {
 
 function Form({ item, index }: ItemProps) {
   const url = usePathUrl(item.type ?? 1)
-  console.log(item)
   return (
     <Flex
       direction="column"
