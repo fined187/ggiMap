@@ -91,7 +91,8 @@ function Form({ item, index }: ItemProps) {
           </Text>
           <Text css={minPriceNum}>
             {item.winAmt != 0
-              ? useNum2Han(item.winAmt ?? 0)
+              ? useNum2Han(item.winAmt ?? 0) +
+                (item.ratio && item.ratio > 0 ? `(${item.ratio}%)` : '')
               : useNum2Han(item.minAmt ?? 0) +
                 (item.ratio && item.ratio > 0 ? `(${item.ratio}%)` : '')}
           </Text>
