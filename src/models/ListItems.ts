@@ -27,9 +27,11 @@ export interface KmItems {
   period?: string
   manageNo?: string
   checkInfo?: string | null
+  ratio?: number
 }
 
 export interface KwItems {
+  ratio?: number
   idCode: string
   caseNo: string
   date: string
@@ -69,4 +71,5 @@ export interface GmgItems {
   claim?: string
   manageNo: string
   checkInfo?: string | null
+  ratio?: number
 }

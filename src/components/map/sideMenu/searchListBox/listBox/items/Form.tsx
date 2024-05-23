@@ -18,6 +18,7 @@ interface ItemProps {
 
 function Form({ item, index }: ItemProps) {
   const url = usePathUrl(item.type ?? 1)
+  console.log(item)
   return (
     <Flex
       direction="column"
@@ -92,14 +93,7 @@ function Form({ item, index }: ItemProps) {
             {item.winAmt != 0
               ? useNum2Han(item.winAmt ?? 0)
               : useNum2Han(item.minAmt ?? 0) +
-                  '(' +
-                  (isNaN(((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100)
-                    ? 0
-                    : ((item.minAmt ?? 0) / (item.appraisalAmt ?? 0)) * 100
-                  ).toFixed(0) ===
-                'Infinity'
-              ? ''
-              : useNum2Han(item.minAmt ?? 0)}
+                (item.ratio && item.ratio > 0 ? `(${item.ratio}%)` : '')}
           </Text>
           <Spacing direction="horizontal" size={2} />
           <Flex direction="row">

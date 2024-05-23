@@ -62,11 +62,54 @@ export const Measure = ({
   const [polyline, setPolyline] = useState<naver.maps.Polyline | null>(null)
   const [guideline, setGuideline] = useState<naver.maps.Polyline | null>(null)
   const [lastDistance, setLastDistance] = useState<number | null>(null)
-  const [markers, setMarkers] = useState<naver.maps.Marker[] | null>(null)
+  const [markers, setMarkers] = useState<naver.maps.Marker[]>([])
 
   const [distanceListener, setDistanceListener] = useState<
     naver.maps.MapEventListener[]
   >([])
+
+  const fromMetersToText = useCallback((meters: number) => {
+    meters = meters || 0
+    const km = 1000
+    let text: string | number = meters
+
+    if (meters >= km) {
+      text = parseFloat((meters / km).toFixed(1)) + 'km'
+    } else {
+      text = parseFloat(meters.toFixed(1)) + 'm'
+    }
+    return text
+  }, [])
+
+  const addMileStone = useCallback(
+    (coord: Coord, text: string, css?: any) => {
+      const marker = new naver.maps.Marker({
+        position: coord,
+        map: map,
+        icon: {
+          content:
+            '<div style="display:inline-block;padding:5px;text-align:center;background-color:#fff;border:1px solid #000;"><span>' +
+            text +
+            '</span></div>',
+          anchor: new naver.maps.Point(-5, -5),
+        },
+      })
+      const markerElement = $(marker.getElement())
+
+      if (css) {
+        markerElement.css(css)
+      } else {
+        markerElement.css({
+          fontSize: '11px',
+          fontWeight: 'bold',
+        })
+      }
+      setMarkers((prev) => {
+        return [...prev, marker]
+      })
+    },
+    [map],
+  )
 
   const startMode = (mode: string) => {
     if (!mode) return
@@ -77,10 +120,12 @@ export const Measure = ({
     }
   }
   const finishDistance = useCallback(() => {
-    if (distanceListener.length < 1) return
-    distanceListener?.forEach((listener) => {
-      naver.maps.Event.removeListener(listener)
-    })
+    if (distanceListener.length > 0) {
+      distanceListener?.forEach((listener) => {
+        naver.maps.Event.removeListener(listener)
+      })
+      setDistanceListener([])
+    }
     document.removeEventListener('mousemove', onMouseMoveDistance)
 
     if (guideline) {
@@ -103,11 +148,11 @@ export const Measure = ({
           color: 'red',
         })
       }
+      polyline.setMap(null)
       setPolyline(null)
     }
-    setDistanceListener([])
     setLastDistance(null)
-  }, [distanceListener, guideline, polyline])
+  }, [distanceListener, guideline, polyline, addMileStone, fromMetersToText])
 
   const finishMode = (newMode: string) => {
     if (!newMode) return
@@ -119,72 +164,33 @@ export const Measure = ({
     }
   }
 
-  const fromMetersToText = useCallback((meters: number) => {
-    meters = meters || 0
-    const km = 1000
-    let text: string | number = meters
+  const onMouseMoveDistance = useCallback(
+    (e: MouseEvent) => {
+      if (map && guideline) {
+        const proj = map.getProjection()
+        const coord = proj.fromPageXYToCoord(
+          new naver.maps.Point(e.pageX, e.pageY),
+        )
+        const path = guideline?.getPath() as naver.maps.Point[]
 
-    if (meters >= km) {
-      text = parseFloat((meters / km).toFixed(1)) + 'km'
-    } else {
-      text = parseFloat(meters.toFixed(1)) + 'm'
-    }
-    return text
-  }, [])
-
-  const onMouseMoveDistance = (e: MouseEvent) => {
-    if (map) {
-      const proj = map.getProjection()
-      const coord = proj.fromPageXYToCoord(
-        new naver.maps.Point(e.pageX, e.pageY),
-      )
-      const path = guideline?.getPath() as naver.maps.Point[]
-
-      if (path) {
-        if (path.length === 2) {
-          path.pop()
+        if (path) {
+          if (path.length === 2) {
+            path.pop()
+          }
+          path.push(coord)
+          guideline.setPath(path)
         }
-        path.push(coord)
       }
-    }
-  }
-
-  const addMileStone = useCallback((coord: Coord, text: string, css?: any) => {
-    const marker = new naver.maps.Marker({
-      position: coord,
-      map: map,
-      icon: {
-        content:
-          '<div style="display:inline-block;padding:5px;text-align:center;background-color:#fff;border:1px solid #000;"><span>' +
-          text +
-          '</span></div>',
-        anchor: new naver.maps.Point(-5, -5),
-      },
-    })
-    const markerElement = $(marker.getElement())
-
-    if (css) {
-      markerElement.css(css)
-    } else {
-      markerElement.css({
-        fontSize: '11px',
-        fontWeight: 'bold',
-      })
-    }
-    setMarkers((prev) => {
-      return prev ? [...prev, marker] : [marker]
-    })
-  }, [])
+    },
+    [map, guideline],
+  )
 
   const onClickDistance = useCallback(
     (e: { coord: naver.maps.Point }) => {
       if (!map) return
-      const coord = {
-        lat: e.coord.y,
-        lng: e.coord.x,
-      }
+      const coord = new naver.maps.LatLng(e.coord.y, e.coord.x)
       if (!polyline) {
-        const guideline = new naver.maps.Polyline({
+        const newGuideline = new naver.maps.Polyline({
           strokeColor: '#f00',
           strokeWeight: 5,
           strokeStyle: 'dash',
@@ -192,7 +198,7 @@ export const Measure = ({
           path: [coord],
           map: map,
         })
-        setGuideline(guideline)
+        setGuideline(newGuideline)
         const rightClickHandler = naver.maps.Event.addListener(
           map,
           'rightclick',
@@ -207,18 +213,19 @@ export const Measure = ({
           map: map,
         })
         setPolyline(newPolyline)
-        const lastDistance = newPolyline.getDistance()
-        setLastDistance(lastDistance)
+        setLastDistance(newPolyline.getDistance())
       } else {
-        guideline?.setPath([coord])
-        const path = polyline?.getPath() as naver.maps.Point[]
-        if (path) {
-          path.push(new naver.maps.Point(coord.lat, coord.lng))
-          const distance = polyline.getDistance()
-          console.log(distance)
-          addMileStone(coord, fromMetersToText(distance - lastDistance!))
-          setLastDistance(distance)
-        }
+        // guideline?.setPath([coord])
+        const path = polyline?.getPath()
+
+        path.push(coord)
+        polyline.setPath(path)
+        const distance = polyline.getDistance()
+        addMileStone(
+          { lat: coord.lat(), lng: coord.lng() },
+          fromMetersToText(distance - lastDistance!),
+        )
+        setLastDistance(distance)
       }
     },
     [
@@ -240,9 +247,10 @@ export const Measure = ({
       const clickHandler = naver.maps.Event.addListener(map, 'click', (e) => {
         onClickDistance(e)
       })
-      setDistanceListener((prev) => {
-        return [...prev, clickHandler]
-      })
+      setDistanceListener([clickHandler])
+      map.setCursor(
+        "url('https://cdn0.iconfinder.com/data/icons/phosphor-regular-vol-4/256/ruler-512.png'), default",
+      )
     }
   }
 
@@ -260,14 +268,14 @@ export const Measure = ({
       if (polyline) {
         polyline.setMap(null)
         setPolyline(null)
-        finishDistance()
       }
+      finishDistance()
     } else if (mode === 'area') {
       if (polyline) {
         polyline.setMap(null)
         setPolyline(null)
-        finishArea()
       }
+      finishArea()
     }
   }
 
@@ -278,7 +286,7 @@ export const Measure = ({
     return () => {
       document.removeEventListener('mousemove', onMouseMoveDistance)
     }
-  }, [onClickDistance, onMouseMoveDistance])
+  }, [onMouseMoveDistance])
 
   const onClickButton = (
     newMode: string,
