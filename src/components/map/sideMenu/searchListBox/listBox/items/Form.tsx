@@ -10,14 +10,15 @@ import usePathUrl from '../hooks/usePathUrl'
 import { GmgItems, KmItems, KwItems } from '@/models/ListItems'
 import useNum2Han from '@/utils/useNum2Han'
 import Interest from '@/components/map/icons/Interest'
+import { MapItems } from '@/models/MapItem'
 
 interface ItemProps {
-  item: Partial<GmgItems | KmItems | KwItems>
+  item: MapItems
   index: number
 }
 
 function Form({ item, index }: ItemProps) {
-  const url = usePathUrl(item.type ?? 1)
+  const url = usePathUrl(item?.type ?? 1)
   return (
     <Flex
       direction="column"
@@ -30,14 +31,14 @@ function Form({ item, index }: ItemProps) {
         left={
           <LeftTextStyle
             color={
-              item.type === 2
+              item?.type === 2
                 ? '#0087B1'
-                : item.type === 3
+                : item?.type === 3
                 ? '#5200FF'
                 : '#0038FF'
             }
           >
-            {item.type === 2 ? '캠코' : item.type === 3 ? '기관매각' : '경매'}
+            {item?.type === 2 ? '캠코' : item?.type === 3 ? '기관매각' : '경매'}
           </LeftTextStyle>
         }
         contents={
@@ -49,10 +50,10 @@ function Form({ item, index }: ItemProps) {
               whiteSpace: 'nowrap',
             }}
           >
-            {item.caseNo ? item.caseNo : item.manageNo}
+            {item?.caseNo}
           </LeftTextStyle>
         }
-        right={<Interest interest={item.interest ?? ''} />}
+        right={<Interest interest={item?.interest ?? ''} />}
         style={ListLeftStyle}
       />
       <Flex
@@ -63,7 +64,7 @@ function Form({ item, index }: ItemProps) {
         }}
       >
         <Image
-          src={url + item?.path}
+          src={item?.path ? url + item?.path : '/images/no-image.png'}
           alt="KM image"
           width={180}
           height={135}
@@ -83,23 +84,25 @@ function Form({ item, index }: ItemProps) {
           <Text
             css={minPriceTextStyle}
             style={{
-              color: item.winAmt != 0 ? '#FF0000' : '#000000',
+              color: item?.winAmt != 0 ? '#FF0000' : '#000000',
             }}
           >
-            {item.winAmt != 0 ? '낙찰가' : '최저가'}
+            {item?.winAmt != 0 ? '낙찰가' : '최저가'}
           </Text>
           <Text css={minPriceNum}>
-            {item.winAmt != 0
-              ? useNum2Han(item.winAmt ?? 0) +
-                (item.ratio && item.ratio > 0 ? `(${item.ratio}%)` : '')
-              : useNum2Han(item.minAmt ?? 0) +
-                (item.ratio && item.ratio > 0 ? `(${item.ratio}%)` : '')}
+            {item?.winAmt != 0
+              ? useNum2Han(item?.winAmt ?? 0) +
+                (item?.ratio && item?.ratio > 0 ? `(${item?.ratio}%)` : '')
+              : useNum2Han(item?.minAmt ?? 0) +
+                (item?.ratio && item?.ratio > 0 ? `(${item?.ratio}%)` : '')}
           </Text>
           <Spacing direction="horizontal" size={2} />
           <Flex direction="row">
             <Text css={appraisalAmtNum}>감정가</Text>
             <Spacing direction="horizontal" size={5} />
-            <Text css={appraisalAmt}>{useNum2Han(item.appraisalAmt ?? 0)}</Text>
+            <Text css={appraisalAmt}>
+              {useNum2Han(item?.appraisalAmt ?? 0)}
+            </Text>
           </Flex>
           <Spacing direction="horizontal" size={4} />
           <Flex direction="row">
@@ -120,7 +123,7 @@ function Form({ item, index }: ItemProps) {
                 whiteSpace: 'nowrap',
               }}
             >
-              {item.buildingArea !== '' ? item.buildingArea : '-'}
+              {item?.buildingArea !== '' ? item?.buildingArea : '-'}
             </Text>
           </Flex>
           <Spacing direction="horizontal" size={4} />
@@ -142,11 +145,11 @@ function Form({ item, index }: ItemProps) {
                 whiteSpace: 'nowrap',
               }}
             >
-              {item.landArea !== '' ? item.landArea : '-'}
+              {item?.landArea !== '' ? item?.landArea : '-'}
             </Text>
           </Flex>
           <Spacing direction="horizontal" size={10} />
-          {item.checkInfo && (
+          {item?.checkInfo && (
             <Flex
               direction="row"
               style={{
@@ -154,7 +157,7 @@ function Form({ item, index }: ItemProps) {
                 overflow: 'hidden',
               }}
             >
-              {Array.from(item.checkInfo.split(',')).map((info, idx) => (
+              {Array.from(item?.checkInfo.split(',')).map((info, idx) => (
                 <Flex css={SpecialText} key={idx}>
                   <Text
                     css={SpecialTextStyle}
@@ -182,7 +185,7 @@ const ContainerStyle = css`
   background: #fff;
   gap: 10px;
   padding: 10px 0 10px 0;
-  width: 350px;
+  width: 340px;
   height: 208px;
   flex-shrink: 0;
   left: 10px;

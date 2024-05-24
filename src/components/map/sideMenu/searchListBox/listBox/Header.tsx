@@ -6,6 +6,7 @@ import Skeleton from '@/components/shared/Skeleton'
 import Text from '@/components/shared/Text'
 import { Form } from '@/models/Form'
 import { Items } from '@/models/ListItems'
+import { MapItems, PageInfo } from '@/models/MapItem'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import useSWR from 'swr'
@@ -13,19 +14,15 @@ import useSWR from 'swr'
 interface Props {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  formData: Form
-  setFormData: React.Dispatch<React.SetStateAction<Form>>
-  listItems: Items | null
   isLoading: boolean
+  pageInfo: number
 }
 
 export default function Header({
   isOpen,
   setIsOpen,
-  formData,
-  setFormData,
-  listItems,
   isLoading,
+  pageInfo,
 }: Props) {
   const { data: map } = useSWR(MAP_KEY)
   return (
@@ -33,18 +30,15 @@ export default function Header({
       <Flex direction="row" css={ContainerStyle}>
         {isLoading ? (
           <ListRow
-            left={<Skeleton width={83} height={32} />}
             right={<BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />}
-            contents={<Skeleton width={63} height={32} />}
+            contents={<Skeleton width={150} height={32} />}
             onClick={() => setIsOpen((prev) => !prev)}
           />
         ) : map && map.zoom! >= 15 ? (
           <ListRow
             left={<SearchText isOpen={isOpen}>검색결과</SearchText>}
             right={<BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />}
-            contents={
-              <SearchText isOpen={isOpen}>{listItems?.totalCount}건</SearchText>
-            }
+            contents={<SearchText isOpen={isOpen}>{pageInfo}건</SearchText>}
             onClick={() => setIsOpen((prev) => !prev)}
           />
         ) : map && map.zoom! < 15 ? (

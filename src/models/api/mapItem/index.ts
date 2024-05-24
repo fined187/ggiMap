@@ -1,3 +1,5 @@
+import { MapItems, PageInfo } from '@/models/MapItem'
+
 export interface mapItem {
   ids: string
   fromAppraisalAmount: number
@@ -29,4 +31,9 @@ export interface mapCounts {
   x2: number
   y2: number
   level: number
+}
+
+export interface TSearchList {
+  contents: MapItems[]
+  paging: PageInfo
 }

@@ -10,7 +10,10 @@ async function postListItems(
     `ggi/api/map/items?pageNumber=${pageNum}&pageSize=${pageSize}`,
     formData,
   )
-  return response.data.data
+  return {
+    contents: response.data.data.contents,
+    paging: response.data.data.paging,
+  }
 }
 
 export default postListItems

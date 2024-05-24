@@ -1,14 +1,15 @@
 import { Form } from '@/models/Form'
 import { Items } from '@/models/ListItems'
-import { ListData } from '@/models/MapItem'
+import { ListData, MapItems, PageInfo } from '@/models/MapItem'
 import postListItems from '@/remote/map/items/postListItems'
 import { useMutation } from 'react-query'
 
 export function usePostListItems(
   formData: Form,
-  setListItems: React.Dispatch<React.SetStateAction<Items | null>>,
+  setListItems: React.Dispatch<React.SetStateAction<MapItems[] | null>>,
   pageNum: number,
   pageSize: number,
+  setPageInfo: React.Dispatch<React.SetStateAction<PageInfo>>,
 ) {
   const mapData: ListData = {
     ids:
@@ -35,7 +36,8 @@ export function usePostListItems(
     () => postListItems(mapData, pageNum, pageSize),
     {
       onSuccess: (data) => {
-        setListItems(data)
+        setListItems(data.contents as MapItems[])
+        setPageInfo(data.paging as PageInfo)
       },
     },
   )

@@ -6,6 +6,7 @@ import Result from './Result'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { Items } from '@/models/ListItems'
+import { MapItems } from '@/models/MapItem'
 
 interface ListBoxProps {
   formData: Form
@@ -20,7 +21,7 @@ export default function ListBox({
   isOpen,
   setIsOpen,
 }: ListBoxProps) {
-  const [listItems, setListItems] = useState<Items | null>(null)
+  const [listItems, setListItems] = useState<MapItems[] | null>(null)
   const { data: map } = useSWR(MAP_KEY)
   return (
     <Flex
@@ -36,7 +37,7 @@ export default function ListBox({
             ? 'calc(100vh - 380px)'
             : formData.lastFilter === 4 && formData.isSubFilterBoxOpen
             ? 'calc(100vh - 380px)'
-            : map && map.zoom! >= 15 && listItems?.totalCount! > 0
+            : map && map.zoom! >= 15 && listItems?.length! > 0
             ? '750px'
             : '150px'
           : '59px',
