@@ -298,6 +298,44 @@ export const Measure = ({
     ],
   )
 
+  const fromSquareMetersToText = useCallback((squareMeters: number) => {
+    let squareMeter = squareMeters || 0
+    let squarKm = 1000 * 1000
+    let text: string | number = squareMeter
+
+    if (squareMeter >= squarKm) {
+      text = parseFloat((squareMeter / squarKm).toFixed(1)) + 'km²'
+    } else {
+      text = parseFloat(squareMeter.toFixed(1)) + 'm²'
+    }
+    return text
+  }, [])
+
+  const finishArea = useCallback(() => {
+    if (polygon) {
+      const path = polygon.getPath() as any
+      path.pop()
+
+      const squareMeter = polygon.getAreaSize()
+      const lastCoord = path._array[path.length - 1]
+
+      if (lastCoord) {
+        addMileStone2(lastCoord, fromSquareMetersToText(squareMeter))
+      }
+    }
+    setPolygon(null)
+    map?.setOptions({
+      draggable: true,
+    })
+    map?.setCursor('auto')
+    setClickedMapType((prev) => {
+      return {
+        ...prev,
+        area: false,
+      }
+    })
+  }, [polygon, addMileStone2, fromMetersToText, map, setClickedMapType])
+
   useEffect(() => {
     if (map) {
       if (mode === 'distance' && clickedMapType.distance) {
@@ -410,6 +448,7 @@ export const Measure = ({
               distance: false,
             }
           })
+          setMode('area')
         }}
       >
         <div

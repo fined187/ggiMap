@@ -1,6 +1,8 @@
 import Text from '@/components/shared/Text'
 import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
+import useSWR from 'swr'
+import { MAP_KEY } from '../../sections/hooks/useMap'
 
 interface SubFilter {
   checkedColor: string
@@ -19,36 +21,51 @@ export default function SubFilterProps({
   nowChecked,
   isBoxOpen,
 }: SubFilter) {
+  const { data: map } = useSWR(MAP_KEY)
   return (
-    <div
+    <button
       css={FilterStyle}
       style={{
         position: 'relative',
       }}
+      disabled={map?.getZoom() < 15}
       onClick={onButtonClick}
     >
       <div
         css={dotStyle}
         style={{
           backgroundColor:
-            isSelected && isBoxOpen
-              ? checkedColor
+            isSelected && isBoxOpen && textType === '낙찰결과'
+              ? colors.filterOrange
+              : isSelected && isBoxOpen && textType === '용도'
+              ? colors.filterDarkBlue
+              : isSelected && isBoxOpen && textType === '감정가'
+              ? colors.filterDarkBlue
+              : isSelected && isBoxOpen && textType === '최저가'
+              ? colors.filterDarkBlue
               : isSelected
-              ? '#545454'
+              ? colors.textGray
               : '',
           right:
             textType.length === 2
-              ? '7px'
+              ? '5px'
               : textType.length === 3
-              ? '2px'
-              : '-7px',
+              ? '0px'
+              : '-5px',
+          top: '0px',
         }}
       />
       <Text
         color={
-          nowChecked && isBoxOpen
+          nowChecked && isBoxOpen && textType === '낙찰결과'
+            ? 'filterOrange'
+            : nowChecked && isBoxOpen && textType === '용도'
             ? 'filterDarkBlue'
-            : isSelected && !isBoxOpen
+            : nowChecked && isBoxOpen && textType === '감정가'
+            ? 'filterDarkBlue'
+            : nowChecked && isBoxOpen && textType === '최저가'
+            ? 'filterDarkBlue'
+            : isSelected
             ? 'textGray'
             : 'textGray'
         }
@@ -57,7 +74,7 @@ export default function SubFilterProps({
       >
         {textType}
       </Text>
-    </div>
+    </button>
   )
 }
 

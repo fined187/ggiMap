@@ -16,29 +16,29 @@ export default function MainFilter({ formData, setFormData }: SearchBoxProps) {
     <Flex justify="center" direction="row" css={ContainerStyle}>
       <FilterProps
         dataType={formData.km}
-        colorType={colors.filterBlue}
-        bgColorType={colors.filterBgBlue}
+        colorType={colors.white}
+        bgColorType={colors.kmBlue}
         onButtonClick={() => setFormData({ ...formData, km: !formData.km })}
         textType={FILTERS.AUTION}
       />
       <FilterProps
+        dataType={formData.kw}
+        colorType={colors.white}
+        bgColorType={colors.kwGreen}
+        onButtonClick={() => setFormData({ ...formData, kw: !formData.kw })}
+        textType={FILTERS.EXPECTED}
+      />
+      <FilterProps
         dataType={formData.gm}
-        colorType={colors.filterEmerald}
-        bgColorType={colors.filterBgGreen}
+        colorType={colors.white}
+        bgColorType={colors.gmBlue}
         onButtonClick={() => setFormData({ ...formData, gm: !formData.gm })}
         textType={FILTERS.CAMCO}
       />
       <FilterProps
-        dataType={formData.kw}
-        colorType={colors.filterGreen}
-        bgColorType={colors.filterBgEmerald}
-        onButtonClick={() => setFormData({ ...formData, kw: !formData.kw })}
-        textType={FILTERS.EXPRECTED}
-      />
-      <FilterProps
         dataType={formData.gg}
-        colorType={colors.filterDarkBlue}
-        bgColorType={colors.filterBgDarkBlue}
+        colorType={colors.white}
+        bgColorType={colors.ggPurple}
         onButtonClick={() => setFormData({ ...formData, gg: !formData.gg })}
         textType={FILTERS.SOLD}
         isDisabled={Boolean(formData.map.zoom! < 15)}

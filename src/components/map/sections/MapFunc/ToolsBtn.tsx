@@ -1,6 +1,3 @@
-import Flex from '@/components/shared/Flex'
-import { css } from '@emotion/react'
-import styled from '@emotion/styled'
 import { Dispatch, SetStateAction } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
@@ -43,8 +40,6 @@ export default function ToolsBtn({
   clickedMapType,
   setClickedMapType,
 }: ToolsBtnProps) {
-  const { data: map } = useSWR(MAP_KEY)
-
   return (
     <Measure
       clickedMapType={clickedMapType}

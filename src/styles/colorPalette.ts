@@ -2,6 +2,11 @@ import { css } from '@emotion/react'
 
 export const colorPalette = css`
   :root {
+    --kmBlue: #0038ff;
+    --kwGreen: #007300;
+    --gmBlue: #007194;
+    --ggPurple: #8f00ff;
+    --filterOrange: #ff4d00;
     --textGray: #545454;
     --filterBlue: #0038ff;
     --filterBgBlue: #f4fbff;
@@ -51,6 +56,10 @@ export const colorPalette = css`
 `
 
 export const colors = {
+  kmBlue: 'var(--kmBlue)',
+  kwGreen: 'var(--kwGreen)',
+  gmBlue: 'var(--gmBlue)',
+  ggPurple: 'var(--ggPurple)',
   borderGray: 'var(--borderGray)',
   selectedUsageType: 'var(--selectedUsageType)',
   selectedFilter: 'var(--selectedFilter)',
@@ -63,6 +72,7 @@ export const colors = {
   filterEmerald: 'var(--filterEmerald)',
   filterBgDarkBlue: 'var(--filterBgDarkBlue)',
   filterDarkBlue: 'var(--filterDarkBlue)',
+  filterOrange: 'var(--filterOrange)',
   myGray: 'var(--textGray)',
   myBlue: 'var(--myBlue)',
   gray: 'var(--gray)',

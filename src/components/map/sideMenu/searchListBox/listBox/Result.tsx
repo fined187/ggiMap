@@ -35,8 +35,16 @@ function Result({
 }: ResultProps) {
   const { data: map } = useSWR(MAP_KEY)
   const [showingList, setShowingList] = useState(false)
-
-  const { mutate: list, isLoading } = usePostListItems(formData, setListItems)
+  const [pageNum, setPageNum] = useState(1)
+  const pageSize = 10
+  console.log(formData)
+  const { mutate: list, isLoading } = usePostListItems(
+    formData,
+    setListItems,
+    pageNum,
+    pageSize,
+  )
+  console.log(listItems)
   useEffect(() => {
     if (map && map.zoom! >= 15) {
       setShowingList(true)

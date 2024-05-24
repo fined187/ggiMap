@@ -1,6 +1,6 @@
 export const FILTERS = {
   AUTION: '경매',
-  EXPRECTED: '예정',
+  EXPECTED: '예정',
   CAMCO: '캠코',
   SOLD: '기관매각',
 }

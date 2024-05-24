@@ -11,7 +11,7 @@ export const PnuCountIcon = (
   <div style="position: absolute; z-index: 100; right: 0px; top: ${
     top ? `${top}px` : '-42px'
   }; ">
-    <div style="display: inline-flex; z-index: 100; width: 32px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${
+    <div style="display: inline-flex; z-index: 100; width: 22px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${
       item.winYn === 'Y'
         ? '1px solid #FF4D00'
         : type === 1

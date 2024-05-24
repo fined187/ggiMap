@@ -126,12 +126,12 @@ const Marker = ({
               <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 100;">
                 ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                 ${
-                  item.interest != 'Y' && item.share === 'Y'
+                  item.interest != 'Y' && item.share === 'Y' && count < 2
                     ? ShareIcon(item, item.type)
                     : ''
                 }
                 ${
-                  item.interest != 'Y' && item.share != 'Y' && count > 1
+                  item.interest != 'Y' && count > 1
                     ? PnuCountIcon(item, count, item.type)
                     : ''
                 }
@@ -143,7 +143,7 @@ const Marker = ({
               },
             }))
           : map.getZoom() > 15
-          ? (marker2 = new naver.maps.Marker({
+          ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
@@ -154,7 +154,8 @@ const Marker = ({
               </div>
             `,
               },
-            }))
+            })),
+            marker2?.setZIndex(100))
           : null
       } else if (item.type === 2 && item.winYn !== 'Y') {
         map.getZoom() === 15

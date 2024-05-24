@@ -7,6 +7,8 @@ import { useMutation } from 'react-query'
 export function usePostListItems(
   formData: Form,
   setListItems: React.Dispatch<React.SetStateAction<Items | null>>,
+  pageNum: number,
+  pageSize: number,
 ) {
   const mapData: ListData = {
     ids:
@@ -29,10 +31,13 @@ export function usePostListItems(
     egm: formData.egm,
     egg: formData.egg,
   }
-  const { mutate, isLoading } = useMutation(() => postListItems(mapData), {
-    onSuccess: (data) => {
-      setListItems(data)
+  const { mutate, isLoading } = useMutation(
+    () => postListItems(mapData, pageNum, pageSize),
+    {
+      onSuccess: (data) => {
+        setListItems(data)
+      },
     },
-  })
+  )
   return { mutate, isLoading }
 }
