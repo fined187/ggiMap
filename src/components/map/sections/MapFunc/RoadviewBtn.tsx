@@ -1,35 +1,23 @@
-import Text from '@/components/shared/Text'
-import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Dispatch, SetStateAction, useEffect } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 
+type clickedMapProps = {
+  basic: boolean
+  terrain: boolean
+  satellite: boolean
+  cadastral: boolean
+  interest: boolean
+  roadView: boolean
+  current: boolean
+  distance: boolean
+  area: boolean
+}
+
 interface MapTypeProps {
-  clickedMapType: {
-    basic: boolean
-    terrain: boolean
-    satellite: boolean
-    cadastral: boolean
-    interest: boolean
-    roadView: boolean
-    current: boolean
-    distance: boolean
-    area: boolean
-  }
-  setClickedMapType: Dispatch<
-    SetStateAction<{
-      basic: boolean
-      terrain: boolean
-      satellite: boolean
-      cadastral: boolean
-      interest: boolean
-      roadView: boolean
-      current: boolean
-      distance: boolean
-      area: boolean
-    }>
-  >
+  clickedMapType: clickedMapProps
+  setClickedMapType: Dispatch<SetStateAction<clickedMapProps>>
 }
 
 export default function RoadviewBtn({

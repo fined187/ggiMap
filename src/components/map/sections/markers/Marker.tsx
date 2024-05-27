@@ -55,6 +55,8 @@ const Marker = ({
   setOffset,
 }: MarkerProps) => {
   const [count, setCount] = useState<number>(0)
+  const marker1Ref = useRef<null | naver.maps.Marker>(null)
+  const marker2Ref = useRef<null | naver.maps.Marker>(null)
   const handleGetItemPnuCounts = useCallback(() => {
     if (
       pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ??
@@ -110,14 +112,13 @@ const Marker = ({
       setClickedItem(item)
     }
   }
-
   useEffect(() => {
     let marker1: naver.maps.Marker | null = null
     let marker2: naver.maps.Marker | null = null
     if (map) {
       if (item.type === 1 && item.winYn !== 'Y') {
         map.getZoom() === 15
-          ? (marker1 = new naver.maps.Marker({
+          ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               zIndex: 100,
@@ -141,7 +142,8 @@ const Marker = ({
               `,
                 anchor: new naver.maps.Point(12, 12),
               },
-            }))
+            })),
+            marker1?.setZIndex(100))
           : map.getZoom() > 15
           ? ((marker2 = new naver.maps.Marker({
               map: map,
@@ -159,7 +161,7 @@ const Marker = ({
           : null
       } else if (item.type === 2 && item.winYn !== 'Y') {
         map.getZoom() === 15
-          ? (marker1 = new naver.maps.Marker({
+          ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               zIndex: 100,
@@ -168,7 +170,7 @@ const Marker = ({
                 <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 90;">
                 ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                 ${
-                  item.interest != 'Y' && item.share === 'Y'
+                  item.interest != 'Y' && item.share === 'Y' && count < 2
                     ? ShareIcon(item, item.type)
                     : ''
                 }
@@ -183,9 +185,10 @@ const Marker = ({
                     `,
                 anchor: new naver.maps.Point(12, 12),
               },
-            }))
+            })),
+            marker1.setZIndex(90))
           : map.getZoom() > 15
-          ? (marker2 = new naver.maps.Marker({
+          ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               zIndex: 90,
@@ -197,11 +200,12 @@ const Marker = ({
               </div>
             `,
               },
-            }))
+            })),
+            marker2.setZIndex(90))
           : null
       } else if (item.type === 3 && item.winYn !== 'Y') {
         map.getZoom() === 15
-          ? (marker1 = new naver.maps.Marker({
+          ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               zIndex: 80,
@@ -210,7 +214,7 @@ const Marker = ({
                 <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 80;">
                   ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                   ${
-                    item.interest != 'Y' && item.share === 'Y'
+                    item.interest != 'Y' && item.share === 'Y' && count < 2
                       ? ShareIcon(item, item.type)
                       : ''
                   }
@@ -225,9 +229,10 @@ const Marker = ({
                     `,
                 anchor: new naver.maps.Point(12, 12),
               },
-            }))
+            })),
+            marker1.setZIndex(80))
           : map.getZoom() > 15
-          ? (marker2 = new naver.maps.Marker({
+          ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
@@ -238,11 +243,12 @@ const Marker = ({
                 </div>
             `,
               },
-            }))
+            })),
+            marker2.setZIndex(80))
           : null
       } else if (item.type === 4 && item.winYn !== 'Y') {
         map.getZoom() > 15
-          ? (marker1 = new naver.maps.Marker({
+          ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               zIndex: 95,
@@ -253,7 +259,7 @@ const Marker = ({
                       item.interest === 'Y' ? InterestIcon(item, item.type) : ''
                     }
                     ${
-                      item.interest != 'Y' && item.share === 'Y'
+                      item.interest != 'Y' && item.share === 'Y' && count < 2
                         ? ShareIcon(item, item.type)
                         : ''
                     }
@@ -268,9 +274,10 @@ const Marker = ({
                 `,
                 anchor: new naver.maps.Point(12, 12),
               },
-            }))
+            })),
+            marker1.setZIndex(95))
           : map.getZoom() === 15
-          ? (marker2 = new naver.maps.Marker({
+          ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               zIndex: 95,
@@ -298,11 +305,12 @@ const Marker = ({
                   </div>
             `,
               },
-            }))
+            })),
+            marker2.setZIndex(95))
           : null
       } else if (item.winYn === 'Y') {
         map.getZoom() === 15
-          ? (marker1 = new naver.maps.Marker({
+          ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               zIndex: 70,
@@ -331,9 +339,10 @@ const Marker = ({
               `,
                 anchor: new naver.maps.Point(12, 12),
               },
-            }))
+            })),
+            marker1.setZIndex(70))
           : map.getZoom() === 16
-          ? (marker2 = new naver.maps.Marker({
+          ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               zIndex: 70,
@@ -342,7 +351,7 @@ const Marker = ({
                 <div id='winMarker' style="flex-direction: row; display: flex; margin-top: -30px; z-index: 70;">
                   ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                   ${
-                    item.interest != 'Y' && item.share === 'Y'
+                    item.interest != 'Y' && item.share === 'Y' && count < 2
                       ? ShareIcon(item, item.type)
                       : ''
                   }
@@ -356,9 +365,10 @@ const Marker = ({
                 </div>
             `,
               },
-            }))
+            })),
+            marker2.setZIndex(70))
           : map.getZoom() > 16
-          ? (marker2 = new naver.maps.Marker({
+          ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               zIndex: 60,
@@ -370,10 +380,12 @@ const Marker = ({
                 </div>
             `,
               },
-            }))
+            })),
+            marker2.setZIndex(60))
           : null
       }
       if (marker1) {
+        marker1Ref.current = marker1
         naver.maps.Event?.addListener(marker1, 'click', (e) => {
           handleMarkerClick(item)
         })
@@ -387,6 +399,7 @@ const Marker = ({
         }
       }
       if (marker2) {
+        marker2Ref.current = marker2
         naver.maps.Event?.addListener(marker2, 'click', (e) => {
           handleMarkerClick(item)
         })

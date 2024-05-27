@@ -121,6 +121,10 @@ export default function GunguList({
                             backgroundColor: isSelected ? '#F0F0FF' : 'white',
                             borderTop: shouldHighlightTop
                               ? `1px solid #332EFC`
+                              : actualIndex < 3
+                              ? item === ' '
+                                ? ''
+                                : '1px solid #E5E5E5'
                               : '1px solid #E5E5E5',
                             borderRight:
                               gunguList[

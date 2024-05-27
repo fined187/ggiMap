@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
 } from 'react'
 import { useRecoilState } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
@@ -19,7 +20,6 @@ import { mapAtom } from '@/store/atom/map'
 import useDebounce from '@/components/shared/hooks/useDebounce'
 import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
-
 declare global {
   interface Window {
     naver: any
@@ -93,7 +93,9 @@ export default function GGIMap({
   )
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const mapRef = useRef<NaverMap | null>(null)
-  const debouncedSearch = useDebounce(formData, 500)
+  const debouncedSearch = useDebounce(formData, 250)
+  const panoRef = useRef<HTMLDivElement | null>(null)
+  const [isPanoVisible, setIsPanoVisible] = useState(false)
 
   const searchAddrToCoord = (address: string) => {
     if (window.naver?.maps.Service?.geocode !== undefined) {
@@ -130,9 +132,76 @@ export default function GGIMap({
     }
     const map = new window.naver.maps.Map(mapId, mapOptions)
     mapRef.current = map
+
     window.naver.maps.Event.addListener(map, 'idle', handleGetBounds)
+    window.naver.maps.Event.addListener(map, 'click', (e: any) => {
+      if (map.streetLayer) {
+        let latlng = e.coord
+        setIsPanoVisible(true)
+        new window.naver.maps.Panorama('pano', {
+          position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
+          pov: {
+            pan: -135,
+            tilt: 29,
+            fov: 100,
+          },
+        })
+      }
+    })
     if (onLoad) {
       onLoad(map)
+    }
+    setUpMiniMap(map)
+  }
+
+  const setUpMiniMap = (map: NaverMap) => {
+    if (!map) return
+    let semaphore = false
+    const miniMapElement = document.getElementById('minimap')
+    if (!miniMapElement) return
+
+    if (
+      map.controls &&
+      map.controls.get(window.naver.maps.Position.BOTTOM_RIGHT)
+    ) {
+      map.controls
+        .get(window.naver.maps.Position.BOTTOM_RIGHT)
+        .push(miniMapElement)
+    } else {
+      console.error('Map controls are not properly initialized.')
+    }
+    const roadview = new window.naver.maps.StreetLayer()
+    const minimap = new window.naver.maps.Map(miniMapElement, {
+      bounds: map.getBounds(),
+      scrollWheel: false,
+      scaleControl: false,
+      mapDataControl: false,
+      logoControl: false,
+    })
+    roadview.setMap(minimap)
+    window.naver.maps.Event.addListener(map, 'bounds_changed', () => {
+      if (semaphore) return
+      minimap.fitBounds(map.getBounds())
+    })
+
+    window.naver.maps.Event.addListener(minimap, 'click', (e: any) => {
+      let latlng = e.coord
+      setIsPanoVisible(true)
+      new window.naver.maps.Panorama('pano', {
+        position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
+        pov: {
+          pan: -135,
+          tilt: 29,
+          fov: 100,
+        },
+      })
+    })
+  }
+
+  const closePanorama = () => {
+    setIsPanoVisible(false)
+    if (panoRef.current) {
+      panoRef.current.innerHTML = '' // 파노라마 뷰를 제거합니다.
     }
   }
 
@@ -181,17 +250,21 @@ export default function GGIMap({
       }
     }
   }, [debouncedSearch, mapRef.current?.getZoom()])
+
   return (
     <>
       <Script
         strategy="afterInteractive"
         type="text/javascript"
-        src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NAVER_MAP_API}&submodules=geocoder`}
+        src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NAVER_MAP_API}&submodules=geocoder,panorama`}
         onReady={initializeMap}
       />
       <div
-        id={mapId}
-        style={{ width: '100vw', height: '100vh' }}
+        id="map"
+        style={{
+          width: '100vw',
+          height: '100vh',
+        }}
         onClick={() => {
           if (markerClickedRef.current === true) {
             setOpenOverlay(false)
@@ -204,6 +277,49 @@ export default function GGIMap({
             setOpenOverlay(true)
             markerClickedRef.current = true
           }
+        }}
+      />
+      <div
+        id="pano"
+        style={{
+          width: '100vw',
+          height: '100vh',
+          position: 'absolute',
+          zIndex: 10,
+          top: '0',
+          display: isPanoVisible ? 'block' : 'none',
+        }}
+      />
+      {isPanoVisible && (
+        <>
+          <button
+            onClick={closePanorama}
+            style={{
+              position: 'absolute',
+              zIndex: 100,
+              top: '50px',
+              right: '50px',
+              display: 'block',
+              backgroundColor: 'black',
+              color: 'white',
+              width: '50px',
+              height: '30px',
+            }}
+          >
+            X
+          </button>
+        </>
+      )}
+      <div
+        id="minimap"
+        style={{
+          width: '300px',
+          height: '300px',
+          position: 'absolute',
+          zIndex: 100,
+          bottom: '0',
+          left: '390px',
+          display: isPanoVisible ? 'block' : 'none',
         }}
       />
       <MapType

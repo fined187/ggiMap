@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import css from 'styled-jsx/css'
 
 export const Distance = styled.div<{ mode: string }>`
   display: flex;

@@ -113,7 +113,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         interests: clickedMapType.interest,
       }
     })
-  }, [clickedMapType])
+  }, [clickedMapType, setFormData])
 
   const handleGetPnuCounts = useCallback(() => {
     const countsMap: {

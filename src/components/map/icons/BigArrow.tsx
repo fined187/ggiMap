@@ -9,14 +9,14 @@ export default function BigArrow({ isOpen, setIsOpen }: Props) {
       {isOpen ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="30"
-          viewBox="0 0 30 30"
+          width="21"
+          height="21"
+          viewBox="0 0 21 21"
           fill="none"
         >
-          <g clipPath="url(#clip0_97_394)">
+          <g clipPath="url(#clip0_1128_1736)">
             <path
-              d="M15.0028 1.07108C22.6953 1.07108 28.9314 7.30711 28.9314 14.9996C28.9314 22.6922 22.6953 28.9282 15.0028 28.9282C7.31025 28.9282 1.07422 22.6922 1.07422 14.9997C1.07421 7.30711 7.31025 1.07108 15.0028 1.07108Z"
+              d="M10.3509 1.03883C15.6588 1.03883 19.9617 5.34169 19.9617 10.6495C19.9617 15.9574 15.6588 20.2603 10.3509 20.2603C5.0431 20.2603 0.740234 15.9574 0.740234 10.6495C0.740234 5.34169 5.0431 1.03883 10.3509 1.03883Z"
               fill="white"
               stroke="#34343D"
               strokeWidth="1.5"
@@ -24,7 +24,7 @@ export default function BigArrow({ isOpen, setIsOpen }: Props) {
               strokeLinejoin="round"
             />
             <path
-              d="M21.4314 17.1431L15.0028 10.7145L8.57422 17.1431"
+              d="M14.7874 12.1289L10.3517 7.69319L5.91602 12.1289"
               stroke="#34343D"
               strokeWidth="1.5"
               strokeLinecap="round"
@@ -32,12 +32,12 @@ export default function BigArrow({ isOpen, setIsOpen }: Props) {
             />
           </g>
           <defs>
-            <clipPath id="clip0_97_394">
+            <clipPath id="clip0_1128_1736">
               <rect
-                width="30"
-                height="30"
+                width="20.7"
+                height="20.7"
                 fill="white"
-                transform="matrix(-1 8.74228e-08 8.74228e-08 1 30 0)"
+                transform="matrix(1 0 0 -1 0 21)"
               />
             </clipPath>
           </defs>
@@ -45,14 +45,14 @@ export default function BigArrow({ isOpen, setIsOpen }: Props) {
       ) : (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="30"
-          viewBox="0 0 30 30"
+          width="21"
+          height="21"
+          viewBox="0 0 21 21"
           fill="none"
         >
-          <g clipPath="url(#clip0_138_2671)">
+          <g clipPath="url(#clip0_1128_777)">
             <path
-              d="M15.0031 28.9294C7.31053 28.9294 1.0745 22.6934 1.0745 15.0008C1.0745 7.3083 7.31053 1.07227 15.0031 1.07227C22.6956 1.07227 28.9316 7.3083 28.9316 15.0008C28.9316 22.6934 22.6956 28.9294 15.0031 28.9294Z"
+              d="M10.6491 19.9612C5.3412 19.9612 1.03834 15.6583 1.03834 10.3505C1.03834 5.04261 5.3412 0.739747 10.6491 0.739747C15.9569 0.739746 20.2598 5.04261 20.2598 10.3505C20.2598 15.6583 15.9569 19.9612 10.6491 19.9612Z"
               fill="white"
               stroke="#D21E1B"
               strokeWidth="1.5"
@@ -60,7 +60,7 @@ export default function BigArrow({ isOpen, setIsOpen }: Props) {
               strokeLinejoin="round"
             />
             <path
-              d="M8.5745 12.8574L15.0031 19.286L21.4316 12.8574"
+              d="M6.21256 8.87109L10.6483 13.3068L15.084 8.87109"
               stroke="#D21E1B"
               strokeWidth="1.5"
               strokeLinecap="round"
@@ -68,12 +68,12 @@ export default function BigArrow({ isOpen, setIsOpen }: Props) {
             />
           </g>
           <defs>
-            <clipPath id="clip0_138_2671">
+            <clipPath id="clip0_1128_777">
               <rect
-                width="30"
-                height="30"
+                width="20.7"
+                height="20.7"
                 fill="white"
-                transform="matrix(-1 8.74228e-08 8.74228e-08 1 30 0)"
+                transform="matrix(-1 8.74228e-08 8.74228e-08 1 21 0)"
               />
             </clipPath>
           </defs>

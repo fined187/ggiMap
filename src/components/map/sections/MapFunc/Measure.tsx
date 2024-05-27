@@ -346,6 +346,11 @@ export const Measure = ({
         document.addEventListener('mousemove', onMouseMoveDistance)
         return () =>
           document.removeEventListener('mousemove', onMouseMoveDistance)
+      } else {
+        map.setOptions({
+          draggable: true,
+        })
+        map.setCursor('auto')
       }
       if (mode === 'area' && clickedMapType.area) {
         document.addEventListener('mousemove', () => {
@@ -355,25 +360,45 @@ export const Measure = ({
           document.removeEventListener('mousemove', () => {
             console.log('remove')
           })
+      } else {
+        map.setOptions({
+          draggable: true,
+        })
+        map.setCursor('auto')
       }
     }
   }, [onMouseMoveDistance, map, mode, clickedMapType.distance])
 
+  const handleButtonClick = useCallback(() => {
+    if (!clickedMapType.distance) {
+      setClickedMapType((prev) => {
+        return {
+          ...prev,
+          distance: true,
+          area: false,
+        }
+      })
+      setMode('distance')
+    } else {
+      setClickedMapType((prev) => {
+        return {
+          ...prev,
+          distance: false,
+        }
+      })
+      setMode('')
+    }
+  }, [clickedMapType.distance, setClickedMapType])
+
   useMapListeners(map, onClickDistance, onMouseMoveDistance, finishDistance)
+
   return (
     <Flex css={ContainerStyle}>
       <Distance
         id="distance"
         mode={mode}
         onClick={() => {
-          setClickedMapType((prev) => {
-            return {
-              ...prev,
-              distance: !prev.distance,
-              area: false,
-            }
-          })
-          setMode('distance')
+          handleButtonClick()
         }}
       >
         <div

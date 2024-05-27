@@ -41,7 +41,7 @@ function ListRow({
 
 const listRowContainerStyles = css`
   justify-content: space-between;
-  width: 90%;
+  width: 89%;
   position: absolute;
 `
 

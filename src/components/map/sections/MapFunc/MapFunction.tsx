@@ -1,6 +1,6 @@
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction, useCallback } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import InterestBtn from './InterestBtn'
 import CadastralBtn from './CadastralBtn'
 import RoadviewBtn from './RoadviewBtn'

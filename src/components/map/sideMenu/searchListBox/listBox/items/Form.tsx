@@ -25,6 +25,7 @@ function Form({ item, index }: ItemProps) {
       css={ContainerStyle}
       style={{
         borderTop: `${index === 0 ? '' : '0.5px solid #e0e0e0 '}`,
+        cursor: 'pointer',
       }}
     >
       <ListRow
@@ -61,6 +62,7 @@ function Form({ item, index }: ItemProps) {
         style={{
           position: 'absolute',
           top: 45,
+          width: '100%',
         }}
       >
         <Image
@@ -76,7 +78,7 @@ function Form({ item, index }: ItemProps) {
           direction="column"
           style={{
             marginLeft: '10px',
-            width: '160px',
+            width: '150px',
             height: '135px',
             gap: '1px',
           }}
@@ -185,10 +187,14 @@ const ContainerStyle = css`
   background: #fff;
   gap: 10px;
   padding: 10px 0 10px 0;
-  width: 340px;
+  width: 350px;
   height: 208px;
   flex-shrink: 0;
   left: 10px;
+  &:hover {
+    background: #f0f7ff;
+    opacity: 0.5;
+  }
 `
 
 const ListLeftStyle = css`
@@ -249,7 +255,6 @@ const appraisalAmt = css`
 const SpecialText = css`
   border-radius: 3px;
   border: 0.5px solid #f00;
-
   background: #fff;
   display: inline-flex;
   height: 23px;
@@ -261,7 +266,6 @@ const SpecialText = css`
 
 const SpecialTextStyle = css`
   color: #f00;
-
   text-align: center;
   font-family: SUIT;
   font-size: 13px;
