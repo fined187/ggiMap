@@ -2,6 +2,7 @@ import { css } from '@emotion/react'
 
 export const colorPalette = css`
   :root {
+    --winOrange: #ff4d00;
     --kmBlue: #0038ff;
     --kwGreen: #007300;
     --gmBlue: #007194;
@@ -56,6 +57,7 @@ export const colorPalette = css`
 `
 
 export const colors = {
+  winOrange: 'var(--winOrange)',
   kmBlue: 'var(--kmBlue)',
   kwGreen: 'var(--kwGreen)',
   gmBlue: 'var(--gmBlue)',

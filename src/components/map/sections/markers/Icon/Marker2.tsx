@@ -1,6 +1,7 @@
 import { MapItem } from '@/models/MapItem'
 import { NumToHan } from '@/utils/NumToHan'
 import { PnuCountIcon, ShareIcon } from './Marker1'
+import { colors } from '@/styles/colorPalette'
 
 export const WinIcon = () => {
   return `
@@ -26,42 +27,42 @@ export const UsageTopIcon = (item: MapItem, count: number, type: number) => {
   return `
     <div style="flex-direction: row; display: flex; width: 100px; height: 27px; padding: 2px 4px; justify-content: center; align-items: center; gap: 2px; border-radius: 12px 12px 0px 0px; border-top: ${
       item.winYn === 'Y'
-        ? '1px solid #FF4D00'
+        ? `1px solid ${colors.winOrange}`
         : type === 1
-        ? '1px solid #0038FF'
+        ? `1px solid ${colors.kmBlue}`
         : type === 3
-        ? '1px solid #8F00FF'
+        ? `1px solid ${colors.ggPurple}`
         : type === 2
-        ? '1px solid #0087B1'
-        : '1px solid #1C8D00'
+        ? `1px solid ${colors.gmBlue}`
+        : `1px solid ${colors.kwGreen}`
     }; border-right: ${
       item.winYn === 'Y'
-        ? '1px solid #FF4D00'
+        ? `1px solid ${colors.winOrange}`
         : type === 1
-        ? '1px solid #0038FF'
+        ? `1px solid ${colors.kmBlue}`
         : type === 3
-        ? '1px solid #8F00FF'
+        ? `1px solid ${colors.ggPurple}`
         : type === 2
-        ? '1px solid #0087B1'
-        : '1px solid #1C8D00'
+        ? `1px solid ${colors.gmBlue}`
+        : `1px solid ${colors.kwGreen}`
     }; border-left: ${
       item.winYn === 'Y'
-        ? '1px solid #FF4D00'
+        ? `1px solid ${colors.winOrange}`
         : type === 1
-        ? '1px solid #0038FF'
+        ? `1px solid ${colors.kmBlue}`
         : type === 3
-        ? '1px solid #8F00FF'
+        ? `1px solid ${colors.ggPurple}`
         : type === 2
-        ? '1px solid #0087B1'
-        : '1px solid #1C8D00'
+        ? `1px solid ${colors.gmBlue}`
+        : `1px solid ${colors.kwGreen}`
     }; background: ${
       type === 1
-        ? '#0038FF'
+        ? `${colors.kmBlue}`
         : type === 3
-        ? '#8F00FF'
+        ? `${colors.ggPurple}`
         : type === 2
-        ? '#0087B1'
-        : '#1C8D00'
+        ? `${colors.gmBlue}`
+        : `${colors.kwGreen}`
     };">
       ${item.winYn === 'Y' ? WinIcon() : ''}
       ${item.interest === 'Y' ? InterestIcon() : ''}
@@ -90,34 +91,34 @@ export const AmountBottomIcon = (item: MapItem, type: number) => {
   return `
     <div style="flex-direction: column; display: flex; width: 100px; height: 59px; padding: 2px 1px 2px 8px; align-items: start; justify-content: start; align-content: center; gap: 1px 4px; flex-wrap: wrap; background: #FFF; border-radius: 0px 0px 12px 0px; border-right: ${
       item.winYn === 'Y'
-        ? '1px solid #FF4D00'
+        ? `1px solid ${colors.winOrange}`
         : type === 1
-        ? '1px solid #0038FF'
+        ? `1px solid ${colors.kmBlue}`
         : type === 3
-        ? '1px solid #8F00FF'
+        ? `1px solid ${colors.ggPurple}`
         : type === 2
-        ? '1px solid #0087B1'
-        : '1px solid #1C8D00'
+        ? `1px solid ${colors.gmBlue}`
+        : `1px solid ${colors.kwGreen}`
     }; border-left: ${
       item.winYn === 'Y'
-        ? '1px solid #FF4D00'
+        ? `1px solid ${colors.winOrange}`
         : type === 1
-        ? '1px solid #0038FF'
+        ? `1px solid ${colors.kmBlue}`
         : type === 3
-        ? '1px solid #8F00FF'
+        ? `1px solid ${colors.ggPurple}`
         : type === 2
-        ? '1px solid #0087B1'
-        : '1px solid #1C8D00'
+        ? `1px solid ${colors.gmBlue}`
+        : `1px solid ${colors.kwGreen}`
     }; border-bottom: ${
       item.winYn === 'Y'
-        ? '1px solid #FF4D00'
+        ? `1px solid ${colors.winOrange}`
         : type === 1
-        ? '1px solid #0038FF'
+        ? `1px solid ${colors.kmBlue}`
         : type === 3
-        ? '1px solid #8F00FF'
+        ? `1px solid ${colors.ggPurple}`
         : type === 2
-        ? '1px solid #0087B1'
-        : '1px solid #1C8D00'
+        ? `1px solid ${colors.gmBlue}`
+        : `1px solid ${colors.kwGreen}`
     };">
       <div style="display: flex; width: 100%; margin-top: 5px; flex-direction: row; gap: 5px;">
         <span style="color: #000001; font-family: SUIT; font-size: 13px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.26px;">
@@ -148,14 +149,14 @@ export const AmountBottomIcon = (item: MapItem, type: number) => {
       <svg xmlns="http://www.w3.org/2000/svg" width="8" height="13" viewBox="0 0 8 13" fill="none">
         <path d="M0 11.8821V0.25C0 0.111929 0.111929 0 0.25 0H7.54802C7.74457 0 7.86425 0.21637 7.75979 0.382866L0.46177 12.015C0.328402 12.2275 0 12.133 0 11.8821Z" fill=${
           item.winYn === 'Y'
-            ? '#FF4D00'
+            ? `${colors.winOrange}`
             : type === 1
-            ? '#0038FF'
+            ? `${colors.kmBlue}`
             : type === 3
-            ? '#8F00FF'
+            ? `${colors.ggPurple}`
             : type === 2
-            ? '#0087B1'
-            : '#1C8D00'
+            ? `${colors.gmBlue}`
+            : `${colors.kwGreen}`
         } />
         <path d="M1 9.56322V0H7L1 9.56322Z" fill="white"/>
       </svg>

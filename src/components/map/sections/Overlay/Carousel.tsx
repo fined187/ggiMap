@@ -16,6 +16,7 @@ import NextBtn from './icon/NextBtn'
 import PrevBtn from './icon/PrevBtn'
 import Flex from '@/components/shared/Flex'
 import Interest from '../../icons/Interest'
+import { colors } from '@/styles/colorPalette'
 
 export default function Carousel({
   clickedInfo,
@@ -62,6 +63,13 @@ export default function Carousel({
                   : ''}
               </Text>
             </TypeStyle>
+            {clickedInfo && clickedInfo?.length > 1 && (
+              <PageCount>
+                <Text css={PageCountTextStyle}>
+                  {index + 1} / {clickedInfo && clickedInfo.length}
+                </Text>
+              </PageCount>
+            )}
             {clickedInfo && clickedInfo[index]?.share === 'Y' && (
               <ShareType>
                 <Text css={TextStyle}>지분</Text>
@@ -75,7 +83,7 @@ export default function Carousel({
                     : false
                 }
                 style={{
-                  backgroundColor: '#FF4D00',
+                  backgroundColor: colors.winOrange,
                 }}
               >
                 <Text css={TextStyle}>낙찰</Text>
@@ -155,6 +163,7 @@ const TextStyle = css`
   font-weight: 800;
   line-height: 140%;
   letter-spacing: -0.13px;
+  text-align: center;
 `
 
 const TypeStyle = styled.div<{ type: number }>`
@@ -171,13 +180,13 @@ const TypeStyle = styled.div<{ type: number }>`
   z-index: 1;
   background-color: ${({ type }) =>
     type === 1
-      ? '#0038FF'
+      ? `${colors.kmBlue}`
       : type === 2
-      ? '#0087B1'
+      ? `${colors.gmBlue}`
       : type === 3
-      ? '#5200FF'
+      ? `${colors.ggPurple}`
       : type === 4
-      ? '#00924C'
+      ? `${colors.kwGreen}`
       : ''};
 `
 const ShareType = styled.div`
@@ -206,4 +215,29 @@ const WinType = styled.div<{ shareYn: boolean }>`
   position: absolute;
   top: 13px;
   left: ${({ shareYn }) => (shareYn ? '106px' : '60px')};
+`
+
+const PageCount = styled.div`
+  width: 39px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  border: 0.5px solid #fff;
+  background: rgba(0, 0, 0, 0.45);
+  position: absolute;
+  top: 40px;
+  left: 14px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+`
+
+const PageCountTextStyle = css`
+  color: #fff;
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%;
+  letter-spacing: -0.12px;
 `

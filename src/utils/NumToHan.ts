@@ -28,12 +28,25 @@ export function NumToHan(num: number) {
     //  1천만 이상
     const chunMan = Math.floor(num / 10000000)
     const baekMan = Math.round((num % 10000000) / 1000000)
-    return baekMan ? `${chunMan}.${baekMan}천만` : `${chunMan}천만`
+    if (baekMan.toString().length > 1) {
+      return `${chunMan + 1}천만`
+    } else if (baekMan.toString() === '0') {
+      return `${chunMan}천만`
+    } else {
+      return `${chunMan}.${baekMan}천만`
+    }
+    
   } else if (num >= 1000000) {
     //  100만 이상
     const baekMan = Math.floor(num / 1000000)
     const shipMan = Math.round((num % 1000000) / 100000)
-    return shipMan ? `${baekMan}.${shipMan}백만` : `${baekMan}백만`
+    if (shipMan.toString().length > 1) {
+      return `${baekMan + 1}백만`
+    } else if (shipMan.toString() === '0') {
+      return `${baekMan}백만`
+    } else {
+      return `${baekMan}.${shipMan}`
+    }
   } else if (num >= 100000) {
     //  10만 이상
     const shipMan = Math.floor(num / 10000)

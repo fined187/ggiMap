@@ -6,24 +6,17 @@ import { MapItem } from '@/models/MapItem'
 import useNum2Han from '@/utils/useNum2Han'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Dispatch, SetStateAction } from 'react'
 
 interface BottomProps {
   clickedInfo: ItemDetail[] | null
-  setClickedInfo: Dispatch<SetStateAction<ItemDetail[] | null>>
   clickedItem: MapItem | null
-  setClickedItem: Dispatch<SetStateAction<MapItem | null>>
   nowIndex: number
-  setNowIndex: Dispatch<SetStateAction<number>>
 }
 
 export default function Bottom({
   clickedInfo,
-  setClickedInfo,
   clickedItem,
-  setClickedItem,
   nowIndex,
-  setNowIndex,
 }: BottomProps) {
   return (
     <div
@@ -41,7 +34,7 @@ export default function Bottom({
       <AmountContainer>
         <Text css={AmountTextStyle}>
           {clickedItem?.type === 4
-            ? useNum2Han(clickedInfo?.[nowIndex].claimAmt || 0)
+            ? useNum2Han(clickedInfo?.[nowIndex]?.claimAmt || 0)
             : clickedItem?.winYn === 'Y'
             ? useNum2Han(clickedInfo?.[nowIndex]?.winAmt || 0)
             : useNum2Han(clickedInfo?.[nowIndex]?.minAmt || 0)}
@@ -134,7 +127,7 @@ export default function Bottom({
             &nbsp;&nbsp;&nbsp;
             <Text css={DetailTextStyle}>
               {'감정가 ' +
-                useNum2Han(clickedInfo?.[nowIndex].appraisalAmt || 0)}
+                useNum2Han(clickedInfo?.[nowIndex]?.appraisalAmt || 0)}
             </Text>
           </Flex>
         )}
@@ -156,7 +149,7 @@ export default function Bottom({
                 &nbsp;{' | '}&nbsp;
               </Text>
               <Text css={DetailTextStyle}>
-                {'토지 ' + clickedInfo?.[nowIndex].landArea}
+                {'토지 ' + clickedInfo?.[nowIndex]?.landArea}
               </Text>
             </>
           )}
@@ -183,9 +176,9 @@ export default function Bottom({
                 color: '#E9413E',
               }}
             >
-              {'유찰 ' + clickedInfo?.[nowIndex].failCount + '회'}
+              {'유찰 ' + clickedInfo?.[nowIndex]?.failCount + '회'}
             </Text>
-            {clickedInfo?.[nowIndex].landArea && (
+            {clickedInfo?.[nowIndex]?.landArea && (
               <>
                 <Text
                   style={{
@@ -201,11 +194,11 @@ export default function Bottom({
                   &nbsp;{' | '}&nbsp;
                 </Text>
                 <Text css={DetailTextStyle}>
-                  {'토지 ' + clickedInfo?.[nowIndex].landArea}
+                  {'토지 ' + clickedInfo?.[nowIndex]?.landArea}
                 </Text>
               </>
             )}
-            {clickedInfo?.[nowIndex].buildingArea && (
+            {clickedInfo?.[nowIndex]?.buildingArea && (
               <>
                 <Text
                   style={{
@@ -221,7 +214,7 @@ export default function Bottom({
                   &nbsp;{' | '}&nbsp;
                 </Text>
                 <Text css={DetailTextStyle}>
-                  {'건물 ' + clickedInfo?.[nowIndex].buildingArea}
+                  {'건물 ' + clickedInfo?.[nowIndex]?.buildingArea}
                 </Text>
               </>
             )}
@@ -287,7 +280,7 @@ export default function Bottom({
               whiteSpace: 'nowrap',
             }}
           >
-            {clickedInfo?.[nowIndex].shortAddress}
+            {clickedInfo?.[nowIndex]?.shortAddress}
           </Text>
         </Flex>
       </DetailContainer>

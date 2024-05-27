@@ -96,6 +96,14 @@ export default function GGIMap({
   const debouncedSearch = useDebounce(formData, 250)
   const panoRef = useRef<HTMLDivElement | null>(null)
   const [isPanoVisible, setIsPanoVisible] = useState(false)
+  const [clickedMarker, setClickedMarker] = useState<naver.maps.Marker | null>(
+    null,
+  )
+  const [miniMap, setMiniMap] = useState<NaverMap | null>(null)
+  const [clickedLatLng, setClickedLatLng] = useState({
+    lat: 0,
+    lng: 0,
+  })
 
   const searchAddrToCoord = (address: string) => {
     if (window.naver?.maps.Service?.geocode !== undefined) {
@@ -137,6 +145,18 @@ export default function GGIMap({
     window.naver.maps.Event.addListener(map, 'click', (e: any) => {
       if (map.streetLayer) {
         let latlng = e.coord
+        setClickedLatLng({
+          lat: latlng._lat,
+          lng: latlng._lng,
+        })
+        if (clickedMarker) {
+          clickedMarker.setMap(null)
+        }
+        const marker = new naver.maps.Marker({
+          position: latlng,
+          map: miniMap ?? map,
+        })
+        setClickedMarker(marker)
         setIsPanoVisible(true)
         new window.naver.maps.Panorama('pano', {
           position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
@@ -146,8 +166,15 @@ export default function GGIMap({
             fov: 100,
           },
         })
+        if (miniMap) {
+          new naver.maps.Marker({
+            position: latlng,
+            map: miniMap,
+          })
+        }
       }
     })
+
     if (onLoad) {
       onLoad(map)
     }
@@ -170,7 +197,6 @@ export default function GGIMap({
     } else {
       console.error('Map controls are not properly initialized.')
     }
-    const roadview = new window.naver.maps.StreetLayer()
     const minimap = new window.naver.maps.Map(miniMapElement, {
       bounds: map.getBounds(),
       scrollWheel: false,
@@ -178,7 +204,14 @@ export default function GGIMap({
       mapDataControl: false,
       logoControl: false,
     })
+    setMiniMap(minimap)
+    const roadview = new window.naver.maps.StreetLayer()
     roadview.setMap(minimap)
+    let marker = new window.naver.maps.Marker({
+      position: { lat: clickedLatLng?.lat ?? 0, lng: clickedLatLng?.lng ?? 0 },
+      map: minimap,
+    })
+
     window.naver.maps.Event.addListener(map, 'bounds_changed', () => {
       if (semaphore) return
       minimap.fitBounds(map.getBounds())
@@ -186,6 +219,8 @@ export default function GGIMap({
 
     window.naver.maps.Event.addListener(minimap, 'click', (e: any) => {
       let latlng = e.coord
+      marker.setPosition(latlng)
+      setClickedMarker(marker)
       setIsPanoVisible(true)
       new window.naver.maps.Panorama('pano', {
         position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
@@ -200,9 +235,6 @@ export default function GGIMap({
 
   const closePanorama = () => {
     setIsPanoVisible(false)
-    if (panoRef.current) {
-      panoRef.current.innerHTML = '' // 파노라마 뷰를 제거합니다.
-    }
   }
 
   const handleGetBounds = useCallback(() => {
