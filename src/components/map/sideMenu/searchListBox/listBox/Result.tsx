@@ -5,21 +5,15 @@ import Header from './Header'
 import styled from '@emotion/styled'
 import ListSkeleton from './Skeleton'
 import Text from '@/components/shared/Text'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { usePostListItems } from '../hooks/usePostListItems'
+import React, { useEffect, useRef, useState } from 'react'
 import { css } from '@emotion/react'
 import Spacing from '@/components/shared/Spacing'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
-import { ListData, MapItems, PageInfo } from '@/models/MapItem'
+import { ListData, MapItems } from '@/models/MapItem'
 import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import postListItems from '@/remote/map/items/postListItems'
-import { useInfiniteQuery } from 'react-query'
 import useSearchListQuery from './hooks/useSearchListQuery'
-import { useInView } from 'react-intersection-observer'
-import { TSearchList } from '@/models/api/mapItem'
-import useMapData from './hooks/useSearchListQuery'
 
 interface ResultProps {
   formData: Form
@@ -43,6 +37,7 @@ function Result({
   const { data: map } = useSWR(MAP_KEY)
   const [showingList, setShowingList] = useState(false)
   const [page, setPage] = useState(1)
+  const scrollbarsRef = useRef<HTMLDivElement | null>(null)
   const [mapData, setMapData] = useState<ListData>({
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -65,53 +60,19 @@ function Result({
     egg: formData.egg,
   })
 
-  const fetchMapData = async (
-    params: ListData,
-    pageParam: number,
-    rowsPerPage: number,
-  ) => {
-    const response = await postListItems(params, pageParam, rowsPerPage)
-    return {
-      contents: response.contents,
-      paging: response.paging,
-    }
-  }
-
   const {
     data,
-    isLoading,
-    isFetching,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery<TSearchList>(
-    ['searchList', mapData, page],
-    async ({ pageParam = 1 }) =>
-      await fetchMapData(mapData, pageParam, ROWS_PER_PAGE),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        const nextPage = allPages.length + 1
-        return lastPage?.contents.length === 0 ||
-          lastPage?.contents.length < ROWS_PER_PAGE
-          ? undefined
-          : nextPage
-      },
-      retry: 0,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-    },
-  )
-
-  const { ref, inView } = useInView()
-
-  useEffect(() => {
-    if (inView) {
-      fetchNextPage().then(() => {
-        console.log('fetchNextPage')
-      })
-    }
-  }, [inView])
+    isFetching,
+    isLoading,
+    listProducts,
+  } = useSearchListQuery({
+    rowsPerPage: ROWS_PER_PAGE,
+    mapData,
+    page,
+    setListItems,
+  })
 
   useEffect(() => {
     if (map && map.zoom! >= 15) {
@@ -151,23 +112,23 @@ function Result({
 
   useEffect(() => {
     if (data) {
-      if (data.pages[0].contents.length === 0) {
-        setListItems(null)
-      }
-      if (data.pages[0].paging.pageNumber === 1) {
-        setListItems(data.pages[0].contents)
-      } else {
-        setListItems((prev) => {
-          if (prev) {
-            return [...prev, ...data.pages[0].contents]
-          } else {
-            return data.pages[0].contents
-          }
-        })
+      if (data.pageParams.length === 1) {
+        scrollToTop()
+        setListItems(data.pages[0]?.contents)
+      } else if (data.pageParams.length > 1) {
+        setListItems((prev) => [
+          ...(prev ?? []),
+          ...data?.pages[data.pages.length - 1]?.contents,
+        ])
       }
     }
-  }, [data])
-  console.log(inView)
+  }, [data, setListItems])
+
+  const scrollToTop = () => {
+    if (!scrollbarsRef.current) return
+    scrollbarsRef.current?.scrollTo(0, 0)
+  }
+
   return (
     <Flex
       direction="column"
@@ -184,13 +145,20 @@ function Result({
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               isLoading={isLoading}
-              pageInfo={data?.pages[0].paging.totalElements ?? 0}
+              pageInfo={data?.pages[0]?.paging.totalElements ?? 0}
             />
-            <Container isOpen={isOpen}>
-              {listItems.map((item, index) => (
-                <Forms key={index} item={item} index={index} />
-              ))}
-              {isFetchingNextPage ? <ListSkeleton /> : <div ref={ref} />}
+            <Container isOpen={isOpen} id="scrollbarDiv" ref={scrollbarsRef}>
+              <InfiniteScroll
+                dataLength={listItems.length}
+                next={fetchNextPage}
+                hasMore={hasNextPage ?? false}
+                loader={<ListSkeleton />}
+                scrollableTarget="scrollbarDiv"
+              >
+                {listItems.map((item, index) => (
+                  <Forms key={index} item={item} index={index} />
+                ))}
+              </InfiniteScroll>
             </Container>
           </>
         ) : (
@@ -199,7 +167,7 @@ function Result({
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               isLoading={isLoading}
-              pageInfo={data?.pages[0].paging.totalElements ?? 0}
+              pageInfo={data?.pages[0]?.paging.totalElements ?? 0}
             />
             <ContainerNone isOpen={true}>
               <Spacing size={20} />
@@ -215,7 +183,7 @@ function Result({
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             isLoading={isLoading}
-            pageInfo={data?.pages[0].paging.totalElements ?? 0}
+            pageInfo={data?.pages[0]?.paging.totalElements ?? 0}
           />
           <ContainerNone isOpen={true}>
             <Spacing size={20} />
@@ -246,8 +214,23 @@ const Container = styled.div<{ isOpen: boolean }>`
   overflow-y: auto;
   overflow-x: hidden;
   flex-direction: column;
-  overflow-y: auto;
-  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #dfdfdf;
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `
 
 const NoResultText = css`

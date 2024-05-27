@@ -1,29 +1,59 @@
-import { ListData } from '@/models/MapItem'
-import { TSearchList } from '@/models/api/mapItem'
+import { ListData, MapItems, PageInfo } from '@/models/MapItem'
 import postListItems from '@/remote/map/items/postListItems'
-import { useInfiniteQuery } from 'react-query'
+import { Dispatch, useMemo } from 'react'
+import { QueryFunctionContext, useInfiniteQuery } from 'react-query'
 
-const fetchMapData = async (
-  params: ListData,
-  pageParam: number,
-  rowsPerPage: number,
-) => {
-  console.log('fetchMapData', pageParam, rowsPerPage)
-  const response = await postListItems(params, pageParam, rowsPerPage)
-  return response
+interface useSearhListQueryProps {
+  rowsPerPage: number
+  mapData: ListData
+  page: number
+  setListItems: Dispatch<React.SetStateAction<MapItems[] | null>>
 }
 
-const useMapData = (mapData: ListData, rowsPerPage: number) => {
-  return useInfiniteQuery<TSearchList>(
-    ['searchList', mapData],
-    async ({ pageParam = 1 }) => fetchMapData(mapData, pageParam, rowsPerPage),
-    {
-      getNextPageParam: (lastPage) => {
-        return lastPage.paging.pageNumber + 1
+const queryKey = 'searchList'
+
+export default function useSearchListQuery({
+  rowsPerPage,
+  mapData,
+  page,
+  setListItems,
+}: useSearhListQueryProps) {
+  const fetchSearchList = async (
+    mapData: ListData,
+    page: number,
+    rowsPerPage: number,
+  ) => {
+    try {
+      const res = await postListItems(mapData, page, rowsPerPage)
+      return res
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
+    useInfiniteQuery(
+      [queryKey, mapData, page],
+      ({ pageParam = 1 }) => fetchSearchList(mapData, pageParam, rowsPerPage),
+      {
+        getNextPageParam: (lastPage) => {
+          return lastPage?.paging?.isLast
+            ? undefined
+            : lastPage?.paging?.pageNumber + 1
+        },
       },
-      refetchOnWindowFocus: false,
-    },
-  )
-}
+    )
+  const listProducts = useMemo(() => {
+    if (!data) return []
+    return data?.pages.flatMap((page) => page?.contents)
+  }, [data])
 
-export default useMapData
+  return {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    listProducts,
+    isFetching,
+    isLoading,
+  }
+}

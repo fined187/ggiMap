@@ -2729,6 +2729,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-custom-scrollbars@npm:^4":
+  version: 4.0.13
+  resolution: "@types/react-custom-scrollbars@npm:4.0.13"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10c0/1fad129d4d78f7ece90cb6a41c16bf5a2d794a232b0532c62bbf43eaad02197c8af6e9c08f00fb4d8196054559e4e06757db1699ef5d212b8f4298b82a82f430
+  languageName: node
+  linkType: hard
+
 "@types/react-dom@npm:^18":
   version: 18.2.14
   resolution: "@types/react-dom@npm:18.2.14"
@@ -7053,6 +7062,7 @@ __metadata:
     "@types/navermaps": "npm:^3.7.5"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
+    "@types/react-custom-scrollbars": "npm:^4"
     "@types/react-dom": "npm:^18"
     "@types/react-infinite-scroller": "npm:^1.2.5"
     "@types/react-lazy-load-image-component": "npm:^1"

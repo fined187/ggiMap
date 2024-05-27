@@ -38,6 +38,7 @@ const RAW_RUNTIME_STATE =
           ["@types/navermaps", "npm:3.7.5"],\
           ["@types/node", "npm:20.8.9"],\
           ["@types/react", "npm:18.2.33"],\
+          ["@types/react-custom-scrollbars", "npm:4.0.13"],\
           ["@types/react-dom", "npm:18.2.14"],\
           ["@types/react-infinite-scroller", "npm:1.2.5"],\
           ["@types/react-lazy-load-image-component", "npm:1.6.4"],\
@@ -4728,6 +4729,16 @@ const RAW_RUNTIME_STATE =
           ["@types/prop-types", "npm:15.7.9"],\
           ["@types/scheduler", "npm:0.16.5"],\
           ["csstype", "npm:3.1.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@types/react-custom-scrollbars", [\
+      ["npm:4.0.13", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@types-react-custom-scrollbars-npm-4.0.13-6087f1f8e6-10c0.zip/node_modules/@types/react-custom-scrollbars/",\
+        "packageDependencies": [\
+          ["@types/react-custom-scrollbars", "npm:4.0.13"],\
+          ["@types/react", "npm:18.2.33"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -9839,6 +9850,7 @@ const RAW_RUNTIME_STATE =
           ["@types/navermaps", "npm:3.7.5"],\
           ["@types/node", "npm:20.8.9"],\
           ["@types/react", "npm:18.2.33"],\
+          ["@types/react-custom-scrollbars", "npm:4.0.13"],\
           ["@types/react-dom", "npm:18.2.14"],\
           ["@types/react-infinite-scroller", "npm:1.2.5"],\
           ["@types/react-lazy-load-image-component", "npm:1.6.4"],\

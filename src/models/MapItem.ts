@@ -87,3 +87,8 @@ export interface PageInfo {
   pageSize: number
   totalElements: number
 }
+
+export interface SearchListResponse {
+  contents: MapItems[]
+  pageInfo: PageInfo
+}

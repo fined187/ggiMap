@@ -111,7 +111,7 @@ export default function Bottom({
             }}
           />
           &nbsp;&nbsp;&nbsp;
-          <Text css={DetailTextStyle}>{clickedInfo?.[nowIndex].usage}</Text>
+          <Text css={DetailTextStyle}>{clickedInfo?.[nowIndex]?.usage}</Text>
         </Flex>
         {(clickedItem?.type === 1 ||
           clickedItem?.type === 2 ||
