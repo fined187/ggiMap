@@ -185,7 +185,7 @@ function Form({ item, index }: ItemProps) {
           </Flex>
         </Flex>
       ) : (
-        <KwForm item={item} />
+        <KwForm item={item} index={index} />
       )}
     </>
   )

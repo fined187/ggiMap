@@ -2,14 +2,13 @@
 import Flex from '@/components/shared/Flex'
 import { ItemDetail } from '@/models/ItemDetail'
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 import styled from '@emotion/styled'
 import Text from '@/components/shared/Text'
 import { MapItem } from '@/models/MapItem'
 import Interest from '../../icons/Interest'
 import MiniMap from './MiniMap'
 import Carousel from './Carousel'
-import Panorama from './Panorama'
 
 interface TopProps {
   clickedInfo: ItemDetail[] | null
@@ -28,9 +27,14 @@ export default function Top({
   nowIndex,
   setNowIndex,
 }: TopProps) {
+  const clickedInfoLength = clickedInfo?.length
+
+  console.log(clickedInfo)
+  console.log(nowIndex)
+  useEffect(() => {}, [clickedInfo, nowIndex, clickedItem])
   return (
     <Flex css={ContainerStyle}>
-      {clickedItem?.type === 4 ? (
+      {clickedInfo && clickedInfo[nowIndex]?.claimAmt! > 0 ? (
         <>
           <Flex
             style={{
@@ -39,15 +43,11 @@ export default function Top({
               height: '180px',
             }}
           >
-            {/* <Panorama
-              latlng={{
-                _lat: clickedItem?.y as number,
-                _lng: clickedItem?.x as number,
-              }}
-            /> */}
             <MiniMap
+              clickedInfo={clickedInfo}
               clickedItem={clickedItem}
               setClickedItem={setClickedItem}
+              nowIndex={nowIndex}
             />
             <TypeStyle type={clickedItem?.type || 1}>
               <Text css={TextStyle}>예정</Text>
@@ -64,7 +64,9 @@ export default function Top({
               }}
             >
               <Interest
-                interest={(clickedInfo && clickedInfo[0]?.interest) ?? ''}
+                interest={
+                  (clickedInfo && clickedInfo[nowIndex]?.interest) ?? ''
+                }
               />
             </Flex>
             <BottomBox
@@ -74,7 +76,7 @@ export default function Top({
               }}
             >
               <Text css={BottomTextStyle}>
-                {clickedInfo && clickedInfo[0]?.caseNo}
+                {clickedInfo && clickedInfo[nowIndex]?.caseNo}
               </Text>
             </BottomBox>
           </Flex>

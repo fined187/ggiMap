@@ -10,32 +10,35 @@ import { useQuery } from 'react-query'
 
 export const useGetDetail = (
   ids: string[],
-  type: number,
+  type: number[],
   setClickedInfo: Dispatch<SetStateAction<ItemDetail[] | null>>,
 ) => {
   return useQuery<ItemDetail[]>(
-    ['dtail', type, ids],
+    ['dtail', { type, ids }],
     async () => {
       const data = await Promise.all(
-        ids.map((id) => {
-          if (type === 1) {
-            return getKmDetail(id)
-          } else if (type === 2) {
-            return getGmDetail(id)
-          } else if (type === 3) {
-            return getGgDetail(id)
-          } else if (type === 4) {
-            return getKwDetail(id)
+        ids.map(async (id, index) => {
+          if (type[index] === 1) {
+            return await getKmDetail(id)
+          } else if (type[index] === 4) {
+            return await getKwDetail(id)
+          } else if (type[index] === 2) {
+            return await getGmDetail(id)
+          } else if (type[index] === 3) {
+            return await getGgDetail(id)
           }
           return null
         }),
       )
-      return data
+      return data.filter((item) => item !== null) as ItemDetail[]
     },
     {
       onSuccess: (data) => {
         setClickedInfo(null)
         setClickedInfo(data)
+      },
+      onError: (error) => {
+        console.error(error)
       },
     },
   )

@@ -2,6 +2,7 @@ import { NaverMap } from '@/models/Map'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { MapItem } from '@/models/MapItem'
 import getPolypath from '@/remote/map/selected/getPolypath'
+import { ItemDetail } from '@/models/ItemDetail'
 
 declare global {
   interface Window {
@@ -13,13 +14,21 @@ declare global {
 interface MiniMapProps {
   clickedItem: MapItem | null
   setClickedItem: Dispatch<SetStateAction<MapItem | null>>
+  nowIndex: number
+  clickedInfo: ItemDetail[] | null
 }
 
-export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
+export default function MiniMap({
+  clickedItem,
+  setClickedItem,
+  nowIndex,
+  clickedInfo,
+}: MiniMapProps) {
   const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&autoload=false`
   const mapRef = useRef<NaverMap | null>(null)
   const [path, setPath] = useState<number[][]>([])
   const [maps, setMaps] = useState<any>(null)
+  const [roadViewAvailable, setRoadViewAvailable] = useState<boolean>(false)
 
   useEffect(() => {
     const script = document.createElement('script')
@@ -32,10 +41,26 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
           center: new window.kakao.maps.LatLng(clickedItem?.y, clickedItem?.x),
           level: 2,
         }
-        const map = new window.kakao.maps.Map(container, options)
-        map.addOverlayMapTypeId(window.kakao.maps.MapTypeId.USE_DISTRICT)
-        mapRef.current = map
-        setMaps(map)
+        const roadviewContainer = document.getElementById('roadview')
+        const roadview = new window.kakao.maps.Roadview(roadviewContainer)
+        const rvClient = new window.kakao.maps.RoadviewClient()
+        const position = new window.kakao.maps.LatLng(
+          clickedItem?.y,
+          clickedItem?.x,
+        )
+
+        rvClient.getNearestPanoId(position, 50, (panoId: any) => {
+          if (panoId) {
+            setRoadViewAvailable(true)
+            roadview.setPanoId(panoId, position)
+          } else {
+            setRoadViewAvailable(false)
+            const map = new window.kakao.maps.Map(container, options)
+            map.addOverlayMapTypeId(window.kakao.maps.MapTypeId.USE_DISTRICT)
+            mapRef.current = map
+            setMaps(map)
+          }
+        })
       })
     }
     return () => {
@@ -75,17 +100,32 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
       })
       maps.setBounds(bounds)
     }
-    drawPolyline()
-  }, [path])
+    if (!roadViewAvailable) {
+      drawPolyline()
+    }
+  }, [path, roadViewAvailable, maps])
 
   return (
     <>
+      <div
+        id="roadview"
+        style={{
+          display: roadViewAvailable ? 'block' : 'none',
+          width: '299px',
+          height: '100%',
+          borderRadius: '8px 8px 0px 0px',
+          position: 'absolute',
+          top: '0',
+          left: '0',
+        }}
+      />
       <div
         id="miniMap"
         style={{
           width: '299px',
           height: '100%',
           borderRadius: '8px 8px 0px 0px',
+          display: roadViewAvailable ? 'none' : 'block',
         }}
       />
     </>

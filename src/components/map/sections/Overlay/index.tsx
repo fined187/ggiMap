@@ -48,9 +48,22 @@ export default function Overlay({
     [mapOrigin],
   )
 
+  const handleGetType = useCallback(
+    (pnu: string) => {
+      let type: number[] = []
+      for (const pnus of mapOrigin ?? []) {
+        if (pnus.pnu === pnu) {
+          type.push(pnus.type)
+        }
+      }
+      return type
+    },
+    [mapOrigin],
+  )
+
   useGetDetail(
     handleGetIds(clickedItem?.pnu as string),
-    clickedItem?.type as number,
+    handleGetType(clickedItem?.pnu as string),
     setClickedInfo,
   )
   return (

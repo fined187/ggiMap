@@ -18,6 +18,7 @@ export default function Bottom({
   clickedItem,
   nowIndex,
 }: BottomProps) {
+  console.log(clickedInfo && clickedInfo[nowIndex].claimAmt)
   console.log(clickedInfo)
   return (
     <div
@@ -43,10 +44,12 @@ export default function Bottom({
           <Text css={AmountTitleTextStyle}>
             {(clickedInfo && clickedInfo[nowIndex]?.claimAmt) || 0 > 0
               ? '청구액'
+              : clickedInfo && clickedInfo[nowIndex]?.winAmt! > 0
+              ? '낙찰액'
               : '최저가'}
           </Text>
           <Text css={AmountTextStyle}>
-            {clickedItem?.type === 4
+            {clickedInfo && clickedInfo[nowIndex]?.claimAmt! > 0
               ? useNum2Han(
                   (clickedInfo && clickedInfo[nowIndex]?.claimAmt) || 0,
                 )
@@ -131,9 +134,7 @@ export default function Bottom({
             {clickedInfo && clickedInfo[nowIndex]?.usage}
           </Text>
         </Flex>
-        {(clickedItem?.type === 1 ||
-          clickedItem?.type === 2 ||
-          clickedItem?.type === 3) && (
+        {clickedInfo && clickedInfo[nowIndex].claimAmt === undefined && (
           <Flex
             style={{
               flexDirection: 'row',
@@ -158,29 +159,7 @@ export default function Bottom({
             </Text>
           </Flex>
         )}
-        {clickedItem?.type === 4 &&
-          clickedInfo &&
-          clickedInfo[nowIndex]?.landArea && (
-            <>
-              <Text
-                style={{
-                  color: '#CBCBCB',
-                  fontFamily: 'SUIT',
-                  fontSize: '14px',
-                  fontStyle: 'normal',
-                  fontWeight: '600',
-                  lineHeight: '140%',
-                  letterSpacing: '-0.14px',
-                }}
-              >
-                &nbsp;{' | '}&nbsp;
-              </Text>
-              <Text css={DetailTextStyle}>
-                {'토지 ' + clickedInfo[nowIndex]?.landArea}
-              </Text>
-            </>
-          )}
-        {clickedItem?.type !== 4 && (
+        {clickedInfo && clickedInfo[nowIndex]?.claimAmt === undefined && (
           <Flex
             style={{
               flexDirection: 'row',
@@ -203,29 +182,32 @@ export default function Bottom({
                 color: '#E9413E',
               }}
             >
-              {'유찰 ' + (clickedInfo && clickedInfo[nowIndex]?.failCount) ??
-                '' + '회'}
+              {'유찰 ' +
+                (clickedInfo && clickedInfo[nowIndex]?.failCount)! +
+                '회'}
             </Text>
-            {clickedInfo && clickedInfo[nowIndex]?.landArea && (
-              <>
-                <Text
-                  style={{
-                    color: '#CBCBCB',
-                    fontFamily: 'SUIT',
-                    fontSize: '14px',
-                    fontStyle: 'normal',
-                    fontWeight: '600',
-                    lineHeight: '140%',
-                    letterSpacing: '-0.14px',
-                  }}
-                >
-                  &nbsp;{' | '}&nbsp;
-                </Text>
-                <Text css={DetailTextStyle}>
-                  {'토지 ' + clickedInfo && clickedInfo[nowIndex]?.landArea}
-                </Text>
-              </>
-            )}
+            {clickedInfo &&
+              clickedInfo[nowIndex]?.landArea &&
+              clickedInfo[nowIndex].claimAmt !== 0 && (
+                <>
+                  <Text
+                    style={{
+                      color: '#CBCBCB',
+                      fontFamily: 'SUIT',
+                      fontSize: '14px',
+                      fontStyle: 'normal',
+                      fontWeight: '600',
+                      lineHeight: '140%',
+                      letterSpacing: '-0.14px',
+                    }}
+                  >
+                    &nbsp;{' | '}&nbsp;
+                  </Text>
+                  <Text css={DetailTextStyle}>
+                    {'토지 ' + clickedInfo[nowIndex]?.landArea}
+                  </Text>
+                </>
+              )}
             {clickedInfo && clickedInfo[nowIndex]?.buildingArea && (
               <>
                 <Text
@@ -248,7 +230,7 @@ export default function Bottom({
             )}
           </Flex>
         )}
-        {clickedItem?.type === 4 && (
+        {clickedInfo && clickedInfo[nowIndex]?.claimAmt! > 0 && (
           <Flex
             style={{
               flexDirection: 'row',

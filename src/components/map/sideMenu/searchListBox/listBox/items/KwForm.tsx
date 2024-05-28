@@ -9,10 +9,16 @@ import useNum2Han from '@/utils/useNum2Han'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 
-function KwForm({ item }: { item: MapItems }) {
+function KwForm({ item, index }: { item: MapItems; index: number }) {
   return (
     <>
-      <Flex direction="column" css={ContainerStyle}>
+      <Flex
+        direction="column"
+        css={ContainerStyle}
+        style={{
+          borderTop: `${index === 0 ? '' : '0.5px solid #e0e0e0 '}`,
+        }}
+      >
         <ListRow
           left={<LeftTextStyle color={'#00926F'}>{'예정'}</LeftTextStyle>}
           contents={<LeftTextStyle color="#000">{item.caseNo}</LeftTextStyle>}
@@ -91,7 +97,6 @@ const ContainerStyle = css`
   width: 350px;
   height: 165px;
   flex-shrink: 0;
-  border-top: 0.5px solid #e0e0e0;
   left: 10px;
 `
 
