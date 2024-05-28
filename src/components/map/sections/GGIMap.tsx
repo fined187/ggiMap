@@ -152,11 +152,6 @@ export default function GGIMap({
         if (clickedMarker) {
           clickedMarker.setMap(null)
         }
-        const marker = new naver.maps.Marker({
-          position: latlng,
-          map: miniMap ?? map,
-        })
-        setClickedMarker(marker)
         setIsPanoVisible(true)
         new window.naver.maps.Panorama('pano', {
           position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),

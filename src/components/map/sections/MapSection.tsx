@@ -61,6 +61,8 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     zIndex: 999,
   })
 
+  const [duplicatedItems, setDuplicatedItems] = useState<MapItem[]>([])
+
   const [clickedMapType, setClickedMapType] = useState({
     basic: true,
     terrain: false,
@@ -139,6 +141,46 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     setPnuCounts({ updatedCounts })
   }, [mapItems])
 
+  const handleDuplicateLatLngMarkerCheck = useCallback(() => {
+    if (mapItems) {
+      const duplicatedLatLngItems = mapItems.filter(
+        // mapItems 배열에서 x, y값이 같은 아이템을 찾아서 duplicatedLatLngItems 배열에 저장
+        (item, index) =>
+          mapItems.findIndex(
+            (item2) =>
+              item2.x === item.x &&
+              item2.y === item.y &&
+              item2.winYn !== item.winYn,
+          ) !== -1,
+      )
+      if (duplicatedLatLngItems.length > 0) {
+        // duplicatedLatLngItems 배열에 아이템이 있으면 duplicatedLatLngYItems 배열에 winYn이 Y인 아이템만 저장
+        setDuplicatedItems(duplicatedLatLngItems)
+        const duplicatedLatLngYItems = duplicatedLatLngItems
+          .filter((item) => item.winYn === 'Y')
+          .map((item) => ({
+            x: item.x,
+            y: item.y,
+          }))
+        setMapItems(
+          (
+            prev, // duplicatedLatLngYItems 배열에 있는 아이템을 mapItems 배열에서 제거
+          ) =>
+            prev.filter(
+              (item) =>
+                !(
+                  duplicatedLatLngYItems.some(
+                    (dupItem) => item.x === dupItem.x && item.y === dupItem.y,
+                  ) && item.winYn === 'Y'
+                ),
+            ),
+        )
+      }
+
+      return duplicatedLatLngItems
+    }
+  }, [mapItems])
+
   useEffect(() => {
     handleSyncMap()
   }, [clickedMapType])
@@ -147,6 +189,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     if (mapItems) {
       setPnuCounts({ updatedCounts: [] })
       handleGetPnuCounts()
+      handleDuplicateLatLngMarkerCheck()
     }
   }, [mapItems])
   return (
@@ -260,6 +303,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         markerClickedRef={markerClickedRef}
         offset={offset}
         setOffset={setOffset}
+        duplicatedItems={duplicatedItems}
       />
       <Clusterings formData={formData} item={mapCount} />
       {openOverlay && (

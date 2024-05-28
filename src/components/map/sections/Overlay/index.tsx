@@ -5,6 +5,7 @@ import {
   Dispatch,
   MutableRefObject,
   SetStateAction,
+  useCallback,
   useRef,
   useState,
 } from 'react'
@@ -30,20 +31,25 @@ export default function Overlay({
   setClickedItem,
   style,
 }: OverlayProps) {
+  console.log(clickedItem)
   const [clickedInfo, setClickedInfo] = useState<ItemDetail[] | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
-  const handleGetIds = (pnu: string) => {
-    let ids: string[] = []
-    for (const pnus of mapItems ?? []) {
-      if (pnus.pnu === pnu) {
-        ids.push(pnus.id)
+  const handleGetIds = useCallback(
+    (pnu: string) => {
+      let ids: string[] = []
+      for (const pnus of mapItems ?? []) {
+        if (pnus.pnu === pnu) {
+          ids.push(pnus.id)
+        }
       }
-    }
-    return ids
-  }
-  const data = useGetDetail(
+      return ids
+    },
+    [mapItems],
+  )
+
+  useGetDetail(
     handleGetIds(clickedItem?.pnu as string),
     clickedItem?.type as number,
     setClickedInfo,
@@ -69,11 +75,8 @@ export default function Overlay({
       />
       <Bottom
         clickedInfo={clickedInfo}
-        setClickedInfo={setClickedInfo}
         clickedItem={clickedItem}
-        setClickedItem={setClickedItem}
         nowIndex={nowIndex}
-        setNowIndex={setNowIndex}
       />
     </Flex>
   )

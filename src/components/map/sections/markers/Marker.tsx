@@ -18,6 +18,8 @@ import {
   UsageIcon,
 } from './Icon/Marker1'
 import { AmountBottomIcon, UsageTopIcon } from './Icon/Marker2'
+import { useRecoilState } from 'recoil'
+import { mapAtom } from '@/store/atom/map'
 
 type PnuProps = {
   pnu: string
@@ -40,6 +42,7 @@ interface MarkerProps {
   markerClickedRef: MutableRefObject<boolean>
   offset: { x: number; y: number }
   setOffset: Dispatch<SetStateAction<{ x: number; y: number }>>
+  duplicatedItems: MapItem[]
 }
 
 const Marker = ({
@@ -51,12 +54,15 @@ const Marker = ({
   clickedItem,
   setClickedItem,
   markerClickedRef,
+  duplicatedItems,
   offset,
   setOffset,
 }: MarkerProps) => {
   const [count, setCount] = useState<number>(0)
+  const [duplicatedCount, setDuplicatedCount] = useState<number>(0)
   const marker1Ref = useRef<null | naver.maps.Marker>(null)
   const marker2Ref = useRef<null | naver.maps.Marker>(null)
+  console.log(duplicatedItems)
   const handleGetItemPnuCounts = useCallback(() => {
     if (
       pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ??
@@ -121,7 +127,6 @@ const Marker = ({
           ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
-              zIndex: 100,
               icon: {
                 content: `
               <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 100;">
@@ -164,7 +169,6 @@ const Marker = ({
           ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
-              zIndex: 100,
               icon: {
                 content: `
                 <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 90;">
@@ -191,7 +195,6 @@ const Marker = ({
           ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
-              zIndex: 90,
               icon: {
                 content: `
                 <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 90;">
@@ -208,7 +211,6 @@ const Marker = ({
           ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
-              zIndex: 80,
               icon: {
                 content: `
                 <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 80;">
@@ -251,7 +253,6 @@ const Marker = ({
           ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
-              zIndex: 95,
               icon: {
                 content: `
                   <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 95;">
@@ -280,7 +281,6 @@ const Marker = ({
           ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
-              zIndex: 95,
               icon: {
                 content: `
                   <div style="z-index: 95;">
@@ -306,14 +306,14 @@ const Marker = ({
             `,
               },
             })),
-            marker2.setZIndex(95))
+            marker2.setZIndex(70))
           : null
       } else if (item.winYn === 'Y') {
         map.getZoom() === 15
           ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
-              zIndex: 70,
+              zIndex: 75,
               icon: {
                 content: `
                 <div id='winMarker' style="z-index: 70;">
@@ -340,12 +340,11 @@ const Marker = ({
                 anchor: new naver.maps.Point(12, 12),
               },
             })),
-            marker1.setZIndex(70))
+            marker1.setZIndex(75))
           : map.getZoom() === 16
           ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
-              zIndex: 70,
               icon: {
                 content: `
                 <div id='winMarker' style="flex-direction: row; display: flex; margin-top: -30px; z-index: 70;">
@@ -366,12 +365,11 @@ const Marker = ({
             `,
               },
             })),
-            marker2.setZIndex(70))
+            marker2.setZIndex(75))
           : map.getZoom() > 16
           ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
-              zIndex: 60,
               icon: {
                 content: `
                 <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 60;">
@@ -381,7 +379,7 @@ const Marker = ({
             `,
               },
             })),
-            marker2.setZIndex(60))
+            marker2.setZIndex(75))
           : null
       }
       if (marker1) {

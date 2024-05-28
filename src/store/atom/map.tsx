@@ -1,5 +1,4 @@
 import { MapItem } from '@/models/MapItem'
-import { NaverMapProps } from 'react-naver-maps'
 import { atom } from 'recoil'
 import { v4 } from 'uuid'
 

@@ -118,7 +118,7 @@ function Result({
       } else if (data.pageParams.length > 1) {
         setListItems((prev) => [
           ...(prev ?? []),
-          ...data?.pages[data.pages.length - 1]?.contents,
+          ...(data && data?.pages[data.pages.length - 1]?.contents),
         ])
       }
     }

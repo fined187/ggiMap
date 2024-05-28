@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil'
 import { mapAtom } from '@/store/atom/map'
 import Marker from './Marker'
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
+import { MapItem } from '@/models/MapItem'
 
 type PnuProps = {
   pnu: string
@@ -23,6 +24,7 @@ interface MarkersProps {
   markerClickedRef: MutableRefObject<boolean>
   offset: { x: number; y: number }
   setOffset: Dispatch<SetStateAction<{ x: number; y: number }>>
+  duplicatedItems: MapItem[]
 }
 
 export default function Markers({
@@ -34,6 +36,7 @@ export default function Markers({
   markerClickedRef,
   offset,
   setOffset,
+  duplicatedItems,
 }: MarkersProps) {
   const { data: map } = useSWR<NaverMap>(MAP_KEY)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
@@ -56,6 +59,7 @@ export default function Markers({
                 markerClickedRef={markerClickedRef}
                 offset={offset}
                 setOffset={setOffset}
+                duplicatedItems={duplicatedItems}
               />
             )
           })
