@@ -75,7 +75,7 @@ export default function Carousel({
                 <Text css={TextStyle}>지분</Text>
               </ShareType>
             )}
-            {clickedItem?.winYn === 'Y' && (
+            {clickedInfo && clickedInfo[index]?.winAmt! > 0 && (
               <WinType
                 shareYn={
                   clickedInfo && clickedInfo[index]?.share === 'Y'

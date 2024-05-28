@@ -18,8 +18,6 @@ import {
   UsageIcon,
 } from './Icon/Marker1'
 import { AmountBottomIcon, UsageTopIcon } from './Icon/Marker2'
-import { useRecoilState } from 'recoil'
-import { mapAtom } from '@/store/atom/map'
 
 type PnuProps = {
   pnu: string
@@ -33,6 +31,9 @@ interface MarkerProps {
   setMapItems: any
   mapItems: MapItem[]
   pnuCounts: {
+    updatedCounts: PnuProps[]
+  }
+  originPnuCounts: {
     updatedCounts: PnuProps[]
   }
   openOverlay: boolean
@@ -55,14 +56,16 @@ const Marker = ({
   setClickedItem,
   markerClickedRef,
   duplicatedItems,
+  originPnuCounts,
   offset,
   setOffset,
 }: MarkerProps) => {
   const [count, setCount] = useState<number>(0)
+  const [originCount, setOriginCount] = useState<number>(0)
+  const [isSame, setIsSame] = useState<boolean>(false)
   const [duplicatedCount, setDuplicatedCount] = useState<number>(0)
   const marker1Ref = useRef<null | naver.maps.Marker>(null)
   const marker2Ref = useRef<null | naver.maps.Marker>(null)
-  console.log(duplicatedItems)
   const handleGetItemPnuCounts = useCallback(() => {
     if (
       pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ??
@@ -73,6 +76,19 @@ const Marker = ({
       )
     }
   }, [item, pnuCounts])
+
+  const handleGetItemOriginPnuCounts = useCallback(() => {
+    if (
+      originPnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)
+        ?.count ??
+      0 > 1
+    ) {
+      setOriginCount(
+        originPnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)
+          ?.count ?? 0,
+      )
+    }
+  }, [item, originPnuCounts])
 
   const handleItemUsage = useCallback(() => {
     if (item.usage.length >= 4) {
@@ -97,7 +113,14 @@ const Marker = ({
 
   useEffect(() => {
     handleGetItemPnuCounts()
-  }, [pnuCounts, handleGetItemPnuCounts])
+    handleGetItemOriginPnuCounts()
+    setIsSame(originCount === count)
+  }, [
+    pnuCounts,
+    handleGetItemPnuCounts,
+    handleGetItemOriginPnuCounts,
+    originPnuCounts,
+  ])
 
   const handleMarkerClick = (item: MapItem) => {
     if (!openOverlay && clickedItem === null) {
@@ -132,16 +155,16 @@ const Marker = ({
               <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 100;">
                 ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                 ${
-                  item.interest != 'Y' && item.share === 'Y' && count < 2
+                  item.interest != 'Y' && item.share === 'Y' && originCount < 2
                     ? ShareIcon(item, item.type)
                     : ''
                 }
                 ${
-                  item.interest != 'Y' && count > 1
-                    ? PnuCountIcon(item, count, item.type)
+                  item.interest != 'Y' && originCount > 1
+                    ? PnuCountIcon(item, originCount, item.type, isSame)
                     : ''
                 }
-                ${UsageIcon(item, handleItemUsage, item.type)}
+                ${UsageIcon(item, handleItemUsage, item.type, isSame)}
                 ${AmountIcon(item, item.type)}
               </div>
               `,
@@ -156,7 +179,7 @@ const Marker = ({
               icon: {
                 content: `
               <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 100;">
-                ${UsageTopIcon(item, count, item.type)}
+                ${UsageTopIcon(item, originCount, item.type, isSame)}
                 ${AmountBottomIcon(item, item.type)}
               </div>
             `,
@@ -174,16 +197,16 @@ const Marker = ({
                 <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 90;">
                 ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                 ${
-                  item.interest != 'Y' && item.share === 'Y' && count < 2
+                  item.interest != 'Y' && item.share === 'Y' && originCount < 2
                     ? ShareIcon(item, item.type)
                     : ''
                 }
                 ${
-                  item.interest != 'Y' && item.share != 'Y' && count > 1
-                    ? PnuCountIcon(item, count, item.type)
+                  item.interest != 'Y' && item.share != 'Y' && originCount > 1
+                    ? PnuCountIcon(item, originCount, item.type, isSame)
                     : ''
                 }
-                ${UsageIcon(item, handleItemUsage, item.type)}
+                ${UsageIcon(item, handleItemUsage, item.type, isSame)}
                 ${AmountIcon(item, item.type)}
               </div>
                     `,
@@ -198,7 +221,7 @@ const Marker = ({
               icon: {
                 content: `
                 <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 90;">
-                ${UsageTopIcon(item, count, item.type)}
+                ${UsageTopIcon(item, originCount, item.type, isSame)}
                 ${AmountBottomIcon(item, item.type)}
               </div>
             `,
@@ -216,16 +239,18 @@ const Marker = ({
                 <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 80;">
                   ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                   ${
-                    item.interest != 'Y' && item.share === 'Y' && count < 2
+                    item.interest != 'Y' &&
+                    item.share === 'Y' &&
+                    originCount < 2
                       ? ShareIcon(item, item.type)
                       : ''
                   }
                   ${
-                    item.interest != 'Y' && item.share != 'Y' && count > 1
-                      ? PnuCountIcon(item, count, item.type)
+                    item.interest != 'Y' && item.share != 'Y' && originCount > 1
+                      ? PnuCountIcon(item, originCount, item.type, isSame)
                       : ''
                   }
-                  ${UsageIcon(item, handleItemUsage, item.type)}
+                  ${UsageIcon(item, handleItemUsage, item.type, isSame)}
                   ${AmountIcon(item, item.type)}
                 </div>
                     `,
@@ -240,7 +265,7 @@ const Marker = ({
               icon: {
                 content: `
                 <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 80;">
-                  ${UsageTopIcon(item, count, item.type)}
+                  ${UsageTopIcon(item, originCount, item.type, isSame)}
                   ${AmountBottomIcon(item, item.type)}
                 </div>
             `,
@@ -260,16 +285,20 @@ const Marker = ({
                       item.interest === 'Y' ? InterestIcon(item, item.type) : ''
                     }
                     ${
-                      item.interest != 'Y' && item.share === 'Y' && count < 2
+                      item.interest != 'Y' &&
+                      item.share === 'Y' &&
+                      originCount < 2
                         ? ShareIcon(item, item.type)
                         : ''
                     }
                     ${
-                      item.interest != 'Y' && item.share != 'Y' && count > 1
-                        ? PnuCountIcon(item, count, item.type)
+                      item.interest != 'Y' &&
+                      item.share != 'Y' &&
+                      originCount > 1
+                        ? PnuCountIcon(item, originCount, item.type, isSame)
                         : ''
                     }
-                    ${UsageIcon(item, handleItemUsage, item.type)}
+                    ${UsageIcon(item, handleItemUsage, item.type, isSame)}
                     ${AmountIcon(item, item.type)}
                   </div>
                 `,
@@ -350,16 +379,18 @@ const Marker = ({
                 <div id='winMarker' style="flex-direction: row; display: flex; margin-top: -30px; z-index: 70;">
                   ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                   ${
-                    item.interest != 'Y' && item.share === 'Y' && count < 2
+                    item.interest != 'Y' &&
+                    item.share === 'Y' &&
+                    originCount < 2
                       ? ShareIcon(item, item.type)
                       : ''
                   }
                   ${
-                    item.interest != 'Y' && item.share != 'Y' && count > 1
-                      ? PnuCountIcon(item, count, item.type)
+                    item.interest != 'Y' && item.share != 'Y' && originCount > 1
+                      ? PnuCountIcon(item, originCount, item.type, isSame)
                       : ''
                   }
-                  ${UsageIcon(item, handleItemUsage, item.type)}
+                  ${UsageIcon(item, handleItemUsage, item.type, isSame)}
                   ${AmountIcon(item, item.type)}
                 </div>
             `,
@@ -373,7 +404,7 @@ const Marker = ({
               icon: {
                 content: `
                 <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 60;">
-                  ${UsageTopIcon(item, count, item.type)}
+                  ${UsageTopIcon(item, originCount, item.type, isSame)}
                   ${AmountBottomIcon(item, item.type)}
                 </div>
             `,

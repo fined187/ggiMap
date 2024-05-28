@@ -11,3 +11,8 @@ export const loadingAtom = atom<boolean>({
   key: `loading/${v4()}`,
   default: false,
 })
+
+export const mapItemOriginAtom = atom<MapItem[]>({
+  key: `mapItemOrigin/${v4()}`,
+  default: [],
+})

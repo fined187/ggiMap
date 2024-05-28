@@ -16,7 +16,7 @@ import Script from 'next/script'
 import { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
-import { mapAtom } from '@/store/atom/map'
+import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
 import useDebounce from '@/components/shared/hooks/useDebounce'
 import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
@@ -92,6 +92,7 @@ export default function GGIMap({
     setMapCount as Dispatch<SetStateAction<MapCountsResponse[]>>,
   )
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
+  const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
   const mapRef = useRef<NaverMap | null>(null)
   const debouncedSearch = useDebounce(formData, 250)
   const panoRef = useRef<HTMLDivElement | null>(null)
@@ -274,6 +275,7 @@ export default function GGIMap({
       } else {
         getMapCounts()
         setMapItems([])
+        setMapOrigin([])
       }
     }
   }, [debouncedSearch, mapRef.current?.getZoom()])
@@ -345,7 +347,7 @@ export default function GGIMap({
           position: 'absolute',
           zIndex: 100,
           bottom: '0',
-          left: '390px',
+          right: '0',
           display: isPanoVisible ? 'block' : 'none',
         }}
       />

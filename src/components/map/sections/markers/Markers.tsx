@@ -17,6 +17,9 @@ interface MarkersProps {
   pnuCounts: {
     updatedCounts: PnuProps[]
   }
+  originPnuCounts: {
+    updatedCounts: PnuProps[]
+  }
   openOverlay: boolean
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
   clickedItem: any
@@ -37,6 +40,7 @@ export default function Markers({
   offset,
   setOffset,
   duplicatedItems,
+  originPnuCounts,
 }: MarkersProps) {
   const { data: map } = useSWR<NaverMap>(MAP_KEY)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
@@ -60,6 +64,7 @@ export default function Markers({
                 offset={offset}
                 setOffset={setOffset}
                 duplicatedItems={duplicatedItems}
+                originPnuCounts={originPnuCounts}
               />
             )
           })

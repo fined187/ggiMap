@@ -21,7 +21,7 @@ import TopBar from '../top'
 import TopAddress from '../top/TopAddress'
 import BottomAddress from '../top/BottomAddress'
 import Markers from './markers/Markers'
-import { mapAtom } from '@/store/atom/map'
+import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import Clusterings from './markers/Clusterings'
 import Overlay from './Overlay'
@@ -44,7 +44,11 @@ type pnuCounts = {
 
 export default function MapSection({ formData, setFormData }: MapProps) {
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
+  const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
   const [pnuCounts, setPnuCounts] = useState<pnuCounts>({ updatedCounts: [] })
+  const [originPnuCounts, setOriginPnuCounts] = useState<pnuCounts>({
+    updatedCounts: [],
+  })
   const user = useRecoilValue(userAtom)
   const [zoom, setZoom] = useState<number>(16)
   const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
@@ -53,7 +57,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
   const markerClickedRef = useRef(false)
   const [isOpen, setIsOpen] = useState(true)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
-  const { data: map } = useSWR<NaverMap>(MAP_KEY)
   const [style, setStyle] = useState({
     position: 'absolute',
     width: '300px',
@@ -141,11 +144,35 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     setPnuCounts({ updatedCounts })
   }, [mapItems])
 
+  const handleGetOriginMapPnuCounts = useCallback(() => {
+    const countsMap: {
+      [pnu: string]: number
+    } = {}
+    mapOrigin.forEach((item) => {
+      countsMap[item.pnu] = (countsMap[item.pnu] || 0) + 1
+    })
+    const maxCounts: {
+      [pnu: string]: number
+    } = {}
+    Object.keys(countsMap).forEach((pnu) => {
+      const count = countsMap[pnu]
+      if (!maxCounts[pnu] || count > maxCounts[pnu]) {
+        maxCounts[pnu] = count
+      }
+    })
+    const updatedCounts = Object.keys(maxCounts).map((pnu) => ({
+      pnu,
+      type: mapOrigin.find((item) => item.pnu === pnu)?.type!,
+      count: maxCounts[pnu] as number,
+    }))
+    setOriginPnuCounts({ updatedCounts })
+  }, [mapOrigin])
+
   const handleDuplicateLatLngMarkerCheck = useCallback(() => {
     if (mapItems) {
       const duplicatedLatLngItems = mapItems.filter(
         // mapItems 배열에서 x, y값이 같은 아이템을 찾아서 duplicatedLatLngItems 배열에 저장
-        (item, index) =>
+        (item) =>
           mapItems.findIndex(
             (item2) =>
               item2.x === item.x &&
@@ -176,7 +203,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
             ),
         )
       }
-
       return duplicatedLatLngItems
     }
   }, [mapItems])
@@ -189,9 +215,10 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     if (mapItems) {
       setPnuCounts({ updatedCounts: [] })
       handleGetPnuCounts()
+      handleGetOriginMapPnuCounts()
       handleDuplicateLatLngMarkerCheck()
     }
-  }, [mapItems])
+  }, [mapItems, mapOrigin])
   return (
     <>
       <Map
@@ -296,6 +323,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       </Flex>
       <Markers
         pnuCounts={pnuCounts}
+        originPnuCounts={originPnuCounts}
         openOverlay={openOverlay}
         setOpenOverlay={setOpenOverlay}
         clickedItem={clickedItem}

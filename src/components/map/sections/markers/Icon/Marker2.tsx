@@ -23,7 +23,12 @@ export const InterestIcon = () => {
   `
 }
 
-export const UsageTopIcon = (item: MapItem, count: number, type: number) => {
+export const UsageTopIcon = (
+  item: MapItem,
+  count: number,
+  type: number,
+  isSame: boolean,
+) => {
   return `
     <div style="flex-direction: row; display: flex; width: 100px; height: 27px; padding: 2px 4px; justify-content: center; align-items: center; gap: 2px; border-radius: 12px 12px 0px 0px; border-top: ${
       item.winYn === 'Y'
@@ -71,7 +76,7 @@ export const UsageTopIcon = (item: MapItem, count: number, type: number) => {
         item.share === 'Y'
           ? ShareIcon(item, type, '-5')
           : count > 1
-          ? PnuCountIcon(item, count, type, '-5')
+          ? PnuCountIcon(item, count, type, isSame, '-5')
           : ''
       }
       <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 14px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.14px;">

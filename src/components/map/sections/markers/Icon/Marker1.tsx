@@ -6,6 +6,7 @@ export const PnuCountIcon = (
   item: MapItem,
   count: number,
   type: number,
+  isSame: boolean,
   top?: string,
 ) => {
   return `
@@ -13,7 +14,7 @@ export const PnuCountIcon = (
     top ? `${top}px` : '-42px'
   }; ">
     <div style="display: inline-flex; z-index: 100; width: 22px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${
-      item.winYn === 'Y'
+      item.winYn === 'Y' || !isSame
         ? `1px solid ${colors.winOrange}`
         : type === 1
         ? `1px solid ${colors.kmBlue}`
@@ -21,9 +22,13 @@ export const PnuCountIcon = (
         ? `1px solid ${colors.ggPurple}`
         : type === 2
         ? `1px solid ${colors.gmBlue}`
-        : `1px solid ${colors.kwGreen}`
+        : type === 4
+        ? `1px solid ${colors.kwGreen}`
+        : ''
     }; background: #FFF;">
-      <span style="color: #000001; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
+      <span style="color: ${
+        !isSame ? colors.winOrange : '#333333'
+      }; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
         ${count > 99 ? '99+' : count}
       </span>
     </div>
@@ -35,6 +40,7 @@ export const UsageIcon = (
   item: MapItem,
   handleItemUsage: () => string,
   type: number,
+  isSame: boolean,
 ) => {
   return `
   <div style="display: inline-flex; padding: 10px 6px; width: 45px; height: 32px; justify-content: center; align-items: center;border-radius: 17.5px 0px 0px 0px; border-left: ${

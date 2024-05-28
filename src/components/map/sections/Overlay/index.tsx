@@ -14,7 +14,7 @@ import Bottom from './Bottom'
 import { ItemDetail } from '@/models/ItemDetail'
 import { MapItem } from '@/models/MapItem'
 import { useRecoilState } from 'recoil'
-import { mapAtom } from '@/store/atom/map'
+import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
 import { useGetDetail } from './hooks/useGetDetail'
 
 interface OverlayProps {
@@ -31,22 +31,22 @@ export default function Overlay({
   setClickedItem,
   style,
 }: OverlayProps) {
-  console.log(clickedItem)
   const [clickedInfo, setClickedInfo] = useState<ItemDetail[] | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
+  const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
   const handleGetIds = useCallback(
     (pnu: string) => {
       let ids: string[] = []
-      for (const pnus of mapItems ?? []) {
+      for (const pnus of mapOrigin ?? []) {
         if (pnus.pnu === pnu) {
           ids.push(pnus.id)
         }
       }
       return ids
     },
-    [mapItems],
+    [mapOrigin],
   )
 
   useGetDetail(
@@ -54,7 +54,7 @@ export default function Overlay({
     clickedItem?.type as number,
     setClickedInfo,
   )
-
+  console.log(clickedInfo)
   return (
     <Flex
       css={Overlaytop}
