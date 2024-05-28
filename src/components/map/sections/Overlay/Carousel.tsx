@@ -60,7 +60,7 @@ export default function Carousel({
                   ? '캠코'
                   : clickedItem?.type === 3
                   ? '기관'
-                  : ''}
+                  : '예정'}
               </Text>
             </TypeStyle>
             {clickedInfo && clickedInfo?.length > 1 && (

@@ -19,6 +19,7 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
   const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&autoload=false`
   const mapRef = useRef<NaverMap | null>(null)
   const [path, setPath] = useState<number[][]>([])
+  const [maps, setMaps] = useState<any>(null)
 
   useEffect(() => {
     const script = document.createElement('script')
@@ -34,6 +35,7 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
         const map = new window.kakao.maps.Map(container, options)
         map.addOverlayMapTypeId(window.kakao.maps.MapTypeId.USE_DISTRICT)
         mapRef.current = map
+        setMaps(map)
       })
     }
     return () => {
@@ -56,6 +58,7 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
   useEffect(() => {
     const drawPolyline = () => {
       if (path.length === 0 || !mapRef.current) return
+
       let polyline = new window.kakao.maps.Polyline({
         path: path.map(
           (coord) => new window.kakao.maps.LatLng(coord[0], coord[1]),
@@ -66,6 +69,11 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
         strokeStyle: 'solid',
       })
       polyline.setMap(mapRef.current)
+      let bounds = new window.kakao.maps.LatLngBounds()
+      path.forEach((coord) => {
+        bounds.extend(new window.kakao.maps.LatLng(coord[0], coord[1]))
+      })
+      maps.setBounds(bounds)
     }
     drawPolyline()
   }, [path])
@@ -79,7 +87,7 @@ export default function MiniMap({ clickedItem, setClickedItem }: MiniMapProps) {
           height: '100%',
           borderRadius: '8px 8px 0px 0px',
         }}
-      ></div>
+      />
     </>
   )
 }

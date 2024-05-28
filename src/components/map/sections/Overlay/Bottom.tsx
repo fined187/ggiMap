@@ -19,8 +19,6 @@ export default function Bottom({
   nowIndex,
 }: BottomProps) {
   console.log(clickedInfo)
-  console.log(nowIndex)
-  console.log(clickedItem)
   return (
     <div
       style={{
@@ -35,13 +33,35 @@ export default function Bottom({
       }}
     >
       <AmountContainer>
-        <Text css={AmountTextStyle}>
-          {clickedItem?.type === 4
-            ? useNum2Han((clickedInfo && clickedInfo[nowIndex]?.claimAmt) || 0)
-            : clickedItem?.winYn === 'Y'
-            ? useNum2Han((clickedInfo && clickedInfo[nowIndex]?.winAmt) || 0)
-            : useNum2Han((clickedInfo && clickedInfo[nowIndex]?.minAmt) || 0)}
-        </Text>
+        <Flex
+          direction="column"
+          style={{
+            display: 'flex',
+            gap: '0px',
+          }}
+        >
+          <Text css={AmountTitleTextStyle}>
+            {(clickedInfo && clickedInfo[nowIndex]?.claimAmt) || 0 > 0
+              ? '청구액'
+              : '최저가'}
+          </Text>
+          <Text css={AmountTextStyle}>
+            {clickedItem?.type === 4
+              ? useNum2Han(
+                  (clickedInfo && clickedInfo[nowIndex]?.claimAmt) || 0,
+                )
+              : clickedItem?.winYn === 'Y'
+              ? useNum2Han((clickedInfo && clickedInfo[nowIndex]?.winAmt) || 0)
+              : useNum2Han(
+                  (clickedInfo && clickedInfo[nowIndex]?.minAmt) || 0,
+                ) +
+                '(' +
+                ((clickedInfo && clickedInfo[nowIndex]?.ratio)! > 0
+                  ? clickedInfo && clickedInfo[nowIndex]?.ratio
+                  : 0) +
+                '%)'}
+          </Text>
+        </Flex>
         <Flex
           style={{
             width: '20px',
@@ -304,6 +324,17 @@ const AmountContainer = styled.div`
   top: 12px;
 `
 
+const AmountTitleTextStyle = css`
+  color: #545454;
+
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 140%;
+  letter-spacing: -0.12px;
+`
+
 const AmountTextStyle = css`
   color: #000001;
   font-family: SUIT;
@@ -318,7 +349,7 @@ const DetailContainer = styled.div`
   width: 85%;
   display: flex;
   position: absolute;
-  top: 50px;
+  top: 55px;
   flex-direction: column;
 `
 const DetailTextStyle = css`

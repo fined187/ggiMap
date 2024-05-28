@@ -9,6 +9,7 @@ import { MapItem } from '@/models/MapItem'
 import Interest from '../../icons/Interest'
 import MiniMap from './MiniMap'
 import Carousel from './Carousel'
+import Panorama from './Panorama'
 
 interface TopProps {
   clickedInfo: ItemDetail[] | null
@@ -38,6 +39,12 @@ export default function Top({
               height: '180px',
             }}
           >
+            {/* <Panorama
+              latlng={{
+                _lat: clickedItem?.y as number,
+                _lng: clickedItem?.x as number,
+              }}
+            /> */}
             <MiniMap
               clickedItem={clickedItem}
               setClickedItem={setClickedItem}
