@@ -168,7 +168,6 @@ const Marker = ({
                 ${AmountIcon(item, item.type)}
               </div>
               `,
-                anchor: new naver.maps.Point(12, 12),
               },
             })),
             marker1?.setZIndex(100))
@@ -210,7 +209,6 @@ const Marker = ({
                 ${AmountIcon(item, item.type)}
               </div>
                     `,
-                anchor: new naver.maps.Point(12, 12),
               },
             })),
             marker1.setZIndex(90))
@@ -254,7 +252,6 @@ const Marker = ({
                   ${AmountIcon(item, item.type)}
                 </div>
                     `,
-                anchor: new naver.maps.Point(12, 12),
               },
             })),
             marker1.setZIndex(80))
@@ -273,14 +270,88 @@ const Marker = ({
             })),
             marker2.setZIndex(80))
           : null
-      } else if (item.type === 4 && item.winYn !== 'Y') {
+      } else if (item.winYn === 'Y') {
+        map.getZoom() === 15
+          ? ((marker1 = new naver.maps.Marker({
+              map: map,
+              position: new naver.maps.LatLng(item.y, item.x),
+              icon: {
+                content: `
+                <div id='winMarker' style="z-index: 75;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <g filter="url(#filter0_d_905_256)">
+                      <circle cx="8" cy="6" r="6" fill="#FF4D00"/>
+                      <circle cx="8" cy="6" r="5.75" stroke="white" stroke-width="0.5"/>
+                    </g>
+                    <defs>
+                      <filter id="filter0_d_905_256" x="0" y="0" width="16" height="16" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                        <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                        <feOffset dy="2"/>
+                        <feGaussianBlur stdDeviation="1"/>
+                        <feComposite in2="hardAlpha" operator="out"/>
+                        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
+                        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_905_256"/>
+                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_905_256" result="shape"/>
+                      </filter>
+                    </defs>
+                  </svg>
+                </div>
+              `,
+              },
+            })),
+            marker1.setZIndex(75))
+          : map.getZoom() === 16
+          ? ((marker2 = new naver.maps.Marker({
+              map: map,
+              position: new naver.maps.LatLng(item.y, item.x),
+              icon: {
+                content: `
+                <div id='winMarker' style="flex-direction: row; display: flex; margin-top: -30px; z-index: 75; ">
+                  ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
+                  ${
+                    item.interest != 'Y' &&
+                    item.share === 'Y' &&
+                    originCount < 2
+                      ? ShareIcon(item, item.type)
+                      : ''
+                  }
+                  ${
+                    item.interest != 'Y' && item.share != 'Y' && originCount > 1
+                      ? PnuCountIcon(item, originCount, item.type, isSame)
+                      : ''
+                  }
+                  ${UsageIcon(item, handleItemUsage, item.type, isSame)}
+                  ${AmountIcon(item, item.type)}
+                </div>
+            `,
+              },
+            })),
+            marker2.setZIndex(75))
+          : map.getZoom() > 16
+          ? ((marker1 = new naver.maps.Marker({
+              map: map,
+              position: new naver.maps.LatLng(item.y, item.x),
+              icon: {
+                content: `
+                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 100;">
+                ${UsageTopIcon(item, originCount, item.type, isSame)}
+                ${AmountBottomIcon(item, item.type)}
+              </div>
+              `,
+              },
+            })),
+            marker1.setZIndex(75))
+          : null
+      }
+      if (item.type === 4) {
         map.getZoom() > 15
           ? ((marker1 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                  <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 95;">
+                  <div style="flex-direction: row; display: flex; margin-top: -30px;">
                     ${
                       item.interest === 'Y' ? InterestIcon(item, item.type) : ''
                     }
@@ -295,24 +366,23 @@ const Marker = ({
                       item.interest != 'Y' &&
                       item.share != 'Y' &&
                       originCount > 1
-                        ? PnuCountIcon(item, originCount, item.type, isSame)
+                        ? PnuCountIcon(item, originCount, item.type, true)
                         : ''
                     }
-                    ${UsageIcon(item, handleItemUsage, item.type, isSame)}
+                    ${UsageIcon(item, handleItemUsage, item.type)}
                     ${AmountIcon(item, item.type)}
                   </div>
                 `,
-                anchor: new naver.maps.Point(12, 12),
               },
             })),
-            marker1.setZIndex(95))
+            marker1.setZIndex(0))
           : map.getZoom() === 15
           ? ((marker2 = new naver.maps.Marker({
               map: map,
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                  <div style="z-index: 95;">
+                  <div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <g filter="url(#filter0_d_905_254)">
                         <circle cx="8" cy="6" r="6" fill="#1C8D00"/>
@@ -335,84 +405,10 @@ const Marker = ({
             `,
               },
             })),
-            marker2.setZIndex(70))
-          : null
-      } else if (item.winYn === 'Y') {
-        map.getZoom() === 15
-          ? ((marker1 = new naver.maps.Marker({
-              map: map,
-              position: new naver.maps.LatLng(item.y, item.x),
-              zIndex: 75,
-              icon: {
-                content: `
-                <div id='winMarker' style="z-index: 70;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <g filter="url(#filter0_d_905_256)">
-                      <circle cx="8" cy="6" r="6" fill="#FF4D00"/>
-                      <circle cx="8" cy="6" r="5.75" stroke="white" stroke-width="0.5"/>
-                    </g>
-                    <defs>
-                      <filter id="filter0_d_905_256" x="0" y="0" width="16" height="16" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                        <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-                        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                        <feOffset dy="2"/>
-                        <feGaussianBlur stdDeviation="1"/>
-                        <feComposite in2="hardAlpha" operator="out"/>
-                        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
-                        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_905_256"/>
-                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_905_256" result="shape"/>
-                      </filter>
-                    </defs>
-                  </svg>
-                </div>
-              `,
-                anchor: new naver.maps.Point(12, 12),
-              },
-            })),
-            marker1.setZIndex(75))
-          : map.getZoom() === 16
-          ? ((marker2 = new naver.maps.Marker({
-              map: map,
-              position: new naver.maps.LatLng(item.y, item.x),
-              icon: {
-                content: `
-                <div id='winMarker' style="flex-direction: row; display: flex; margin-top: -30px; z-index: 70;">
-                  ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
-                  ${
-                    item.interest != 'Y' &&
-                    item.share === 'Y' &&
-                    originCount < 2
-                      ? ShareIcon(item, item.type)
-                      : ''
-                  }
-                  ${
-                    item.interest != 'Y' && item.share != 'Y' && originCount > 1
-                      ? PnuCountIcon(item, originCount, item.type, isSame)
-                      : ''
-                  }
-                  ${UsageIcon(item, handleItemUsage, item.type, isSame)}
-                  ${AmountIcon(item, item.type)}
-                </div>
-            `,
-              },
-            })),
-            marker2.setZIndex(75))
-          : map.getZoom() > 16
-          ? ((marker2 = new naver.maps.Marker({
-              map: map,
-              position: new naver.maps.LatLng(item.y, item.x),
-              icon: {
-                content: `
-                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 60;">
-                  ${UsageTopIcon(item, originCount, item.type, isSame)}
-                  ${AmountBottomIcon(item, item.type)}
-                </div>
-            `,
-              },
-            })),
-            marker2.setZIndex(75))
+            marker2.setZIndex(0))
           : null
       }
+
       if (marker1) {
         marker1Ref.current = marker1
         naver.maps.Event?.addListener(marker1, 'click', (e) => {
@@ -450,7 +446,17 @@ const Marker = ({
         marker2?.setMap(null)
       }
     }
-  }, [map, item, count, handleItemUsage, pnuCounts, openOverlay, clickedItem])
+  }, [
+    map,
+    item,
+    count,
+    handleItemUsage,
+    pnuCounts,
+    openOverlay,
+    clickedItem,
+    isSame,
+    originCount,
+  ])
   return null
 }
 

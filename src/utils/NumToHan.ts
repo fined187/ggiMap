@@ -35,7 +35,6 @@ export function NumToHan(num: number) {
     } else {
       return `${chunMan}.${baekMan}천만`
     }
-    
   } else if (num >= 1000000) {
     //  100만 이상
     const baekMan = Math.floor(num / 1000000)

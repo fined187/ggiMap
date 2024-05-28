@@ -18,6 +18,9 @@ export default function Bottom({
   clickedItem,
   nowIndex,
 }: BottomProps) {
+  console.log(clickedInfo)
+  console.log(nowIndex)
+  console.log(clickedItem)
   return (
     <div
       style={{
@@ -34,10 +37,10 @@ export default function Bottom({
       <AmountContainer>
         <Text css={AmountTextStyle}>
           {clickedItem?.type === 4
-            ? useNum2Han(clickedInfo?.[nowIndex]?.claimAmt || 0)
+            ? useNum2Han((clickedInfo && clickedInfo[nowIndex]?.claimAmt) || 0)
             : clickedItem?.winYn === 'Y'
-            ? useNum2Han(clickedInfo?.[nowIndex]?.winAmt || 0)
-            : useNum2Han(clickedInfo?.[nowIndex]?.minAmt || 0)}
+            ? useNum2Han((clickedInfo && clickedInfo[nowIndex]?.winAmt) || 0)
+            : useNum2Han((clickedInfo && clickedInfo[nowIndex]?.minAmt) || 0)}
         </Text>
         <Flex
           style={{
@@ -104,7 +107,9 @@ export default function Bottom({
             }}
           />
           &nbsp;&nbsp;&nbsp;
-          <Text css={DetailTextStyle}>{clickedInfo?.[nowIndex]?.usage}</Text>
+          <Text css={DetailTextStyle}>
+            {clickedInfo && clickedInfo[nowIndex]?.usage}
+          </Text>
         </Flex>
         {(clickedItem?.type === 1 ||
           clickedItem?.type === 2 ||
@@ -127,13 +132,15 @@ export default function Bottom({
             &nbsp;&nbsp;&nbsp;
             <Text css={DetailTextStyle}>
               {'감정가 ' +
-                useNum2Han(clickedInfo?.[nowIndex]?.appraisalAmt || 0)}
+                useNum2Han(
+                  (clickedInfo && clickedInfo[nowIndex]?.appraisalAmt) || 0,
+                )}
             </Text>
           </Flex>
         )}
         {clickedItem?.type === 4 &&
           clickedInfo &&
-          clickedInfo?.[nowIndex].landArea && (
+          clickedInfo[nowIndex]?.landArea && (
             <>
               <Text
                 style={{
@@ -149,7 +156,7 @@ export default function Bottom({
                 &nbsp;{' | '}&nbsp;
               </Text>
               <Text css={DetailTextStyle}>
-                {'토지 ' + clickedInfo?.[nowIndex]?.landArea}
+                {'토지 ' + clickedInfo[nowIndex]?.landArea}
               </Text>
             </>
           )}
@@ -176,9 +183,10 @@ export default function Bottom({
                 color: '#E9413E',
               }}
             >
-              {'유찰 ' + clickedInfo?.[nowIndex]?.failCount + '회'}
+              {'유찰 ' + (clickedInfo && clickedInfo[nowIndex]?.failCount) ??
+                '' + '회'}
             </Text>
-            {clickedInfo?.[nowIndex]?.landArea && (
+            {clickedInfo && clickedInfo[nowIndex]?.landArea && (
               <>
                 <Text
                   style={{
@@ -194,11 +202,11 @@ export default function Bottom({
                   &nbsp;{' | '}&nbsp;
                 </Text>
                 <Text css={DetailTextStyle}>
-                  {'토지 ' + clickedInfo?.[nowIndex]?.landArea}
+                  {'토지 ' + clickedInfo && clickedInfo[nowIndex]?.landArea}
                 </Text>
               </>
             )}
-            {clickedInfo?.[nowIndex]?.buildingArea && (
+            {clickedInfo && clickedInfo[nowIndex]?.buildingArea && (
               <>
                 <Text
                   style={{
@@ -214,7 +222,7 @@ export default function Bottom({
                   &nbsp;{' | '}&nbsp;
                 </Text>
                 <Text css={DetailTextStyle}>
-                  {'건물 ' + clickedInfo?.[nowIndex]?.buildingArea}
+                  {'건물 ' + clickedInfo[nowIndex]?.buildingArea}
                 </Text>
               </>
             )}
@@ -252,7 +260,7 @@ export default function Bottom({
               &nbsp;{' | '}&nbsp;
             </Text>
             <Text css={DetailTextStyle}>
-              {clickedInfo?.[nowIndex].startDate}
+              {clickedInfo && clickedInfo[nowIndex]?.startDate}
             </Text>
           </Flex>
         )}
@@ -280,7 +288,7 @@ export default function Bottom({
               whiteSpace: 'nowrap',
             }}
           >
-            {clickedInfo?.[nowIndex]?.shortAddress}
+            {clickedInfo && clickedInfo[nowIndex]?.shortAddress}
           </Text>
         </Flex>
       </DetailContainer>

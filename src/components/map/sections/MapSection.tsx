@@ -168,10 +168,10 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     setOriginPnuCounts({ updatedCounts })
   }, [mapOrigin])
 
-  const handleDuplicateLatLngMarkerCheck = useCallback(() => {
+  const handleDuplicatedItems = useCallback(() => {
     if (mapItems) {
-      const duplicatedLatLngItems = mapItems.filter(
-        // mapItems 배열에서 x, y값이 같은 아이템을 찾아서 duplicatedLatLngItems 배열에 저장
+      // type === 1, 2, 3이면서 winYn !== 'Y'인 아이템들과 좌표가 같은 item.winYn === 'Y' 아이템들을 걸러내기
+      const duplicatedItems = mapItems.filter(
         (item) =>
           mapItems.findIndex(
             (item2) =>
@@ -180,32 +180,51 @@ export default function MapSection({ formData, setFormData }: MapProps) {
               item2.winYn !== item.winYn,
           ) !== -1,
       )
-      if (duplicatedLatLngItems.length > 0) {
-        // duplicatedLatLngItems 배열에 아이템이 있으면 duplicatedLatLngYItems 배열에 winYn이 Y인 아이템만 저장
-        setDuplicatedItems(duplicatedLatLngItems)
-        const duplicatedLatLngYItems = duplicatedLatLngItems
+      if (duplicatedItems.length > 0) {
+        setDuplicatedItems(duplicatedItems)
+        // winYn이 'Y'인 아이템의 x, y 좌표 리스트 만들기
+        const duplicatedYItems = duplicatedItems
           .filter((item) => item.winYn === 'Y')
           .map((item) => ({
             x: item.x,
             y: item.y,
           }))
-        setMapItems(
-          (
-            prev, // duplicatedLatLngYItems 배열에 있는 아이템을 mapItems 배열에서 제거
-          ) =>
-            prev.filter(
-              (item) =>
-                !(
-                  duplicatedLatLngYItems.some(
-                    (dupItem) => item.x === dupItem.x && item.y === dupItem.y,
-                  ) && item.winYn === 'Y'
-                ),
-            ),
-        )
+        const filteredItems = mapItems.filter((item) => {
+          const isDuplicatedYItem = duplicatedYItems.some(
+            (dupItem) => item.x === dupItem.x && item.y === dupItem.y,
+          )
+          if (isDuplicatedYItem) {
+            // winYn === 'Y' 인 아이템과 item.type === 4인 아이템이 좌표가 같을 경우
+            const hasType4 = mapItems.some(
+              (otherItem) =>
+                otherItem.x === item.x &&
+                otherItem.y === item.y &&
+                otherItem.type === 4,
+            )
+            if (item.winYn !== 'Y' && hasType4) {
+              return false // type === 4인 아이템 제거
+            }
+            // winYn === 'Y' 인 아이템과 item.type === 1 || 2 || 3 이면서 winYn !== 'Y' 아이템이 좌표가 같은 경우
+            const hasType1Or2Or3NonY = mapItems.some(
+              (otherItem) =>
+                otherItem.x === item.x &&
+                otherItem.y === item.y &&
+                (otherItem.type === 1 ||
+                  otherItem.type === 2 ||
+                  otherItem.type === 3) &&
+                otherItem.winYn !== 'Y',
+            )
+            if (hasType1Or2Or3NonY && item.winYn === 'Y') {
+              return false // winYn === 'Y'인 아이템 제거
+            }
+          }
+          return true // 유지
+        })
+        setMapItems(filteredItems)
       }
-      return duplicatedLatLngItems
+      return duplicatedItems
     }
-  }, [mapItems])
+  }, [mapItems, setMapItems])
 
   useEffect(() => {
     handleSyncMap()
@@ -216,7 +235,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       setPnuCounts({ updatedCounts: [] })
       handleGetPnuCounts()
       handleGetOriginMapPnuCounts()
-      handleDuplicateLatLngMarkerCheck()
+      handleDuplicatedItems()
     }
   }, [mapItems, mapOrigin])
   return (

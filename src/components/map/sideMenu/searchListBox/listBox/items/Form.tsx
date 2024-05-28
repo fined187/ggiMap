@@ -7,10 +7,10 @@ import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import Image from 'next/image'
 import usePathUrl from '../hooks/usePathUrl'
-import { GmgItems, KmItems, KwItems } from '@/models/ListItems'
 import useNum2Han from '@/utils/useNum2Han'
 import Interest from '@/components/map/icons/Interest'
 import { MapItems } from '@/models/MapItem'
+import KwForm from './KwForm'
 
 interface ItemProps {
   item: MapItems
@@ -20,164 +20,174 @@ interface ItemProps {
 function Form({ item, index }: ItemProps) {
   const url = usePathUrl(item?.type ?? 1)
   return (
-    <Flex
-      direction="column"
-      css={ContainerStyle}
-      style={{
-        borderTop: `${index === 0 ? '' : '0.5px solid #e0e0e0 '}`,
-        cursor: 'pointer',
-      }}
-    >
-      <ListRow
-        left={
-          <LeftTextStyle
-            color={
-              item?.type === 2
-                ? '#0087B1'
-                : item?.type === 3
-                ? '#5200FF'
-                : '#0038FF'
-            }
-          >
-            {item?.type === 2 ? '캠코' : item?.type === 3 ? '기관매각' : '경매'}
-          </LeftTextStyle>
-        }
-        contents={
-          <LeftTextStyle
-            color="#000"
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {item?.caseNo}
-          </LeftTextStyle>
-        }
-        right={<Interest interest={item?.interest ?? ''} />}
-        style={ListLeftStyle}
-      />
-      <Flex
-        direction="row"
-        style={{
-          position: 'absolute',
-          top: 45,
-          width: '100%',
-        }}
-      >
-        <Image
-          src={item?.path ? url + item?.path : '/images/no-image.png'}
-          alt="KM image"
-          width={180}
-          height={135}
-          style={{
-            borderRadius: '5px',
-          }}
-        />
+    <>
+      {item?.type === 1 || item?.type === 2 || item?.type === 3 ? (
         <Flex
           direction="column"
+          css={ContainerStyle}
           style={{
-            marginLeft: '10px',
-            width: '150px',
-            height: '135px',
-            gap: '1px',
+            borderTop: `${index === 0 ? '' : '0.5px solid #e0e0e0 '}`,
+            cursor: 'pointer',
           }}
         >
-          <Text
-            css={minPriceTextStyle}
+          <ListRow
+            left={
+              <LeftTextStyle
+                color={
+                  item?.type === 2
+                    ? '#0087B1'
+                    : item?.type === 3
+                    ? '#5200FF'
+                    : '#0038FF'
+                }
+              >
+                {item?.type === 2
+                  ? '캠코'
+                  : item?.type === 3
+                  ? '기관매각'
+                  : '경매'}
+              </LeftTextStyle>
+            }
+            contents={
+              <LeftTextStyle
+                color="#000"
+                style={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {item?.caseNo}
+              </LeftTextStyle>
+            }
+            right={<Interest interest={item?.interest ?? ''} />}
+            style={ListLeftStyle}
+          />
+          <Flex
+            direction="row"
             style={{
-              color: item?.winAmt != 0 ? '#FF0000' : '#000000',
+              position: 'absolute',
+              top: 45,
+              width: '100%',
             }}
           >
-            {item?.winAmt != 0 ? '낙찰가' : '최저가'}
-          </Text>
-          <Text css={minPriceNum}>
-            {item?.winAmt != 0
-              ? useNum2Han(item?.winAmt ?? 0) +
-                (item?.ratio && item?.ratio > 0 ? `(${item?.ratio}%)` : '')
-              : useNum2Han(item?.minAmt ?? 0) +
-                (item?.ratio && item?.ratio > 0 ? `(${item?.ratio}%)` : '')}
-          </Text>
-          <Spacing direction="horizontal" size={2} />
-          <Flex direction="row">
-            <Text css={appraisalAmtNum}>감정가</Text>
-            <Spacing direction="horizontal" size={5} />
-            <Text css={appraisalAmt}>
-              {useNum2Han(item?.appraisalAmt ?? 0)}
-            </Text>
-          </Flex>
-          <Spacing direction="horizontal" size={4} />
-          <Flex direction="row">
-            <Text
-              css={appraisalAmtNum}
+            <Image
+              src={item?.path ? url + item?.path : '/images/no-image.png'}
+              alt="KM image"
+              width={180}
+              height={135}
               style={{
-                width: '55px',
+                borderRadius: '5px',
               }}
-            >
-              건물면적
-            </Text>
-            <Spacing direction="horizontal" size={5} />
-            <Text
-              css={appraisalAmt}
-              style={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {item?.buildingArea !== '' ? item?.buildingArea : '-'}
-            </Text>
-          </Flex>
-          <Spacing direction="horizontal" size={4} />
-          <Flex direction="row">
-            <Text
-              css={appraisalAmtNum}
-              style={{
-                width: '55px',
-              }}
-            >
-              토지면적
-            </Text>
-            <Spacing direction="horizontal" size={4} />
-            <Text
-              css={appraisalAmt}
-              style={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {item?.landArea !== '' ? item?.landArea : '-'}
-            </Text>
-          </Flex>
-          <Spacing direction="horizontal" size={10} />
-          {item?.checkInfo && (
+            />
             <Flex
-              direction="row"
+              direction="column"
               style={{
-                gap: '5px',
-                overflow: 'hidden',
+                marginLeft: '10px',
+                width: '150px',
+                height: '135px',
+                gap: '1px',
               }}
             >
-              {Array.from(item?.checkInfo.split(',')).map((info, idx) => (
-                <Flex css={SpecialText} key={idx}>
-                  <Text
-                    css={SpecialTextStyle}
-                    style={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {info}
-                  </Text>
+              <Text
+                css={minPriceTextStyle}
+                style={{
+                  color: item?.winAmt != 0 ? '#FF0000' : '#000000',
+                }}
+              >
+                {item?.winAmt != 0 ? '낙찰가' : '최저가'}
+              </Text>
+              <Text css={minPriceNum}>
+                {item?.winAmt != 0
+                  ? useNum2Han(item?.winAmt ?? 0) +
+                    (item?.ratio && item?.ratio > 0 ? `(${item?.ratio}%)` : '')
+                  : useNum2Han(item?.minAmt ?? 0) +
+                    (item?.ratio && item?.ratio > 0 ? `(${item?.ratio}%)` : '')}
+              </Text>
+              <Spacing direction="horizontal" size={2} />
+              <Flex direction="row">
+                <Text css={appraisalAmtNum}>감정가</Text>
+                <Spacing direction="horizontal" size={5} />
+                <Text css={appraisalAmt}>
+                  {useNum2Han(item?.appraisalAmt ?? 0)}
+                </Text>
+              </Flex>
+              <Spacing direction="horizontal" size={4} />
+              <Flex direction="row">
+                <Text
+                  css={appraisalAmtNum}
+                  style={{
+                    width: '55px',
+                  }}
+                >
+                  건물면적
+                </Text>
+                <Spacing direction="horizontal" size={5} />
+                <Text
+                  css={appraisalAmt}
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {item?.buildingArea !== '' ? item?.buildingArea : '-'}
+                </Text>
+              </Flex>
+              <Spacing direction="horizontal" size={4} />
+              <Flex direction="row">
+                <Text
+                  css={appraisalAmtNum}
+                  style={{
+                    width: '55px',
+                  }}
+                >
+                  토지면적
+                </Text>
+                <Spacing direction="horizontal" size={4} />
+                <Text
+                  css={appraisalAmt}
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {item?.landArea !== '' ? item?.landArea : '-'}
+                </Text>
+              </Flex>
+              <Spacing direction="horizontal" size={10} />
+              {item?.checkInfo && (
+                <Flex
+                  direction="row"
+                  style={{
+                    gap: '5px',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {Array.from(item?.checkInfo.split(',')).map((info, idx) => (
+                    <Flex css={SpecialText} key={idx}>
+                      <Text
+                        css={SpecialTextStyle}
+                        style={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {info}
+                      </Text>
+                    </Flex>
+                  ))}
                 </Flex>
-              ))}
+              )}
             </Flex>
-          )}
+          </Flex>
         </Flex>
-      </Flex>
-    </Flex>
+      ) : (
+        <KwForm item={item} />
+      )}
+    </>
   )
 }
 

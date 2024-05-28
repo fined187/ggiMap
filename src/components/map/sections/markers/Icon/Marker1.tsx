@@ -6,7 +6,7 @@ export const PnuCountIcon = (
   item: MapItem,
   count: number,
   type: number,
-  isSame: boolean,
+  isSame?: boolean,
   top?: string,
 ) => {
   return `
@@ -40,7 +40,7 @@ export const UsageIcon = (
   item: MapItem,
   handleItemUsage: () => string,
   type: number,
-  isSame: boolean,
+  isSame?: boolean,
 ) => {
   return `
   <div style="display: inline-flex; padding: 10px 6px; width: 45px; height: 32px; justify-content: center; align-items: center;border-radius: 17.5px 0px 0px 0px; border-left: ${

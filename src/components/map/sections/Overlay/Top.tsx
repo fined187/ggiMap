@@ -56,7 +56,9 @@ export default function Top({
                 zIndex: 1,
               }}
             >
-              <Interest interest={clickedInfo?.[0].interest ?? ''} />
+              <Interest
+                interest={(clickedInfo && clickedInfo[0]?.interest) ?? ''}
+              />
             </Flex>
             <BottomBox
               style={{
