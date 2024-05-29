@@ -1,15 +1,8 @@
 import { css } from '@emotion/react'
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import NextArrow from '../icons/NextArrow'
 import SidoList from './DetailAddrList/SidoList'
 import GunguList from './DetailAddrList/GunguList'
-import dynamic from 'next/dynamic'
 import getSubway from '@/remote/map/subway/getSubway'
 import DongList from './DetailAddrList/DongList'
 import Flex from '@/components/shared/Flex'
@@ -58,17 +51,11 @@ interface BottomAddressProps {
 
 function BottomAddress({
   setCenter,
-  zoom,
-  setZoom,
   range,
   setRange,
-  setOpenCursor,
   topJuso,
-  setTopJuso,
   bottomJuso,
   setBottomJuso,
-  openCursor,
-  center,
 }: BottomAddressProps) {
   const { data: map } = useSWR(MAP_KEY)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
@@ -78,6 +65,18 @@ function BottomAddress({
   const [selectedDongIndex, setSelectedDongIndex] = useState<number | null>(
     null,
   )
+
+  const SidoRegex = [
+    /광주/g,
+    /대구/g,
+    /대전/g,
+    /부산/g,
+    /서울/g,
+    /울산/g,
+    /인천/g,
+    /세종/g,
+  ]
+
   const searchAddrToCoord = useCallback(
     (address: string) => {
       if (window.naver.maps?.Service?.geocode !== undefined) {
@@ -103,26 +102,52 @@ function BottomAddress({
     [map.center, setCenter],
   )
 
-  const addrToCenter = async (addr: string) => {
-    if (range === 1 && bottomJuso.sido !== '' && bottomJuso.gungu !== '') {
-      try {
-        const response = await getSubway(bottomJuso.sido + addr + '청')
-        if (response.documents.length === 0) {
-          return
-        } else {
-          const { x, y } = response.documents[0]
-          map.setCenter({
-            lat: Number(y),
-            lng: Number(x),
-          })
+  const addrToCenter = useCallback(
+    async (addr: string) => {
+      if (range === 0 && bottomJuso.sido !== '') {
+        const address = SidoRegex.map((regex) => regex.test(addr))
+
+        try {
+          const response = await getSubway(
+            address.includes(true) ? addr + '시청' : addr + '도청',
+          )
+          if (response.documents.length === 0) {
+            return
+          } else {
+            const { x, y } = response.documents[0]
+            map.setCenter({
+              lat: Number(y),
+              lng: Number(x),
+            })
+          }
+        } catch (error) {
+          console.error(error)
         }
-      } catch (error) {
-        console.error(error)
+      } else if (
+        range === 1 &&
+        bottomJuso.sido !== '' &&
+        bottomJuso.gungu !== ''
+      ) {
+        try {
+          const response = await getSubway(bottomJuso.sido + addr + '청')
+          if (response.documents.length === 0) {
+            return
+          } else {
+            const { x, y } = response.documents[0]
+            map.setCenter({
+              lat: Number(y),
+              lng: Number(x),
+            })
+          }
+        } catch (error) {
+          console.error(error)
+        }
+      } else if (range === 2 && bottomJuso.gungu !== '') {
+        searchAddrToCoord(addr)
       }
-    } else if (range === 2 && bottomJuso.gungu !== '') {
-      searchAddrToCoord(addr)
-    }
-  }
+    },
+    [bottomJuso, range, searchAddrToCoord, setCenter, map],
+  )
 
   return (
     <Flex direction="column" css={ContainerStyle}>
@@ -191,18 +216,16 @@ function BottomAddress({
         <SidoList
           bottomJuso={bottomJuso}
           setBottomJuso={setBottomJuso}
-          range={range}
           setRange={setRange}
           selectedIndex={selectedIndex}
           setSelectedIndex={setSelectedIndex}
+          addrToCenter={addrToCenter}
         />
       )}
       {range === 1 && (
         <GunguList
           bottomJuso={bottomJuso}
           setBottomJuso={setBottomJuso}
-          range={range}
-          setRange={setRange}
           selectedGunguIndex={selectedGunguIndex}
           setSelectedGunguIndex={setSelectedGunguIndex}
           addrToCenter={addrToCenter}

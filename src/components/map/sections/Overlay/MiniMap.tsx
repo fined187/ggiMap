@@ -21,11 +21,7 @@ interface MiniMapProps {
   clickedInfo: ItemDetail[] | null
 }
 
-export default function MiniMap({
-  clickedItem,
-
-  clickedInfo,
-}: MiniMapProps) {
+export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
   const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&autoload=false`
   const mapRef = useRef<NaverMap | null>(null)
   const [path, setPath] = useState<number[][]>([])
@@ -41,7 +37,6 @@ export default function MiniMap({
       })),
     )
   }, [clickedInfo, clickedItem])
-  console.log(clickedItem)
   useEffect(() => {
     const script = document.createElement('script')
     script.src = KAKAO_SDK_URL

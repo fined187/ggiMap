@@ -10,22 +10,11 @@ import { css } from '@emotion/react'
 import Text from '@/components/shared/Text'
 import Spacing from '@/components/shared/Spacing'
 import axios from 'axios'
+import { BottomJusoProps } from '@/models/Juso'
 
 interface Props {
-  bottomJuso: {
-    sido: string
-    gungu: string
-    dong: string
-  }
-  setBottomJuso: Dispatch<
-    SetStateAction<{
-      sido: string
-      gungu: string
-      dong: string
-    }>
-  >
-  range: number
-  setRange: Dispatch<SetStateAction<number>>
+  bottomJuso: BottomJusoProps
+  setBottomJuso: Dispatch<SetStateAction<BottomJusoProps>>
   selectedGunguIndex: number | null
   setSelectedGunguIndex: Dispatch<SetStateAction<number | null>>
   addrToCenter: (addr: string) => void
@@ -34,8 +23,6 @@ interface Props {
 export default function GunguList({
   bottomJuso,
   setBottomJuso,
-  range,
-  setRange,
   selectedGunguIndex,
   setSelectedGunguIndex,
   addrToCenter,
@@ -89,15 +76,7 @@ export default function GunguList({
   }, [bottomJuso.gungu, gunguList, setSelectedGunguIndex])
   return (
     <>
-      <Flex
-        direction="column"
-        style={{
-          overflowY: 'auto',
-          position: 'relative',
-          minHeight: '100px',
-          maxHeight: '200px',
-        }}
-      >
+      <Flex direction="column" css={ContainerStyle}>
         {Array.from(gunguList).map(
           (_, index) =>
             index % 3 === 0 && (
@@ -177,7 +156,6 @@ export default function GunguList({
                             if (item !== ' ' && addrToCenter) {
                               handleClick(item, actualIndex)
                               addrToCenter(bottomJuso.sido + ' ' + item)
-                              console.log('gungu', bottomJuso.sido + ' ' + item)
                             }
                             return
                           }}
@@ -204,6 +182,13 @@ export default function GunguList({
     </>
   )
 }
+
+const ContainerStyle = css`
+  overflow-y: auto;
+  position: relative;
+  min-height: 100px;
+  max-height: 200px;
+`
 
 const BoxStyle = css`
   display: flex;

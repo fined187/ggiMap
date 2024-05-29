@@ -39,7 +39,7 @@ export default function Carousel({
       setImage(clickedInfo.map((info) => pathUrl + info?.path ?? ''))
     }
   }, [pathUrl, clickedItem, clickedInfo])
-
+  console.log('clickedInfo', clickedInfo)
   return (
     <div
       style={{
@@ -88,11 +88,11 @@ export default function Carousel({
                     <TypeStyle
                       style={{
                         backgroundColor:
-                          clickedInfo && clickedInfo[index]?.type === 1
+                          clickedItem?.type === 1
                             ? colors.kmBlue
-                            : clickedInfo && clickedInfo[index]?.type === 2
+                            : clickedItem?.type === 2
                             ? colors.gmBlue
-                            : clickedInfo && clickedInfo[index]?.type === 3
+                            : clickedItem?.type === 3
                             ? colors.ggPurple
                             : colors.kwGreen,
                       }}
@@ -159,7 +159,9 @@ export default function Carousel({
                 ) : (
                   <>
                     <TypeStyle
-                      type={clickedInfo[index]?.claimAmt !== undefined}
+                      style={{
+                        backgroundColor: colors.kwGreen,
+                      }}
                     >
                       <Text css={TextStyle}>예정</Text>
                     </TypeStyle>

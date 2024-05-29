@@ -1,5 +1,6 @@
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
+import { BottomJusoProps } from '@/models/Juso'
 import { css } from '@emotion/react'
 import axios from 'axios'
 import {
@@ -11,31 +12,21 @@ import {
 } from 'react'
 
 interface Props {
-  bottomJuso: {
-    sido: string
-    gungu: string
-    dong: string
-  }
-  setBottomJuso: Dispatch<
-    SetStateAction<{
-      sido: string
-      gungu: string
-      dong: string
-    }>
-  >
-  range: number
+  bottomJuso: BottomJusoProps
+  setBottomJuso: Dispatch<SetStateAction<BottomJusoProps>>
   setRange: Dispatch<SetStateAction<number>>
   selectedIndex: number | null
   setSelectedIndex: Dispatch<SetStateAction<number | null>>
+  addrToCenter: (addr: string) => void
 }
 
 export default function SidoList({
   bottomJuso,
   setBottomJuso,
-  range,
   setRange,
   selectedIndex,
   setSelectedIndex,
+  addrToCenter,
 }: Props) {
   const [sidoList, setSidoList] = useState<string[]>([])
 
@@ -104,7 +95,6 @@ export default function SidoList({
                 .map((item, subIndex) => {
                   const actualIndex = index + subIndex
                   const isSelected = bottomJuso.sido === item
-                  const borderColor = isSelected ? '#332EFC' : '#E5E5E5'
                   const shouldHighlightTop =
                     selectedIndex != null
                       ? actualIndex === selectedIndex ||
@@ -166,6 +156,7 @@ export default function SidoList({
                       onClick={() => {
                         if (item !== ' ') {
                           handleClick(item, actualIndex)
+                          addrToCenter(item)
                         }
                         return
                       }}
