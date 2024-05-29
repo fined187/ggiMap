@@ -65,6 +65,7 @@ export default function Overlay({
     handleGetIds(clickedItem?.pnu as string),
     handleGetType(clickedItem?.pnu as string),
     setClickedInfo,
+    clickedItem,
   )
   return (
     <Flex

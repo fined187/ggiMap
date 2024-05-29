@@ -28,32 +28,14 @@ export default function Top({
   nowIndex,
   setNowIndex,
 }: TopProps) {
-  useEffect(() => {}, [clickedInfo, nowIndex, clickedItem])
   return (
     <Flex css={ContainerStyle}>
-      {/* {clickedInfo && clickedInfo[nowIndex]?.claimAmt! > 0 ? (
-        <>
-          <KwCarousel
-            clickedInfo={clickedInfo}
-            clickedItem={clickedItem}
-            nowIndex={nowIndex}
-            setClickedItem={setClickedItem}
-            setNowIndex={setNowIndex}
-          />
-        </>
-      ) : (
-        <Carousel
-          clickedInfo={clickedInfo}
-          clickedItem={clickedItem}
-          nowIndex={nowIndex}
-          setNowIndex={setNowIndex}
-        />
-      )} */}
       <Carousel
         clickedInfo={clickedInfo}
         clickedItem={clickedItem}
         nowIndex={nowIndex}
         setNowIndex={setNowIndex}
+        setClickedInfo={setClickedInfo}
       />
     </Flex>
   )

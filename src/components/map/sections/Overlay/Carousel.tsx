@@ -1,6 +1,6 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import usePathUrl from '../../sideMenu/searchListBox/listBox/hooks/usePathUrl'
 import { ItemDetail } from '@/models/ItemDetail'
@@ -24,54 +24,79 @@ export default function Carousel({
   clickedItem,
   nowIndex,
   setNowIndex,
+  setClickedInfo,
 }: {
   clickedInfo: ItemDetail[] | null
   clickedItem: MapItem | null
   nowIndex: number
   setNowIndex: Dispatch<SetStateAction<number>>
+  setClickedInfo?: Dispatch<SetStateAction<ItemDetail[] | null>>
 }) {
-  console.log(nowIndex)
   const [image, setImage] = useState<string[]>([])
   const pathUrl = usePathUrl(clickedItem?.type || 1)
-
   useEffect(() => {
     if (clickedInfo) {
       setImage(clickedInfo.map((info) => pathUrl + info?.path ?? ''))
     }
-  }, [clickedInfo, pathUrl])
-  console.log(clickedInfo)
+  }, [pathUrl, clickedItem, clickedInfo])
+
   return (
-    <div>
+    <div
+      style={{
+        width: '299px',
+        height: '180px',
+        position: 'relative',
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 1,
+          width: '299px',
+          height: '180px',
+        }}
+      >
+        <MiniMap clickedItem={clickedItem} clickedInfo={clickedInfo} />
+      </div>
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, A11y]}
         spaceBetween={0}
         slidesPerView={1}
+        freeMode={true}
         style={{
           width: '299px',
           height: '180px',
+          position: 'relative',
         }}
         onSlideChange={(swiper) => {
           setNowIndex(swiper.activeIndex)
         }}
       >
         {clickedInfo &&
-          clickedInfo.map((_, index) => (
+          clickedInfo?.map((_, index) => (
             <div key={index}>
-              <MiniMap
-                clickedInfo={clickedInfo}
-                clickedItem={clickedItem}
-                index={index}
-                addr={clickedInfo[index]?.shortAddress}
-              />
               <SwiperSlide>
                 {clickedInfo && clickedInfo[index]?.claimAmt === undefined ? (
-                  <>
+                  <div>
                     <LazyLoadImage
                       src={image[index]}
                       alt="img"
                       css={imageStyles}
                     />
-                    <TypeStyle num={clickedItem?.type}>
+                    <TypeStyle
+                      style={{
+                        backgroundColor:
+                          clickedInfo && clickedInfo[index]?.type === 1
+                            ? colors.kmBlue
+                            : clickedInfo && clickedInfo[index]?.type === 2
+                            ? colors.gmBlue
+                            : clickedInfo && clickedInfo[index]?.type === 3
+                            ? colors.ggPurple
+                            : colors.kwGreen,
+                      }}
+                    >
                       <Text css={TextStyle}>
                         {clickedItem?.type === 1
                           ? '경매'
@@ -85,7 +110,7 @@ export default function Carousel({
                     {clickedInfo && clickedInfo.length > 1 && (
                       <PageCount>
                         <Text css={PageCountTextStyle}>
-                          {nowIndex + 1}/{clickedInfo.length}
+                          {index + 1}/{clickedInfo.length}
                         </Text>
                       </PageCount>
                     )}
@@ -130,7 +155,7 @@ export default function Carousel({
                           : ''}
                       </Text>
                     </BottomBox>
-                  </>
+                  </div>
                 ) : (
                   <>
                     <TypeStyle
@@ -243,7 +268,7 @@ const TypeStyle = styled.div<{ type?: boolean; num?: number }>`
       ? `${colors.gmBlue}`
       : num === 3
       ? `${colors.ggPurple}`
-      : ''};
+      : `${colors.kwGreen}`};
 `
 const ShareType = styled.div`
   display: flex;

@@ -1,4 +1,5 @@
 import { ItemDetail } from '@/models/ItemDetail'
+import { MapItem } from '@/models/MapItem'
 import {
   getGgDetail,
   getGmDetail,
@@ -12,6 +13,7 @@ export const useGetDetail = (
   ids: string[],
   type: number[],
   setClickedInfo: Dispatch<SetStateAction<ItemDetail[] | null>>,
+  clickedItem: MapItem | null,
 ) => {
   return useQuery<ItemDetail[]>(
     ['dtail', { type, ids }],
@@ -35,7 +37,19 @@ export const useGetDetail = (
     {
       onSuccess: (data) => {
         setClickedInfo(null)
-        setClickedInfo(data)
+        setClickedInfo(() => {
+          return data.map((item, index) => {
+            if (item) {
+              return {
+                ...item,
+                number: index,
+                x: clickedItem?.x,
+                y: clickedItem?.y,
+              }
+            }
+            return item
+          })
+        })
       },
       onError: (error) => {
         console.error(error)

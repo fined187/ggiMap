@@ -18,15 +18,12 @@ type Props = {
 
 interface MiniMapProps {
   clickedItem: MapItem | null
-  index: number
-  addr: string
   clickedInfo: ItemDetail[] | null
 }
 
 export default function MiniMap({
   clickedItem,
-  index,
-  addr,
+
   clickedInfo,
 }: MiniMapProps) {
   const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&autoload=false`
