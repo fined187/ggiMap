@@ -39,7 +39,6 @@ export default function Carousel({
       setImage(clickedInfo.map((info) => pathUrl + info?.path ?? ''))
     }
   }, [pathUrl, clickedItem, clickedInfo])
-  console.log('clickedInfo', clickedInfo)
   return (
     <div
       style={{
@@ -138,6 +137,13 @@ export default function Carousel({
                         position: 'absolute',
                         top: 14,
                         right: 14,
+                      }}
+                      onClick={() => {
+                        window.open(
+                          `http://localhost:3000/interest?type=${clickedItem?.type}`,
+                          `_blank`,
+                          'width=800, height=800',
+                        )
                       }}
                     >
                       <Interest

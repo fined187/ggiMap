@@ -60,14 +60,7 @@ function Result({
     egg: formData.egg,
   })
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isLoading,
-    listProducts,
-  } = useSearchListQuery({
+  const { data, fetchNextPage, hasNextPage, isLoading } = useSearchListQuery({
     rowsPerPage: ROWS_PER_PAGE,
     mapData,
     page,

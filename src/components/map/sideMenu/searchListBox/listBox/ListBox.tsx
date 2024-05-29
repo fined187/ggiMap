@@ -5,7 +5,6 @@ import { useState } from 'react'
 import Result from './Result'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
-import { Items } from '@/models/ListItems'
 import { MapItems } from '@/models/MapItem'
 
 interface ListBoxProps {

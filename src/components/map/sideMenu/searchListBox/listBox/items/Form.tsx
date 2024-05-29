@@ -60,7 +60,19 @@ function Form({ item, index }: ItemProps) {
                 {item?.caseNo}
               </LeftTextStyle>
             }
-            right={<Interest interest={item?.interest ?? ''} />}
+            right={
+              <Flex
+                onClick={() => {
+                  window.open(
+                    `http://localhost:3000/interest`,
+                    `_blank`,
+                    'width=800, height=800',
+                  )
+                }}
+              >
+                <Interest interest={item?.interest ?? ''} />
+              </Flex>
+            }
             style={ListLeftStyle}
           />
           <Flex
