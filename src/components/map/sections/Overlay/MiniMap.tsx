@@ -11,17 +11,22 @@ declare global {
   }
 }
 
+type Props = {
+  lat: number
+  lng: number
+}
+
 interface MiniMapProps {
   clickedItem: MapItem | null
-  setClickedItem: Dispatch<SetStateAction<MapItem | null>>
-  nowIndex: number
+  index: number
+  addr: string
   clickedInfo: ItemDetail[] | null
 }
 
 export default function MiniMap({
   clickedItem,
-  setClickedItem,
-  nowIndex,
+  index,
+  addr,
   clickedInfo,
 }: MiniMapProps) {
   const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&autoload=false`
@@ -29,7 +34,17 @@ export default function MiniMap({
   const [path, setPath] = useState<number[][]>([])
   const [maps, setMaps] = useState<any>(null)
   const [roadViewAvailable, setRoadViewAvailable] = useState<boolean>(false)
+  const [getLatLngArr, setGetLatLngArr] = useState<Props[]>([])
 
+  useEffect(() => {
+    setGetLatLngArr(
+      Array.from({ length: clickedInfo?.length ?? 0 }, () => ({
+        lat: clickedItem?.y || 0,
+        lng: clickedItem?.x || 0,
+      })),
+    )
+  }, [clickedInfo, clickedItem])
+  console.log(clickedItem)
   useEffect(() => {
     const script = document.createElement('script')
     script.src = KAKAO_SDK_URL
@@ -82,10 +97,10 @@ export default function MiniMap({
 
   useEffect(() => {
     const drawPolyline = () => {
-      if (path.length === 0 || !mapRef.current) return
+      if (path?.length === 0 || !mapRef.current) return
 
       let polyline = new window.kakao.maps.Polyline({
-        path: path.map(
+        path: path?.map(
           (coord) => new window.kakao.maps.LatLng(coord[0], coord[1]),
         ),
         strokeWeight: 2,
@@ -117,6 +132,7 @@ export default function MiniMap({
           position: 'absolute',
           top: '0',
           left: '0',
+          zIndex: 1,
         }}
       />
       <div
@@ -124,8 +140,12 @@ export default function MiniMap({
         style={{
           width: '299px',
           height: '100%',
+          position: 'absolute',
+          top: '0',
+          left: '0',
           borderRadius: '8px 8px 0px 0px',
           display: roadViewAvailable ? 'none' : 'block',
+          zIndex: 1,
         }}
       />
     </>

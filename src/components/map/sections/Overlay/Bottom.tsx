@@ -18,8 +18,6 @@ export default function Bottom({
   clickedItem,
   nowIndex,
 }: BottomProps) {
-  console.log(clickedInfo && clickedInfo[nowIndex].claimAmt)
-  console.log(clickedInfo)
   return (
     <div
       style={{
@@ -134,7 +132,7 @@ export default function Bottom({
             {clickedInfo && clickedInfo[nowIndex]?.usage}
           </Text>
         </Flex>
-        {clickedInfo && clickedInfo[nowIndex].claimAmt === undefined && (
+        {clickedInfo && clickedInfo[nowIndex]?.claimAmt === undefined && (
           <Flex
             style={{
               flexDirection: 'row',

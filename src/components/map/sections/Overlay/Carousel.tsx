@@ -17,6 +17,7 @@ import PrevBtn from './icon/PrevBtn'
 import Flex from '@/components/shared/Flex'
 import Interest from '../../icons/Interest'
 import { colors } from '@/styles/colorPalette'
+import MiniMap from './MiniMap'
 
 export default function Carousel({
   clickedInfo,
@@ -29,13 +30,16 @@ export default function Carousel({
   nowIndex: number
   setNowIndex: Dispatch<SetStateAction<number>>
 }) {
+  console.log(nowIndex)
   const [image, setImage] = useState<string[]>([])
   const pathUrl = usePathUrl(clickedItem?.type || 1)
+
   useEffect(() => {
     if (clickedInfo) {
       setImage(clickedInfo.map((info) => pathUrl + info?.path ?? ''))
     }
   }, [clickedInfo, pathUrl])
+  console.log(clickedInfo)
   return (
     <div>
       <Swiper
@@ -50,75 +54,127 @@ export default function Carousel({
           setNowIndex(swiper.activeIndex)
         }}
       >
-        {image.map((img, index) => (
-          <SwiperSlide key={index}>
-            <TypeStyle type={clickedItem?.type || 1}>
-              <Text css={TextStyle}>
-                {clickedItem?.type === 1
-                  ? '경매'
-                  : clickedItem?.type === 2
-                  ? '캠코'
-                  : clickedItem?.type === 3
-                  ? '기관'
-                  : '예정'}
-              </Text>
-            </TypeStyle>
-            {clickedInfo && clickedInfo?.length > 1 && (
-              <PageCount>
-                <Text css={PageCountTextStyle}>
-                  {index + 1} / {clickedInfo && clickedInfo.length}
-                </Text>
-              </PageCount>
-            )}
-            {clickedInfo && clickedInfo[index]?.share === 'Y' && (
-              <ShareType>
-                <Text css={TextStyle}>지분</Text>
-              </ShareType>
-            )}
-            {clickedInfo && clickedInfo[index]?.winAmt! > 0 && (
-              <WinType
-                shareYn={
-                  clickedInfo && clickedInfo[index]?.share === 'Y'
-                    ? true
-                    : false
-                }
-                style={{
-                  backgroundColor: colors.winOrange,
-                }}
-              >
-                <Text css={TextStyle}>낙찰</Text>
-              </WinType>
-            )}
-            <Flex
-              style={{
-                position: 'absolute',
-                top: 14,
-                right: 14,
-              }}
-            >
-              <Interest
-                interest={(clickedInfo && clickedInfo[index]?.interest) || ''}
+        {clickedInfo &&
+          clickedInfo.map((_, index) => (
+            <div key={index}>
+              <MiniMap
+                clickedInfo={clickedInfo}
+                clickedItem={clickedItem}
+                index={index}
+                addr={clickedInfo[index]?.shortAddress}
               />
-            </Flex>
-            <LazyLoadImage
-              src={img}
-              alt="image"
-              width="299px"
-              height="100%"
-              css={imageStyles}
-            />
-            <BottomBox>
-              <Text css={BottomTextStyle}>
-                {clickedItem?.type === 1
-                  ? clickedInfo && clickedInfo[index]?.caseNo
-                  : clickedItem?.type === 2 || 3
-                  ? clickedInfo && clickedInfo[index]?.manageNo
-                  : ''}
-              </Text>
-            </BottomBox>
-          </SwiperSlide>
-        ))}
-        {image.length > 1 ? (
+              <SwiperSlide>
+                {clickedInfo && clickedInfo[index]?.claimAmt === undefined ? (
+                  <>
+                    <LazyLoadImage
+                      src={image[index]}
+                      alt="img"
+                      css={imageStyles}
+                    />
+                    <TypeStyle num={clickedItem?.type}>
+                      <Text css={TextStyle}>
+                        {clickedItem?.type === 1
+                          ? '경매'
+                          : clickedItem?.type === 2
+                          ? '캠코'
+                          : clickedItem?.type === 3
+                          ? '기관'
+                          : '예정'}
+                      </Text>
+                    </TypeStyle>
+                    {clickedInfo && clickedInfo.length > 1 && (
+                      <PageCount>
+                        <Text css={PageCountTextStyle}>
+                          {nowIndex + 1}/{clickedInfo.length}
+                        </Text>
+                      </PageCount>
+                    )}
+                    {clickedInfo && clickedInfo[index]?.share === 'Y' && (
+                      <ShareType>
+                        <Text css={TextStyle}>지분</Text>
+                      </ShareType>
+                    )}
+                    {clickedInfo && clickedInfo[index]?.winAmt! > 0 && (
+                      <WinType
+                        shareYn={
+                          clickedInfo && clickedInfo[index]?.share === 'Y'
+                            ? true
+                            : false
+                        }
+                        style={{
+                          backgroundColor: colors.winOrange,
+                        }}
+                      >
+                        <Text css={TextStyle}>낙찰</Text>
+                      </WinType>
+                    )}
+                    <Flex
+                      style={{
+                        position: 'absolute',
+                        top: 14,
+                        right: 14,
+                      }}
+                    >
+                      <Interest
+                        interest={
+                          (clickedInfo && clickedInfo[index]?.interest) || ''
+                        }
+                      />
+                    </Flex>
+                    <BottomBox>
+                      <Text css={BottomTextStyle}>
+                        {clickedItem?.type === 1
+                          ? clickedInfo && clickedInfo[index]?.caseNo
+                          : clickedItem?.type === 2 || 3
+                          ? clickedInfo && clickedInfo[index]?.manageNo
+                          : ''}
+                      </Text>
+                    </BottomBox>
+                  </>
+                ) : (
+                  <>
+                    <TypeStyle
+                      type={clickedInfo[index]?.claimAmt !== undefined}
+                    >
+                      <Text css={TextStyle}>예정</Text>
+                    </TypeStyle>
+                    {clickedInfo && clickedInfo.length > 1 && (
+                      <PageCount>
+                        <Text css={PageCountTextStyle}>
+                          {nowIndex + 1}/{clickedInfo.length}
+                        </Text>
+                      </PageCount>
+                    )}
+                    <Flex
+                      style={{
+                        position: 'absolute',
+                        top: 14,
+                        right: 14,
+                        zIndex: 1,
+                      }}
+                    >
+                      <Interest
+                        interest={
+                          (clickedInfo && clickedInfo[index]?.interest) ?? ''
+                        }
+                      />
+                    </Flex>
+                    <BottomBox
+                      style={{
+                        flexDirection: 'row',
+                        zIndex: 1,
+                      }}
+                    >
+                      <Text css={BottomTextStyle}>
+                        {clickedInfo && clickedInfo[index]?.caseNo}
+                      </Text>
+                    </BottomBox>
+                  </>
+                )}
+              </SwiperSlide>
+            </div>
+          ))}
+        {clickedInfo && clickedInfo.length > 1 ? (
           <>
             <NextBtn />
             <PrevBtn />
@@ -166,7 +222,7 @@ const TextStyle = css`
   text-align: center;
 `
 
-const TypeStyle = styled.div<{ type: number }>`
+const TypeStyle = styled.div<{ type?: boolean; num?: number }>`
   display: flex;
   width: 39px;
   padding: 2px 6px;
@@ -178,15 +234,15 @@ const TypeStyle = styled.div<{ type: number }>`
   top: 13px;
   left: 14px;
   z-index: 1;
-  background-color: ${({ type }) =>
-    type === 1
-      ? `${colors.kmBlue}`
-      : type === 2
-      ? `${colors.gmBlue}`
-      : type === 3
-      ? `${colors.ggPurple}`
-      : type === 4
+  background-color: ${({ type, num }) =>
+    type
       ? `${colors.kwGreen}`
+      : num === 1
+      ? `${colors.kmBlue}`
+      : num === 2
+      ? `${colors.gmBlue}`
+      : num === 3
+      ? `${colors.ggPurple}`
       : ''};
 `
 const ShareType = styled.div`

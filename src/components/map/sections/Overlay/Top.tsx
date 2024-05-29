@@ -9,6 +9,7 @@ import { MapItem } from '@/models/MapItem'
 import Interest from '../../icons/Interest'
 import MiniMap from './MiniMap'
 import Carousel from './Carousel'
+import KwCarousel from './KwCarousel'
 
 interface TopProps {
   clickedInfo: ItemDetail[] | null
@@ -27,59 +28,18 @@ export default function Top({
   nowIndex,
   setNowIndex,
 }: TopProps) {
-  const clickedInfoLength = clickedInfo?.length
-
-  console.log(clickedInfo)
-  console.log(nowIndex)
   useEffect(() => {}, [clickedInfo, nowIndex, clickedItem])
   return (
     <Flex css={ContainerStyle}>
-      {clickedInfo && clickedInfo[nowIndex]?.claimAmt! > 0 ? (
+      {/* {clickedInfo && clickedInfo[nowIndex]?.claimAmt! > 0 ? (
         <>
-          <Flex
-            style={{
-              position: 'relative',
-              width: '300px',
-              height: '180px',
-            }}
-          >
-            <MiniMap
-              clickedInfo={clickedInfo}
-              clickedItem={clickedItem}
-              setClickedItem={setClickedItem}
-              nowIndex={nowIndex}
-            />
-            <TypeStyle type={clickedItem?.type || 1}>
-              <Text css={TextStyle}>예정</Text>
-            </TypeStyle>
-            <ShareType>
-              <Text css={TextStyle}>지분</Text>
-            </ShareType>
-            <Flex
-              style={{
-                position: 'absolute',
-                top: 14,
-                right: 14,
-                zIndex: 1,
-              }}
-            >
-              <Interest
-                interest={
-                  (clickedInfo && clickedInfo[nowIndex]?.interest) ?? ''
-                }
-              />
-            </Flex>
-            <BottomBox
-              style={{
-                flexDirection: 'row',
-                zIndex: 1,
-              }}
-            >
-              <Text css={BottomTextStyle}>
-                {clickedInfo && clickedInfo[nowIndex]?.caseNo}
-              </Text>
-            </BottomBox>
-          </Flex>
+          <KwCarousel
+            clickedInfo={clickedInfo}
+            clickedItem={clickedItem}
+            nowIndex={nowIndex}
+            setClickedItem={setClickedItem}
+            setNowIndex={setNowIndex}
+          />
         </>
       ) : (
         <Carousel
@@ -88,7 +48,13 @@ export default function Top({
           nowIndex={nowIndex}
           setNowIndex={setNowIndex}
         />
-      )}
+      )} */}
+      <Carousel
+        clickedInfo={clickedInfo}
+        clickedItem={clickedItem}
+        nowIndex={nowIndex}
+        setNowIndex={setNowIndex}
+      />
     </Flex>
   )
 }
