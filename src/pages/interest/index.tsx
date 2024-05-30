@@ -1,9 +1,11 @@
 import InterestProps from '@/components/interest'
 
-export default function InterestPage() {
+const InterestPage = () => {
   return (
     <div>
       <InterestProps />
     </div>
   )
 }
+
+export default InterestPage

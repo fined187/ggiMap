@@ -77,7 +77,9 @@ export default function Carousel({
           clickedInfo?.map((_, index) => (
             <div key={index}>
               <SwiperSlide>
-                {clickedInfo && clickedInfo[index]?.claimAmt === undefined ? (
+                {(clickedInfo && clickedInfo[index]?.type === 1) ||
+                clickedInfo[index]?.type === 2 ||
+                clickedInfo[index]?.type === 3 ? (
                   <div>
                     <LazyLoadImage
                       src={image[index]}
@@ -87,11 +89,11 @@ export default function Carousel({
                     <TypeStyle
                       style={{
                         backgroundColor:
-                          clickedItem?.type === 1
+                          clickedInfo && clickedInfo[index]?.type === 1
                             ? colors.kmBlue
-                            : clickedItem?.type === 2
+                            : clickedInfo && clickedInfo[index]?.type === 2
                             ? colors.gmBlue
-                            : clickedItem?.type === 3
+                            : clickedInfo && clickedInfo[index]?.type === 3
                             ? colors.ggPurple
                             : colors.kwGreen,
                       }}

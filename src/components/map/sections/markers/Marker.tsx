@@ -414,28 +414,12 @@ const Marker = ({
         naver.maps.Event?.addListener(marker1, 'click', (e) => {
           handleMarkerClick(item)
         })
-        if (item.winYn === 'Y') {
-          naver.maps.Event?.addListener(marker1, 'mouseover', (e) => {
-            marker1?.setZIndex(110)
-          })
-          naver.maps.Event?.addListener(marker1, 'mouseout', (e) => {
-            marker1?.setZIndex(70)
-          })
-        }
       }
       if (marker2) {
         marker2Ref.current = marker2
         naver.maps.Event?.addListener(marker2, 'click', (e) => {
           handleMarkerClick(item)
         })
-        if (item.winYn === 'Y') {
-          naver.maps.Event?.addListener(marker2, 'mouseover', (e) => {
-            marker2?.setZIndex(110)
-          })
-          naver.maps.Event?.addListener(marker2, 'mouseout', (e) => {
-            marker2?.setZIndex(70)
-          })
-        }
       }
     }
     return () => {

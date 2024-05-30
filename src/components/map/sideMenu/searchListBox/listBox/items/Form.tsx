@@ -11,6 +11,9 @@ import useNum2Han from '@/utils/useNum2Han'
 import Interest from '@/components/map/icons/Interest'
 import { MapItems } from '@/models/MapItem'
 import KwForm from './KwForm'
+import useSWR from 'swr'
+import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
+import { useCallback, useEffect, useState } from 'react'
 
 interface ItemProps {
   item: MapItems
@@ -19,8 +22,52 @@ interface ItemProps {
 
 function Form({ item, index }: ItemProps) {
   const url = usePathUrl(item?.type ?? 1)
+  const { data: map } = useSWR(MAP_KEY)
+  const [marker, setMarker] = useState<null | naver.maps.Marker>(null)
+
+  const createMarker = useCallback(
+    (lat: number, lng: number) => {
+      if (map) {
+        if (marker) {
+          marker.setPosition(new naver.maps.LatLng(lat, lng))
+          marker.setMap(map)
+        } else {
+          const newMarker = new naver.maps.Marker({
+            position: new naver.maps.LatLng(lat, lng),
+            map: map,
+          })
+          setMarker(newMarker)
+        }
+      }
+    },
+    [map, marker],
+  )
+
+  const removeMarker = useCallback(() => {
+    if (marker) {
+      marker.setMap(null)
+    }
+  }, [marker])
+
+  useEffect(() => {
+    if (marker) {
+      return () => {
+        removeMarker()
+      }
+    }
+  }, [removeMarker, marker])
+
   return (
-    <>
+    <div
+      onMouseOver={() => {
+        const lat = item?.y ?? 0
+        const lng = item?.x ?? 0
+        createMarker(lat, lng)
+      }}
+      onMouseOut={() => {
+        removeMarker()
+      }}
+    >
       {item?.type === 1 || item?.type === 2 || item?.type === 3 ? (
         <Flex
           direction="column"
@@ -199,7 +246,7 @@ function Form({ item, index }: ItemProps) {
       ) : (
         <KwForm item={item} index={index} />
       )}
-    </>
+    </div>
   )
 }
 
