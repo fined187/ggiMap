@@ -2,10 +2,10 @@ import { css } from '@emotion/react'
 import Flex from '../shared/Flex'
 import Text from '../shared/Text'
 
-export default function TitlePage() {
+export default function TitlePage({ title }: { title: string }) {
   return (
     <Flex css={containerStyles}>
-      <Text css={TitleStyle}>관심물건 등록</Text>
+      <Text css={TitleStyle}>{title}</Text>
     </Flex>
   )
 }

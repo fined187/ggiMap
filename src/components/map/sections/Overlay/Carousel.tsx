@@ -1,11 +1,10 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import usePathUrl from '../../sideMenu/searchListBox/listBox/hooks/usePathUrl'
 import { ItemDetail } from '@/models/ItemDetail'
 import { MapItem } from '@/models/MapItem'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
@@ -18,13 +17,14 @@ import Flex from '@/components/shared/Flex'
 import Interest from '../../icons/Interest'
 import { colors } from '@/styles/colorPalette'
 import MiniMap from './MiniMap'
+import NoImage from './icon/NoImage'
+import NextImageWithFallback from '../../NextImageWithFallback'
 
 export default function Carousel({
   clickedInfo,
   clickedItem,
   nowIndex,
   setNowIndex,
-  setClickedInfo,
 }: {
   clickedInfo: ItemDetail[] | null
   clickedItem: MapItem | null
@@ -81,10 +81,15 @@ export default function Carousel({
                 clickedInfo[index]?.type === 2 ||
                 clickedInfo[index]?.type === 3 ? (
                   <div>
-                    <LazyLoadImage
+                    <NextImageWithFallback
                       src={image[index]}
-                      alt="img"
-                      css={imageStyles}
+                      alt="image"
+                      fallbackComponent={<NoImage />}
+                      width={299}
+                      height={180}
+                      style={{
+                        borderRadius: '8px 8px 0px 0px',
+                      }}
                     />
                     <TypeStyle
                       style={{

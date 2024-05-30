@@ -4,41 +4,42 @@ import { css } from '@emotion/react'
 
 interface TableFrameProps {
   title: string
-  contents: string[] | string
+  contents: string[] | string | React.ReactNode
   background?: string
+  height?: string
 }
 
 export default function TableFrame({
   title,
   contents,
   background,
+  height,
 }: TableFrameProps) {
   return (
-    <ContainerFrame>
-      <CategoryFrame background={background}>
+    <ContainerFrame height={height}>
+      <CategoryFrame background={background} height={height}>
         <Text css={CategoryTextStyle}>{title}</Text>
       </CategoryFrame>
-      <ContentsFrame>
+      <ContentsFrame height={height}>
         <Text css={ContentsTextStyle}>{contents}</Text>
       </ContentsFrame>
     </ContainerFrame>
   )
 }
 
-const ContainerFrame = styled.div`
+const ContainerFrame = styled.div<{ height?: string }>`
   width: 700px;
-  height: 65px;
-  border-bottom: 1px solid #bcbcbc;
+  height: ${({ height }) => height + 'px' || '65px'};
   flex-shrink: 0;
   flex-direction: row;
   display: flex;
   position: absolute;
 `
 
-const CategoryFrame = styled.div<{ background?: string }>`
+const CategoryFrame = styled.div<{ background?: string; height?: string }>`
   display: flex;
   width: 100px;
-  height: 65px;
+  height: ${({ height }) => height + 'px' || '65px'};
   padding: 21px 8px;
   justify-content: center;
   align-items: center;
@@ -48,14 +49,15 @@ const CategoryFrame = styled.div<{ background?: string }>`
   border-bottom: 1px solid #bcbcbc;
 `
 
-const ContentsFrame = styled.div`
+const ContentsFrame = styled.div<{ height?: string }>`
   display: flex;
   width: 600px;
-  height: 65px;
+  height: ${({ height }) => height + 'px' || '65px'};
   padding: 21px 8px;
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
+  border-bottom: 1px solid #bcbcbc;
 `
 
 const CategoryTextStyle = css`

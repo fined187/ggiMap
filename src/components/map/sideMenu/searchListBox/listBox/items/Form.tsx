@@ -14,6 +14,8 @@ import KwForm from './KwForm'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { useCallback, useEffect, useState } from 'react'
+import NextImageWithFallback from '@/components/map/NextImageWithFallback'
+import NoImage from '../icon/NoImage'
 
 interface ItemProps {
   item: MapItems
@@ -130,14 +132,12 @@ function Form({ item, index }: ItemProps) {
               width: '100%',
             }}
           >
-            <Image
+            <NextImageWithFallback
               src={item?.path ? url + item?.path : '/images/no-image.png'}
               alt="KM image"
+              fallbackComponent={<NoImage />}
               width={180}
               height={135}
-              style={{
-                borderRadius: '5px',
-              }}
             />
             <Flex
               direction="column"
