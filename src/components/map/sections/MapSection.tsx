@@ -11,7 +11,7 @@ import {
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
 import { NaverMap } from '@/models/Map'
-import useMap, { INITIAL_CENTER, INITIAL_ZOOM, MAP_KEY } from './hooks/useMap'
+import useMap, { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
 import Map from './GGIMap'
 import BoxGuard from '@/components/shared/BoxGuard'
 import SearchBox from '../sideMenu/searchBox'
@@ -25,7 +25,6 @@ import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import Clusterings from './markers/Clusterings'
 import Overlay from './Overlay'
-import useSWR from 'swr'
 
 interface MapProps {
   formData: Form
@@ -238,7 +237,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       }
       if (formData.kw) {
         if (duplicatedKwItems.length > 0) {
-          console.log('duplicatedKwItems', duplicatedKwItems)
           const filteredItems = mapItems.filter((item) => {
             const isDuplicatedKwItem = duplicatedKwItems.some(
               (dupItem) =>
@@ -252,7 +250,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
             }
             return true
           })
-          console.log('filteredItems', filteredItems)
           setMapItems(filteredItems)
         }
       }
@@ -275,7 +272,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       handleDuplicatedItems()
     }
   }, [formData.ekm, formData.kw, mapItems])
-  console.log('mapItems', mapItems)
   return (
     <>
       <Map

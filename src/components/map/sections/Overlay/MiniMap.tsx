@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { MapItem } from '@/models/MapItem'
 import getPolypath from '@/remote/map/selected/getPolypath'
 import { ItemDetail } from '@/models/ItemDetail'
+import { ZoomControl } from 'react-kakao-maps-sdk'
 
 declare global {
   interface Window {
@@ -60,10 +61,16 @@ export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
           if (panoId) {
             setRoadViewAvailable(true)
             roadview.setPanoId(panoId, position)
+            roadview.setViewpoint({
+              pan: 10,
+              tilt: 0,
+              zoom: 0,
+            })
           } else {
             setRoadViewAvailable(false)
             const map = new window.kakao.maps.Map(container, options)
             map.addOverlayMapTypeId(window.kakao.maps.MapTypeId.USE_DISTRICT)
+
             mapRef.current = map
             setMaps(map)
           }

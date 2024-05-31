@@ -3,9 +3,8 @@ import Flex from '@/components/shared/Flex'
 import ListRow from '@/components/shared/ListRow'
 import Spacing from '@/components/shared/Spacing'
 import Text from '@/components/shared/Text'
-import { css } from '@emotion/react'
+import { css, keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
-import Image from 'next/image'
 import usePathUrl from '../hooks/usePathUrl'
 import useNum2Han from '@/utils/useNum2Han'
 import Interest from '@/components/map/icons/Interest'
@@ -25,39 +24,60 @@ interface ItemProps {
 function Form({ item, index }: ItemProps) {
   const url = usePathUrl(item?.type ?? 1)
   const { data: map } = useSWR(MAP_KEY)
+  const [isBlinking, setIsBlinking] = useState(false)
+  const [blinkingInterval, setBlinkingInterval] = useState<
+    NodeJS.Timeout | null | number
+  >(null)
   const [marker, setMarker] = useState<null | naver.maps.Marker>(null)
 
-  const createMarker = useCallback(
-    (lat: number, lng: number) => {
-      if (map) {
-        if (marker) {
-          marker.setPosition(new naver.maps.LatLng(lat, lng))
-          marker.setMap(map)
-        } else {
-          const newMarker = new naver.maps.Marker({
-            position: new naver.maps.LatLng(lat, lng),
-            map: map,
-          })
-          setMarker(newMarker)
-        }
+  const createMarker = useCallback((lat: number, lng: number) => {
+    if (map) {
+      if (marker) {
+        marker.setPosition(new naver.maps.LatLng(lat, lng))
+        marker.setMap(map)
+      } else {
+        const newMarker = new naver.maps.Marker({
+          position: new naver.maps.LatLng(lat, lng),
+          map: map,
+          icon: {
+            content: `<div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <circle cx="16" cy="16" r="15.75" fill="#3C3C3C" fill-opacity="0.25" stroke="#D9D9D9" stroke-width="0.5"/>
+                            <circle cx="16.5" cy="15.5" r="7.25" fill="#3C3C3C" stroke="#D9D9D9" stroke-width="0.5"/>
+                        </svg>
+                    </div>`,
+          },
+        })
+        setMarker(newMarker)
+        setIsBlinking(true)
+        setBlinkingInterval(
+          setInterval(() => {
+            if (newMarker.getMap()) {
+              newMarker.setMap(null)
+            } else {
+              newMarker.setMap(map)
+            }
+          }, 500),
+        )
       }
-    },
-    [map, marker],
-  )
+    }
+  }, [])
 
   const removeMarker = useCallback(() => {
     if (marker) {
       marker.setMap(null)
     }
-  }, [marker])
+    setIsBlinking(false)
+    if (blinkingInterval) {
+      clearInterval(blinkingInterval as number)
+    }
+  }, [marker, blinkingInterval])
 
   useEffect(() => {
-    if (marker) {
-      return () => {
-        removeMarker()
-      }
+    return () => {
+      removeMarker()
     }
-  }, [removeMarker, marker])
+  }, [])
 
   return (
     <div
@@ -348,6 +368,19 @@ const SpecialTextStyle = css`
   font-weight: 500;
   line-height: 13px;
   letter-spacing: -0.26px;
+`
+const opacity = keyframes`
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
 `
 
 export default Form

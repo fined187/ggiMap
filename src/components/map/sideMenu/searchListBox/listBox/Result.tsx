@@ -14,6 +14,7 @@ import { ListData, MapItems } from '@/models/MapItem'
 import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSearchListQuery from './hooks/useSearchListQuery'
+import Loader from './icon/loader/Loader'
 
 interface ResultProps {
   formData: Form
@@ -141,17 +142,21 @@ function Result({
               pageInfo={data?.pages[0]?.paging.totalElements ?? 0}
             />
             <Container isOpen={isOpen} id="scrollbarDiv" ref={scrollbarsRef}>
-              <InfiniteScroll
-                dataLength={listItems.length}
-                next={fetchNextPage}
-                hasMore={hasNextPage ?? false}
-                loader={<ListSkeleton />}
-                scrollableTarget="scrollbarDiv"
-              >
-                {listItems.map((item, index) => (
-                  <Forms key={index} item={item} index={index} />
-                ))}
-              </InfiniteScroll>
+              {isLoading ? (
+                <Loader />
+              ) : (
+                <InfiniteScroll
+                  dataLength={listItems.length}
+                  next={fetchNextPage}
+                  hasMore={hasNextPage ?? false}
+                  loader={<ListSkeleton />}
+                  scrollableTarget="scrollbarDiv"
+                >
+                  {listItems.map((item, index) => (
+                    <Forms key={index} item={item} index={index} />
+                  ))}
+                </InfiniteScroll>
+              )}
             </Container>
           </>
         ) : (

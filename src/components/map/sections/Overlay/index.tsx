@@ -64,23 +64,6 @@ export default function Overlay({
     [mapOrigin],
   )
 
-  const isIncludeWinYn = useCallback(() => {
-    if (
-      clickedInfo?.map((item) => item.winAmt && item.winAmt > 0).includes(true)
-    ) {
-      setIncludeWinYn(true)
-    } else if (
-      clickedInfo?.map((item) => item.winAmt === undefined).includes(true)
-    ) {
-      setIncludeWinYn(false)
-    }
-    setIncludeWinYn(false)
-  }, [clickedInfo, setIncludeWinYn])
-
-  useEffect(() => {
-    isIncludeWinYn()
-  }, [clickedInfo])
-
   useGetDetail(
     handleGetIds(clickedItem?.pnu as string),
     handleGetType(clickedItem?.pnu as string),
