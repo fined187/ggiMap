@@ -138,6 +138,12 @@ function Form({ item, index }: ItemProps) {
               fallbackComponent={<NoImage />}
               width={180}
               height={135}
+              style={{
+                borderRadius: '5px',
+                objectFit: 'cover',
+                width: '180px',
+                height: '135px',
+              }}
             />
             <Flex
               direction="column"

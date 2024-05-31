@@ -6,6 +6,7 @@ import {
   MutableRefObject,
   SetStateAction,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from 'react'
@@ -24,12 +25,14 @@ interface OverlayProps {
   markerClickedRef: MutableRefObject<boolean>
   openOverlay: boolean
   style: any
+  setIncludeWinYn: Dispatch<SetStateAction<boolean>>
 }
 
 export default function Overlay({
   clickedItem,
   setClickedItem,
   style,
+  setIncludeWinYn,
 }: OverlayProps) {
   const [clickedInfo, setClickedInfo] = useState<ItemDetail[] | null>(null)
   const ref = useRef<HTMLDivElement>(null)
@@ -60,6 +63,23 @@ export default function Overlay({
     },
     [mapOrigin],
   )
+
+  const isIncludeWinYn = useCallback(() => {
+    if (
+      clickedInfo?.map((item) => item.winAmt && item.winAmt > 0).includes(true)
+    ) {
+      setIncludeWinYn(true)
+    } else if (
+      clickedInfo?.map((item) => item.winAmt === undefined).includes(true)
+    ) {
+      setIncludeWinYn(false)
+    }
+    setIncludeWinYn(false)
+  }, [clickedInfo, setIncludeWinYn])
+
+  useEffect(() => {
+    isIncludeWinYn()
+  }, [clickedInfo])
 
   useGetDetail(
     handleGetIds(clickedItem?.pnu as string),

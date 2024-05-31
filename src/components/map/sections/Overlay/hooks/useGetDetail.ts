@@ -36,9 +36,19 @@ export const useGetDetail = (
     },
     {
       onSuccess: (data) => {
+        const SortedData = data.sort((a, b) => {
+          if (a?.winAmt !== undefined && b?.winAmt !== undefined) {
+            if (a.winAmt > 0 && b.winAmt === 0) {
+              return 1
+            } else if (a.winAmt === 0 && b.winAmt > 0) {
+              return -1
+            }
+          }
+          return 0
+        })
         setClickedInfo(null)
         setClickedInfo(() => {
-          return data.map((item, index) => {
+          return SortedData.map((item, index) => {
             if (item) {
               return {
                 ...item,

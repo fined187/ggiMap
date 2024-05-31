@@ -28,6 +28,7 @@ interface MarkersProps {
   offset: { x: number; y: number }
   setOffset: Dispatch<SetStateAction<{ x: number; y: number }>>
   duplicatedItems: MapItem[]
+  includeWinYn: boolean
 }
 
 export default function Markers({
@@ -41,6 +42,7 @@ export default function Markers({
   setOffset,
   duplicatedItems,
   originPnuCounts,
+  includeWinYn,
 }: MarkersProps) {
   const { data: map } = useSWR<NaverMap>(MAP_KEY)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
@@ -65,6 +67,7 @@ export default function Markers({
                 setOffset={setOffset}
                 duplicatedItems={duplicatedItems}
                 originPnuCounts={originPnuCounts}
+                includeWinYn={includeWinYn}
               />
             )
           })

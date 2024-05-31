@@ -33,6 +33,7 @@ const ContainerStyle = styled.div`
   gap: 10px;
   width: 180px;
   height: 135px;
+  object-fit: cover;
 `
 const TextStyle = css`
   color: #d6d6d6;

@@ -44,6 +44,7 @@ interface MarkerProps {
   offset: { x: number; y: number }
   setOffset: Dispatch<SetStateAction<{ x: number; y: number }>>
   duplicatedItems: MapItem[]
+  includeWinYn: boolean
 }
 
 const Marker = ({
@@ -59,11 +60,11 @@ const Marker = ({
   originPnuCounts,
   offset,
   setOffset,
+  includeWinYn,
 }: MarkerProps) => {
   const [count, setCount] = useState<number>(0)
   const [originCount, setOriginCount] = useState<number>(0)
   const [isSame, setIsSame] = useState<boolean>(false)
-  const [duplicatedCount, setDuplicatedCount] = useState<number>(0)
   const marker1Ref = useRef<null | naver.maps.Marker>(null)
   const marker2Ref = useRef<null | naver.maps.Marker>(null)
   const handleGetItemPnuCounts = useCallback(() => {

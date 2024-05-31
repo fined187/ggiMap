@@ -14,7 +14,17 @@ export const PnuCountIcon = (
     top ? `${top}px` : '-42px'
   }; ">
     <div style="display: inline-flex; z-index: 100; width: 22px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${
-      item.winYn === 'Y' || !isSame
+      !isSame
+        ? item.winYn === 'Y'
+          ? `1px solid ${colors.winOrange}`
+          : type === 1
+          ? `1px solid ${colors.kmBlue}`
+          : type === 3
+          ? `1px solid ${colors.ggPurple}`
+          : type === 2
+          ? `1px solid ${colors.gmBlue}`
+          : `1px solid ${colors.kwGreen}`
+        : item.winYn === 'Y'
         ? `1px solid ${colors.winOrange}`
         : type === 1
         ? `1px solid ${colors.kmBlue}`
@@ -22,12 +32,16 @@ export const PnuCountIcon = (
         ? `1px solid ${colors.ggPurple}`
         : type === 2
         ? `1px solid ${colors.gmBlue}`
-        : type === 4
-        ? `1px solid ${colors.kwGreen}`
-        : ''
+        : `1px solid ${colors.kwGreen}`
     }; background: #FFF;">
       <span style="color: ${
-        !isSame ? colors.winOrange : '#333333'
+        !isSame
+          ? item.winYn === 'Y'
+            ? `${colors.winOrange}`
+            : `${colors.black}`
+          : item.winYn === 'Y'
+          ? `${colors.winOrange}`
+          : `${colors.black}`
       }; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
         ${count > 99 ? '99+' : count}
       </span>

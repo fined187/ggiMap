@@ -49,6 +49,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
   const [originPnuCounts, setOriginPnuCounts] = useState<pnuCounts>({
     updatedCounts: [],
   })
+  const [includeWinYn, setIncludeWinYn] = useState<boolean>(false)
   const user = useRecoilValue(userAtom)
   const [zoom, setZoom] = useState<number>(16)
   const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
@@ -180,52 +181,83 @@ export default function MapSection({ formData, setFormData }: MapProps) {
               item2.winYn !== item.winYn,
           ) !== -1,
       )
-      if (duplicatedItems.length > 0) {
-        setDuplicatedItems(duplicatedItems)
-        // winYn이 'Y'인 아이템의 x, y 좌표 리스트 만들기
-        const duplicatedYItems = duplicatedItems
-          .filter((item) => item.winYn === 'Y')
-          .map((item) => ({
-            x: item.x,
-            y: item.y,
-          }))
-        const filteredItems = mapItems.filter((item) => {
-          const isDuplicatedYItem = duplicatedYItems.some(
-            (dupItem) => item.x === dupItem.x && item.y === dupItem.y,
-          )
-          if (isDuplicatedYItem) {
-            // winYn === 'Y' 인 아이템과 item.type === 4인 아이템이 좌표가 같을 경우
-            const hasType4 = mapItems.some(
-              (otherItem) =>
-                otherItem.x === item.x &&
-                otherItem.y === item.y &&
-                otherItem.type === 4,
-            )
-            if (item.winYn !== 'Y' && hasType4) {
-              return false // type === 4인 아이템 제거
-            }
-            // winYn === 'Y' 인 아이템과 item.type === 1 || 2 || 3 이면서 winYn !== 'Y' 아이템이 좌표가 같은 경우
-            const hasType1Or2Or3NonY = mapItems.some(
-              (otherItem) =>
-                otherItem.x === item.x &&
-                otherItem.y === item.y &&
-                (otherItem.type === 1 ||
-                  otherItem.type === 2 ||
-                  otherItem.type === 3) &&
-                otherItem.winYn !== 'Y',
-            )
-            if (hasType1Or2Or3NonY && item.winYn === 'Y') {
-              return false // winYn === 'Y'인 아이템 제거
-            }
-          }
-          return true // 유지
-        })
-        setMapItems(filteredItems)
-      }
-      return duplicatedItems
-    }
-  }, [mapItems, setMapItems])
+      const duplicatedKwItems = mapItems.filter(
+        (item) =>
+          item.type === 4 &&
+          mapItems.some(
+            (item2) =>
+              (item2.type === 1 || item2.type === 2 || item2.type === 3) &&
+              item2.x === item.x &&
+              item2.y === item.y,
+          ),
+      )
 
+      if (formData.ekm) {
+        if (duplicatedItems.length > 0) {
+          setDuplicatedItems(duplicatedItems)
+          // winYn이 'Y'인 아이템의 x, y 좌표 리스트 만들기
+          const duplicatedYItems = duplicatedItems
+            .filter((item) => item.winYn === 'Y')
+            .map((item) => ({
+              x: item.x,
+              y: item.y,
+            }))
+          const filteredItems = mapItems.filter((item) => {
+            const isDuplicatedYItem = duplicatedYItems.some(
+              (dupItem) => item.x === dupItem.x && item.y === dupItem.y,
+            )
+            if (isDuplicatedYItem) {
+              // winYn === 'Y' 인 아이템과 item.type === 4인 아이템이 좌표가 같을 경우
+              const hasType4 = mapItems.some(
+                (otherItem) =>
+                  otherItem.x === item.x &&
+                  otherItem.y === item.y &&
+                  otherItem.type === 4,
+              )
+              if (item.winYn !== 'Y' && hasType4) {
+                return false // type === 4인 아이템 제거
+              }
+              // winYn === 'Y' 인 아이템과 item.type === 1 || 2 || 3 이면서 winYn !== 'Y' 아이템이 좌표가 같은 경우
+              const hasType1Or2Or3NonY = mapItems.some(
+                (otherItem) =>
+                  otherItem.x === item.x &&
+                  otherItem.y === item.y &&
+                  (otherItem.type === 1 ||
+                    otherItem.type === 2 ||
+                    otherItem.type === 3) &&
+                  otherItem.winYn !== 'Y',
+              )
+              if (hasType1Or2Or3NonY && item.winYn === 'Y') {
+                return false // winYn === 'Y'인 아이템 제거
+              }
+            }
+            return true // 유지
+          })
+          setMapItems(filteredItems)
+        }
+      }
+      if (formData.kw) {
+        if (duplicatedKwItems.length > 0) {
+          console.log('duplicatedKwItems', duplicatedKwItems)
+          const filteredItems = mapItems.filter((item) => {
+            const isDuplicatedKwItem = duplicatedKwItems.some(
+              (dupItem) =>
+                item.x === dupItem.x &&
+                item.y === dupItem.y &&
+                item.type === dupItem.type,
+            )
+            if (isDuplicatedKwItem) {
+              // type === 4인 아이템 제거
+              return false
+            }
+            return true
+          })
+          console.log('filteredItems', filteredItems)
+          setMapItems(filteredItems)
+        }
+      }
+    }
+  }, [mapItems, setMapItems, setDuplicatedItems, formData])
   useEffect(() => {
     handleSyncMap()
   }, [clickedMapType])
@@ -235,9 +267,15 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       setPnuCounts({ updatedCounts: [] })
       handleGetPnuCounts()
       handleGetOriginMapPnuCounts()
-      handleDuplicatedItems()
     }
   }, [mapItems, mapOrigin])
+
+  useEffect(() => {
+    if (mapItems) {
+      handleDuplicatedItems()
+    }
+  }, [formData.ekm, formData.kw, mapItems])
+  console.log('mapItems', mapItems)
   return (
     <>
       <Map
@@ -351,6 +389,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         offset={offset}
         setOffset={setOffset}
         duplicatedItems={duplicatedItems}
+        includeWinYn={includeWinYn}
       />
       <Clusterings formData={formData} item={mapCount} />
       {openOverlay && (
@@ -361,6 +400,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
           setOpenOverlay={setOpenOverlay}
           markerClickedRef={markerClickedRef}
           style={style}
+          setIncludeWinYn={setIncludeWinYn}
         />
       )}
     </>

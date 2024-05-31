@@ -6,6 +6,7 @@ import TopLine from './TopLine'
 import TextField from '../shared/TextField'
 import { useState } from 'react'
 import GroupElements from './Group'
+import NoGroupBtn from './Register/NoGroup'
 
 export default function InterestProps() {
   const [formData, setFormData] = useState({
@@ -30,7 +31,7 @@ export default function InterestProps() {
       <Spacing size={65} />
       <TableFrame
         title="등록그룹"
-        contents="hi"
+        contents={<NoGroupBtn />}
         background="#F9F9F9"
         height="107"
       />
