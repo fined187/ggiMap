@@ -10,9 +10,7 @@ export default function TitlePage({ title }: { title: string }) {
   )
 }
 
-const containerStyles = css`
-  position: absolute;
-`
+const containerStyles = css``
 const TitleStyle = css`
   color: #000001;
   font-family: SUIT;

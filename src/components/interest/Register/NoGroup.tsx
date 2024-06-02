@@ -10,7 +10,12 @@ export default function NoGroupBtn() {
   const [isFocus, setIsFocus] = useState(false)
   return (
     <ContainerStyle>
-      <Flex direction="row">
+      <Flex
+        direction="row"
+        style={{
+          width: '470px',
+        }}
+      >
         {isFocus ? (
           <InputStyle placeholder="그룹이름" />
         ) : (
@@ -31,8 +36,8 @@ export default function NoGroupBtn() {
                 <path
                   d="M1 1L11 11M11 1L1 11"
                   stroke="#8C8C8C"
-                  stroke-width="2"
-                  stroke-linecap="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                 />
               </svg>
             </Flex>
@@ -48,10 +53,19 @@ export default function NoGroupBtn() {
             marginTop: '5px',
             marginRight: '5px',
           }}
+          checked={isFocus}
         />
         <Text css={NewGroupRadioStyle}>새 그룹으로 등록</Text>
       </Flex>
-      <Flex>hi</Flex>
+      <Flex
+        justify="end"
+        align="end"
+        style={{
+          cursor: 'pointer',
+        }}
+      >
+        <Text css={GroupListStyle}>그룹 목록 열기</Text>
+      </Flex>
     </ContainerStyle>
   )
 }
@@ -59,7 +73,7 @@ export default function NoGroupBtn() {
 const ContainerStyle = styled.div`
   width: 100%;
   height: 100%;
-  padding: 20px 10px;
+  padding: 10px;
   flex-direction: row;
   position: relative;
   display: flex;
@@ -98,6 +112,9 @@ const InputStyle = styled.input`
   font-weight: 500;
   line-height: normal;
   letter-spacing: -0.32px;
+  &:focus {
+    outline: none;
+  }
 `
 
 const ButtonTextStyle = css`
@@ -120,4 +137,14 @@ const NewGroupRadioStyle = css`
   line-height: 125%;
   letter-spacing: -0.32px;
   margin-top: 2px;
+`
+
+const GroupListStyle = css`
+  color: #0075b1;
+  font-family: SUIT;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 125%;
+  letter-spacing: -0.32px;
 `

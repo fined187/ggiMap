@@ -1,6 +1,5 @@
 import { css } from '@emotion/react'
 import Flex from '../shared/Flex'
-import Image from 'next/image'
 import Input from '../shared/Input'
 
 export default function GroupElements() {

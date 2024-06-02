@@ -78,7 +78,7 @@ function Form({ item, index }: ItemProps) {
       removeMarker()
     }
   }, [])
-
+  console.log(item)
   return (
     <div
       onMouseOver={() => {
@@ -132,10 +132,15 @@ function Form({ item, index }: ItemProps) {
             right={
               <Flex
                 onClick={() => {
+                  // window.open(
+                  //   `http://localhost:3000/interest?type=${item?.type}&id=${item?.id}`,
+                  //   `_blank`,
+                  //   'width=800, height=800',
+                  // )
                   window.open(
-                    `http://localhost:3000/interest`,
+                    `http://localhost:3000/interest/updateInterest`,
                     `_blank`,
-                    'width=800, height=800',
+                    `width=800, height=800`,
                   )
                 }}
               >

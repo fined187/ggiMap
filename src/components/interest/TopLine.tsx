@@ -8,7 +8,7 @@ export default function TopLine() {
         viewBox="0 0 700 2"
         fill="none"
       >
-        <path d="M0 1H700" stroke="#BCBCBC" stroke-width="2" />
+        <path d="M0 1H700" stroke="#BCBCBC" strokeWidth="2" />
       </svg>
     </div>
   )

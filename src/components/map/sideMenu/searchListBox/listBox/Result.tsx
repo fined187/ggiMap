@@ -122,7 +122,6 @@ function Result({
     if (!scrollbarsRef.current) return
     scrollbarsRef.current?.scrollTo(0, 0)
   }
-
   return (
     <Flex
       direction="column"

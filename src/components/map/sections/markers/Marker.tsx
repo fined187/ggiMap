@@ -142,6 +142,7 @@ const Marker = ({
       setClickedItem(item)
     }
   }
+
   useEffect(() => {
     let marker1: naver.maps.Marker | null = null
     let marker2: naver.maps.Marker | null = null
