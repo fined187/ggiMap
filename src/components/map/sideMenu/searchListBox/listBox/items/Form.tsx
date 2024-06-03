@@ -15,6 +15,8 @@ import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { useCallback, useEffect, useState } from 'react'
 import NextImageWithFallback from '@/components/map/NextImageWithFallback'
 import NoImage from '../icon/NoImage'
+import { useRecoilState } from 'recoil'
+import { authInfo } from '@/store/atom/auth'
 
 interface ItemProps {
   item: MapItems
@@ -23,6 +25,7 @@ interface ItemProps {
 
 function Form({ item, index }: ItemProps) {
   const url = usePathUrl(item?.type ?? 1)
+  const [auth, setAuth] = useRecoilState(authInfo)
   const { data: map } = useSWR(MAP_KEY)
   const [isBlinking, setIsBlinking] = useState(false)
   const [blinkingInterval, setBlinkingInterval] = useState<
@@ -78,7 +81,6 @@ function Form({ item, index }: ItemProps) {
       removeMarker()
     }
   }, [])
-  console.log(item)
   return (
     <div
       onMouseOver={() => {
@@ -132,15 +134,10 @@ function Form({ item, index }: ItemProps) {
             right={
               <Flex
                 onClick={() => {
-                  // window.open(
-                  //   `http://localhost:3000/interest?type=${item?.type}&id=${item?.id}`,
-                  //   `_blank`,
-                  //   'width=800, height=800',
-                  // )
                   window.open(
-                    `http://localhost:3000/interest/updateInterest`,
+                    `http://localhost:3000/interest?type=${item?.type}&id=${item?.id}&token=${auth.token}`,
                     `_blank`,
-                    `width=800, height=800`,
+                    'width=800, height=800',
                   )
                 }}
               >

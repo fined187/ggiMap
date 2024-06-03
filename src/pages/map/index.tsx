@@ -10,6 +10,7 @@ import axios from 'axios'
 import MapSection from '@/components/map/sections/MapSection'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
+import { authInfo } from '@/store/atom/auth'
 
 interface Props {
   data?: {
@@ -27,6 +28,7 @@ declare global {
 function MapComponent({ token }: Props) {
   const { data: map } = useSWR(MAP_KEY)
   const [user, setUser] = useRecoilState(userAtom)
+  const [auth, setAuth] = useRecoilState(authInfo)
   const [formData, setFormData] = useState<Form>({
     usageCodes: '',
     ids: ['2', '3', '4', '5', '6', '7', '9', '10', '11', '12', '13', '14'],
@@ -71,6 +73,14 @@ function MapComponent({ token }: Props) {
   }
 
   async function handleToken(token: string) {
+    setAuth((prev) => {
+      return {
+        ...prev,
+        isLogin: true,
+        isAuth: true,
+        token: token,
+      }
+    })
     try {
       const response = await axios.post(
         `/ggi/api/auth/asp`,

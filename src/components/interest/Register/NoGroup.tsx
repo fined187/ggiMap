@@ -9,71 +9,108 @@ import { useState } from 'react'
 export default function NoGroupBtn() {
   const [isFocus, setIsFocus] = useState(false)
   return (
-    <ContainerStyle>
-      <Flex
-        direction="row"
-        style={{
-          width: '470px',
-        }}
-      >
-        {isFocus ? (
-          <InputStyle placeholder="그룹이름" />
-        ) : (
-          <ButtonStyle
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <ContainerStyle>
+        <Flex
+          direction="row"
+          style={{
+            width: '470px',
+          }}
+        >
+          {isFocus ? (
+            <InputStyle placeholder="그룹이름" />
+          ) : (
+            <ButtonStyle
+              onClick={() => {
+                setIsFocus(true)
+              }}
+            >
+              <Text css={ButtonTextStyle}>미분류</Text>
+              <Flex>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                >
+                  <path
+                    d="M1 1L11 11M11 1L1 11"
+                    stroke="#8C8C8C"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </Flex>
+            </ButtonStyle>
+          )}
+          <Spacing direction="horizontal" size={10} />
+          <Input
+            type="radio"
+            name="newGroup"
+            style={{
+              width: '15px',
+              height: '15px',
+              marginTop: '5px',
+              marginRight: '5px',
+            }}
             onClick={() => {
               setIsFocus(true)
             }}
-          >
-            <Text css={ButtonTextStyle}>미분류</Text>
-            <Flex>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-              >
-                <path
-                  d="M1 1L11 11M11 1L1 11"
-                  stroke="#8C8C8C"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </Flex>
-          </ButtonStyle>
-        )}
-        <Spacing direction="horizontal" size={10} />
-        <Input
-          type="radio"
-          name="newGroup"
+            onChange={() => {}}
+            checked={isFocus ? true : false}
+          />
+          <Text css={NewGroupRadioStyle}>새 그룹으로 등록</Text>
+        </Flex>
+        <Flex
+          justify="end"
+          align="end"
           style={{
-            width: '15px',
-            height: '15px',
-            marginTop: '5px',
-            marginRight: '5px',
+            cursor: 'pointer',
           }}
-          checked={isFocus}
-        />
-        <Text css={NewGroupRadioStyle}>새 그룹으로 등록</Text>
-      </Flex>
-      <Flex
-        justify="end"
-        align="end"
-        style={{
-          cursor: 'pointer',
-        }}
-      >
-        <Text css={GroupListStyle}>그룹 목록 열기</Text>
-      </Flex>
-    </ContainerStyle>
+        >
+          <Text css={GroupListStyle}>그룹 목록 열기</Text>
+        </Flex>
+      </ContainerStyle>
+      <Spacing size={20} />
+      <ContainerStyle>
+        <Flex
+          style={{
+            width: '110px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <Input
+            type="radio"
+            name="newGroup"
+            style={{
+              width: '15px',
+              height: '15px',
+              marginTop: '5px',
+              marginRight: '5px',
+            }}
+            onClick={() => {
+              setIsFocus(false)
+            }}
+            onChange={() => {}}
+          />
+          <Text css={NewGroupRadioStyle}>미분류</Text>
+        </Flex>
+      </ContainerStyle>
+    </div>
   )
 }
 
 const ContainerStyle = styled.div`
   width: 100%;
   height: 100%;
-  padding: 10px;
   flex-direction: row;
   position: relative;
   display: flex;

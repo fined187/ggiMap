@@ -16,6 +16,7 @@ import Button from '../shared/Button'
 import InfoTextPage from './InfoText'
 
 export default function InterestProps({ data }: { data: interest }) {
+  console.log(data)
   const [formData, setFormData] = useState({
     title: '',
     importance: '',
@@ -25,10 +26,10 @@ export default function InterestProps({ data }: { data: interest }) {
   })
   return (
     <Container>
-      {data && data?.interestInfo.category !== '' ? (
+      {data && data?.interestInfo !== null ? (
         <>
           <TitlePage title="관심물건 수정/삭제" />
-          <Spacing size={20} />
+          <Spacing size={10} />
           <InfoTextPage />
         </>
       ) : (
@@ -38,7 +39,16 @@ export default function InterestProps({ data }: { data: interest }) {
       )}
       <Spacing size={20} />
       <TopLine />
-      <TableFrame title="사건번호" contents="2021-1234" />
+      <TableFrame
+        title="사건번호"
+        contents={
+          data?.caseNo !== undefined
+            ? data?.caseNo?.slice(0, 4) +
+              '-' +
+              data?.caseNo?.slice(5, data.caseNo.length)
+            : data?.manageNo
+        }
+      />
       <TableFrame
         title="중요도"
         contents={<GroupElements />}
@@ -54,6 +64,7 @@ export default function InterestProps({ data }: { data: interest }) {
         title="메모"
         contents={
           <TextField
+            maxLength={1500}
             style={{
               width: '580px',
               height: '80px',
@@ -91,7 +102,7 @@ export default function InterestProps({ data }: { data: interest }) {
       <Flex
         style={{
           position: 'absolute',
-          bottom: '50px',
+          bottom: '30px',
           left: '50%',
           transform: 'translateX(-50%)',
           gap: '10px',
@@ -109,16 +120,18 @@ export default function InterestProps({ data }: { data: interest }) {
               letterSpacing: '-0.36px',
             }}
           >
-            {data && data?.interestInfo.category !== ''
+            {data && data?.interestInfo?.category !== ''
               ? '관심물건 수정'
               : '관심물건 등록'}
           </Text>
         </Button>
-        <CloseBtn isUpdate={data && data?.interestInfo.category !== ''}>
+        <CloseBtn
+          isUpdate={data && data?.interestInfo !== null}
+          onClick={() => window.close()}
+        >
           <Text
             style={{
-              color:
-                data && data?.interestInfo.category !== '' ? '#F00' : '#6D6E70',
+              color: data && data?.interestInfo !== null ? '#F00' : '#6D6E70',
               fontFamily: 'SUIT',
               fontSize: '18px',
               fontStyle: 'normal',
@@ -127,7 +140,7 @@ export default function InterestProps({ data }: { data: interest }) {
               letterSpacing: '-0.36px',
             }}
           >
-            {data && data?.interestInfo.category !== '' ? '삭제' : '닫기'}
+            {data && data?.interestInfo !== null ? '삭제' : '닫기'}
           </Text>
         </CloseBtn>
       </Flex>

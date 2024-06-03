@@ -23,7 +23,6 @@ export default function TableFrame({
   height,
   starRating,
 }: TableFrameProps) {
-  console.log(starRating)
   return (
     <ContainerFrame height={height}>
       <CategoryFrame

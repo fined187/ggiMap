@@ -67,6 +67,7 @@ export default function Carousel({
         style={{
           width: '299px',
           height: '180px',
+          borderRadius: '8px 8px 0px 0px',
           position: 'relative',
         }}
         onSlideChange={(swiper) => {
@@ -89,6 +90,8 @@ export default function Carousel({
                       height={180}
                       style={{
                         borderRadius: '8px 8px 0px 0px',
+                        width: '300px',
+                        height: '180px',
                       }}
                     />
                     <TypeStyle
@@ -147,7 +150,7 @@ export default function Carousel({
                       }}
                       onClick={() => {
                         window.open(
-                          `http://localhost:3000/interest?type=${clickedItem?.type}`,
+                          `http://localhost:3000/interest?type=${clickedInfo[index]?.type}&id=${clickedInfo[index]?.idCode}`,
                           `_blank`,
                           'width=800, height=800',
                         )

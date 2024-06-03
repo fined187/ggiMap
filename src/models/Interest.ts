@@ -15,4 +15,6 @@ export interface interest {
   categories: string[]
   smsNotificationYn: string
   isWait: boolean
+  manageNo?: string
+  goodsId?: string
 }

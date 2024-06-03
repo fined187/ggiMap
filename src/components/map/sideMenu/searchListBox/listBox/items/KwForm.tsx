@@ -5,15 +5,18 @@ import ListRow from '@/components/shared/ListRow'
 import Spacing from '@/components/shared/Spacing'
 import Text from '@/components/shared/Text'
 import { MapItems } from '@/models/MapItem'
+import { authInfo } from '@/store/atom/auth'
 import useNum2Han from '@/utils/useNum2Han'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { useCallback, useEffect, useState } from 'react'
+import { useRecoilState } from 'recoil'
 import useSWR from 'swr'
 
 function KwForm({ item, index }: { item: MapItems; index: number }) {
   const { data: map } = useSWR(MAP_KEY)
   const [isBlinking, setIsBlinking] = useState(false)
+  const [auth, setAuth] = useRecoilState(authInfo)
   const [blinkingInterval, setBlinkingInterval] = useState<
     NodeJS.Timeout | null | number
   >(null)
@@ -89,7 +92,19 @@ function KwForm({ item, index }: { item: MapItems; index: number }) {
         <ListRow
           left={<LeftTextStyle color={'#00926F'}>{'예정'}</LeftTextStyle>}
           contents={<LeftTextStyle color="#000">{item.caseNo}</LeftTextStyle>}
-          right={<Interest interest={item.interest ?? ''} />}
+          right={
+            <Flex
+              onClick={() => {
+                window.open(
+                  `http://localhost:3000/interest?type=${item.type}&id=${item.id}&token=${auth.token}`,
+                  '_blank',
+                  'width=800, height=800',
+                )
+              }}
+            >
+              <Interest interest={item.interest ?? ''} />
+            </Flex>
+          }
           style={ListLeftStyle}
         />
         <Flex
