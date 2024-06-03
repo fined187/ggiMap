@@ -4,17 +4,49 @@ import Text from '../shared/Text'
 import { css } from '@emotion/react'
 import Flex from '../shared/Flex'
 import Spacing from '../shared/Spacing'
+import { InterestFormData } from '@/models/Interest'
 
-export default function AlertCheck() {
+interface AlertCheckProps {
+  formData: InterestFormData
+  setFormData: React.Dispatch<React.SetStateAction<InterestFormData>>
+}
+
+export default function AlertCheck({ formData, setFormData }: AlertCheckProps) {
   return (
     <Container>
       <Flex direction="row" align="center">
-        <Input type="radio" name="alert" css={RadioStyle} />
+        <Input
+          type="radio"
+          name="alert"
+          css={RadioStyle}
+          checked={formData?.smsNotificationYn === 'Y'}
+          onChange={(e) => {
+            setFormData((prev) => {
+              return {
+                ...prev,
+                smsNotificationYn: 'Y',
+              }
+            })
+          }}
+        />
         <Text css={TextStyle}>알림을 받겠습니다</Text>
       </Flex>
       <Spacing size={10} />
       <Flex direction="row" align="center">
-        <Input type="radio" name="alert" css={RadioStyle} />
+        <Input
+          type="radio"
+          name="alert"
+          css={RadioStyle}
+          checked={formData?.smsNotificationYn === 'N'}
+          onChange={(e) => {
+            setFormData((prev) => {
+              return {
+                ...prev,
+                smsNotificationYn: 'N',
+              }
+            })
+          }}
+        />
         <Text css={TextStyle}>수신거부</Text>
         <Spacing direction="horizontal" size={100} />
         <Text css={TextStyle2}>본 물건에 대한 알림이 발송되지 않습니다</Text>
@@ -24,7 +56,7 @@ export default function AlertCheck() {
 }
 
 const Container = styled.div`
-  width: 700px;
+  width: 740px;
   height: 100px;
   padding: 20px 10px;
   flex-direction: column;

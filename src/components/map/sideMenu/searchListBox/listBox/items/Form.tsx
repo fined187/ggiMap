@@ -17,6 +17,10 @@ import NextImageWithFallback from '@/components/map/NextImageWithFallback'
 import NoImage from '../icon/NoImage'
 import { useRecoilState } from 'recoil'
 import { authInfo } from '@/store/atom/auth'
+import InterestContextProvider, {
+  useInterestContext,
+} from '@/contexts/useModalContext'
+import InterestProps from '@/components/interest'
 
 interface ItemProps {
   item: MapItems
@@ -32,7 +36,8 @@ function Form({ item, index }: ItemProps) {
     NodeJS.Timeout | null | number
   >(null)
   const [marker, setMarker] = useState<null | naver.maps.Marker>(null)
-
+  const [openModal, setOpenModal] = useState(false)
+  const { open } = useInterestContext()
   const createMarker = useCallback((lat: number, lng: number) => {
     if (map) {
       if (marker) {
@@ -43,12 +48,12 @@ function Form({ item, index }: ItemProps) {
           position: new naver.maps.LatLng(lat, lng),
           map: map,
           icon: {
-            content: `<div>
+            content: `<div style="margin-left: -20px;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <circle cx="16" cy="16" r="15.75" fill="#3C3C3C" fill-opacity="0.25" stroke="#D9D9D9" stroke-width="0.5"/>
-                            <circle cx="16.5" cy="15.5" r="7.25" fill="#3C3C3C" stroke="#D9D9D9" stroke-width="0.5"/>
+                          <circle cx="16" cy="16" r="15.75" fill="#3C3C3C" fill-opacity="0.25" stroke="#D9D9D9" stroke-width="0.5"/>
+                          <circle cx="16.5" cy="15.5" r="7.25" fill="#3C3C3C" stroke="#D9D9D9" stroke-width="0.5"/>
                         </svg>
-                    </div>`,
+                      </div>`,
           },
         })
         setMarker(newMarker)
@@ -81,6 +86,10 @@ function Form({ item, index }: ItemProps) {
       removeMarker()
     }
   }, [])
+
+  const onButtonClick = () => {
+    setOpenModal(false)
+  }
   return (
     <div
       onMouseOver={() => {
@@ -134,11 +143,19 @@ function Form({ item, index }: ItemProps) {
             right={
               <Flex
                 onClick={() => {
-                  window.open(
-                    `http://localhost:3000/interest?type=${item?.type}&id=${item?.id}&token=${auth.token}`,
-                    `_blank`,
-                    'width=800, height=800',
-                  )
+                  if (openModal) {
+                    close()
+                  } else {
+                    open({
+                      type: item?.type.toString() ?? '',
+                      id: item?.id.toString() ?? '',
+                      openModal: openModal,
+                      setOpenModal: setOpenModal,
+                      onButtonClick: () => {
+                        onButtonClick()
+                      },
+                    })
+                  }
                 }}
               >
                 <Interest interest={item?.interest ?? ''} />

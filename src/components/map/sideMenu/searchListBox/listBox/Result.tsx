@@ -15,6 +15,7 @@ import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSearchListQuery from './hooks/useSearchListQuery'
 import Loader from './icon/loader/Loader'
+import InterestContextProvider from '@/contexts/useModalContext'
 
 interface ResultProps {
   formData: Form

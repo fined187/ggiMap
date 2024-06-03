@@ -14,6 +14,8 @@ interface TableFrameProps {
   background?: string
   height?: string
   starRating?: number
+  openGroup?: boolean
+  setOpenGroup?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function TableFrame({
@@ -22,6 +24,8 @@ export default function TableFrame({
   background,
   height,
   starRating,
+  openGroup,
+  setOpenGroup,
 }: TableFrameProps) {
   return (
     <ContainerFrame height={height}>
@@ -64,8 +68,7 @@ export default function TableFrame({
 }
 
 const ContainerFrame = styled.div<{ height?: string }>`
-  width: 700px;
-  height: ${({ height }) => height + 'px' || '65px'};
+  width: 740px;
   flex-shrink: 0;
   flex-direction: row;
   display: flex;
@@ -74,8 +77,7 @@ const ContainerFrame = styled.div<{ height?: string }>`
 const CategoryFrame = styled.div<{ background?: string; height?: string }>`
   display: flex;
   width: 100px;
-  height: ${({ height }) => height + 'px' || '65px'};
-  padding: 21px 8px;
+  padding: ${({ height }) => (height === '107' ? '' : '21px 8px')};
   justify-content: center;
   align-items: center;
   gap: 10px;
@@ -86,9 +88,9 @@ const CategoryFrame = styled.div<{ background?: string; height?: string }>`
 
 const ContentsFrame = styled.div<{ height?: string }>`
   display: flex;
-  width: 600px;
-  height: ${({ height }) => height + 'px' || '65px'};
-  padding: 21px 8px;
+  width: 640px;
+  min-height: ${({ height }) => height + 'px' || '65px'};
+  padding: ${({ height }) => (height === '107' ? '10px' : '21px 8px')};
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
