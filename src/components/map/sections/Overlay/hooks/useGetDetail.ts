@@ -51,7 +51,6 @@ export const useGetDetail = (
           }
           return 0
         })
-        console.log(SortedData)
         setClickedInfo(null)
         setClickedInfo(() => {
           return SortedData.map((item, index) => {

@@ -1,12 +1,17 @@
-import { InterestFormData } from '@/models/Interest'
+import { InterestFormData, UpdatedInterest } from '@/models/Interest'
 import {
   postGmInterest,
   postKmInterest,
   postKwInterest,
 } from '@/remote/interest/postInterest'
-import { useMutation, useQueryClient } from 'react-query'
+import { Dispatch, SetStateAction } from 'react'
+import { useMutation } from 'react-query'
 
-export const usePostInterest = (type: string, formData: InterestFormData) => {
+export const usePostInterest = (
+  type: string,
+  formData: InterestFormData,
+  setUpdatedInterest: Dispatch<SetStateAction<UpdatedInterest>>,
+) => {
   return useMutation(
     () => {
       switch (type) {
@@ -42,7 +47,9 @@ export const usePostInterest = (type: string, formData: InterestFormData) => {
       }
     },
     {
-      onSuccess: () => {},
+      onSuccess: (data) => {
+        setUpdatedInterest(data)
+      },
     },
   )
 }

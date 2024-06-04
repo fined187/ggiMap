@@ -58,10 +58,12 @@ export default function NoGroupBtn({
     } else {
       const sortedCategories = handleCategorySort(formData.categories)
       if (sortedCategories?.join(',') !== formData.categories.join(',')) {
-        setFormData((prev) => ({
-          ...prev,
-          categories: sortedCategories ?? [],
-        }))
+        setFormData((prev) => {
+          return {
+            ...prev,
+            categories: sortedCategories || [],
+          }
+        })
       }
       setGroupName(
         formData.interestInfo.category === ''

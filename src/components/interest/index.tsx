@@ -11,7 +11,7 @@ import AlertCheck from './AlertCheck'
 import Text from '../shared/Text'
 import Flex from '../shared/Flex'
 import { css } from '@emotion/react'
-import { InterestFormData, interest } from '@/models/Interest'
+import { InterestFormData, UpdatedInterest, interest } from '@/models/Interest'
 import Button from '../shared/Button'
 import InfoTextPage from './InfoText'
 import { usePostInterest } from './hooks/usePostInterest'
@@ -24,6 +24,7 @@ import {
 } from '@/remote/interest/getInterest'
 import Loader from '../map/sideMenu/searchListBox/listBox/icon/loader/Loader'
 import Image from 'next/image'
+import UpdateResult from './InterestResult'
 
 export default function InterestProps({
   openModal,
@@ -62,6 +63,25 @@ export default function InterestProps({
     isWait: false,
   })
 
+  const [updatedData, setUpdatedData] = useState<UpdatedInterest>({
+    infoId: '',
+    caseNo: '',
+    manageNo: '',
+    mulSeq: '',
+    oldInfoId: '',
+    infoNo: '',
+    interestInfo: {
+      category: '',
+      memo: '',
+      starRating: '',
+    },
+    count: 0,
+    categories: [''],
+    smsNotificationYn: 'N',
+    isWait: false,
+    goodsId: '',
+  })
+
   const handleGetData = async (type: string, id: string) => {
     try {
       switch (type) {
@@ -79,7 +99,7 @@ export default function InterestProps({
                 infoNo: responseKm.data?.infoNo ?? '',
                 oldInfoId: responseKm.data?.oldInfoId,
                 interestInfo: {
-                  category: responseKm.data?.interestInfo?.category ?? '',
+                  category: responseKm.data?.interestInfo?.category ?? '미분류',
                   memo: responseKm.data?.interestInfo?.memo ?? '',
                   starRating: responseKm.data?.interestInfo?.starRating ?? '',
                 },
@@ -146,7 +166,11 @@ export default function InterestProps({
     handleGetData(type, id)
   }, [type, id])
 
-  const { mutate: postInterest } = usePostInterest(type, formData)
+  const { mutate: postInterest } = usePostInterest(
+    type,
+    formData,
+    setUpdatedData,
+  )
   const handleDuplicatedGroupName = useCallback(
     (name: string) => {
       if (formData.categories.includes(name) && formData.isNewCategory) {
@@ -177,15 +201,16 @@ export default function InterestProps({
       }
     }
   }
-
   return (
     <Dimmed>
       <ModalContainer
         style={{
           height:
-            interestData && interestData?.interestInfo !== null
-              ? '850px'
-              : '800px',
+            step === 1
+              ? interestData?.interestInfo !== null
+                ? '850px'
+                : '800px'
+              : '500px',
         }}
       >
         <Container>
@@ -392,7 +417,14 @@ export default function InterestProps({
                 </Flex>
               </>
             )
-          ) : null}
+          ) : (
+            <UpdateResult
+              onButtonClick={onButtonClick}
+              type={type}
+              id={id}
+              updatedData={updatedData}
+            />
+          )}
         </Container>
       </ModalContainer>
     </Dimmed>

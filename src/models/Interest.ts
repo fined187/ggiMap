@@ -44,3 +44,18 @@ export interface InterestPostResponse {
   success: boolean
   data: interest
 }
+
+export interface UpdatedInterest {
+  infoId: string
+  caseNo: string
+  mulSeq: string
+  oldInfoId: string
+  infoNo: string
+  interestInfo: InterestInfo
+  count: number
+  categories: string[]
+  smsNotificationYn: string
+  isWait: boolean
+  manageNo?: string
+  goodsId?: string
+}

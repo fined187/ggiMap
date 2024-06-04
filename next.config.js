@@ -66,6 +66,10 @@ const nextConfig = withTwin({
         source: '/ggi/api/interest/map/:path*',
         destination: `https://dev-api.ggi.co.kr:8443/ggi/api/interest/map/:path*`,
       },
+      {
+        source: '/member/:path*',
+        destination: `https://www.ggi.co.kr/member/:path*`,
+      },
     ]
   },
 })

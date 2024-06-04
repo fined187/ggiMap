@@ -37,7 +37,7 @@ export default function ListBox({
             : formData.lastFilter === 4 && formData.isSubFilterBoxOpen
             ? 'calc(100vh - 380px)'
             : map && map.zoom! >= 15 && listItems?.length! > 0
-            ? '750px'
+            ? 'calc(100vh - 150px)'
             : '150px'
           : '59px',
       }}

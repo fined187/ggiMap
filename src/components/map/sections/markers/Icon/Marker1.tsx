@@ -181,7 +181,7 @@ export const InterestIcon = (item: MapItem, type: number) => {
   return `
   <div style="flex-direction: row; display: flex;">
     <div style="position: absolute; right: ${
-      item.share === 'Y' ? '20px' : '0px'
+      item.share === 'Y' ? '32px' : '0px'
     };
     top: -38px;
     ">
@@ -217,7 +217,6 @@ export const InterestIcon = (item: MapItem, type: number) => {
         } stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    ${item.share === 'Y' ? ShareIcon : ''}
   </div>
   `
 }

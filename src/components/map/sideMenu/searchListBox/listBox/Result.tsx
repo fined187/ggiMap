@@ -61,7 +61,6 @@ function Result({
     egm: formData.egm,
     egg: formData.egg,
   })
-
   const { data, fetchNextPage, hasNextPage, isLoading } = useSearchListQuery({
     rowsPerPage: ROWS_PER_PAGE,
     mapData,

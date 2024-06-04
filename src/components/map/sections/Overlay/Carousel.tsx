@@ -41,9 +41,6 @@ export default function Carousel({
       setImage(clickedInfo.map((info) => pathUrl + info?.path ?? ''))
     }
   }, [pathUrl, clickedItem, clickedInfo])
-  console.log(clickedInfo)
-  const [mapItems, setMapItems] = useRecoilState(mapAtom)
-  console.log(mapItems)
   return (
     <div
       style={{
@@ -203,7 +200,7 @@ export default function Carousel({
                     >
                       <Interest
                         interest={
-                          (clickedInfo && clickedInfo[index]?.interest) ?? ''
+                          (clickedInfo && clickedInfo[index]?.interest) || ''
                         }
                       />
                     </Flex>

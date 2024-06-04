@@ -142,7 +142,6 @@ const Marker = ({
       setClickedItem(item)
     }
   }
-
   useEffect(() => {
     let marker1: naver.maps.Marker | null = null
     let marker2: naver.maps.Marker | null = null
@@ -155,9 +154,13 @@ const Marker = ({
               icon: {
                 content: `
               <div style="flex-direction: row; display: flex; margin-top: -30px;">
-                ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                 ${
-                  item.interest !== 'Y' && item.share === 'Y' && originCount < 2
+                  item.interest === 'Y' && originCount < 2
+                    ? InterestIcon(item, item.type)
+                    : ''
+                }
+                ${
+                  item.share === 'Y' && originCount < 2
                     ? ShareIcon(item, item.type)
                     : ''
                 }
@@ -166,6 +169,7 @@ const Marker = ({
                     ? PnuCountIcon(item, originCount, item.type, isSame)
                     : ''
                 }
+
                 ${UsageIcon(item, handleItemUsage, item.type, isSame)}
                 ${AmountIcon(item, item.type)}
               </div>
@@ -196,9 +200,13 @@ const Marker = ({
               icon: {
                 content: `
                 <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 90;">
-                ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                 ${
-                  item.interest != 'Y' && item.share === 'Y' && originCount < 2
+                  item.interest === 'Y' && originCount < 2
+                    ? InterestIcon(item, item.type)
+                    : ''
+                }
+                ${
+                  item.share === 'Y' && originCount < 2
                     ? ShareIcon(item, item.type)
                     : ''
                 }
@@ -237,11 +245,13 @@ const Marker = ({
               icon: {
                 content: `
                 <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 80;">
-                  ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                   ${
-                    item.interest != 'Y' &&
-                    item.share === 'Y' &&
-                    originCount < 2
+                    item.interest === 'Y' && originCount < 2
+                      ? InterestIcon(item, item.type)
+                      : ''
+                  }
+                  ${
+                    item.share === 'Y' && originCount < 2
                       ? ShareIcon(item, item.type)
                       : ''
                   }
@@ -310,11 +320,13 @@ const Marker = ({
               icon: {
                 content: `
                 <div id='winMarker' style="flex-direction: row; display: flex; margin-top: -30px; z-index: 75; ">
-                  ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                   ${
-                    item.interest != 'Y' &&
-                    item.share === 'Y' &&
-                    originCount < 2
+                    item.interest === 'Y' && originCount < 2
+                      ? InterestIcon(item, item.type)
+                      : ''
+                  }
+                  ${
+                    item.share === 'Y' && originCount < 2
                       ? ShareIcon(item, item.type)
                       : ''
                   }
@@ -355,12 +367,12 @@ const Marker = ({
                 content: `
                   <div style="flex-direction: row; display: flex; margin-top: -30px;">
                     ${
-                      item.interest === 'Y' ? InterestIcon(item, item.type) : ''
+                      item.interest === 'Y' && originCount < 2
+                        ? InterestIcon(item, item.type)
+                        : ''
                     }
                     ${
-                      item.interest != 'Y' &&
-                      item.share === 'Y' &&
-                      originCount < 2
+                      item.share === 'Y' && originCount < 2
                         ? ShareIcon(item, item.type)
                         : ''
                     }
