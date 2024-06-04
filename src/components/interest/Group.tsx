@@ -48,7 +48,7 @@ export default function GroupElements({
           name="check"
           value={'0'}
           id="check0"
-          checked={formData.importance === '0'}
+          checked={formData.interestInfo.starRating === '0'}
           onChange={(e) => {
             handleChecked(e)
           }}
@@ -67,7 +67,7 @@ export default function GroupElements({
           name="check"
           id="check1"
           value={'1'}
-          checked={formData.importance === '1'}
+          checked={formData.interestInfo.starRating === '1'}
           onChange={(e) => {
             handleChecked(e)
           }}
@@ -86,7 +86,7 @@ export default function GroupElements({
           name="check"
           id="check2"
           value={'2'}
-          checked={formData.importance === '2'}
+          checked={formData.interestInfo.starRating === '2'}
           onChange={(e) => {
             handleChecked(e)
           }}
@@ -105,7 +105,7 @@ export default function GroupElements({
           name="check"
           id="check3"
           value={'3'}
-          checked={formData.importance === '3'}
+          checked={formData.interestInfo.starRating === '3'}
           onChange={(e) => {
             handleChecked(e)
           }}
@@ -124,7 +124,7 @@ export default function GroupElements({
           name="check"
           id="check4"
           value={'4'}
-          checked={formData.importance === '4'}
+          checked={formData.interestInfo.starRating === '4'}
           onChange={(e) => {
             handleChecked(e)
           }}
@@ -143,7 +143,7 @@ export default function GroupElements({
           name="check"
           id="check5"
           value={'5'}
-          checked={formData.importance === '5'}
+          checked={formData.interestInfo.starRating === '5'}
           onChange={(e) => {
             handleChecked(e)
           }}

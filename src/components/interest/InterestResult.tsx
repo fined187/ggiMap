@@ -9,12 +9,15 @@ import TableFrame from './TableFrame'
 import styled from '@emotion/styled'
 import Text from '../shared/Text'
 import { css } from '@emotion/react'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 interface UpdateResultProps {
   type: string
   id: string
   onButtonClick?: () => void
   updatedData: UpdatedInterest
+  처음등록하는가: boolean
 }
 
 export default function UpdateResult({
@@ -22,28 +25,35 @@ export default function UpdateResult({
   id,
   onButtonClick,
   updatedData,
+  처음등록하는가,
 }: UpdateResultProps) {
-  console.log('updatedData', updatedData)
+  const changeParentUrl = () => {
+    if (window.opener) {
+      const newUrl = `https://www.ggi.co.kr/member/scrap_list_kyung.asp?group=${updatedData?.interestInfo.category}`
 
-  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    fetch('/member/scrap_list_kyung.asp', {
-      method: 'POST',
-      body: formData,
-    })
-      .then((response) => response.text()) // JSON 요청의 경우 .json() 사용
-      .then((data) => {
-        console.log('Success:', data) // 성공 시 처리 로직
-      })
-      .catch((error) => {
-        console.error('Error:', error) // 에러 시 처리 로직
-      })
+      // 부모 창의 URL을 새로운 경로로 변경
+      window.opener.location.href = newUrl
+
+      // 부모 창이 새로운 URL로 로드한 후 주소 표시줄 수정
+      window.opener.onload = () => {
+        window.opener.history.pushState(null, '', 'https://www.ggi.co.kr')
+      }
+
+      window.close() // 필요에 따라 자식 창을 닫을 수도 있습니다.
+    } else {
+      console.log('부모 창이 없습니다.')
+    }
   }
   return (
     <>
       <Flex justify="space-between">
-        <TitlePage title="관심물건이 등록되었습니다" />
+        <TitlePage
+          title={
+            처음등록하는가
+              ? '관심물건이 등록되었습니다'
+              : '관심물건이 수정되었습니다'
+          }
+        />
         <Image
           src={
             'https://cdn3.iconfinder.com/data/icons/user-interface-169/32/cross-512.png'
@@ -72,7 +82,11 @@ export default function UpdateResult({
         }
         starRating={parseInt(updatedData?.interestInfo.starRating)}
       />
-      <TableFrame title="소재지" contents={''} background="#F9F9F9" />
+      <TableFrame
+        title="소재지"
+        contents={updatedData?.address}
+        background="#F9F9F9"
+      />
       <TableFrame
         title="등록그룹"
         contents={updatedData?.interestInfo.category}
@@ -88,16 +102,13 @@ export default function UpdateResult({
           gap: '5px',
         }}
       >
-        <form onSubmit={handleSubmitForm}>
-          <input
-            type="hidden"
-            name="group"
-            value={updatedData?.interestInfo.category}
-          />
-          <ListButtonStyle type="submit">
-            <Text css={ListTextStyle}>관심물건 목록 보기</Text>
-          </ListButtonStyle>
-        </form>
+        <ListButtonStyle
+          onClick={() => {
+            changeParentUrl()
+          }}
+        >
+          <Text css={ListTextStyle}>관심물건 목록 보기</Text>
+        </ListButtonStyle>
         <CloseButtonStyle onClick={() => onButtonClick && onButtonClick()}>
           <Text css={TextStyle}>닫기</Text>
         </CloseButtonStyle>

@@ -58,4 +58,5 @@ export interface UpdatedInterest {
   isWait: boolean
   manageNo?: string
   goodsId?: string
+  address: string
 }

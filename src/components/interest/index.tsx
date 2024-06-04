@@ -25,6 +25,8 @@ import {
 import Loader from '../map/sideMenu/searchListBox/listBox/icon/loader/Loader'
 import Image from 'next/image'
 import UpdateResult from './InterestResult'
+import { usePutInterest } from './hooks/usePutInterest'
+import { useDeleteInterest } from './hooks/useDeleteInterest'
 
 export default function InterestProps({
   openModal,
@@ -42,6 +44,7 @@ export default function InterestProps({
   const [openGroup, setOpenGroup] = useState(false)
   const [step, setStep] = useState(1)
   const [interestData, setInterestData] = useState<interest | null>(null)
+  const 처음등록하는가 = interestData?.interestInfo === null
   const [formData, setFormData] = useState<InterestFormData>({
     goodsId: '',
     infoId: '',
@@ -80,6 +83,7 @@ export default function InterestProps({
     smsNotificationYn: 'N',
     isWait: false,
     goodsId: '',
+    address: '',
   })
 
   const handleGetData = async (type: string, id: string) => {
@@ -171,6 +175,8 @@ export default function InterestProps({
     formData,
     setUpdatedData,
   )
+  const { mutate: putInterest } = usePutInterest(type, formData, setUpdatedData)
+  const { mutate: deleteInterest } = useDeleteInterest(type, formData)
   const handleDuplicatedGroupName = useCallback(
     (name: string) => {
       if (formData.categories.includes(name) && formData.isNewCategory) {
@@ -195,12 +201,31 @@ export default function InterestProps({
     } else if (handleDuplicatedGroupName(formData.interestInfo.category)) {
       return
     } else {
-      if (window.confirm('관심물건을 등록하시겠습니까?')) {
-        postInterest()
-        setStep(2)
+      if (처음등록하는가) {
+        if (window.confirm('관심물건을 등록하시겠습니까?')) {
+          postInterest()
+          setStep(2)
+        }
+      } else {
+        if (window.confirm('관심물건을 수정하시겠습니까?')) {
+          putInterest()
+          setStep(2)
+        }
       }
     }
   }
+
+  const handleCloseBtn = () => {
+    if (처음등록하는가) {
+      onButtonClick()
+    } else {
+      if (window.confirm('관심물건을 삭제하시겠습니까?')) {
+        deleteInterest()
+        onButtonClick()
+      }
+    }
+  }
+  console.log(처음등록하는가)
   return (
     <Dimmed>
       <ModalContainer
@@ -381,26 +406,18 @@ export default function InterestProps({
                         letterSpacing: '-0.36px',
                       }}
                     >
-                      {interestData && interestData?.interestInfo !== null
-                        ? '관심물건 수정'
-                        : '관심물건 등록'}
+                      {처음등록하는가 ? '관심물건 등록' : '관심물건 수정'}
                     </Text>
                   </Button>
                   <CloseBtn
-                    isUpdate={
-                      (interestData && interestData?.interestInfo !== null) ||
-                      false
-                    }
+                    isUpdate={!처음등록하는가 || false}
                     onClick={() => {
-                      onButtonClick()
+                      handleCloseBtn()
                     }}
                   >
                     <Text
                       style={{
-                        color:
-                          interestData && interestData?.interestInfo !== null
-                            ? '#F00'
-                            : '#6D6E70',
+                        color: !처음등록하는가 ? '#F00' : '#6D6E70',
                         fontFamily: 'SUIT',
                         fontSize: '18px',
                         fontStyle: 'normal',
@@ -409,9 +426,7 @@ export default function InterestProps({
                         letterSpacing: '-0.36px',
                       }}
                     >
-                      {interestData && interestData?.interestInfo !== null
-                        ? '삭제'
-                        : '닫기'}
+                      {!처음등록하는가 ? '삭제' : '닫기'}
                     </Text>
                   </CloseBtn>
                 </Flex>
@@ -423,6 +438,7 @@ export default function InterestProps({
               type={type}
               id={id}
               updatedData={updatedData}
+              처음등록하는가={처음등록하는가}
             />
           )}
         </Container>
