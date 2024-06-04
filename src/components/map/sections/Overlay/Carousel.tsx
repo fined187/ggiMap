@@ -19,6 +19,8 @@ import { colors } from '@/styles/colorPalette'
 import MiniMap from './MiniMap'
 import NoImage from './icon/NoImage'
 import NextImageWithFallback from '../../NextImageWithFallback'
+import { useRecoilState } from 'recoil'
+import { mapAtom } from '@/store/atom/map'
 
 export default function Carousel({
   clickedInfo,
@@ -39,6 +41,9 @@ export default function Carousel({
       setImage(clickedInfo.map((info) => pathUrl + info?.path ?? ''))
     }
   }, [pathUrl, clickedItem, clickedInfo])
+  console.log(clickedInfo)
+  const [mapItems, setMapItems] = useRecoilState(mapAtom)
+  console.log(mapItems)
   return (
     <div
       style={{

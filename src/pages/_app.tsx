@@ -7,6 +7,7 @@ import Layout from '@shared/Layout'
 import { RecoilRoot } from 'recoil'
 import '@/styles/globals.css'
 import InterestContextProvider from '@/contexts/useModalContext'
+import AlertConTextProvider from '@/contexts/useAlertContext'
 
 const client = new QueryClient({})
 

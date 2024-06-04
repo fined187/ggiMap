@@ -8,6 +8,7 @@ import Button from './Button'
 
 interface AlertProps {
   open?: boolean
+  setOpen?: (open: boolean) => void
   title: React.ReactNode
   description?: React.ReactNode
   buttonLabel?: string
@@ -16,6 +17,7 @@ interface AlertProps {
 
 function Alert({
   open,
+  setOpen,
   title,
   description,
   buttonLabel = '확인',
@@ -59,7 +61,7 @@ const AlertContainer = styled.div`
   background-color: ${colors.white};
   border-radius: 8px;
   overflow: hidden;
-  z-index: var(--alert-zindex);
+  z-index: 100000;
   width: 320px;
   padding: 24px;
   box-sizing: border-box;

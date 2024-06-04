@@ -4,7 +4,7 @@ import TableFrame from './TableFrame'
 import Spacing from '../shared/Spacing'
 import TopLine from './TopLine'
 import TextField from '../shared/TextField'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import GroupElements from './Group'
 import NoGroupBtn from './Register/NoGroup'
 import AlertCheck from './AlertCheck'
@@ -22,6 +22,8 @@ import {
   getKmInterest,
   getKwInterest,
 } from '@/remote/interest/getInterest'
+import Loader from '../map/sideMenu/searchListBox/listBox/icon/loader/Loader'
+import Image from 'next/image'
 
 export default function InterestProps({
   openModal,
@@ -37,8 +39,10 @@ export default function InterestProps({
   onButtonClick: () => void
 }) {
   const [openGroup, setOpenGroup] = useState(false)
+  const [step, setStep] = useState(1)
   const [interestData, setInterestData] = useState<interest | null>(null)
   const [formData, setFormData] = useState<InterestFormData>({
+    goodsId: '',
     infoId: '',
     caseNo: '',
     manageNo: '',
@@ -60,44 +64,79 @@ export default function InterestProps({
 
   const handleGetData = async (type: string, id: string) => {
     try {
-      let data
       switch (type) {
         case '1':
-          data = await getKmInterest(id)
-          setInterestData(data)
+          const responseKm = await getKmInterest(id)
+          if (responseKm.success) {
+            setInterestData(responseKm.data)
+            setFormData((prev) => {
+              return {
+                ...prev,
+                infoId: responseKm.data?.infoId,
+                caseNo: responseKm.data?.caseNo ?? '',
+                manageNo: responseKm.data?.manageNo ?? '',
+                mulSeq: responseKm.data?.mulSeq,
+                infoNo: responseKm.data?.infoNo ?? '',
+                oldInfoId: responseKm.data?.oldInfoId,
+                interestInfo: {
+                  category: responseKm.data?.interestInfo?.category ?? '',
+                  memo: responseKm.data?.interestInfo?.memo ?? '',
+                  starRating: responseKm.data?.interestInfo?.starRating ?? '',
+                },
+                title:
+                  responseKm.data?.caseNo !== undefined
+                    ? '사건번호'
+                    : '관리번호',
+                categories: responseKm.data?.categories,
+                smsNotificationYn: responseKm.data?.smsNotificationYn,
+                isWait: responseKm.data?.isWait,
+              }
+            })
+          }
           break
         case '2':
-          data = await getGmInterest(id)
-          setInterestData(data)
+          const responseGm = await getGmInterest(id)
+          if (responseGm.success) {
+            setInterestData(responseGm.data)
+            setFormData((prev) => {
+              return {
+                ...prev,
+                goodsId: responseGm.data?.goodsId,
+                manageNo: responseGm.data?.manageNo,
+                interestInfo: {
+                  category: responseGm.data?.interestInfo?.category ?? '미분류',
+                  memo: responseGm.data?.interestInfo?.memo ?? '',
+                  starRating: responseGm.data?.interestInfo?.starRating ?? '',
+                },
+                categories: responseGm.data?.categories,
+              }
+            })
+          }
           break
         case '4':
-          data = await getKwInterest(id)
-          setInterestData(data)
+          const responseKw = await getKwInterest(id)
+          if (responseKw.success) {
+            setInterestData(responseKw.data)
+            setFormData((prev) => {
+              return {
+                ...prev,
+                infoId: responseKw.data?.infoId,
+                caseNo: responseKw.data?.caseNo,
+                mulSeq: responseKw.data?.mulSeq,
+                oldInfoId: responseKw.data?.oldInfoId,
+                infoNo: responseKw.data?.infoNo,
+                interestInfo: {
+                  category: responseKw.data?.interestInfo?.category ?? '미분류',
+                  memo: responseKw.data?.interestInfo?.memo ?? '',
+                  starRating: responseKw.data?.interestInfo?.starRating ?? '',
+                },
+                categories: responseKw.data?.categories,
+              }
+            })
+          }
           break
         default:
           return { notFound: true }
-      }
-      if (interestData) {
-        setFormData((prev) => {
-          return {
-            ...prev,
-            infoId: data?.infoId,
-            caseNo: data?.caseNo ?? '',
-            manageNo: data?.manageNo ?? '',
-            mulSeq: data?.mulSeq,
-            infoNo: data?.infoNo ?? '',
-            oldInfoId: data?.oldInfoId,
-            interestInfo: {
-              category: data?.interestInfo?.category ?? '',
-              memo: data?.interestInfo?.memo ?? '',
-              starRating: data?.interestInfo?.starRating ?? '',
-            },
-            title: data?.caseNo !== undefined ? '사건번호' : '관리번호',
-            categories: handleCategorySort(data?.categories ?? ['']) ?? [''],
-            smsNotificationYn: data?.smsNotificationYn,
-            isWait: data?.isWait,
-          }
-        })
       }
     } catch (error) {
       console.error('Error fetching data:', error)
@@ -108,174 +147,252 @@ export default function InterestProps({
   }, [type, id])
 
   const { mutate: postInterest } = usePostInterest(type, formData)
-
-  const handleCategorySort = (categories: string[]) => {
-    if (interestData) {
-      let newCategory = []
-      for (const a of categories) {
-        if (a === '미분류') {
-          newCategory.unshift(a)
-        } else {
-          newCategory.push(a)
-        }
+  const handleDuplicatedGroupName = useCallback(
+    (name: string) => {
+      if (formData.categories.includes(name) && formData.isNewCategory) {
+        alert('이미 존재하는 그룹명입니다.')
+        return true
       }
-      return newCategory
+      return false
+    },
+    [formData.categories],
+  )
+  const handleForm = () => {
+    if (
+      formData.interestInfo.starRating === undefined ||
+      formData.interestInfo.starRating === ''
+    ) {
+      alert('중요도를 선택해주세요')
+    } else if (
+      (formData.isNewCategory && formData.interestInfo.category === '') ||
+      (formData.isNewCategory && formData.interestInfo.category === undefined)
+    ) {
+      alert('새 그룹명을 입력해주세요')
+    } else if (handleDuplicatedGroupName(formData.interestInfo.category)) {
+      return
+    } else {
+      if (window.confirm('관심물건을 등록하시겠습니까?')) {
+        postInterest()
+        setStep(2)
+      }
     }
   }
 
   return (
     <Dimmed>
-      <ModalContainer>
+      <ModalContainer
+        style={{
+          height:
+            interestData && interestData?.interestInfo !== null
+              ? '850px'
+              : '800px',
+        }}
+      >
         <Container>
-          {interestData && interestData?.interestInfo !== null ? (
-            <>
-              <TitlePage title="관심물건 수정/삭제" />
-              <Spacing size={10} />
-              <InfoTextPage />
-            </>
-          ) : (
-            <>
-              <TitlePage title="관심물건 등록" />
-            </>
-          )}
-          <Spacing size={10} />
-          <TopLine />
-          <TableFrame
-            title={interestData?.caseNo !== undefined ? '사건번호' : '관리번호'}
-            contents={
-              interestData?.caseNo !== undefined
-                ? interestData?.caseNo?.slice(0, 4) +
-                  '-' +
-                  interestData?.caseNo?.slice(5, interestData?.caseNo?.length)
-                : interestData?.manageNo
-            }
-          />
-          <TableFrame
-            title="중요도"
-            contents={
-              <GroupElements formData={formData} setFormData={setFormData} />
-            }
-            background="#F9F9F9"
-          />
-          <TableFrame
-            title="등록그룹"
-            contents={
-              <NoGroupBtn
-                openGroup={openGroup}
-                setOpenGroup={setOpenGroup}
-                formData={formData}
-                setFormData={setFormData}
-              />
-            }
-            background="#F9F9F9"
-            height="107"
-            openGroup={openGroup}
-            setOpenGroup={setOpenGroup}
-          />
-          <TableFrame
-            title="메모"
-            contents={
-              <TextField
-                maxLength={1500}
-                style={{
-                  width: '580px',
-                  height: '80px',
-                  border: '1px solid #BDBDBD',
-                  borderRadius: '5px',
-                  padding: '10px',
-                }}
-                onChange={(e) => {
-                  setFormData((prev) => {
-                    return {
-                      ...prev,
-                      interestInfo: {
-                        ...prev.interestInfo,
-                        memo: e.target.value,
-                      },
+          {step === 1 ? (
+            interestData && interestData === null ? (
+              <Loader />
+            ) : (
+              <>
+                {interestData?.interestInfo !== null ? (
+                  <>
+                    <Flex justify="space-between">
+                      <TitlePage title="관심물건 수정/삭제" />
+                      <Image
+                        src={
+                          'https://cdn3.iconfinder.com/data/icons/user-interface-169/32/cross-512.png'
+                        }
+                        alt="close"
+                        width={30}
+                        height={30}
+                        onClick={() => {
+                          onButtonClick()
+                        }}
+                        style={{
+                          cursor: 'pointer',
+                        }}
+                      />
+                    </Flex>
+                    <Spacing size={10} />
+                    <InfoTextPage />
+                  </>
+                ) : (
+                  <>
+                    <Flex justify="space-between">
+                      <TitlePage title="관심물건 등록" />
+                      <Image
+                        src={
+                          'https://cdn3.iconfinder.com/data/icons/user-interface-169/32/cross-512.png'
+                        }
+                        alt="close"
+                        width={30}
+                        height={30}
+                        onClick={() => {
+                          onButtonClick()
+                        }}
+                        style={{
+                          cursor: 'pointer',
+                        }}
+                      />
+                    </Flex>
+                  </>
+                )}
+                <Spacing size={10} />
+                <TopLine />
+                <TableFrame
+                  title={
+                    interestData?.caseNo !== undefined ? '사건번호' : '관리번호'
+                  }
+                  contents={
+                    interestData?.caseNo !== undefined
+                      ? interestData?.caseNo?.slice(0, 4) +
+                        '-' +
+                        interestData?.caseNo?.slice(
+                          5,
+                          interestData?.caseNo?.length,
+                        )
+                      : interestData?.manageNo
+                  }
+                />
+                <TableFrame
+                  title="중요도"
+                  contents={
+                    <GroupElements
+                      formData={formData}
+                      setFormData={setFormData}
+                    />
+                  }
+                  background="#F9F9F9"
+                />
+                <TableFrame
+                  title="등록그룹"
+                  contents={
+                    <NoGroupBtn
+                      openGroup={openGroup}
+                      setOpenGroup={setOpenGroup}
+                      formData={formData}
+                      setFormData={setFormData}
+                      handleDuplicatedGroupName={handleDuplicatedGroupName}
+                    />
+                  }
+                  background="#F9F9F9"
+                  height="107"
+                  openGroup={openGroup}
+                  setOpenGroup={setOpenGroup}
+                />
+                <TableFrame
+                  title="메모"
+                  contents={
+                    <TextField
+                      maxLength={1500}
+                      style={{
+                        width: '600px',
+                        height: '100px',
+                        border: '1px solid #BDBDBD',
+                        borderRadius: '5px',
+                      }}
+                      onChange={(e) => {
+                        setFormData((prev) => {
+                          return {
+                            ...prev,
+                            interestInfo: {
+                              ...prev.interestInfo,
+                              memo: e.target.value,
+                            },
+                          }
+                        })
+                      }}
+                    />
+                  }
+                  height="107"
+                  background="#F9F9F9"
+                />
+                {type === '1' && (
+                  <>
+                    <Spacing size={45} />
+                    <TitlePage title="SNS 알림 서비스" />
+                    <Spacing size={20} />
+                    <AlertCheck formData={formData} setFormData={setFormData} />
+                    <Spacing size={10} />
+                    <Flex justify="flex-end">
+                      <Text
+                        css={InfoText}
+                        style={{
+                          color: '#FF0000',
+                        }}
+                      >
+                        {'고객라운지 > 환경설정 > 알림설정'}
+                      </Text>
+                      &nbsp;
+                      <Text css={InfoText}>
+                        {' 에서 더욱 자세한 설정이 가능합니다'}
+                      </Text>
+                    </Flex>
+                  </>
+                )}
+                <Flex
+                  style={{
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    gap: '10px',
+                  }}
+                >
+                  <Button
+                    css={RegisterBtn}
+                    onClick={() => {
+                      handleForm()
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: '#FFF',
+                        fontFamily: 'SUIT',
+                        fontSize: '18px',
+                        fontStyle: 'normal',
+                        fontWeight: 700,
+                        lineHeight: '135%',
+                        letterSpacing: '-0.36px',
+                      }}
+                    >
+                      {interestData && interestData?.interestInfo !== null
+                        ? '관심물건 수정'
+                        : '관심물건 등록'}
+                    </Text>
+                  </Button>
+                  <CloseBtn
+                    isUpdate={
+                      (interestData && interestData?.interestInfo !== null) ||
+                      false
                     }
-                  })
-                }}
-              />
-            }
-            height="96"
-            background="#F9F9F9"
-          />
-          <Spacing size={65} />
-          <TitlePage title="SNS 알림 서비스" />
-          <Spacing size={20} />
-          <AlertCheck formData={formData} setFormData={setFormData} />
-          <Spacing size={10} />
-          <Flex justify="flex-end">
-            <Text
-              css={InfoText}
-              style={{
-                color: '#FF0000',
-              }}
-            >
-              {'고객라운지 > 환경설정 > 알림설정'}
-            </Text>
-            &nbsp;
-            <Text css={InfoText}>{' 에서 더욱 자세한 설정이 가능합니다'}</Text>
-          </Flex>
-          <Flex
-            style={{
-              position: 'absolute',
-              bottom: '30px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              gap: '10px',
-            }}
-          >
-            <Button
-              css={RegisterBtn}
-              onClick={() => {
-                postInterest()
-              }}
-            >
-              <Text
-                style={{
-                  color: '#FFF',
-                  fontFamily: 'SUIT',
-                  fontSize: '18px',
-                  fontStyle: 'normal',
-                  fontWeight: 700,
-                  lineHeight: '135%',
-                  letterSpacing: '-0.36px',
-                }}
-              >
-                {interestData && interestData?.interestInfo !== null
-                  ? '관심물건 수정'
-                  : '관심물건 등록'}
-              </Text>
-            </Button>
-            <CloseBtn
-              isUpdate={
-                (interestData && interestData?.interestInfo !== null) || false
-              }
-              onClick={() => {
-                onButtonClick()
-              }}
-            >
-              <Text
-                style={{
-                  color:
-                    interestData && interestData?.interestInfo !== null
-                      ? '#F00'
-                      : '#6D6E70',
-                  fontFamily: 'SUIT',
-                  fontSize: '18px',
-                  fontStyle: 'normal',
-                  fontWeight: 700,
-                  lineHeight: '135%',
-                  letterSpacing: '-0.36px',
-                }}
-              >
-                {interestData && interestData?.interestInfo !== null
-                  ? '삭제'
-                  : '닫기'}
-              </Text>
-            </CloseBtn>
-          </Flex>
+                    onClick={() => {
+                      onButtonClick()
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color:
+                          interestData && interestData?.interestInfo !== null
+                            ? '#F00'
+                            : '#6D6E70',
+                        fontFamily: 'SUIT',
+                        fontSize: '18px',
+                        fontStyle: 'normal',
+                        fontWeight: 700,
+                        lineHeight: '135%',
+                        letterSpacing: '-0.36px',
+                      }}
+                    >
+                      {interestData && interestData?.interestInfo !== null
+                        ? '삭제'
+                        : '닫기'}
+                    </Text>
+                  </CloseBtn>
+                </Flex>
+              </>
+            )
+          ) : null}
         </Container>
       </ModalContainer>
     </Dimmed>

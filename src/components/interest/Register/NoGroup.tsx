@@ -12,6 +12,7 @@ interface NoGroupBtnProps {
   setOpenGroup: React.Dispatch<React.SetStateAction<boolean>>
   formData: InterestFormData
   setFormData: React.Dispatch<React.SetStateAction<InterestFormData>>
+  handleDuplicatedGroupName: (groupName: string) => void
 }
 
 export default function NoGroupBtn({
@@ -19,8 +20,9 @@ export default function NoGroupBtn({
   setOpenGroup,
   formData,
   setFormData,
+  handleDuplicatedGroupName,
 }: NoGroupBtnProps) {
-  const [isFocus, setIsFocus] = useState(true)
+  const [isFocus, setIsFocus] = useState(false)
   const [groupName, setGroupName] = useState('')
   const categoriesFromIndex5 = formData?.categories?.slice(4) || []
   const rows = []
@@ -28,23 +30,47 @@ export default function NoGroupBtn({
     rows.push(categoriesFromIndex5.slice(i, i + 4))
   }
 
+  const handleCategorySort = (categories: string[]) => {
+    if (formData) {
+      let newCategory = []
+      for (const a of categories) {
+        if (a === '미분류') {
+          newCategory.unshift(a)
+        } else {
+          newCategory.push(a)
+        }
+      }
+      return newCategory
+    }
+  }
   useEffect(() => {
     if (formData.categories.length === 0) {
       setGroupName('미분류')
-      setFormData((prev) => {
-        return {
-          ...prev,
-          isNewCategory: false,
-          interestInfo: {
-            ...prev.interestInfo,
-            category: '미분류',
-          },
-        }
-      })
+      setFormData((prev) => ({
+        ...prev,
+        isNewCategory: false,
+        categories: ['미분류'],
+        interestInfo: {
+          ...prev.interestInfo,
+          category: '미분류',
+        },
+      }))
     } else {
-      setGroupName(formData.interestInfo.category)
+      const sortedCategories = handleCategorySort(formData.categories)
+      if (sortedCategories?.join(',') !== formData.categories.join(',')) {
+        setFormData((prev) => ({
+          ...prev,
+          categories: sortedCategories ?? [],
+        }))
+      }
+      setGroupName(
+        formData.interestInfo.category === ''
+          ? '미분류'
+          : formData.interestInfo.category,
+      )
     }
   }, [formData.categories])
+
   return (
     <div
       style={{
@@ -56,12 +82,20 @@ export default function NoGroupBtn({
         <Flex
           direction="row"
           style={{
-            width: '470px',
+            width: '510px',
           }}
         >
           {isFocus ? (
             <InputStyle
               placeholder="그룹이름"
+              onClick={() => {
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    isNewCategory: true,
+                  }
+                })
+              }}
               onChange={(e) => {
                 setFormData((prev) => {
                   return {
@@ -74,16 +108,30 @@ export default function NoGroupBtn({
                   }
                 })
                 setGroupName(e.target.value)
+                handleDuplicatedGroupName(e.target.value)
               }}
             />
           ) : (
             <ButtonStyle
               onClick={() => {
                 setIsFocus(true)
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    isNewCategory: true,
+                  }
+                })
               }}
             >
-              <Text css={ButtonTextStyle}>
-                {isFocus ? '미분류' : groupName}
+              <Text
+                css={ButtonTextStyle}
+                style={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {isFocus ? '' : groupName}
               </Text>
               <Flex>
                 <svg
@@ -137,8 +185,6 @@ export default function NoGroupBtn({
           </Text>
         </Flex>
         <Flex
-          justify="end"
-          align="end"
           style={{
             cursor: 'pointer',
             display: 'flex',
@@ -161,25 +207,32 @@ export default function NoGroupBtn({
           flexDirection: 'column',
         }}
       >
-        <ContainerStyle>
+        <ContainerStyle
+          style={{
+            gap: '40px',
+          }}
+        >
           {formData?.categories?.slice(0, 4).map((category, index) => (
             <Flex
               key={index}
               style={{
                 width: '110px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
+                gap: '5px',
+                justifyContent: 'start',
+                alignItems: 'center',
               }}
             >
               <Input
                 type="radio"
                 name="newGroup"
+                defaultChecked={
+                  !isFocus && groupName === '미분류' ? true : false
+                }
+                checked={!isFocus && groupName === category ? true : false}
                 style={{
                   width: '15px',
                   height: '15px',
                   marginTop: '5px',
-                  marginRight: '5px',
                 }}
                 onClick={() => {
                   setIsFocus(false)
@@ -199,7 +252,17 @@ export default function NoGroupBtn({
                   })
                 }}
               />
-              <Text css={NewGroupRadioStyle}>{category}</Text>
+              <Text
+                css={NewGroupRadioStyle}
+                style={{
+                  width: '90px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {category}
+              </Text>
             </Flex>
           ))}
         </ContainerStyle>
@@ -210,17 +273,32 @@ export default function NoGroupBtn({
             }}
           >
             {rows.map((row, index) => (
-              <ContainerStyle key={index}>
+              <ContainerStyle
+                key={index}
+                style={{
+                  gap: '40px',
+                }}
+              >
                 {row.map((category, index) => (
-                  <CategoryFlex key={index}>
+                  <CategoryFlex
+                    key={index}
+                    style={{
+                      width: '110px',
+                      gap: '5px',
+                      justifyContent: 'start',
+                      alignItems: 'center',
+                    }}
+                  >
                     <Input
                       type="radio"
                       name="newGroup"
+                      checked={
+                        !isFocus && groupName === category ? true : false
+                      }
                       style={{
                         width: '15px',
                         height: '15px',
                         marginTop: '5px',
-                        marginRight: '5px',
                       }}
                       onClick={() => {
                         setIsFocus(false)
@@ -250,7 +328,17 @@ export default function NoGroupBtn({
                         })
                       }}
                     />
-                    <Text css={NewGroupRadioStyle}>{category}</Text>
+                    <Text
+                      css={NewGroupRadioStyle}
+                      style={{
+                        width: '90px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {category}
+                    </Text>
                   </CategoryFlex>
                 ))}
               </ContainerStyle>
@@ -263,18 +351,17 @@ export default function NoGroupBtn({
 }
 
 const ContainerStyle = styled.div`
-  width: 570px;
+  width: 600px;
   height: 100%;
   flex-direction: row;
   position: relative;
   display: flex;
-  justify-content: space-between;
-  flex: 1;
 `
 
 const ButtonStyle = styled.button`
   display: flex;
   width: 135px;
+  height: 30px;
   padding: 4px 8px 4px 4px;
   justify-content: center;
   align-items: center;

@@ -24,7 +24,7 @@ export const usePostInterest = (type: string, formData: InterestFormData) => {
           })
         case '2':
           return postGmInterest({
-            goodsId: formData.infoId,
+            goodsId: formData.goodsId!,
             manageNo: formData.manageNo!,
             isNewCategory: formData.isNewCategory,
             interestInfo: formData.interestInfo,

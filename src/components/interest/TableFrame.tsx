@@ -38,7 +38,12 @@ export default function TableFrame({
       >
         <Text css={CategoryTextStyle}>{title}</Text>
       </CategoryFrame>
-      <ContentsFrame height={height}>
+      <ContentsFrame
+        height={height}
+        style={{
+          overflowY: 'auto',
+        }}
+      >
         <Text css={ContentsTextStyle}>{contents}</Text>
         {title === '등록그룹' ? <></> : null}
         {starRating !== undefined && starRating !== null
@@ -90,6 +95,7 @@ const ContentsFrame = styled.div<{ height?: string }>`
   display: flex;
   width: 640px;
   min-height: ${({ height }) => height + 'px' || '65px'};
+  max-height: 170px;
   padding: ${({ height }) => (height === '107' ? '10px' : '21px 8px')};
   align-items: center;
   gap: 10px;

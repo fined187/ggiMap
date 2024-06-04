@@ -154,15 +154,15 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-              <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 100;">
+              <div style="flex-direction: row; display: flex; margin-top: -30px;">
                 ${item.interest === 'Y' ? InterestIcon(item, item.type) : ''}
                 ${
-                  item.interest != 'Y' && item.share === 'Y' && originCount < 2
+                  item.interest !== 'Y' && item.share === 'Y' && originCount < 2
                     ? ShareIcon(item, item.type)
                     : ''
                 }
                 ${
-                  item.interest != 'Y' && originCount > 1
+                  item.interest !== 'Y' && originCount > 1
                     ? PnuCountIcon(item, originCount, item.type, isSame)
                     : ''
                 }

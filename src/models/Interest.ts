@@ -21,6 +21,7 @@ export interface interest {
 
 export interface InterestFormData {
   infoId: string
+  goodsId?: string
   caseNo?: string
   manageNo?: string
   mulSeq: string

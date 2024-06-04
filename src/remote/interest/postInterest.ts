@@ -56,6 +56,10 @@ export const postKwInterest = async (data: InterestKwFormData) => {
     const response = await axios.post(`ggi/api/interest/map/kw`, data)
     if (response.data.success) {
       return response.data.data
+    } else {
+      if (response.data.code === 20001) {
+        alert('해당 그룹명이 이미 존재합니다')
+      }
     }
   } catch (error) {
     console.error(error)
