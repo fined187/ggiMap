@@ -137,6 +137,24 @@ export default function InterestProps({
             })
           }
           break
+        case '3':
+          const responseGG = await getGmInterest(id)
+          if (responseGG.success) {
+            setInterestData(responseGG.data)
+            setFormData((prev) => {
+              return {
+                ...prev,
+                goodsId: responseGG.data?.goodsId,
+                manageNo: responseGG.data?.manageNo,
+                interestInfo: {
+                  category: responseGG.data?.interestInfo?.category ?? '미분류',
+                  memo: responseGG.data?.interestInfo?.memo ?? '',
+                  starRating: responseGG.data?.interestInfo?.starRating ?? '',
+                },
+                categories: responseGG.data?.categories,
+              }
+            })
+          }
         case '4':
           const responseKw = await getKwInterest(id)
           if (responseKw.success) {

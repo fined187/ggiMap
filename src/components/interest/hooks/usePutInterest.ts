@@ -34,6 +34,13 @@ export const usePutInterest = (
             isNewCategory: formData.isNewCategory,
             interestInfo: formData.interestInfo,
           })
+        case '3':
+          return putGmInterest({
+            goodsId: formData.goodsId!,
+            manageNo: formData.manageNo!,
+            isNewCategory: formData.isNewCategory,
+            interestInfo: formData.interestInfo,
+          })
         case '4':
           return putKwInterest({
             infoId: formData.infoId,

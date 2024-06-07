@@ -16,6 +16,8 @@ export const useDeleteInterest = (type: string, formData: InterestFormData) => {
           )
         case '2':
           return deleteGmInterest(formData.goodsId!)
+        case '3':
+          return deleteGmInterest(formData.goodsId!)
         case '4':
           return deleteKwInterest(formData.oldInfoId + formData.caseNo)
         default:

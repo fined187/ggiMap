@@ -1,4 +1,5 @@
 export interface ItemDetail {
+  id?: string
   idCode?: string
   caseNo?: string
   goodsID?: string

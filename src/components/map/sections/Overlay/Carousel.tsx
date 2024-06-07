@@ -19,8 +19,7 @@ import { colors } from '@/styles/colorPalette'
 import MiniMap from './MiniMap'
 import NoImage from './icon/NoImage'
 import NextImageWithFallback from '../../NextImageWithFallback'
-import { useRecoilState } from 'recoil'
-import { mapAtom } from '@/store/atom/map'
+import { useInterestContext } from '@/contexts/useModalContext'
 
 export default function Carousel({
   clickedInfo,
@@ -35,12 +34,18 @@ export default function Carousel({
   setClickedInfo?: Dispatch<SetStateAction<ItemDetail[] | null>>
 }) {
   const [image, setImage] = useState<string[]>([])
+  const [openModal, setOpenModal] = useState<boolean>(false)
   const pathUrl = usePathUrl(clickedItem?.type || 1)
   useEffect(() => {
     if (clickedInfo) {
       setImage(clickedInfo.map((info) => pathUrl + info?.path ?? ''))
     }
   }, [pathUrl, clickedItem, clickedInfo])
+  const { open } = useInterestContext()
+
+  const onButtonClick = () => {
+    setOpenModal(false)
+  }
   return (
     <div
       style={{
@@ -151,11 +156,27 @@ export default function Carousel({
                         right: 14,
                       }}
                       onClick={() => {
-                        window.open(
-                          `http://localhost:3000/interest?type=${clickedInfo[index]?.type}&id=${clickedInfo[index]?.idCode}`,
-                          `_blank`,
-                          'width=800, height=800',
-                        )
+                        if (openModal) {
+                          close()
+                        } else {
+                          open({
+                            type:
+                              (clickedInfo &&
+                                clickedInfo[index]?.type?.toString()) ||
+                              '1',
+                            id:
+                              clickedInfo && clickedInfo[index]?.type === 1
+                                ? clickedInfo[index]?.id!
+                                : clickedInfo[index]?.type === 2 || 3
+                                ? clickedInfo[index]?.goodsID!
+                                : clickedInfo[index]?.id!,
+                            openModal: openModal,
+                            setOpenModal: setOpenModal,
+                            onButtonClick: () => {
+                              onButtonClick()
+                            },
+                          })
+                        }
                       }}
                     >
                       <Interest
@@ -196,6 +217,23 @@ export default function Carousel({
                         top: 14,
                         right: 14,
                         zIndex: 1,
+                      }}
+                      onClick={() => {
+                        if (openModal) {
+                          close()
+                        } else {
+                          open({
+                            type:
+                              clickedInfo &&
+                              clickedInfo[index]?.type?.toString()!,
+                            id: clickedInfo && clickedInfo[index]?.id!,
+                            openModal: openModal,
+                            setOpenModal: setOpenModal,
+                            onButtonClick: () => {
+                              onButtonClick()
+                            },
+                          })
+                        }
                       }}
                     >
                       <Interest

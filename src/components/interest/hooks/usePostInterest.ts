@@ -34,6 +34,13 @@ export const usePostInterest = (
             isNewCategory: formData.isNewCategory,
             interestInfo: formData.interestInfo,
           })
+        case '3':
+          return postGmInterest({
+            goodsId: formData.goodsId!,
+            manageNo: formData.manageNo!,
+            isNewCategory: formData.isNewCategory,
+            interestInfo: formData.interestInfo,
+          })
         case '4':
           return postKwInterest({
             infoId: formData.infoId,
