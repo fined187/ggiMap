@@ -236,6 +236,148 @@ function MapComponent({ token, type, idCode }: Props) {
           }
         }
       } else {
+        if (auth.role[0] === 'ROLE_USER') {
+          if (idCode) {
+            try {
+              if (type === '1') {
+                const response = await getKmItem(idCode)
+                if (response?.data.success) {
+                  setFormData((prev) => {
+                    return {
+                      ...prev,
+                      km: true,
+                      ekm: response.data.data.winAmt > 0 ? true : false,
+                      awardedMonths: 60,
+                    }
+                  })
+                  setSelectedData(response.data.data)
+                  setAuth((prev) => {
+                    return {
+                      ...prev,
+                      idCode: idCode,
+                      type: type,
+                    }
+                  })
+                  setUser((prev) => {
+                    return {
+                      ...prev,
+                      lng: response.data.data.x,
+                      lat: response.data.data.y,
+                    }
+                  })
+                }
+              } else if (type === '2' || type === '3') {
+                const response = await getGmItem(idCode)
+                if (response?.data.success) {
+                  setFormData((prev) => {
+                    return {
+                      ...prev,
+                      gm: response.data.data.type === 2 ? true : false,
+                      gg: response.data.data.type === 3 ? true : false,
+                      egm:
+                        response.data.data.type === 2 &&
+                        response.data.data.winAmt > 0
+                          ? true
+                          : false,
+                      egg:
+                        response.data.data.type === 3 &&
+                        response.data.data.winAmt > 0
+                          ? true
+                          : false,
+                      awardedMonths: 60,
+                    }
+                  })
+                  setSelectedData(response.data.data)
+                  setAuth((prev) => {
+                    return {
+                      ...prev,
+                      idCode: idCode,
+                      type: type,
+                    }
+                  })
+                  setUser((prev) => {
+                    return {
+                      ...prev,
+                      lng: response.data.data.x,
+                      lat: response.data.data.y,
+                    }
+                  })
+                }
+              } else if (type === '4') {
+                const response = await getKwItem(idCode)
+                if (response?.data.success) {
+                  setFormData((prev) => {
+                    return {
+                      ...prev,
+                      kw: true,
+                    }
+                  })
+                  setSelectedData(response.data.data)
+                  setAuth((prev) => {
+                    return {
+                      ...prev,
+                      idCode: idCode,
+                      type: type,
+                    }
+                  })
+                  setUser((prev) => {
+                    return {
+                      ...prev,
+                      lng: response.data.data.x,
+                      lat: response.data.data.y,
+                    }
+                  })
+                }
+              } else {
+                switch (type) {
+                  case '1':
+                    setFormData((prev) => {
+                      return {
+                        ...prev,
+                        km: true,
+                      }
+                    })
+                    break
+                  case '2':
+                    setFormData((prev) => {
+                      return {
+                        ...prev,
+                        gm: true,
+                      }
+                    })
+                    break
+                  case '3':
+                    setFormData((prev) => {
+                      return {
+                        ...prev,
+                        gg: true,
+                      }
+                    })
+                    break
+                  case '4':
+                    setFormData((prev) => {
+                      return {
+                        ...prev,
+                        kw: true,
+                      }
+                    })
+                    break
+                  default:
+                    break
+                }
+              }
+            } catch (error) {
+              console.error(error)
+            }
+          }
+        } else {
+          if (
+            window &&
+            window.confirm('지도검색은 유료서비스 입니다. 로그인후 이용하세요')
+          ) {
+            window.close()
+          }
+        }
       }
     } catch (error) {
       console.error(error)
