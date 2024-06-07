@@ -18,6 +18,15 @@ export default function Bottom({
   clickedItem,
   nowIndex,
 }: BottomProps) {
+  const handleDetailPage = (type: number, idCode: string) => {
+    if (type === 1) {
+      return `https://www.ggi.co.kr/kyungmae/mulgun_detail_popup_h.asp?idcode=${idCode}`
+    } else if (type === 2 || type === 3) {
+      return `https://www.ggi.co.kr/gongmae/GongMae_popup.asp?goodsid=${idCode}&new=new`
+    } else if (type === 4) {
+      return `https://www.ggi.co.kr/wait/mulgun_detail_popup_w.asp?idcode=${idCode}&new=new&viewchk=P`
+    }
+  }
   return (
     <div
       style={{
@@ -72,6 +81,17 @@ export default function Bottom({
             position: 'absolute',
             right: 0,
             top: '4px',
+          }}
+          onClick={() => {
+            const type = clickedInfo && (clickedInfo[nowIndex]?.type as number)
+            const goodsID =
+              clickedInfo &&
+              (clickedInfo[nowIndex]?.type === 2 ||
+                clickedInfo[nowIndex]?.type === 3)
+                ? clickedInfo[nowIndex]?.goodsID
+                : clickedInfo && clickedInfo[nowIndex]?.idCode
+            const url = handleDetailPage(type ?? 1, goodsID ?? '')
+            window.open(url, '_blank', 'width=1000, height=800')
           }}
         >
           <svg

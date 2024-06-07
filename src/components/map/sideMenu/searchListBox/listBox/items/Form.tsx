@@ -84,6 +84,17 @@ function Form({ item, index }: ItemProps) {
   const onButtonClick = () => {
     setOpenModal(false)
   }
+
+  const handleDetailPage = (idCode: string) => {
+    if (item?.type === 1) {
+      return `https://www.ggi.co.kr/kyungmae/mulgun_detail_popup_h.asp?idcode=${idCode}`
+    } else if (item?.type === 2 || item?.type === 3) {
+      return `https://www.ggi.co.kr/gongmae/GongMae_popup.asp?goodsid=${idCode}&new=new`
+    } else if (item?.type === 4) {
+      return `https://www.ggi.co.kr/wait/mulgun_detail_popup_w.asp?idcode=${idCode}&new=new&viewchk=P`
+    }
+  }
+
   return (
     <div
       onMouseOver={() => {
@@ -93,6 +104,15 @@ function Form({ item, index }: ItemProps) {
       }}
       onMouseOut={() => {
         removeMarker()
+      }}
+      onClick={() => {
+        if (window) {
+          window.open(
+            handleDetailPage(item?.idCode ?? ''),
+            '_blank',
+            'width=1000, height=800',
+          )
+        }
       }}
     >
       {item?.type === 1 || item?.type === 2 || item?.type === 3 ? (

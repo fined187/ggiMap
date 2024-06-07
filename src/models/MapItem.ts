@@ -60,6 +60,7 @@ export interface MapCountsResponse {
 export interface MapItems {
   type: number
   id: string
+  idCode: string
   caseNo: string
   appraisalAmt: number
   minAmt: number

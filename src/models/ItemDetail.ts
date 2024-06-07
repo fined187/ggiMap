@@ -3,7 +3,7 @@ export interface ItemDetail {
   idCode?: string
   caseNo?: string
   goodsID?: string
-  type?: number
+  type: number
   manageNo?: string
   path?: string
   shortAddress: string

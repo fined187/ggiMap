@@ -44,7 +44,7 @@ export function NumToHan(num: number) {
     } else if (shipMan.toString() === '0') {
       return `${baekMan}백만`
     } else {
-      return `${baekMan}.${shipMan}`
+      return `${baekMan}.${shipMan}백만`
     }
   } else if (num >= 100000) {
     //  10만 이상

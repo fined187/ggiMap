@@ -44,7 +44,6 @@ function MapComponent({ token, type, idCode }: Props) {
   const [selectedData, setSelectedData] = useState<
     SelectedKmItem | SelectedGmItem | SelectedGgItem | SelectedKwItem | null
   >(null)
-  const [path, setPath] = useState<number[][]>([])
   const [formData, setFormData] = useState<Form>({
     usageCodes: '',
     ids: ['2', '3', '4', '5', '6', '7', '9', '10', '11', '12', '13', '14'],
