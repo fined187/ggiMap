@@ -20,6 +20,8 @@ import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
 import useDebounce from '@/components/shared/hooks/useDebounce'
 import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
+import { authInfo } from '@/store/atom/auth'
+import getPolypath from '@/remote/map/selected/getPolypath'
 declare global {
   interface Window {
     naver: any
@@ -86,16 +88,17 @@ export default function GGIMap({
   center,
 }: Props) {
   const [user, setUser] = useRecoilState(userAtom)
+  const [auth, setAuth] = useRecoilState(authInfo)
   const { mutate: getMapItems } = usePostMapItems(formData)
   const { mutate: getMapCounts } = useMapCounts(
     formData,
     setMapCount as Dispatch<SetStateAction<MapCountsResponse[]>>,
   )
+  const [path, setPath] = useState<number[][]>([])
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
   const mapRef = useRef<NaverMap | null>(null)
   const debouncedSearch = useDebounce(formData, 250)
-  const panoRef = useRef<HTMLDivElement | null>(null)
   const [isPanoVisible, setIsPanoVisible] = useState(false)
   const [clickedMarker, setClickedMarker] = useState<naver.maps.Marker | null>(
     null,
@@ -255,6 +258,20 @@ export default function GGIMap({
     getMapItems()
   }, [setFormData, getMapItems])
 
+  const handleGetPolyPath = async () => {
+    if (user.lat && user.lng) {
+      try {
+        const response = await getPolypath(
+          user?.lng as number,
+          user?.lat as number,
+        )
+        setPath(response)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
   useEffect(() => {
     return () => {
       mapRef.current?.destroy()
@@ -262,10 +279,15 @@ export default function GGIMap({
   }, [])
 
   useEffect(() => {
-    if (user.address) {
+    if (user.address && auth.idCode === '') {
       searchAddrToCoord(user.address)
+    } else if (user.address === '' && auth.idCode !== '') {
+      mapRef.current?.setCenter({
+        lat: user.lat,
+        lng: user.lng,
+      })
     }
-  }, [user.address])
+  }, [user.address, auth.idCode, user.lat, user.lng])
 
   useEffect(() => {
     if (debouncedSearch) {
@@ -279,6 +301,38 @@ export default function GGIMap({
       }
     }
   }, [debouncedSearch, mapRef.current?.getZoom()])
+
+  useEffect(() => {
+    handleGetPolyPath()
+  }, [user.lat, user.lng])
+
+  useEffect(() => {
+    if (mapRef.current) {
+      const drawPolyline = () => {
+        if (auth.idCode === '' || path?.length === 0) return
+        console.log(path)
+        let polyline = new window.naver.maps.Polyline({
+          map: mapRef.current,
+          path: path.map((item) => {
+            return new window.naver.maps.LatLng(item[0], item[1])
+          }),
+          fillColor: '#ff0000',
+          fillOpacity: 0.3,
+          strokeColor: '#ff0000',
+          strokeOpacity: 0.6,
+          strokeWeight: 3,
+          zIndex: 100,
+        })
+        polyline.setMap(mapRef.current)
+      }
+      drawPolyline()
+      // return () => {
+      //   if (polyline) {
+      //     polyline.setMap(null)
+      //   }
+      // }
+    }
+  }, [path, auth.idCode])
 
   return (
     <>

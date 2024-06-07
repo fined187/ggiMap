@@ -12,7 +12,7 @@ export const useDeleteInterest = (type: string, formData: InterestFormData) => {
       switch (type) {
         case '1':
           return deleteKmInterest(
-            formData.oldInfoId + formData.caseNo + formData.infoId,
+            formData.oldInfoId + formData.caseNo + formData.infoNo,
           )
         case '2':
           return deleteGmInterest(formData.goodsId!)

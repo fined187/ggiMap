@@ -191,7 +191,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
           ),
       )
 
-      if (formData.ekm) {
+      if (formData.ekm || formData.egm || formData.egg) {
         if (duplicatedItems.length > 0) {
           setDuplicatedItems(duplicatedItems)
           // winYn이 'Y'인 아이템의 x, y 좌표 리스트 만들기
@@ -255,6 +255,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       }
     }
   }, [mapItems, setMapItems, setDuplicatedItems, formData])
+
   useEffect(() => {
     handleSyncMap()
   }, [clickedMapType])

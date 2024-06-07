@@ -1,9 +1,8 @@
 import { NaverMap } from '@/models/Map'
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MapItem } from '@/models/MapItem'
 import getPolypath from '@/remote/map/selected/getPolypath'
 import { ItemDetail } from '@/models/ItemDetail'
-import { ZoomControl } from 'react-kakao-maps-sdk'
 
 declare global {
   interface Window {
@@ -97,7 +96,6 @@ export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
   useEffect(() => {
     const drawPolyline = () => {
       if (path?.length === 0 || !mapRef.current) return
-
       let polyline = new window.kakao.maps.Polyline({
         path: path?.map(
           (coord) => new window.kakao.maps.LatLng(coord[0], coord[1]),

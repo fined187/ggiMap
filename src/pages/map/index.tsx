@@ -1,6 +1,4 @@
-import Map from '@/components/map/sections/MapSection'
 import { Form } from '@/models/Form'
-import { mapItem } from '@/models/api/mapItem'
 import getAddress from '@/remote/map/auth/getAddress'
 import { userAtom } from '@/store/atom/postUser'
 import { GetServerSidePropsContext } from 'next'
@@ -11,13 +9,27 @@ import MapSection from '@/components/map/sections/MapSection'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { authInfo } from '@/store/atom/auth'
+import {
+  getGmItem,
+  getKmItem,
+  getKwItem,
+} from '@/remote/map/selectedItem/getItem'
+import {
+  SelectedGgItem,
+  SelectedGmItem,
+  SelectedKmItem,
+  SelectedKwItem,
+} from '@/models/SelectedItem'
+import getPolypath from '@/remote/map/selected/getPolypath'
 
 interface Props {
   data?: {
     userId: string | null
     authorities: string[] | null
   }
-  token: string | null
+  token?: string | null
+  type?: string | null
+  idCode?: string | null
 }
 declare global {
   interface Window {
@@ -25,10 +37,14 @@ declare global {
   }
 }
 
-function MapComponent({ token }: Props) {
+function MapComponent({ token, type, idCode }: Props) {
   const { data: map } = useSWR(MAP_KEY)
   const [user, setUser] = useRecoilState(userAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
+  const [selectedData, setSelectedData] = useState<
+    SelectedKmItem | SelectedGmItem | SelectedGgItem | SelectedKwItem | null
+  >(null)
+  const [path, setPath] = useState<number[][]>([])
   const [formData, setFormData] = useState<Form>({
     usageCodes: '',
     ids: ['2', '3', '4', '5', '6', '7', '9', '10', '11', '12', '13', '14'],
@@ -42,7 +58,7 @@ function MapComponent({ token }: Props) {
     x2: 1,
     y2: 1,
     awardedMonths: 0,
-    km: true,
+    km: false,
     kw: false,
     gm: false,
     gg: false,
@@ -72,38 +88,155 @@ function MapComponent({ token }: Props) {
     }
   }
 
-  async function handleToken(token: string) {
-    setAuth((prev) => {
-      return {
-        ...prev,
-        isLogin: true,
-        isAuth: true,
-        token: token,
-      }
-    })
+  const handleParameters = async (
+    token?: string,
+    type?: string,
+    idCode?: string,
+  ) => {
     try {
-      const response = await axios.post(
-        `/ggi/api/auth/asp`,
-        {},
-        {
-          headers: {
-            'Content-Type': 'Application/json',
-            Api_Key: 'iyv0Lk8v.GMiSXcZDDSRLquqAm7M9YHVwTF4aY8zr',
-            Authorization:
-              'aspeyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiZXN0IiwiaWF0IjoxNzE3MDI4MDYxLCJleHAiOjE3MjIyMTIwNjF9.mXoaGc2NOUl4P1ZVrkKHeU3oHIOV8Lp8Iza0f9FtZNmiy1U1OL7j6UR19JQeorjNmDsILQUi15WVysNVh0fXqA',
+      if (token) {
+        const response = await axios.post(
+          `/ggi/api/auth/asp`,
+          {},
+          {
+            headers: {
+              'Content-Type': 'Application/json',
+              Api_Key: 'iyv0Lk8v.GMiSXcZDDSRLquqAm7M9YHVwTF4aY8zr',
+              Authorization: token,
+            },
           },
-        },
-      )
-      if (response.data.success === true) {
-        setUser((prev) => {
-          return {
-            ...prev,
-            aesUserId: response?.data?.data?.userId ?? '',
-            authorities: response?.data?.data?.authorities ?? [],
+        )
+        if (token && type && !idCode) {
+          setFormData((prev) => {
+            return {
+              ...prev,
+              km: type === '1' ? true : false,
+              kw: type === '4' ? true : false,
+              gm: type === '2' ? true : false,
+              gg: type === '3' ? true : false,
+            }
+          })
+          if (response.data.success === true) {
+            if (response.data.data.authorities[0] === 'ROLE_USER') {
+              setAuth((prev) => {
+                return {
+                  ...prev,
+                  isLogin: true,
+                  isAuth: true,
+                  role: response.data.data.authorities,
+                }
+              })
+              handleGetAddress()
+            } else {
+              if (
+                window &&
+                window.confirm(
+                  '지도검색은 유료서비스 입니다. 로그인후 이용하세요',
+                )
+              ) {
+                window.close()
+              }
+            }
+          } else {
+            alert('사용자 정보를 가져오는데 실패했습니다.')
           }
-        })
-        handleGetAddress()
-        return response.data.data
+        } else if (token && type && idCode) {
+          try {
+            if (type === '1') {
+              const response = await getKmItem(idCode)
+              if (response?.data.success) {
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    km: true,
+                    ekm: response.data.data.winAmt > 0 ? true : false,
+                    awardedMonths: 60,
+                  }
+                })
+                setSelectedData(response.data.data)
+                setAuth((prev) => {
+                  return {
+                    ...prev,
+                    idCode: idCode,
+                    type: type,
+                  }
+                })
+                setUser((prev) => {
+                  return {
+                    ...prev,
+                    lng: response.data.data.x,
+                    lat: response.data.data.y,
+                  }
+                })
+              }
+            } else if (type === '2' || type === '3') {
+              const response = await getGmItem(idCode)
+              if (response?.data.success) {
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    gm: response.data.data.type === 2 ? true : false,
+                    gg: response.data.data.type === 3 ? true : false,
+                    egm:
+                      response.data.data.type === 2 &&
+                      response.data.data.winAmt > 0
+                        ? true
+                        : false,
+                    egg:
+                      response.data.data.type === 3 &&
+                      response.data.data.winAmt > 0
+                        ? true
+                        : false,
+                    awardedMonths: 60,
+                  }
+                })
+                setSelectedData(response.data.data)
+                setAuth((prev) => {
+                  return {
+                    ...prev,
+                    idCode: idCode,
+                    type: type,
+                  }
+                })
+                setUser((prev) => {
+                  return {
+                    ...prev,
+                    lng: response.data.data.x,
+                    lat: response.data.data.y,
+                  }
+                })
+              }
+            } else if (type === '4') {
+              const response = await getKwItem(idCode)
+              if (response?.data.success) {
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    kw: true,
+                  }
+                })
+                setSelectedData(response.data.data)
+                setAuth((prev) => {
+                  return {
+                    ...prev,
+                    idCode: idCode,
+                    type: type,
+                  }
+                })
+                setUser((prev) => {
+                  return {
+                    ...prev,
+                    lng: response.data.data.x,
+                    lat: response.data.data.y,
+                  }
+                })
+              }
+            }
+          } catch (error) {
+            console.error(error)
+          }
+        }
+      } else {
       }
     } catch (error) {
       console.error(error)
@@ -111,12 +244,9 @@ function MapComponent({ token }: Props) {
   }
 
   useEffect(() => {
-    handleToken(token as string)
+    handleParameters(token as string, type as string, idCode as string)
     if (window) {
       window.history.pushState({}, '', '/map')
-    }
-    if (map) {
-      handleGetAddress()
     }
   }, [token, map])
 
@@ -128,10 +258,12 @@ function MapComponent({ token }: Props) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const token = context.query.token as string
+  const { token, type, idCode } = context.query
   return {
     props: {
       token: token ?? null,
+      type: type ?? null,
+      idCode: idCode ?? null,
     },
   }
 }

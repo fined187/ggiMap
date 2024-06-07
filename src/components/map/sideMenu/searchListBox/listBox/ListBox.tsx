@@ -6,6 +6,8 @@ import Result from './Result'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { MapItems } from '@/models/MapItem'
+import { useRecoilState } from 'recoil'
+import { mapListAtom } from '@/store/atom/map'
 
 interface ListBoxProps {
   formData: Form
@@ -20,7 +22,7 @@ export default function ListBox({
   isOpen,
   setIsOpen,
 }: ListBoxProps) {
-  const [listItems, setListItems] = useState<MapItems[] | null>(null)
+  const [listItems, setListItems] = useRecoilState(mapListAtom)
   const { data: map } = useSWR(MAP_KEY)
   return (
     <Flex
@@ -42,14 +44,7 @@ export default function ListBox({
           : '59px',
       }}
     >
-      <Result
-        formData={formData}
-        setFormData={setFormData}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        setListItems={setListItems}
-        listItems={listItems}
-      />
+      <Result formData={formData} isOpen={isOpen} setIsOpen={setIsOpen} />
     </Flex>
   )
 }

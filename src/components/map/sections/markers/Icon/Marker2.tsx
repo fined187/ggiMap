@@ -71,11 +71,9 @@ export const UsageTopIcon = (
     };">
       ${item.winYn === 'Y' ? WinIcon() : ''}
       ${item.interest === 'Y' ? InterestIcon() : ''}
-      ${item.share === 'Y' ? ShareIcon(item, type, '-5') : ''}
+      ${item.share === 'Y' && count < 2 ? ShareIcon(item, type, '-5') : ''}
       ${
-        item.share === 'Y'
-          ? ShareIcon(item, type, '-5')
-          : count > 1
+        item.interest !== 'Y' && item.share !== 'Y' && count > 1
           ? PnuCountIcon(item, count, type, isSame, '-5')
           : ''
       }

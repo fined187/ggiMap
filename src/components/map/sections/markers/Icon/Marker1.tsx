@@ -10,10 +10,10 @@ export const PnuCountIcon = (
   top?: string,
 ) => {
   return `
-  <div style="position: absolute; z-index: 100; right: 0px; top: ${
+  <div style="position: absolute; right: 0px; top: ${
     top ? `${top}px` : '-42px'
   }; ">
-    <div style="display: inline-flex; z-index: 100; width: 22px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${
+    <div style="display: inline-flex; width: 22px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${
       !isSame
         ? item.winYn === 'Y'
           ? `1px solid ${colors.winOrange}`
@@ -36,12 +36,12 @@ export const PnuCountIcon = (
     }; background: #FFF;">
       <span style="color: ${
         !isSame
-          ? item.winYn === 'Y'
+          ? item.winYn !== 'Y'
             ? `${colors.winOrange}`
             : `${colors.black}`
-          : item.winYn === 'Y'
-          ? `${colors.winOrange}`
-          : `${colors.black}`
+          : item.winYn !== 'Y'
+          ? `${colors.black}`
+          : `${colors.winOrange}`
       }; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
         ${count > 99 ? '99+' : count}
       </span>

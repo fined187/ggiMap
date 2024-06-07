@@ -16,26 +16,19 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import useSearchListQuery from './hooks/useSearchListQuery'
 import Loader from './icon/loader/Loader'
 import InterestContextProvider from '@/contexts/useModalContext'
+import { useRecoilState } from 'recoil'
+import { mapListAtom } from '@/store/atom/map'
 
 interface ResultProps {
   formData: Form
-  setFormData: React.Dispatch<React.SetStateAction<Form>>
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setListItems: React.Dispatch<React.SetStateAction<MapItems[] | null>>
-  listItems?: MapItems[] | null
 }
 
 const ROWS_PER_PAGE = 10
 
-function Result({
-  formData,
-  setFormData,
-  isOpen,
-  setIsOpen,
-  setListItems,
-  listItems,
-}: ResultProps) {
+function Result({ formData, isOpen, setIsOpen }: ResultProps) {
+  const [listItems, setListItems] = useRecoilState(mapListAtom)
   const { data: map } = useSWR(MAP_KEY)
   const [showingList, setShowingList] = useState(false)
   const [page, setPage] = useState(1)

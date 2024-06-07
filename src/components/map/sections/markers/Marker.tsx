@@ -331,7 +331,9 @@ const Marker = ({
                       : ''
                   }
                   ${
-                    item.interest != 'Y' && item.share != 'Y' && originCount > 1
+                    item.interest !== 'Y' &&
+                    item.share !== 'Y' &&
+                    originCount > 1
                       ? PnuCountIcon(item, originCount, item.type, isSame)
                       : ''
                   }
