@@ -15,12 +15,7 @@ import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { useCallback, useEffect, useState } from 'react'
 import NextImageWithFallback from '@/components/map/NextImageWithFallback'
 import NoImage from '../icon/NoImage'
-import { useRecoilState } from 'recoil'
-import { authInfo } from '@/store/atom/auth'
-import InterestContextProvider, {
-  useInterestContext,
-} from '@/contexts/useModalContext'
-import InterestProps from '@/components/interest'
+import { useInterestContext } from '@/contexts/useModalContext'
 
 interface ItemProps {
   item: MapItems
@@ -29,7 +24,6 @@ interface ItemProps {
 
 function Form({ item, index }: ItemProps) {
   const url = usePathUrl(item?.type ?? 1)
-  const [auth, setAuth] = useRecoilState(authInfo)
   const { data: map } = useSWR(MAP_KEY)
   const [isBlinking, setIsBlinking] = useState(false)
   const [blinkingInterval, setBlinkingInterval] = useState<
@@ -148,7 +142,7 @@ function Form({ item, index }: ItemProps) {
                   } else {
                     open({
                       type: item?.type.toString() ?? '',
-                      id: item?.id.toString() ?? '',
+                      id: item?.id ?? '',
                       openModal: openModal,
                       setOpenModal: setOpenModal,
                       onButtonClick: () => {
@@ -289,7 +283,12 @@ function Form({ item, index }: ItemProps) {
           </Flex>
         </Flex>
       ) : (
-        <KwForm item={item} index={index} />
+        <KwForm
+          item={item}
+          index={index}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+        />
       )}
     </div>
   )

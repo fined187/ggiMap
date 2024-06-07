@@ -1,86 +1,35 @@
 import Interest from '@/components/map/icons/Interest'
-import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import Flex from '@/components/shared/Flex'
 import ListRow from '@/components/shared/ListRow'
 import Spacing from '@/components/shared/Spacing'
 import Text from '@/components/shared/Text'
+import { useInterestContext } from '@/contexts/useModalContext'
 import { MapItems } from '@/models/MapItem'
 import { authInfo } from '@/store/atom/auth'
 import useNum2Han from '@/utils/useNum2Han'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { useCallback, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import { useRecoilState } from 'recoil'
-import useSWR from 'swr'
 
-function KwForm({ item, index }: { item: MapItems; index: number }) {
-  const { data: map } = useSWR(MAP_KEY)
-  const [isBlinking, setIsBlinking] = useState(false)
+function KwForm({
+  item,
+  index,
+  openModal,
+  setOpenModal,
+}: {
+  item: MapItems
+  index: number
+  openModal: boolean
+  setOpenModal: Dispatch<SetStateAction<boolean>>
+}) {
   const [auth, setAuth] = useRecoilState(authInfo)
-  const [blinkingInterval, setBlinkingInterval] = useState<
-    NodeJS.Timeout | null | number
-  >(null)
-  const [marker, setMarker] = useState<null | naver.maps.Marker>(null)
-
-  const createMarker = useCallback((lat: number, lng: number) => {
-    if (map) {
-      if (marker) {
-        marker.setPosition(new naver.maps.LatLng(lat, lng))
-        marker.setMap(map)
-      } else {
-        const newMarker = new naver.maps.Marker({
-          position: new naver.maps.LatLng(lat, lng),
-          map: map,
-          icon: {
-            content: `<div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <circle cx="16" cy="16" r="15.75" fill="#3C3C3C" fill-opacity="0.25" stroke="#D9D9D9" stroke-width="0.5"/>
-                            <circle cx="16.5" cy="15.5" r="7.25" fill="#3C3C3C" stroke="#D9D9D9" stroke-width="0.5"/>
-                        </svg>
-                    </div>`,
-          },
-        })
-        setMarker(newMarker)
-        setIsBlinking(true)
-        setBlinkingInterval(
-          setInterval(() => {
-            if (newMarker.getMap()) {
-              newMarker.setMap(null)
-            } else {
-              newMarker.setMap(map)
-            }
-          }, 500),
-        )
-      }
-    }
-  }, [])
-
-  const removeMarker = useCallback(() => {
-    if (marker) {
-      marker.setMap(null)
-    }
-    setIsBlinking(false)
-    if (blinkingInterval) {
-      clearInterval(blinkingInterval as number)
-    }
-  }, [marker, blinkingInterval])
-
-  useEffect(() => {
-    return () => {
-      removeMarker()
-    }
-  }, [])
+  const { open } = useInterestContext()
+  const onButtonClick = () => {
+    setOpenModal(false)
+  }
   return (
-    <div
-      onMouseOver={() => {
-        const lat = item?.y ?? 0
-        const lng = item?.x ?? 0
-        createMarker(lat, lng)
-      }}
-      onMouseOut={() => {
-        removeMarker()
-      }}
-    >
+    <div>
       <Flex
         direction="column"
         css={ContainerStyle}
@@ -95,11 +44,19 @@ function KwForm({ item, index }: { item: MapItems; index: number }) {
           right={
             <Flex
               onClick={() => {
-                window.open(
-                  `http://localhost:3000/interest?type=${item.type}&id=${item.id}&token=${auth.token}`,
-                  '_blank',
-                  'width=800, height=800',
-                )
+                if (openModal) {
+                  close()
+                } else {
+                  open({
+                    type: item?.type.toString() ?? '',
+                    id: item?.id ?? '',
+                    openModal: openModal,
+                    setOpenModal: setOpenModal,
+                    onButtonClick: () => {
+                      onButtonClick()
+                    },
+                  })
+                }
               }}
             >
               <Interest interest={item.interest ?? ''} />

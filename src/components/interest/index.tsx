@@ -225,7 +225,6 @@ export default function InterestProps({
       }
     }
   }
-  console.log(처음등록하는가)
   return (
     <Dimmed>
       <ModalContainer
@@ -234,8 +233,10 @@ export default function InterestProps({
             step === 1
               ? interestData?.interestInfo !== null
                 ? '850px'
-                : '800px'
-              : '500px',
+                : type === '1'
+                ? '800px'
+                : '550px'
+              : '400px',
         }}
       >
         <Container>

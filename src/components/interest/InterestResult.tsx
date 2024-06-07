@@ -30,16 +30,11 @@ export default function UpdateResult({
   const changeParentUrl = () => {
     if (window.opener) {
       const newUrl = `https://www.ggi.co.kr/member/scrap_list_kyung.asp?group=${updatedData?.interestInfo.category}`
-
-      // 부모 창의 URL을 새로운 경로로 변경
       window.opener.location.href = newUrl
-
-      // 부모 창이 새로운 URL로 로드한 후 주소 표시줄 수정
       window.opener.onload = () => {
         window.opener.history.pushState(null, '', 'https://www.ggi.co.kr')
       }
-
-      window.close() // 필요에 따라 자식 창을 닫을 수도 있습니다.
+      window.close()
     } else {
       console.log('부모 창이 없습니다.')
     }
