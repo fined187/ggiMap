@@ -90,7 +90,7 @@ export default function Carousel({
                 clickedInfo[index]?.type === 3 ? (
                   <div>
                     <NextImageWithFallback
-                      src={image[index]}
+                      src={image[index] ?? ''}
                       alt="image"
                       fallbackComponent={<NoImage />}
                       width={299}

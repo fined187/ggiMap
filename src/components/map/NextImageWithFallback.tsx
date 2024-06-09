@@ -1,6 +1,6 @@
 import Image, { ImageProps } from 'next/image'
 import NoImage from './sections/Overlay/icon/NoImage'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface NextImageWithFallbackProps extends ImageProps {
   src: string
@@ -15,18 +15,25 @@ export default function NextImageWithFallback({
   ...rest
 }: NextImageWithFallbackProps) {
   const [imgError, setImgError] = useState(false)
+  const [imgSrc, setImagSrc] = useState(src)
+  useEffect(() => {
+    setImagSrc(src)
+  }, [src])
 
   if (imgError && fallbackComponent) {
     return <>{fallbackComponent}</>
   }
-  return (
-    <Image
-      src={src}
-      alt={alt}
-      {...rest}
-      onError={() => {
-        setImgError(true)
-      }}
-    />
-  )
+  if (src !== '') {
+    return (
+      <Image
+        src={imgSrc}
+        alt={alt}
+        {...rest}
+        onError={() => {
+          setImgError(true)
+          setImagSrc('')
+        }}
+      />
+    )
+  }
 }

@@ -429,12 +429,17 @@ const Marker = ({
         marker1Ref.current = marker1
         naver.maps.Event?.addListener(marker1, 'click', (e) => {
           handleMarkerClick(item)
+          setOffset({ x: e.offsetX, y: e.offsetY })
         })
       }
       if (marker2) {
         marker2Ref.current = marker2
         naver.maps.Event?.addListener(marker2, 'click', (e) => {
           handleMarkerClick(item)
+          setOffset({
+            x: marker2?.getPosition().x!,
+            y: marker2?.getPosition().y!,
+          })
         })
       }
     }
