@@ -18,6 +18,8 @@ import {
   UsageIcon,
 } from './Icon/Marker1'
 import { AmountBottomIcon, UsageTopIcon } from './Icon/Marker2'
+import { useRecoilState } from 'recoil'
+import { markerPositionAtom } from '@/store/atom/map'
 
 type PnuProps = {
   pnu: string
@@ -41,10 +43,6 @@ interface MarkerProps {
   clickedItem: any
   setClickedItem: any
   markerClickedRef: MutableRefObject<boolean>
-  offset: { x: number; y: number }
-  setOffset: Dispatch<SetStateAction<{ x: number; y: number }>>
-  duplicatedItems: MapItem[]
-  includeWinYn: boolean
 }
 
 const Marker = ({
@@ -56,12 +54,9 @@ const Marker = ({
   clickedItem,
   setClickedItem,
   markerClickedRef,
-  duplicatedItems,
   originPnuCounts,
-  offset,
-  setOffset,
-  includeWinYn,
 }: MarkerProps) => {
+  const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [count, setCount] = useState<number>(0)
   const [originCount, setOriginCount] = useState<number>(0)
   const [isSame, setIsSame] = useState<boolean>(false)
@@ -427,19 +422,20 @@ const Marker = ({
 
       if (marker1) {
         marker1Ref.current = marker1
-        naver.maps.Event?.addListener(marker1, 'click', (e) => {
+        naver.maps.Event?.addListener(marker1, 'click', () => {
           handleMarkerClick(item)
-          setOffset({ x: e.offsetX, y: e.offsetY })
         })
       }
       if (marker2) {
         marker2Ref.current = marker2
-        naver.maps.Event?.addListener(marker2, 'click', (e) => {
+        naver.maps.Event?.addListener(marker2, 'click', () => {
           handleMarkerClick(item)
-          setOffset({
-            x: marker2?.getPosition().x!,
-            y: marker2?.getPosition().y!,
-          })
+          const position = marker2?.getPosition()
+          console.log(position)
+          const projection = map.getProjection()
+          console.log(projection)
+          const point = projection?.fromCoordToPoint(position as any)
+          console.log(point)
         })
       }
     }

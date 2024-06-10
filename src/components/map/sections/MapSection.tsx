@@ -57,14 +57,12 @@ export default function MapSection({ formData, setFormData }: MapProps) {
   const [clickedItem, setClickedItem] = useState<MapItem | null>(null)
   const markerClickedRef = useRef(false)
   const [isOpen, setIsOpen] = useState(true)
-  const [offset, setOffset] = useState({ x: 0, y: 0 })
   const [style, setStyle] = useState({
     position: 'absolute',
     width: '300px',
     height: '326px',
     zIndex: 999,
   })
-  const { data: map } = useSWR<NaverMap>(MAP_KEY)
   const [duplicatedItems, setDuplicatedItems] = useState<MapItem[]>([])
 
   const [clickedMapType, setClickedMapType] = useState({
@@ -94,69 +92,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
   })
   const [openCursor, setOpenCursor] = useState(false)
   const [range, setRange] = useState(0)
-
-  const [screenNum, setScreenNum] = useState({
-    first: false,
-    second: false,
-    third: false,
-    fourth: false,
-  })
-  const [halfDimensions, setHalfDimensions] = useState({
-    width: 0,
-    height: 0,
-  })
-
-  const calculateScreenNum = (
-    point: naver.maps.Point,
-    {
-      width,
-      height,
-    }: {
-      width: number
-      height: number
-    },
-  ) => {
-    if (point.x < width && point.y < height) {
-      return { first: true, second: false, third: false, fourth: false }
-    } else if (point.x > width && point.y < height) {
-      return { first: false, second: true, third: false, fourth: false }
-    } else if (point.x < width && point.y > height) {
-      return { first: false, second: false, third: true, fourth: false }
-    } else if (point.x > width && point.y > height) {
-      return { first: false, second: false, third: false, fourth: true }
-    } else {
-      return { first: false, second: false, third: false, fourth: false }
-    }
-  }
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const updateHalfDimensions = () => {
-        const exceptFilterBox = window.innerWidth - 350
-        const halfHeight = window.innerHeight / 2
-        const halfWidth = exceptFilterBox / 2
-
-        setHalfDimensions({
-          width: halfWidth,
-          height: halfHeight,
-        })
-      }
-      updateHalfDimensions()
-      window.addEventListener('resize', updateHalfDimensions)
-      return () => window.removeEventListener('resize', updateHalfDimensions)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (map && offset && halfDimensions.width && halfDimensions.height) {
-      const targetCoord = new naver.maps.LatLng(offset.y, offset.x)
-      const targetPoint = map?.getProjection().fromCoordToPoint(targetCoord)
-      console.log('targetPoint', targetPoint)
-      const newScreenNum = calculateScreenNum(targetPoint, halfDimensions)
-      setScreenNum(newScreenNum)
-      console.log(newScreenNum)
-    }
-  }, [offset, map, halfDimensions])
 
   const initialCenter = useMemo(() => {
     if (user.lat && user.lng) {
@@ -447,8 +382,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         clickedItem={clickedItem}
         setClickedItem={setClickedItem}
         markerClickedRef={markerClickedRef}
-        offset={offset}
-        setOffset={setOffset}
         duplicatedItems={duplicatedItems}
         includeWinYn={includeWinYn}
       />

@@ -1,5 +1,5 @@
+/* eslint-disable */
 import Image, { ImageProps } from 'next/image'
-import NoImage from './sections/Overlay/icon/NoImage'
 import { useEffect, useState } from 'react'
 
 interface NextImageWithFallbackProps extends ImageProps {
@@ -26,7 +26,7 @@ export default function NextImageWithFallback({
   if (src !== '') {
     return (
       <Image
-        src={imgSrc}
+        src={src ? src : ''}
         alt={alt}
         {...rest}
         onError={() => {

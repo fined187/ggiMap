@@ -46,6 +46,8 @@ export default function Carousel({
   const onButtonClick = () => {
     setOpenModal(false)
   }
+
+  console.log(clickedInfo)
   return (
     <div
       style={{
@@ -82,8 +84,8 @@ export default function Carousel({
         }}
       >
         {clickedInfo &&
-          clickedInfo?.map((_, index) => (
-            <div key={index}>
+          clickedInfo?.map((info, index) => (
+            <div key={info?.id ? info?.id : info?.goodsID}>
               <SwiperSlide>
                 {(clickedInfo && clickedInfo[index]?.type === 1) ||
                 clickedInfo[index]?.type === 2 ||

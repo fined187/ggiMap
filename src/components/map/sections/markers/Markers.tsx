@@ -25,8 +25,6 @@ interface MarkersProps {
   clickedItem: any
   setClickedItem: any
   markerClickedRef: MutableRefObject<boolean>
-  offset: { x: number; y: number }
-  setOffset: Dispatch<SetStateAction<{ x: number; y: number }>>
   duplicatedItems: MapItem[]
   includeWinYn: boolean
 }
@@ -38,8 +36,6 @@ export default function Markers({
   clickedItem,
   setClickedItem,
   markerClickedRef,
-  offset,
-  setOffset,
   duplicatedItems,
   originPnuCounts,
   includeWinYn,
@@ -63,11 +59,7 @@ export default function Markers({
                 clickedItem={clickedItem}
                 setClickedItem={setClickedItem}
                 markerClickedRef={markerClickedRef}
-                offset={offset}
-                setOffset={setOffset}
-                duplicatedItems={duplicatedItems}
                 originPnuCounts={originPnuCounts}
-                includeWinYn={includeWinYn}
               />
             )
           })

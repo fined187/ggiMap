@@ -16,3 +16,8 @@ export const mapListAtom = atom<MapItems[] | null>({
   key: `mapList/${v4()}`,
   default: null,
 })
+
+export const markerPositionAtom = atom<number[]>({
+  key: `markerPosition/${v4()}`,
+  default: [0, 0],
+})

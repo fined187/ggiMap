@@ -109,6 +109,13 @@ export default function GGIMap({
     lng: 0,
   })
 
+  const [screenNum, setScreenNum] = useState({
+    first: false,
+    second: false,
+    third: false,
+    fourth: false,
+  })
+
   const searchAddrToCoord = (address: string) => {
     if (window.naver?.maps.Service?.geocode !== undefined) {
       window.naver.maps.Service?.geocode(
@@ -326,11 +333,6 @@ export default function GGIMap({
         polyline.setMap(mapRef.current)
       }
       drawPolyline()
-      // return () => {
-      //   if (polyline) {
-      //     polyline.setMap(null)
-      //   }
-      // }
     }
   }, [path, auth.idCode])
 
