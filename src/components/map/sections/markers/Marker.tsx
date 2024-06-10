@@ -150,7 +150,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-              <div style="flex-direction: row; display: flex; margin-top: -30px;">
+              <div id="target_${index}" style="flex-direction: row; display: flex; margin-top: -30px;">
                 ${
                   item.interest === 'Y' && originCount < 2
                     ? InterestIcon(item, item.type)
@@ -196,7 +196,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 90;">
+                <div id="target_${index}" style="flex-direction: row; display: flex; margin-top: -30px; z-index: 90;">
                 ${
                   item.interest === 'Y' && originCount < 2
                     ? InterestIcon(item, item.type)
@@ -225,7 +225,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 90;">
+                <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 90;">
                 ${UsageTopIcon(item, originCount, item.type, isSame)}
                 ${AmountBottomIcon(item, item.type)}
               </div>
@@ -241,7 +241,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="flex-direction: row; display: flex; margin-top: -30px; z-index: 80;">
+                <div id="target_${index}" style="flex-direction: row; display: flex; margin-top: -30px; z-index: 80;">
                   ${
                     item.interest === 'Y' && originCount < 2
                       ? InterestIcon(item, item.type)
@@ -270,7 +270,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 80;">
+                <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 80;">
                   ${UsageTopIcon(item, originCount, item.type, isSame)}
                   ${AmountBottomIcon(item, item.type)}
                 </div>
@@ -286,7 +286,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div id='winMarker' style="z-index: 75;">
+                <div id="target_${index}" style="z-index: 75;">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <g filter="url(#filter0_d_905_256)">
                       <circle cx="8" cy="6" r="6" fill="#FF4D00"/>
@@ -316,7 +316,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div id='winMarker' style="flex-direction: row; display: flex; margin-top: -30px; z-index: 75; ">
+                <div id="target_${index}" style="flex-direction: row; display: flex; margin-top: -30px; z-index: 75; ">
                   ${
                     item.interest === 'Y' && originCount < 2
                       ? InterestIcon(item, item.type)
@@ -347,7 +347,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 100;">
+                <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 100;">
                 ${UsageTopIcon(item, originCount, item.type, isSame)}
                 ${AmountBottomIcon(item, item.type)}
               </div>
@@ -364,7 +364,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                  <div style="flex-direction: row; display: flex; margin-top: -30px;">
+                  <div id="target_${index}" style="flex-direction: row; display: flex; margin-top: -30px;">
                     ${
                       item.interest === 'Y' && originCount < 2
                         ? InterestIcon(item, item.type)
@@ -395,7 +395,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-                  <div>
+                  <div id="target_${index}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <g filter="url(#filter0_d_905_254)">
                         <circle cx="8" cy="6" r="6" fill="#1C8D00"/>
@@ -426,6 +426,24 @@ const Marker = ({
         marker1Ref.current = marker1
         naver.maps.Event?.addListener(marker1, 'click', () => {
           handleMarkerClick(item)
+          const target = document.getElementById(`target_${index}`)
+          if (target) {
+            const rect = target.getBoundingClientRect()
+            setMarkerPosition((prev) => {
+              return {
+                position: [0, 0],
+                type: 1,
+                winYn: item.winYn,
+              }
+            })
+            setMarkerPosition((prev) => {
+              return {
+                position: [rect.left, rect.top],
+                type: item.type,
+                winYn: item.winYn,
+              }
+            })
+          }
         })
       }
       if (marker2) {
@@ -435,7 +453,20 @@ const Marker = ({
           const target = document.getElementById(`target_${index}`)
           if (target) {
             const rect = target.getBoundingClientRect()
-            setMarkerPosition([rect.left, rect.top])
+            setMarkerPosition((prev) => {
+              return {
+                position: [0, 0],
+                type: 1,
+                winYn: item.winYn,
+              }
+            })
+            setMarkerPosition((prev) => {
+              return {
+                position: [rect.left, rect.top],
+                type: item.type,
+                winYn: item.winYn,
+              }
+            })
           }
         })
       }

@@ -71,6 +71,8 @@ interface Props {
     }>
   >
   center: { lat: number; lng: number }
+  halfDimensions: { width: number; height: number }
+  setHalfDimensions: Dispatch<SetStateAction<{ width: number; height: number }>>
 }
 
 export default function GGIMap({
@@ -90,6 +92,8 @@ export default function GGIMap({
   setCenter,
   setClickedMapType,
   center,
+  halfDimensions,
+  setHalfDimensions,
 }: Props) {
   const [user, setUser] = useRecoilState(userAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
@@ -112,6 +116,23 @@ export default function GGIMap({
     lat: 0,
     lng: 0,
   })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const updateHalfDimensions = () => {
+        const exceptFilterBox = window.innerWidth - 370
+        const halfHeight = window.innerHeight / 2
+        const halfWidth = exceptFilterBox / 2 + 370
+        setHalfDimensions({
+          width: halfWidth,
+          height: halfHeight,
+        })
+      }
+      updateHalfDimensions()
+      window.addEventListener('resize', updateHalfDimensions)
+      return () => window.removeEventListener('resize', updateHalfDimensions)
+    }
+  }, [])
 
   const searchAddrToCoord = (address: string) => {
     if (window.naver?.maps.Service?.geocode !== undefined) {
@@ -361,6 +382,46 @@ export default function GGIMap({
           }
         }}
       />
+      <div
+        style={{
+          left: 370,
+          top: halfDimensions.height,
+          position: 'absolute',
+          backgroundColor: 'red',
+          width: 'calc(100% - 370px)',
+          height: '2px',
+        }}
+      />
+      <div
+        style={{
+          left: halfDimensions.width,
+          top: 0,
+          position: 'absolute',
+          backgroundColor: 'red',
+          width: '2px',
+          height: '100%',
+        }}
+      />
+      {/* <div
+        style={{
+          backgroundColor: 'red',
+          width: halfDimensions.width - 390,
+          height: halfDimensions.height,
+          position: 'absolute',
+          top: 0,
+          left: 390,
+        }}
+      /> */}
+      {/* <div
+        style={{
+          backgroundColor: 'blue',
+          width: halfDimensions.width - 370,
+          height: halfDimensions.height,
+          position: 'absolute',
+          top: 0,
+          left: halfDimensions.width,
+        }}
+      /> */}
       <div
         id="pano"
         style={{

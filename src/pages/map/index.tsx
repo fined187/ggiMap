@@ -20,7 +20,6 @@ import {
   SelectedKmItem,
   SelectedKwItem,
 } from '@/models/SelectedItem'
-import getPolypath from '@/remote/map/selected/getPolypath'
 
 interface Props {
   data?: {
@@ -41,6 +40,7 @@ function MapComponent({ token, type, idCode }: Props) {
   const { data: map } = useSWR(MAP_KEY)
   const [user, setUser] = useRecoilState(userAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
+  const [cookieValue, setCookieValue] = useState('')
   const [selectedData, setSelectedData] = useState<
     SelectedKmItem | SelectedGmItem | SelectedGgItem | SelectedKwItem | null
   >(null)

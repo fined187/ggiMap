@@ -6,7 +6,7 @@ import {
   MutableRefObject,
   SetStateAction,
   useCallback,
-  useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -17,6 +17,8 @@ import { MapItem } from '@/models/MapItem'
 import { useRecoilState } from 'recoil'
 import { mapItemOriginAtom, markerPositionAtom } from '@/store/atom/map'
 import { useGetDetail } from './hooks/useGetDetail'
+import useSWR from 'swr'
+import { MAP_KEY } from '../hooks/useMap'
 
 type PositionSet = {
   top: number
@@ -34,6 +36,8 @@ interface OverlayProps {
   setIncludeWinYn: Dispatch<SetStateAction<boolean>>
   positionSet: PositionSet
   setPositionSet: Dispatch<SetStateAction<PositionSet>>
+  halfDimensions: { width: number; height: number }
+  setHalfDimensions: Dispatch<SetStateAction<{ width: number; height: number }>>
 }
 
 export default function Overlay({
@@ -43,23 +47,15 @@ export default function Overlay({
   setIncludeWinYn,
   positionSet,
   setPositionSet,
+  halfDimensions,
+  setHalfDimensions,
 }: OverlayProps) {
   const [clickedInfo, setClickedInfo] = useState<ItemDetail[] | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
-  const [screenNum, setScreenNum] = useState({
-    first: false,
-    second: false,
-    third: false,
-    fourth: false,
-  })
-
-  const [halfDimensions, setHalfDimensions] = useState({
-    width: 0,
-    height: 0,
-  })
+  const { data: map } = useSWR(MAP_KEY)
 
   const handleGetIds = useCallback(
     (pnu: string) => {
@@ -73,8 +69,8 @@ export default function Overlay({
     },
     [mapOrigin],
   )
-
-  const calculateScreenNum = () => {
+  console.log(halfDimensions)
+  const calculateScreenNum = useMemo(() => {
     let position = {
       first: false,
       second: false,
@@ -83,64 +79,36 @@ export default function Overlay({
     }
 
     if (
-      markerPosition[0] < halfDimensions.width &&
-      markerPosition[1] < halfDimensions.height
+      markerPosition.position[0] > 390 &&
+      markerPosition.position[0] < halfDimensions.width &&
+      markerPosition.position[1] < halfDimensions.height
     ) {
       position.first = true
-      position.second = false
-      position.third = false
-      position.fourth = false
     } else if (
-      markerPosition[0] > halfDimensions.width &&
-      markerPosition[1] < halfDimensions.height
+      markerPosition.position[1] < halfDimensions.height &&
+      markerPosition.position[0] > halfDimensions.width
     ) {
       position.second = true
-      position.first = false
-      position.third = false
-      position.fourth = false
-    }
-
-    if (
-      markerPosition[1] < halfDimensions.height &&
-      markerPosition[0] > halfDimensions.width
+    } else if (
+      markerPosition.position[1] > halfDimensions.height &&
+      markerPosition.position[0] > halfDimensions.width
     ) {
-      position.fourth = false
-      position.first = false
-      position.second = false
       position.third = true
     } else if (
-      markerPosition[1] > halfDimensions.height &&
-      markerPosition[0] < halfDimensions.width
+      markerPosition.position[1] > halfDimensions.height &&
+      markerPosition.position[0] > 370 &&
+      markerPosition.position[0] < halfDimensions.width
     ) {
+      position.fourth = true
+    } else {
       position.first = false
       position.second = false
-      position.fourth = true
       position.third = false
+      position.fourth = false
     }
 
-    setScreenNum(position)
-  }
-
-  useEffect(() => {
-    calculateScreenNum()
+    return position
   }, [markerPosition, halfDimensions])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const updateHalfDimensions = () => {
-        const exceptFilterBox = window.innerWidth - 350
-        const halfHeight = window.innerHeight / 2
-        const halfWidth = exceptFilterBox / 2
-        setHalfDimensions({
-          width: halfWidth,
-          height: halfHeight,
-        })
-      }
-      updateHalfDimensions()
-      window.addEventListener('resize', updateHalfDimensions)
-      return () => window.removeEventListener('resize', updateHalfDimensions)
-    }
-  }, [])
 
   const handleGetType = useCallback(
     (pnu: string) => {
@@ -154,31 +122,179 @@ export default function Overlay({
     },
     [mapOrigin],
   )
-
+  console.log(map.getZoom())
   const handleCalcLeftTop = useCallback(() => {
-    if (screenNum.first) {
-      return {
-        left: markerPosition[0] + 245,
-        top: markerPosition[1] + 250,
+    if (map.getZoom() > 15) {
+      if (
+        markerPosition.type === 1 ||
+        markerPosition.type === 2 ||
+        markerPosition.type === 3
+      ) {
+        if (markerPosition.winYn === 'Y') {
+          if (map.getZoom() === 16) {
+            if (map.getZoom() === 16) {
+              console.log('여기')
+              if (calculateScreenNum.first) {
+                return {
+                  left: markerPosition.position[0] + 100,
+                  top: markerPosition.position[1] + 30,
+                }
+              } else if (calculateScreenNum.second) {
+                return {
+                  left: markerPosition.position[0] - 300,
+                  top: markerPosition.position[1] + 40,
+                }
+              } else if (calculateScreenNum.third) {
+                return {
+                  left: markerPosition.position[0] - 300,
+                  top: markerPosition.position[1] - 320,
+                }
+              } else if (calculateScreenNum.fourth) {
+                return {
+                  left: markerPosition.position[0] + 100,
+                  top: markerPosition.position[1] - 320,
+                }
+              }
+            }
+          }
+        } else if (calculateScreenNum.first) {
+          return {
+            left: markerPosition.position[0] + 100,
+            top: markerPosition.position[1] + 90,
+          }
+        } else if (calculateScreenNum.second) {
+          return {
+            left: markerPosition.position[0] - 300,
+            top: markerPosition.position[1] + 100,
+          }
+        } else if (calculateScreenNum.third) {
+          return {
+            left: markerPosition.position[0] - 300,
+            top: markerPosition.position[1] - 320,
+          }
+        } else if (calculateScreenNum.fourth) {
+          return {
+            left: markerPosition.position[0] + 100,
+            top: markerPosition.position[1] - 320,
+          }
+        } else {
+          return {
+            left: 0,
+            top: 0,
+          }
+        }
+      } else if (markerPosition.type === 4) {
+        if (calculateScreenNum.first) {
+          return {
+            left: markerPosition.position[0] + 100,
+            top: markerPosition.position[1] + 30,
+          }
+        } else if (calculateScreenNum.second) {
+          return {
+            left: markerPosition.position[0] - 300,
+            top: markerPosition.position[1] + 40,
+          }
+        } else if (calculateScreenNum.third) {
+          return {
+            left: markerPosition.position[0] - 300,
+            top: markerPosition.position[1] - 320,
+          }
+        } else if (calculateScreenNum.fourth) {
+          return {
+            left: markerPosition.position[0] + 100,
+            top: markerPosition.position[1] - 320,
+          }
+        } else {
+          return {
+            left: 0,
+            top: 0,
+          }
+        }
       }
-    } else if (screenNum.second) {
-      return {
-        left: markerPosition[0],
-        top: markerPosition[1],
+    } else {
+      if (
+        markerPosition.type === 1 ||
+        markerPosition.type === 2 ||
+        markerPosition.type === 3
+      ) {
+        if (markerPosition.winYn === 'Y') {
+          if (map.getZoom() === 15) {
+            if (calculateScreenNum.first) {
+              return {
+                left: markerPosition.position[0] + 10,
+                top: markerPosition.position[1] + 10,
+              }
+            } else if (calculateScreenNum.second) {
+              return {
+                left: markerPosition.position[0] - 300,
+                top: markerPosition.position[1] + 10,
+              }
+            } else if (calculateScreenNum.third) {
+              return {
+                left: markerPosition.position[0] - 300,
+                top: markerPosition.position[1] - 320,
+              }
+            } else if (calculateScreenNum.fourth) {
+              return {
+                left: markerPosition.position[0] + 10,
+                top: markerPosition.position[1] - 330,
+              }
+            }
+          }
+        } else {
+          if (calculateScreenNum.first) {
+            return {
+              left: markerPosition.position[0] + 100,
+              top: markerPosition.position[1] + 30,
+            }
+          } else if (calculateScreenNum.second) {
+            return {
+              left: markerPosition.position[0] - 300,
+              top: markerPosition.position[1] + 40,
+            }
+          } else if (calculateScreenNum.third) {
+            return {
+              left: markerPosition.position[0] - 300,
+              top: markerPosition.position[1] - 320,
+            }
+          } else if (calculateScreenNum.fourth) {
+            return {
+              left: markerPosition.position[0] + 100,
+              top: markerPosition.position[1] - 320,
+            }
+          }
+        }
+      } else if (markerPosition.type === 4) {
+        if (calculateScreenNum.first) {
+          return {
+            left: markerPosition.position[0] + 10,
+            top: markerPosition.position[1] + 10,
+          }
+        } else if (calculateScreenNum.second) {
+          return {
+            left: markerPosition.position[0] - 300,
+            top: markerPosition.position[1] + 10,
+          }
+        } else if (calculateScreenNum.third) {
+          return {
+            left: markerPosition.position[0] - 300,
+            top: markerPosition.position[1] - 320,
+          }
+        } else if (calculateScreenNum.fourth) {
+          return {
+            left: markerPosition.position[0] + 10,
+            top: markerPosition.position[1] - 330,
+          }
+        }
       }
-    } else if (screenNum.third) {
       return {
-        left: markerPosition[0],
-        top: markerPosition[1],
-      }
-    } else if (screenNum.fourth) {
-      return {
-        left: markerPosition[0],
-        top: markerPosition[1],
+        left: 0,
+        top: 0,
       }
     }
-  }, [markerPosition])
-  console.log(screenNum)
+  }, [markerPosition, calculateScreenNum])
+  console.log(calculateScreenNum)
+  console.log(markerPosition)
   useGetDetail(
     handleGetIds(clickedItem?.pnu as string),
     handleGetType(clickedItem?.pnu as string),
@@ -190,9 +306,18 @@ export default function Overlay({
       css={Overlaytop}
       ref={ref}
       style={{
-        left: handleCalcLeftTop()?.left + 'px',
-        top: handleCalcLeftTop()?.top + 'px',
-        position: 'absolute',
+        left:
+          handleCalcLeftTop()?.left !== 0
+            ? handleCalcLeftTop()?.left + 'px'
+            : '50%',
+        top:
+          handleCalcLeftTop()?.top !== 0
+            ? handleCalcLeftTop()?.top + 'px'
+            : '50%',
+        transform:
+          handleCalcLeftTop()?.top === 0 && handleCalcLeftTop()?.left === 0
+            ? 'translate(-50%, -50%)'
+            : '',
       }}
     >
       <Top
@@ -219,9 +344,6 @@ const Overlaytop = css`
   border: 0.5px solid #9d9999;
   z-index: 10;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   background: white;
   flex-direction: column;
 `

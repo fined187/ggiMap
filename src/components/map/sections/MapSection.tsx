@@ -98,6 +98,10 @@ export default function MapSection({ formData, setFormData }: MapProps) {
   })
   const [openCursor, setOpenCursor] = useState(false)
   const [range, setRange] = useState(0)
+  const [halfDimensions, setHalfDimensions] = useState({
+    width: 0,
+    height: 0,
+  })
 
   const initialCenter = useMemo(() => {
     if (user.lat && user.lng) {
@@ -297,6 +301,8 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         setClickedItem={setClickedItem}
         setClickedMapType={setClickedMapType}
         center={center}
+        halfDimensions={halfDimensions}
+        setHalfDimensions={setHalfDimensions}
       />
       <BoxGuard isOpen={isOpen} setIsOpen={setIsOpen}>
         <SearchBox
@@ -403,6 +409,8 @@ export default function MapSection({ formData, setFormData }: MapProps) {
           setIncludeWinYn={setIncludeWinYn}
           positionSet={positionSet}
           setPositionSet={setPositionSet}
+          halfDimensions={halfDimensions}
+          setHalfDimensions={setHalfDimensions}
         />
       )}
     </>

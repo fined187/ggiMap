@@ -4,8 +4,9 @@ import { ChakraProvider } from '@chakra-ui/react'
 import axios from 'axios'
 import { useState } from 'react'
 import Layout from '@/components/bidForm/Layout'
+import { GetServerSidePropsContext } from 'next'
 
-export default function Home() {
+export default function Home({ lastPathPart }: { lastPathPart: string }) {
   const [isCheck, setIsCheck] = useState(false)
 
   function handleErrorResponse() {
@@ -46,12 +47,25 @@ export default function Home() {
   )
   return (
     <>
-      <ChakraProvider>
-        <Layout>
+      <Layout>
+        <ChakraProvider>
           <BidFormProps />
-        </Layout>
-      </ChakraProvider>
+        </ChakraProvider>
+      </Layout>
       <MapComponent />
     </>
   )
+}
+
+export const getServerSideProps = (context: GetServerSidePropsContext) => {
+  const { req } = context
+  console.log('req.url', req)
+  const pathParts = req.url?.split('/') || []
+  const lastPathPart = pathParts[pathParts.length - 1]
+  console.log('lastPathPart', lastPathPart)
+  return {
+    props: {
+      lastPathPart,
+    },
+  }
 }
