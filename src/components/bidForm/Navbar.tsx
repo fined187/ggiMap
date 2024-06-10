@@ -1,5 +1,4 @@
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 

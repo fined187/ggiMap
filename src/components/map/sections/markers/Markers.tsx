@@ -45,10 +45,11 @@ export default function Markers({
   return (
     <>
       {mapItems
-        ? mapItems?.map((item) => {
+        ? mapItems?.map((item, index) => {
             return (
               <Marker
                 key={item.id}
+                index={index}
                 item={item}
                 map={map as NaverMap}
                 setMapItems={setMapItems}

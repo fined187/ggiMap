@@ -71,7 +71,6 @@ export default function SearchAddress({
       return 50 - addr.length
     }
   }
-
   return (
     <>
       <div className="flex flex-col w-[full]  gap-1">
@@ -134,7 +133,10 @@ export default function SearchAddress({
             />
           )}
           <button
-            className="text-black bg-mySelect focus:outline-2 focus:outline-sutTitle rounded-md w-[25%] h-[40px] border border-sutTitle"
+            className="text-black bg-mySelect focus:outline-2 focus:outline-sutTitle rounded-md w-[25%] h-[40px]"
+            style={{
+              border: '1px solid black',
+            }}
             onClick={() => {
               handleModal && handleModal()
             }}

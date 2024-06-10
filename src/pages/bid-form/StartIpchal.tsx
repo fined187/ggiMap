@@ -9,7 +9,7 @@ interface Props {
   userId: string
 }
 
-export default function StartIpchal({ isOk }: Props) {
+export default function StartIpchal({ isOk, userId }: Props) {
   const [stateNum, setStateNum] = useRecoilState(stepState)
   const [biddingInfo, setBiddingInfo] = useRecoilState(biddingInfoState)
   const [loading, setLoading] = useState(false)

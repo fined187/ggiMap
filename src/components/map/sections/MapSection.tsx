@@ -63,6 +63,12 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     height: '326px',
     zIndex: 999,
   })
+  const [positionSet, setPositionSet] = useState({
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  })
   const [duplicatedItems, setDuplicatedItems] = useState<MapItem[]>([])
 
   const [clickedMapType, setClickedMapType] = useState({
@@ -395,6 +401,8 @@ export default function MapSection({ formData, setFormData }: MapProps) {
           markerClickedRef={markerClickedRef}
           style={style}
           setIncludeWinYn={setIncludeWinYn}
+          positionSet={positionSet}
+          setPositionSet={setPositionSet}
         />
       )}
     </>

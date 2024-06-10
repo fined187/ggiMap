@@ -13,7 +13,7 @@ export default function CoIpchalForm({ totalResult }: CoIpchalFormProps) {
       className={`flex flex-col bg-mybg h-[1300px] w-[100%] m-auto relative justify-center items-center ${
         stateNum === 11
           ? ''
-          : 'border-black border-dashed border-t-[2px] border-b-[2px]'
+          : ' border-black border-dashed border-t-[2px] border-b-[2px]'
       } overflow-x-scroll scrollbar-hide`}
     >
       <div className="flex flex-col bg-mybg h-[100%] md:w-[850px] w-[90%] m-auto relative justify-center items-center">
@@ -26,7 +26,7 @@ export default function CoIpchalForm({ totalResult }: CoIpchalFormProps) {
               {totalResult && totalResult?.reqCourtName + ' 집행관 귀하'}
             </span>
           </div>
-          <div className="flex flex-col gap-[10px] justify-start w-[100%] md:w-[80%] ml-2 absolute top-[350px]">
+          <div className="flex flex-col gap-[20px] justify-start w-[100%] md:w-[80%] ml-2 absolute top-[350px]">
             <div className="flex flex-row w-[100%] sm:gap-[115px] gap-[150px] ">
               <span className="md:text-[12pt] text-[12px] font-bold font-batang">
                 사건번호
@@ -103,6 +103,7 @@ export default function CoIpchalForm({ totalResult }: CoIpchalFormProps) {
                 <span className="md:text-[12pt] text-[12px] underline underline-offset-1">
                   입찰표에 각자의 지분을 분명하게 표시하여야 합니다.
                 </span>
+                <br />
                 <br />
                 &nbsp;&nbsp; 2. 별지 공동입찰자 목록과 사이에{' '}
                 <span className="md:text-[12pt] text-[12px] underline underline-offset-1">

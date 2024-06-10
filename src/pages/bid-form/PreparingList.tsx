@@ -1,4 +1,4 @@
-import Button from '@/components/bidForm/shared/BidButton'
+import Button from '@/components/bidForm/shared/Button'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -265,7 +265,7 @@ export default function PreparingList() {
               지지옥션이 성공적인 낙찰을 응원합니다
             </span>
             <div className="flex flex-col md:w-[550px] w-[90%] h-[500px] rounded-lg items-center mt-[20px]">
-              <div className="flex flex-col bg-mySelect w-[100%] h-[80px] mx-auto rounded-md justify-start items-start p-[20px] border border-black">
+              <div className="flex flex-col bg-mySelect w-[100%] h-[80px] mx-auto rounded-md justify-start items-start p-[20px] border-solid border-[1px] border-black">
                 <span
                   className="md:text-[17px] text-[15px] font-['suit'] font-medium leading-[130%] tracking-[0px] text-left"
                   style={{

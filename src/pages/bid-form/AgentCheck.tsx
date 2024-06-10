@@ -1,4 +1,4 @@
-import Button from '@/components/bidForm/shared/BidButton'
+import Button from '@/components/bidForm/shared/Button'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -112,7 +112,7 @@ export default function AgentCheck() {
             <input
               id="allChecked"
               checked={allChecked}
-              className="md:w-[20px] md:h-[20px] w-[15px] h-[15px] border border-black text-white md:text-white bg-gray-100 accent-myBlue"
+              className="md:w-[20px] md:h-[20px] w-[15px] h-[15px] border-solid border-black text-white md:text-white bg-gray-100 accent-myBlue"
               type="checkbox"
               onChange={(e) => {
                 const newCheckedItems = [...checkedItems]
@@ -144,7 +144,7 @@ export default function AgentCheck() {
             <div
               className={`flex justify-between md:w-[500px] w-[90%] h-[100px] ${
                 checkedItems[index] ? 'bg-mySelect' : 'bg-unClicked'
-              } justify-between cursor-pointer border border-black`}
+              } justify-between cursor-pointer border-solid border-[1px]`}
               key={index}
               onClick={() => {
                 const newCheckedItems = [...checkedItems]

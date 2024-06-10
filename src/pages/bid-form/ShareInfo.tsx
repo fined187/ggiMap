@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/bidForm/shared/BidButton'
+import Button from '@/components/bidForm/shared/Button'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -350,7 +350,7 @@ export default function ShareInfo() {
             return (
               <div
                 key={index}
-                className="flex flex-row gap-[25%] w-[100%] h-[100px] bg-white border border-black rounded-lg relative"
+                className="flex flex-row gap-[25%] w-[100%] h-[100px] bg-white border-solid border-[1px] rounded-lg relative"
               >
                 <div className="flex flex-col w-[40%] justify-center items-start ml-5">
                   <span
@@ -371,7 +371,7 @@ export default function ShareInfo() {
                 <div
                   className={`flex flex-row gap-[10px] w-[95px] justify-center absolute top-[50%] ${
                     biddingInfo.shareWay === 'S'
-                      ? 'border-b-[0.5px] border-b-sutTitle'
+                      ? 'border-solid border-b-[0.5px] border-b-sutTitle'
                       : 'md:mr-[50px] mr-[25px]'
                   } transform translate-y-[-50%] right-5 mt-[10px]`}
                 >
@@ -384,7 +384,7 @@ export default function ShareInfo() {
                         value={'1'}
                         className={`rounded-md md:text-[20px] text-[15px] font-['suit'] leading-[140%] tracking-[0px] not-italic font-normal text-center text-sutTitle w-[20px] bg-white border-none focus:border-transparent focus:outline-none`}
                       />
-                      <span className="flex">/</span>
+                      <span className="flex mt-[5px]">/</span>
                       <input
                         aria-label="denominator"
                         id="denominator"

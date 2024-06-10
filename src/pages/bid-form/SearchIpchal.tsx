@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/bidForm/shared/BidButton'
+import Button from '@/components/bidForm/shared/Button'
 import { SearchResultType } from '@/models/IpchalType'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
@@ -138,6 +138,7 @@ export default function SearchIpchal() {
       setLoading(false)
     }
   }
+  console.log(getCase)
 
   const handleNextButton = (
     number: number,
@@ -189,21 +190,23 @@ export default function SearchIpchal() {
       : date.getMonth() + 1
     ).toString() +
     date.getDate().toString()
+  console.log(biddingInfo)
 
   useEffect(() => {
     if (
       biddingInfo.searchResults.length > 0 &&
       biddingInfo.searchResultState === 2
     ) {
-      // setGetCase((biddingInfo.searchResults[0] as { caseNoString: string })?.caseNoString?.substring(0, 4))
-      // setGetAuction((biddingInfo.searchResults[0] as { caseNoString: string })?.caseNoString.replace("-", "")?.substring(4, (biddingInfo.searchResults[0] as { caseNoString: string })?.caseNoString?.length))
       setGetCase(biddingInfo.selectedCase)
       setGetAuction(biddingInfo.selectedYear)
       setGetData(biddingInfo.searchResults)
       setSearchResult(2)
+    } else if (
+      biddingInfo.searchResultState === 1 &&
+      biddingInfo.searchResults.length === 0
+    ) {
+      setGetCase('2024')
     } else {
-      // setGetCase((biddingInfo.searchResults[0] as { caseNoString: string })?.caseNoString.substring(0, 4))
-      // setGetAuction((biddingInfo.searchResults[0] as { caseNoString: string })?.caseNoString.replace("-", "")?.substring(4, (biddingInfo.searchResults[0] as { caseNoString: string })?.caseNoString?.length))
       setGetCase(biddingInfo.selectedCase)
       setGetAuction(biddingInfo.selectedYear)
       setSearchResult(1)

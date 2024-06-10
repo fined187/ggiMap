@@ -7,7 +7,7 @@ import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import { TotalResultType } from '@/models/IpchalType'
 import LoadingResult from '@/components/bidForm/LoadingResult'
 import SingleIpchalResult from '@/components/bidForm/singleIpchalContent/SingleIpchalResult'
-import Button from '@/components/bidForm/shared/BidButton'
+import Button from '@/components/bidForm/shared/Button'
 
 export default function IpchalResult() {
   const [biddingInfo, setBiddingInfo] = useRecoilState(biddingInfoState)

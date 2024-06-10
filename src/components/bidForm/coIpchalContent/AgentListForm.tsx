@@ -38,15 +38,15 @@ export default function AgentListForm({
         </div>
         <div className="flex flex-col md:w-[80%] w-[100%] items-center text-center absolute top-[10px]">
           <span className="md:text-[18pt] text-[18px] font-batang">위임장</span>
-          <div className="flex flex-row w-[100%] h-[150px] border-black border-[2px] absolute top-[80px]">
-            <div className="flex w-[30px] justify-center items-center text-center border-black border-r-[1px]">
+          <div className="flex flex-row w-[100%] h-[150px] border-solid border-black border-[2px] absolute top-[80px]">
+            <div className="flex w-[30px] justify-center items-center text-center border-solid border-black border-r-[1px]">
               <span className="md:text-[12pt] text-[12pt] font-batang">
                 대리인
               </span>
             </div>
             <div className="flex flex-col w-[100%] h-[100%]">
-              <div className="flex flex-row w-[100%] h-[30%] border-black border-b-[1px]">
-                <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+              <div className="flex flex-row w-[100%] h-[30%] border-solid border-black border-b-[1px]">
+                <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                   <span className="md:text-[12pt] text-[12px] font-batang ml-1">
                     성
                   </span>
@@ -54,7 +54,7 @@ export default function AgentListForm({
                     명
                   </span>
                 </div>
-                <div className="flex justify-between md:gap-[50px] gap-[5%] w-[30%] border-black border-r-[1px] items-center text-center">
+                <div className="flex justify-between md:gap-[50px] gap-[5%] w-[30%] border-solid border-black border-r-[1px] items-center text-center">
                   <div className="flex w-[80%] md:justify-end justify-center">
                     <span className="md:text-[12pt] text-[12px] font-batang">
                       {totalResult?.agent.name ?? ''}
@@ -66,7 +66,7 @@ export default function AgentListForm({
                     </span>
                   </div>
                 </div>
-                <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                   <span className="md:text-[12pt] text-[12px] font-batang ml-1">
                     직
                   </span>
@@ -80,21 +80,21 @@ export default function AgentListForm({
                   </span>
                 </div>
               </div>
-              <div className="flex w-[100%] h-[30%] border-black border-b-[1px]">
+              <div className="flex w-[100%] h-[30%] border-solid border-black border-b-[1px]">
                 <div className="flex flex-row w-[100%] h-[100%]">
-                  <div className="flex w-[20%] border-black border-r-[1px] items-center justify-center text-center">
+                  <div className="flex w-[20%] border-solid border-black border-r-[1px] items-center justify-center text-center">
                     <span className="md:text-[12pt] text-[12px] leading-[20px] font-batang">
                       주민등록번호
                     </span>
                   </div>
-                  <div className="flex gap-[50px] w-[30%] border-black border-r-[1px] justify-center items-center text-center">
+                  <div className="flex gap-[50px] w-[30%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                     <span className="md:text-[16px] text-[12px]">
                       {biddingInfo.agentIdNum.substring(0, 6) +
                         '-' +
                         biddingInfo.agentIdNum.substring(6, 13)}
                     </span>
                   </div>
-                  <div className="flex w-[20%] border-black border-r-[1px] justify-center items-center text-center">
+                  <div className="flex w-[20%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                     <span className="md:text-[12pt] text-[12px] tracking-[5pt] leading-[15px] font-batang">
                       전 화 번 호
                     </span>
@@ -117,7 +117,7 @@ export default function AgentListForm({
                 </div>
               </div>
               <div className="flex flex-row w-[100%] h-[40%] ">
-                <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                   <span className="md:text-[12pt] text-[12px] font-batang ml-1">
                     주
                   </span>
@@ -170,9 +170,9 @@ export default function AgentListForm({
                   return (
                     <div
                       key={index}
-                      className={`flex md:w-[80%] w-[100%] h-[150px] border-black border-r-[2px] border-b-[2px] border-l-[2px] border-t-[2px] `}
+                      className={`flex md:w-[80%] w-[100%] h-[150px] border-solid border-black border-r-[2px] border-b-[2px] border-l-[2px] border-t-[2px] `}
                     >
-                      <div className="flex w-[30px] justify-center items-center text-center border-black border-r-[1px]">
+                      <div className="flex w-[30px] justify-center items-center text-center border-solid border-black border-r-[1px]">
                         <span className="md:text-[12pt] text-[14px] font-batang">
                           본인
                           <br />
@@ -180,8 +180,8 @@ export default function AgentListForm({
                         </span>
                       </div>
                       <div className="flex flex-col w-[100%] h-[100%]">
-                        <div className="flex flex-row w-[100%] h-[30%] border-black border-b-[1px]">
-                          <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                        <div className="flex flex-row w-[100%] h-[30%] border-solid border-black border-b-[1px]">
+                          <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                             <span className="md:text-[12pt] text-[12px] font-batang ml-1">
                               성
                             </span>
@@ -189,7 +189,7 @@ export default function AgentListForm({
                               명
                             </span>
                           </div>
-                          <div className="flex flex-row md:gap-[50px] gap-[5%] w-[30%] border-black border-r-[1px] justify-center items-center text-center">
+                          <div className="flex flex-row md:gap-[50px] gap-[5%] w-[30%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                             <div className="flex w-[80%] md:justify-end justify-center">
                               <span className="md:text-[12pt] text-[12px] font-batang">
                                 {mandateList[index]?.name ?? ''}
@@ -201,7 +201,7 @@ export default function AgentListForm({
                               </span>
                             </div>
                           </div>
-                          <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                          <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                             <span className="md:text-[12pt] text-[12px] font-batang ml-1">
                               직
                             </span>
@@ -215,14 +215,14 @@ export default function AgentListForm({
                             </span>
                           </div>
                         </div>
-                        <div className="flex w-[100%] h-[30%] border-black border-b-[1px]">
+                        <div className="flex w-[100%] h-[30%] border-solid border-black border-b-[1px]">
                           <div className="flex flex-row w-[100%] h-[100%]">
-                            <div className="flex w-[20%] border-black border-r-[1px] items-center justify-center text-center">
+                            <div className="flex w-[20%] border-solid border-black border-r-[1px] items-center justify-center text-center">
                               <span className="md:text-[12pt] text-[12px] leading-[20px] font-batang">
                                 주민등록번호
                               </span>
                             </div>
-                            <div className="flex gap-[50px] w-[30%] border-black border-r-[1px] justify-center items-center text-center">
+                            <div className="flex gap-[50px] w-[30%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                               <span className="md:text-[12pt] text-[12px] font-batang">
                                 {mandateList[index]?.mandateYn === 'Y'
                                   ? biddingInfo.bidCorpYn[
@@ -256,7 +256,7 @@ export default function AgentListForm({
                                   : ''}
                               </span>
                             </div>
-                            <div className="flex w-[20%] border-black border-r-[1px] justify-center items-center text-center">
+                            <div className="flex w-[20%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                               <span className="md:text-[12pt] text-[12px] tracking-[5pt] leading-[15px] font-batang">
                                 전 화 번 호
                               </span>
@@ -299,7 +299,7 @@ export default function AgentListForm({
                           </div>
                         </div>
                         <div className="flex flex-row w-[100%] h-[40%] ">
-                          <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                          <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                             <span className="md:text-[12pt] text-[12px] font-batang ml-1">
                               주
                             </span>
@@ -323,9 +323,9 @@ export default function AgentListForm({
                 return (
                   <div
                     key={index}
-                    className={`flex md:w-[80%] w-[100%] h-[150px] border-black border-r-[2px] border-b-[2px] border-l-[2px] border-t-[2px] `}
+                    className={`flex md:w-[80%] w-[100%] h-[150px] border-solid border-black border-r-[2px] border-b-[2px] border-l-[2px] border-t-[2px] `}
                   >
-                    <div className="flex w-[30px] justify-center items-center text-center border-black border-r-[1px]">
+                    <div className="flex w-[30px] justify-center items-center text-center border-solid border-black border-r-[1px]">
                       <span className="md:text-[12pt] text-[12px] font-batang">
                         본인
                         <br />
@@ -333,8 +333,8 @@ export default function AgentListForm({
                       </span>
                     </div>
                     <div className="flex flex-col w-[750px] h-[100%]">
-                      <div className="flex flex-row w-[100%] h-[30%] border-black border-b-[1px]">
-                        <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                      <div className="flex flex-row w-[100%] h-[30%] border-solid border-black border-b-[1px]">
+                        <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                           <span className="md:text-[12pt] text-[12px] font-batang ml-1">
                             성
                           </span>
@@ -342,7 +342,7 @@ export default function AgentListForm({
                             명
                           </span>
                         </div>
-                        <div className="flex flex-row gap-[50px] w-[30%] border-black border-r-[1px] justify-center items-center text-center">
+                        <div className="flex flex-row gap-[50px] w-[30%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                           <div className="flex w-[80%] justify-end">
                             <span className="md:text-[12pt] text-[12px] font-batang">
                               {(totalResult &&
@@ -357,7 +357,7 @@ export default function AgentListForm({
                             </span>
                           </div>
                         </div>
-                        <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                        <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                           <span className="md:text-[12pt] text-[12px] font-batang ml-1">
                             직
                           </span>
@@ -374,14 +374,14 @@ export default function AgentListForm({
                           </span>
                         </div>
                       </div>
-                      <div className="flex w-[100%] h-[30%] border-black border-b-[1px]">
+                      <div className="flex w-[100%] h-[30%] border-solid border-black border-b-[1px]">
                         <div className="flex flex-row w-[100%] h-[100%]">
-                          <div className="flex w-[20%] border-black border-r-[1px] items-center justify-center text-center">
+                          <div className="flex w-[20%] border-solid border-black border-r-[1px] items-center justify-center text-center">
                             <span className="md:text-[12pt] text-[12px] leading-[20px] font-batang">
                               주민등록번호
                             </span>
                           </div>
-                          <div className="flex gap-[50px] w-[30%] border-black border-r-[1px] justify-center items-center text-center">
+                          <div className="flex gap-[50px] w-[30%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                             <span className="md:text-[12pt] text-[12px] font-batang">
                               {totalResult &&
                               totalResult.bidders[index].mandateYn === 'Y'
@@ -411,7 +411,7 @@ export default function AgentListForm({
                                 : ''}
                             </span>
                           </div>
-                          <div className="flex w-[20%] border-black border-r-[1px] justify-center items-center text-center">
+                          <div className="flex w-[20%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                             <span className="md:text-[12pt] text-[12px] tracking-[5pt] leading-[15px] font-batang">
                               전 화 번 호
                             </span>
@@ -450,7 +450,7 @@ export default function AgentListForm({
                         </div>
                       </div>
                       <div className="flex flex-row w-[100%] h-[40%] ">
-                        <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                        <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                           <span className="md:text-[12pt] text-[12px] font-batang ml-1">
                             주
                           </span>
@@ -478,9 +478,9 @@ export default function AgentListForm({
                   return (
                     <div
                       key={index}
-                      className={`flex md:w-[80%] w-[100%] h-[150px] border-black border-r-[2px] border-b-[2px] border-l-[2px] border-t-[2px] `}
+                      className={`flex md:w-[80%] w-[100%] h-[150px] border-solid border-black border-r-[2px] border-b-[2px] border-l-[2px] border-t-[2px] `}
                     >
-                      <div className="flex w-[30px] justify-center items-center text-center border-black border-r-[1px]">
+                      <div className="flex w-[30px] justify-center items-center text-center border-solid border-black border-r-[1px]">
                         <span className="text-[12pt] font-batang">
                           본인
                           <br />
@@ -492,8 +492,8 @@ export default function AgentListForm({
                         </span>
                       </div>
                       <div className="flex flex-col w-[100%] h-[100%]">
-                        <div className="flex flex-row w-[100%] h-[30%] border-black border-b-[1px]">
-                          <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                        <div className="flex flex-row w-[100%] h-[30%] border-solid border-black border-b-[1px]">
+                          <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                             <span className="text-[12pt] font-batang ml-1">
                               성
                             </span>
@@ -501,7 +501,7 @@ export default function AgentListForm({
                               명
                             </span>
                           </div>
-                          <div className="flex flex-row gap-[50px] w-[30%] border-black border-r-[1px] justify-center items-center text-center">
+                          <div className="flex flex-row gap-[50px] w-[30%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                             <div className="flex w-[80%] justify-end">
                               <span className="text-[12pt] font-batang">
                                 {bidders[index]?.name ?? ''}
@@ -513,7 +513,7 @@ export default function AgentListForm({
                               </span>
                             </div>
                           </div>
-                          <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                          <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                             <span className="text-[12pt] font-batang ml-1">
                               직
                             </span>
@@ -527,14 +527,14 @@ export default function AgentListForm({
                             </span>
                           </div>
                         </div>
-                        <div className="flex w-[100%] h-[30%] border-black border-b-[1px]">
+                        <div className="flex w-[100%] h-[30%] border-solid border-black border-b-[1px]">
                           <div className="flex flex-row w-[100%] h-[100%]">
-                            <div className="flex w-[20%] border-black border-r-[1px] items-center justify-center text-center">
+                            <div className="flex w-[20%] border-solid border-black border-r-[1px] items-center justify-center text-center">
                               <span className="text-[12pt] tracking-[5pt] leading-[20px] font-batang">
                                 주민등록번호
                               </span>
                             </div>
-                            <div className="flex gap-[50px] w-[30%] border-black border-r-[1px] justify-center items-center text-center">
+                            <div className="flex gap-[50px] w-[30%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                               <span className="text-[12pt] font-batang">
                                 {bidders[index]?.mandateYn === 'Y'
                                   ? biddingInfo.bidCorpYn[
@@ -568,7 +568,7 @@ export default function AgentListForm({
                                   : ''}
                               </span>
                             </div>
-                            <div className="flex w-[20%] border-black border-r-[1px] justify-center items-center text-center">
+                            <div className="flex w-[20%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                               <span className="text-[12pt] tracking-[5pt] leading-[15px] font-batang">
                                 전 화 번 호
                               </span>
@@ -593,7 +593,7 @@ export default function AgentListForm({
                           </div>
                         </div>
                         <div className="flex flex-row w-[100%] h-[40%] ">
-                          <div className="flex justify-between w-[20%] border-black border-r-[1px] items-center text-center">
+                          <div className="flex justify-between w-[20%] border-solid border-black border-r-[1px] items-center text-center">
                             <span className="text-[12pt] font-batang ml-1">
                               주
                             </span>

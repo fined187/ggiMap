@@ -43,10 +43,12 @@ interface MarkerProps {
   clickedItem: any
   setClickedItem: any
   markerClickedRef: MutableRefObject<boolean>
+  index: number
 }
 
 const Marker = ({
   item,
+  index,
   map,
   pnuCounts,
   openOverlay,
@@ -178,7 +180,7 @@ const Marker = ({
               position: new naver.maps.LatLng(item.y, item.x),
               icon: {
                 content: `
-              <div style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 100;">
+              <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 100;">
                 ${UsageTopIcon(item, originCount, item.type, isSame)}
                 ${AmountBottomIcon(item, item.type)}
               </div>
@@ -430,12 +432,11 @@ const Marker = ({
         marker2Ref.current = marker2
         naver.maps.Event?.addListener(marker2, 'click', () => {
           handleMarkerClick(item)
-          const position = marker2?.getPosition()
-          console.log(position)
-          const projection = map.getProjection()
-          console.log(projection)
-          const point = projection?.fromCoordToPoint(position as any)
-          console.log(point)
+          const target = document.getElementById(`target_${index}`)
+          if (target) {
+            const rect = target.getBoundingClientRect()
+            setMarkerPosition([rect.left, rect.top])
+          }
         })
       }
     }

@@ -4,7 +4,6 @@ import fs from 'fs'
 import puppeteer from 'puppeteer'
 import hb from 'handlebars'
 import jsPDF from 'jspdf'
-import bodyParser from 'body-parser'
 
 export const config = {
   api: {

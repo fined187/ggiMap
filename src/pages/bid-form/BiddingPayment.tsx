@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/bidForm/shared/BidButton'
+import Button from '@/components/bidForm/shared/Button'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -84,7 +84,7 @@ export default function BiddingPayment() {
           className={`flex gap-[10px] md:w-[550px] w-[90%] h-[250px] justify-between items-center rounded-lg border-slate-500 mt-[100px]`}
         >
           <div
-            className={`flex flex-col md:w-[270px] w-[50%] h-[100%] border border-gray-300 justify-center gap-[10px] ${
+            className={`flex flex-col md:w-[270px] w-[50%] h-[100%] border-solid border-[1px] border-gray-300 justify-center gap-[10px] ${
               biddingForm.bidWay === 'M' ? 'bg-mySelect' : 'bg-white'
             }`}
             onClick={async () => {
@@ -140,7 +140,7 @@ export default function BiddingPayment() {
             </div>
           </div>
           <div
-            className={`flex flex-col md:w-[270px] w-[50%] h-[100%] border border-gray-300 justify-center gap-[10px] ${
+            className={`flex flex-col md:w-[270px] w-[50%] h-[100%] border-solid border-[1px] border-gray-300 justify-center gap-[10px] ${
               biddingForm.bidWay === 'W' ? 'bg-mySelect' : 'bg-white'
             }`}
             onClick={async () => {

@@ -108,6 +108,10 @@ export default function AgentFormProps({
                   value: 2,
                   message: '2글자 이상 입력해주세요',
                 },
+                maxLength: {
+                  value: 10,
+                  message: '10글자 이하로 입력해주세요',
+                },
               })}
               id="agentName"
               maxLength={10}
@@ -123,6 +127,11 @@ export default function AgentFormProps({
                   return { ...prev, agentName: e.target.value }
                 })
                 handleInputChange(e)
+                if (biddingForm.agentName.length > 10) {
+                  setBiddingForm((prev: any) => {
+                    return { ...prev, agentName: prev.agentName.slice(0, 10) }
+                  })
+                }
               }}
             />
           </div>
@@ -184,6 +193,11 @@ export default function AgentFormProps({
                   return { ...prev, agentRel: e.target.value }
                 })
                 handleInputChange(e)
+                if (biddingForm.agentRel.length > 10) {
+                  setBiddingForm((prev: any) => {
+                    return { ...prev, agentRel: prev.agentRel.slice(0, 10) }
+                  })
+                }
               }}
             />
           </div>
@@ -322,7 +336,7 @@ export default function AgentFormProps({
             {errors.agentIdNum1?.type === 'required' &&
             errors.agentIdNum2?.type === 'required' &&
             biddingForm.agentIdNum === '' ? (
-              <div className="flex w-[100%] justify-start">
+              <div className="flex w-[100%] justify-start mb-[5px]">
                 <span className="md:text-[20px] text-[16px] font-semibold font-['suit'] not-italic text-left leading-[135%] tracking-[-2%] text-red-500">
                   주민등록번호를 입력해주세요
                 </span>
@@ -336,9 +350,6 @@ export default function AgentFormProps({
                   >
                     주민등록번호
                   </label>
-                  <span className="md:text-[20px] text-[16px] font-semibold font-['suit'] not-italic text-left leading-[135%] tracking-[-2%] text-red-500">
-                    *
-                  </span>
                 </div>
                 <div>
                   <span className="hidden md:flex md:text-[15px] text-[0.8rem] font-normal font-['suit'] tracking-[-3%] not-italic text-left text-red-500">
@@ -351,7 +362,6 @@ export default function AgentFormProps({
           <div className="flex flex-row gap-[5%] relative">
             <input
               {...register('agentIdNum1', {
-                required: true,
                 maxLength: 6,
               })}
               onInput={(e) => {
@@ -379,6 +389,14 @@ export default function AgentFormProps({
                     agentIdNum: e.target.value + prev.agentIdNum2,
                   }
                 })
+                if (biddingForm.agentIdNum1.length > 6) {
+                  setBiddingForm((prev) => {
+                    return {
+                      ...prev,
+                      agentIdNum1: prev.agentIdNum1.slice(0, 6),
+                    }
+                  })
+                }
                 handleIdNumFocusMove(e.target)
                 handleInputChange(e)
               }}
@@ -417,6 +435,14 @@ export default function AgentFormProps({
                   }
                 })
                 handleInputChange(e)
+                if (biddingForm.agentIdNum2.length > 7) {
+                  setBiddingForm((prev) => {
+                    return {
+                      ...prev,
+                      agentIdNum1: prev.agentIdNum2.slice(0, 7),
+                    }
+                  })
+                }
               }}
             />
             <div
@@ -460,6 +486,14 @@ export default function AgentFormProps({
                 setBiddingForm((prev: any) => {
                   return { ...prev, agentJob: e.target.value }
                 })
+                if (biddingForm.agentJob.length > 10) {
+                  setBiddingForm((prev) => {
+                    return {
+                      ...prev,
+                      agentJob: prev.agentJob.slice(0, 10),
+                    }
+                  })
+                }
               }}
             />
           </div>

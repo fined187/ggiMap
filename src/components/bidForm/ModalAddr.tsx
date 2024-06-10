@@ -1,12 +1,6 @@
 import { BiddingInfoType } from '@/models/IpchalType'
 import baseApiInstance from '@/pages/api/address'
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
-  useMediaQuery,
-} from '@chakra-ui/react'
+import { Modal, useMediaQuery } from '@chakra-ui/react'
 import {
   ChangeEvent,
   Dispatch,

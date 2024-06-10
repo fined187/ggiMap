@@ -648,46 +648,46 @@ export default function BidderFormMod2() {
   }
 
   const onSubmit: SubmitHandler<BiddingInfoType> = async () => {
-    if (
-      biddingForm.bidCorpYn[stepNum - 1] === 'I' &&
-      handleVerifyIdNum(
-        biddingForm.bidIdNum1[stepNum - 1] + biddingForm.bidIdNum2[stepNum - 1],
-      ) === false
-    ) {
-      alert('주민등록번호를 확인해주세요')
-      return
-    }
-    if (
-      biddingForm.bidCorpYn[stepNum - 1] === 'C' &&
-      (await handleVerifyCorpNum(
-        biddingForm.bidCorpNum1[stepNum - 1] +
-          biddingForm.bidCorpNum2[stepNum - 1] +
-          biddingForm.bidCorpNum3[stepNum - 1],
-      )) === false
-    ) {
-      alert('사업자등록번호를 확인해주세요')
-      return
-    }
-    if (
-      biddingForm.bidCorpYn[stepNum - 1] === 'C' &&
-      handleVerifyCorpReiNum(
-        biddingForm.bidCorpRegiNum1[stepNum - 1] +
-          biddingForm.bidCorpRegiNum2[stepNum - 1],
-      ) === false
-    ) {
-      alert('법인등록번호를 확인해주세요')
-      return
-    }
-    if (
-      handleVerifyPhone(
-        biddingForm.bidPhone1[stepNum - 1] +
-          biddingForm.bidPhone2[stepNum - 1] +
-          biddingForm.bidPhone3[stepNum - 1],
-      ) === false
-    ) {
-      alert('전화번호를 확인해주세요')
-      return
-    }
+    // if (
+    //   biddingForm.bidCorpYn[stepNum - 1] === 'I' &&
+    //   handleVerifyIdNum(
+    //     biddingForm.bidIdNum1[stepNum - 1] + biddingForm.bidIdNum2[stepNum - 1],
+    //   ) === false
+    // ) {
+    //   alert('주민등록번호를 확인해주세요')
+    //   return
+    // }
+    // if (
+    //   biddingForm.bidCorpYn[stepNum - 1] === 'C' &&
+    //   (await handleVerifyCorpNum(
+    //     biddingForm.bidCorpNum1[stepNum - 1] +
+    //       biddingForm.bidCorpNum2[stepNum - 1] +
+    //       biddingForm.bidCorpNum3[stepNum - 1],
+    //   )) === false
+    // ) {
+    //   alert('사업자등록번호를 확인해주세요')
+    //   return
+    // }
+    // if (
+    //   biddingForm.bidCorpYn[stepNum - 1] === 'C' &&
+    //   handleVerifyCorpReiNum(
+    //     biddingForm.bidCorpRegiNum1[stepNum - 1] +
+    //       biddingForm.bidCorpRegiNum2[stepNum - 1],
+    //   ) === false
+    // ) {
+    //   alert('법인등록번호를 확인해주세요')
+    //   return
+    // }
+    // if (
+    //   handleVerifyPhone(
+    //     biddingForm.bidPhone1[stepNum - 1] +
+    //       biddingForm.bidPhone2[stepNum - 1] +
+    //       biddingForm.bidPhone3[stepNum - 1],
+    //   ) === false
+    // ) {
+    //   alert('전화번호를 확인해주세요')
+    //   return
+    // }
     if (isOpen === false) {
       try {
         await handleNextStep()
@@ -1037,9 +1037,6 @@ export default function BidderFormMod2() {
                           >
                             주민등록번호
                           </label>
-                          <span className="md:text-[20px] text-[16px] font-semibold leading-[135%] tracking-[-2%] font-['suit'] not-italic text-left text-red-500">
-                            *
-                          </span>
                         </div>
                         <div>
                           <span className="hidden md:flex md:text-[15px] text-[0.8rem] font-light leading-[135%] tracking-[-3%] font-['suit'] not-italic text-left text-red-500">
@@ -1052,7 +1049,6 @@ export default function BidderFormMod2() {
                   <div className="flex flex-row gap-[5%] relative">
                     <input
                       {...register('bidderIdNum1', {
-                        required: true,
                         maxLength: 6,
                       })}
                       autoComplete="off"
@@ -1096,7 +1092,6 @@ export default function BidderFormMod2() {
                     </span>
                     <input
                       {...register('bidderIdNum2', {
-                        required: true,
                         maxLength: 7,
                       })}
                       autoComplete="off"
@@ -1179,16 +1174,12 @@ export default function BidderFormMod2() {
                         >
                           사업자 등록번호
                         </label>
-                        <span className="md:text-[20px] text-[16px] font-semibold leading-[135%] tracking-[-2%] font-['suit'] not-italic text-left text-red-500">
-                          *
-                        </span>
                       </div>
                     )}
                   </div>
                   <div className="flex flex-row gap-[5%]">
                     <input
                       {...register('bidderCorpNum1', {
-                        required: true,
                         maxLength: 3,
                       })}
                       type="text"
@@ -1226,7 +1217,6 @@ export default function BidderFormMod2() {
                     </span>
                     <input
                       {...register('bidderCorpNum2', {
-                        required: true,
                         maxLength: 2,
                       })}
                       type="text"
@@ -1265,7 +1255,6 @@ export default function BidderFormMod2() {
                     </span>
                     <input
                       {...register('bidderCorpNum3', {
-                        required: true,
                         maxLength: 5,
                       })}
                       type="text"
@@ -1319,16 +1308,12 @@ export default function BidderFormMod2() {
                           >
                             법인 등록번호
                           </label>
-                          <span className="md:text-[20px] text-[16px] font-semibold leading-[135%] tracking-[-2%] font-['suit'] not-italic text-left text-red-500">
-                            *
-                          </span>
                         </div>
                       )}
                     </div>
                     <div className="flex flex-row gap-[5%]">
                       <input
                         {...register('bidderCorpRegiNum1', {
-                          required: true,
                           maxLength: 6,
                         })}
                         type="text"
@@ -1366,7 +1351,6 @@ export default function BidderFormMod2() {
                       </span>
                       <input
                         {...register('bidderCorpRegiNum2', {
-                          required: true,
                           maxLength: 7,
                         })}
                         type="text"

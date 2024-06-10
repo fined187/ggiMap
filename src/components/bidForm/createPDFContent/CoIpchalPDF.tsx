@@ -4,7 +4,6 @@ import AgentListFormPDF from './AgentListFormPDF'
 import IpcahlTextPDF from './IpchalTextPDF'
 import CoIpchalFormPDF from './CoIpchalFormPDF'
 import CoIpchalListPDF from './CoIpchalListPDF'
-import CoverPage from './CoverPage'
 import { TotalResultType } from '@/models/IpchalType'
 import { biddingInfoState } from '@/store/atom/bidForm'
 

@@ -1,5 +1,5 @@
 import Spinner from '@/components/bidForm/Spinner'
-import Button from '@/components/bidForm/shared/BidButton'
+import Button from '@/components/bidForm/shared/Button'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -125,7 +125,7 @@ export default function BidderInfo() {
           <div className="flex flex-row md:w-[450px] w-[90%] h-[212.5px] mt-[100px] md:gap-[22.5px] gap-[10px]">
             <div
               className={`flex flex-row md:w-[212.5px] w-[180px] h-[100%] rounded-xl ${
-                isSelected ? '' : 'border-red-600 border-[2px]'
+                isSelected ? '' : 'border-solid border-red-500 border-[2px]'
               } justify-center items-center cursor-pointer ${
                 biddingInfo.bidder === 'self' ? 'bg-mySelect' : 'bg-white'
               } relative`}
@@ -147,7 +147,7 @@ export default function BidderInfo() {
               }}
             >
               <div
-                className={`flex flex-col w-[100%] justify-center items-center border rounded-xl h-[100%]`}
+                className={`flex flex-col w-[100%] justify-center items-center rounded-xl h-[100%] border-solid border-[1px] border-gray-300`}
               >
                 <svg
                   width="50"
@@ -187,7 +187,7 @@ export default function BidderInfo() {
             </div>
             <div
               className={`flex flex-row md:w-[212.5px] w-[180px] h-[100%] rounded-xl ${
-                isSelected ? '' : 'border-red-600 border-[2px]'
+                isSelected ? '' : 'border-solid border-red-500 border-[2px]'
               } justify-center items-center cursor-pointer ${
                 biddingInfo.bidder === 'agent' ? 'bg-mySelect' : 'bg-white'
               } relative`}
@@ -205,7 +205,7 @@ export default function BidderInfo() {
               }}
             >
               <div
-                className={`flex flex-col w-[100%] justify-center items-center border rounded-xl h-[100%] relative`}
+                className={`flex flex-col w-[100%] justify-center items-center rounded-xl h-[100%] relative border-solid border-[1px] border-gray-300`}
               >
                 <div className="flex flex-row w-[100%] justify-center items-center ml-2 md:mt-[0px] mt-[20px]">
                   <svg

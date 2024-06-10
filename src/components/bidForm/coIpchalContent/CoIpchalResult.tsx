@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil'
 import CoIpchalForm from './CoIpchalForm'
 import CoIpchalList from './CoIpchalList'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
+import IpchalText from './IpchalText'
 
 export default function CoIpchalResult() {
   const [totalResult, setTotalResult] = useState<any>(null)
@@ -71,9 +72,9 @@ export default function CoIpchalResult() {
           <div className="flex flex-col bg-mybg max-h-[2600px] h-[1300px] w-[100%] mx-auto relative justify-center items-center">
             <div className="flex flex-col bg-mybg h-[100%] w-[90%] md:w-[850px] mx-auto relative justify-center items-center">
               <div className="w-[100%] overflow-x-scroll absolute top-[100px] h-[600px] bg-mybg scrollbar-hide">
-                <div className="border border-black text-[1.5rem] md:w-[800px] w-[100%] h-[100%] m-auto bg-mybg">
+                <div className="border-solid border-[1px] border-black text-[1.5rem] md:w-[800px] w-[100%] h-[100%] m-auto bg-mybg">
                   {/* 첫 번째 박스 */}
-                  <div className="flex flex-col border-black border-b-[1px] h-[15%] w-[100%] justify-center items-center relative">
+                  <div className="flex flex-col border-solid border-black border-b-[1px] h-[15%] w-[100%] justify-center items-center relative">
                     <div className="absolute top-[0px] left-[0px] w-[100%] pl-[5px]">
                       <span className="text-left md:text-[11pt] font-batang text-[10px] leading-[-1px]">
                         (앞면)
@@ -103,15 +104,15 @@ export default function CoIpchalResult() {
                     </div>
                   </div>
                   {/* 두 번째 박스 */}
-                  <div className="flex flex-row justify-between items-center border-black border-b-[1px] text-center h-[7%]">
-                    <div className="border-black border-r-[1px] leading-[50%] w-[82px] h-[100%] text-center">
+                  <div className="flex flex-row justify-between items-center border-solid border-black border-b-[1px] text-center h-[7%]">
+                    <div className="border-solid border-black border-r-[1px] leading-[50%] w-[82px] h-[100%] text-center">
                       <span className="md:text-[11pt] text-[10px] font-batang">
                         사건
                         <br />
                         번호
                       </span>
                     </div>
-                    <div className="flex justify-center items-center border-black border-r-[1px] md:w-[45%] w-[40%] text-center h-[100%]">
+                    <div className="flex justify-center items-center border-solid border-black border-r-[1px] md:w-[45%] w-[40%] text-center h-[100%]">
                       <span className="md:text-[11pt] text-[10px] font-batang">
                         {totalResult &&
                           totalResult.caseYear +
@@ -120,7 +121,7 @@ export default function CoIpchalResult() {
                             '호'}
                       </span>
                     </div>
-                    <div className="border-black border-r-[1px] leading-[50%] w-[82px] h-[100%] text-center">
+                    <div className=" border-solid border-black border-r-[1px] leading-[50%] w-[82px] h-[100%] text-center">
                       <span className="md:text-[11pt] text-[10px] font-batang">
                         물건
                         <br />
@@ -141,29 +142,29 @@ export default function CoIpchalResult() {
                     </div>
                   </div>
                   {/* 세 번째 박스 */}
-                  <div className="flex flex-row justify-between items-stretch border-black border-b-[1px] relative h-[50%]">
-                    <div className="flex justify-center items-center leading-[300%] border-black border-r-[1px] w-[5%]">
+                  <div className="flex flex-row justify-between items-stretch border-solid border-black border-b-[1px] relative h-[50%]">
+                    <div className="flex justify-center items-center leading-[300%] border-solid border-black border-r-[1px] w-[5%]">
                       <span className="md:text-[11pt] text-[10px] font-batang">
                         입<br />찰<br />자
                       </span>
                     </div>
                     <div className="w-[100%] h-[100%]">
-                      <div className="flex flex-row items-stretch border-black border-b-[1px] h-[50%]">
-                        <div className="flex justify-center items-center border-black border-r-[1px] w-[12%]">
+                      <div className="flex flex-row items-stretch border-solid border-black border-b-[1px] h-[50%]">
+                        <div className="flex justify-center items-center border-solid border-black border-r-[1px] w-[12%]">
                           <span className="md:text-[11pt] text-[10px] font-batang">
                             본인
                           </span>
                         </div>
                         <div className="flex flex-col w-[100%] h-[100%]">
                           <div className="flex flex-row items-stretc h-[30%]">
-                            <div className="flex justify-center items-center border-black border-b-[1px] border-r-[1px] w-[20%]">
+                            <div className="flex justify-center items-center border-solid border-black border-b-[1px] border-r-[1px] w-[20%]">
                               <span className="md:text-[11pt] text-[10px] font-batang">
                                 성&nbsp;&nbsp;명
                               </span>
                             </div>
                           </div>
                           <div className="flex flex-row h-[30%]">
-                            <div className="flex justify-center text-center border-black border-b-[1px] border-r-[1px] w-[20%]">
+                            <div className="flex justify-center items-center text-center border-solid border-black border-b-[1px] border-r-[1px] w-[20%]">
                               <span className="md:text-[11pt] text-[10px] font-batang">
                                 주민(사업자)
                                 <br />
@@ -177,7 +178,7 @@ export default function CoIpchalResult() {
                             </div>
                           </div>
                           <div className="flex flex-row h-[40%]">
-                            <div className="flex w-[20%] border-black border-r-[1px] h-[100%] justify-center items-center text-center leading-[-1px]">
+                            <div className="flex w-[20%] border-solid border-black border-r-[1px] h-[100%] justify-center items-center text-center leading-[-1px]">
                               <span className="md:text-[11pt] text-[10px] font-batang text-center">
                                 주&nbsp;&nbsp;소
                               </span>
@@ -186,19 +187,19 @@ export default function CoIpchalResult() {
                         </div>
                       </div>
                       <div className="flex flex-row justify-between items-stretch w-[100%] h-[50%]">
-                        <div className="flex justify-center items-center w-[10.8%] border-black border-r-[1px]">
+                        <div className="flex justify-center items-center w-[10.8%] border-solid border-black border-r-[1px]">
                           <span className="md:text-[14px] text-[10px] font-batang">
                             대리인
                           </span>
                         </div>
                         <div className="w-[90%]">
-                          <div className="flex flex-row items-stretch border-black border-b-[1px] h-[35%]">
-                            <div className="flex justify-center items-center table__text w-[20%] border-black border-r-[1px]">
+                          <div className="flex flex-row items-stretch border-solid border-black border-b-[1px] h-[35%]">
+                            <div className="flex justify-center items-center table__text w-[20%] border-solid border-black border-r-[1px]">
                               <span className="md:text-[11pt] text-[10px] font-batang text-center">
                                 성&nbsp;&nbsp;명
                               </span>
                             </div>
-                            <div className="flex justify-center items-center w-[30%] border-black border-r-[1px]">
+                            <div className="flex justify-center items-center w-[30%] border-solid border-black border-r-[1px]">
                               <div className="flex w-[60%] justify-end">
                                 <span className="md:text-[11pt] text-[10px] font-batang text-center">
                                   {biddingInfo.bidder === 'agent' &&
@@ -213,7 +214,7 @@ export default function CoIpchalResult() {
                                 </span>
                               </div>
                             </div>
-                            <div className="flex justify-center items-center w-[20%] border-black border-r-[1px]">
+                            <div className="flex justify-center items-center w-[20%] border-solid border-black border-r-[1px]">
                               <span className="md:text-[11pt] text-[10px] font-batang text-center">
                                 본인과의
                                 <br />
@@ -229,13 +230,13 @@ export default function CoIpchalResult() {
                               </span>
                             </div>
                           </div>
-                          <div className="flex flex-row justify-between items-stretch border-black border-b-[1px] h-[35%]">
-                            <div className="flex justify-center items-center w-[20%] border-black border-r-[1px]">
+                          <div className="flex flex-row justify-between items-stretch border-solid border-black border-b-[1px] h-[35%]">
+                            <div className="flex justify-center items-center w-[20%] border-solid border-black border-r-[1px]">
                               <span className="md:text-[11pt] text-[10px] font-batang text-center">
                                 주민등록번호
                               </span>
                             </div>
-                            <div className="flex justify-center items-center text-center w-[30%] border-black border-r-[1px]">
+                            <div className="flex justify-center items-center text-center w-[30%] border-solid border-black border-r-[1px]">
                               <span className="md:text-[11pt] text-[10px] font-batang text-center">
                                 {biddingInfo.bidder === 'agent'
                                   ? biddingInfo.agentIdNum.substring(0, 6) +
@@ -244,7 +245,7 @@ export default function CoIpchalResult() {
                                   : ''}
                               </span>
                             </div>
-                            <div className="flex justify-center items-center text-center w-[20%] border-black border-r-[1px]">
+                            <div className="flex justify-center items-center text-center w-[20%] border-solid border-black border-r-[1px]">
                               <span className="md:text-[11pt] text-[10px] font-batang text-center">
                                 전화번호
                               </span>
@@ -286,7 +287,7 @@ export default function CoIpchalResult() {
                             </div>
                           </div>
                           <div className="flex flex-row justify-between items-stretch h-[30%]">
-                            <div className="flex justify-center items-center text-center border-black border-r-[1px] w-[20%]">
+                            <div className="flex justify-center items-center text-center border-solid border-black border-r-[1px] w-[20%]">
                               <span className="md:text-[11pt] text-[10px] font-batang text-center">
                                 주&nbsp;&nbsp;소
                               </span>
@@ -304,21 +305,22 @@ export default function CoIpchalResult() {
                     </div>
                   </div>
                   {/* 네 번째 박스 */}
-                  <div className="flex flex-row justify-between items-stretch w-[100%] border-black border-b-[1px] h-[15%]">
-                    <div className="w-[5%] border-black border-r-[1px] h-[100%] justify-center items-center text-center">
+                  <div className="flex flex-row justify-between items-stretch w-[100%] border-solid border-black border-b-[1px] h-[15%]">
+                    <div className="flex w-[5%] border-solid border-black border-r-[1px] h-[100%] justify-center items-center text-center">
                       <span className="md:text-[12pt] text-[6pt] font-batang">
                         입찰
+                        <br />
                         <br />
                         가격
                       </span>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] border-black border-r-[1px] leading-[70%] border-b-[1px] text-center">
+                      <div className="h-[50%] border-solid border-black border-r-[1px] leading-[70%] border-b-[1px] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           천억
                         </span>
                       </div>
-                      <div className="flex justify-center items-center w-[100%] h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center w-[100%] h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -333,12 +335,12 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
+                      <div className="h-[50%] border-solid border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           백억
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -353,12 +355,12 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] border-black border-r-[1px] border-b-[1px]  leading-[70%] text-center">
+                      <div className="h-[50%] border-solid border-black border-r-[1px] border-b-[1px]  leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           십억
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -373,7 +375,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -381,7 +383,7 @@ export default function CoIpchalResult() {
                           억
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px] ">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px] ">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -396,12 +398,12 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           천만
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -416,12 +418,12 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           백만
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -436,12 +438,12 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           십만
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -456,7 +458,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -464,7 +466,7 @@ export default function CoIpchalResult() {
                           만
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -479,7 +481,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -487,7 +489,7 @@ export default function CoIpchalResult() {
                           천
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -502,7 +504,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -510,7 +512,7 @@ export default function CoIpchalResult() {
                           백
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -525,7 +527,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -533,7 +535,7 @@ export default function CoIpchalResult() {
                           십
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -548,7 +550,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] leading-[70%] text-center">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -556,7 +558,7 @@ export default function CoIpchalResult() {
                           일
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           handlePrice(
@@ -571,7 +573,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[100%] w-[100%] border-black border-r-[2px] leading-[70%] text-center">
+                      <div className="h-[100%] w-[100%] border-solid border-black border-r-[2px] leading-[70%] text-center">
                         <div className="h-[50%]">
                           <span className="md:text-[11pt] text-[10px] font-batang">
                             <br />
@@ -584,20 +586,21 @@ export default function CoIpchalResult() {
                         </div>
                       </div>
                     </div>
-                    <div className="w-[5%] border-black border-r-[1px] h-[100%] justify-center items-center text-center">
+                    <div className="flex w-[5%] border-solid border-black border-r-[1px] h-[100%] justify-center items-center text-center">
                       <span className="md:text-[12pt] text-[6pt] font-batang">
                         보증
+                        <br />
                         <br />
                         금액
                       </span>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           천억
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                           totalResult?.bidDeposit?.toString().length === 12
@@ -609,12 +612,12 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           백억
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -629,12 +632,12 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           십억
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -649,7 +652,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -657,7 +660,7 @@ export default function CoIpchalResult() {
                           억
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -672,12 +675,12 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           천만
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -692,12 +695,12 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           백만
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -712,12 +715,12 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           십만
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -732,7 +735,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -740,7 +743,7 @@ export default function CoIpchalResult() {
                           만
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -755,7 +758,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -763,7 +766,7 @@ export default function CoIpchalResult() {
                           천
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -778,7 +781,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -786,7 +789,7 @@ export default function CoIpchalResult() {
                           백
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -801,7 +804,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -809,7 +812,7 @@ export default function CoIpchalResult() {
                           십
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -824,7 +827,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[50%] w-[100%] border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
+                      <div className="h-[50%] w-[100%] border-solid border-black border-r-[1px] border-b-[1px] text-center leading-[70%]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           <br />
                         </span>
@@ -832,7 +835,7 @@ export default function CoIpchalResult() {
                           일
                         </span>
                       </div>
-                      <div className="flex justify-center items-center h-[50%] border-black border-[2px]">
+                      <div className="flex justify-center items-center h-[50%] border-solid border-black border-[2px]">
                         <span className="md:text-[11pt] text-[10px] font-batang">
                           {totalResult &&
                             (handleDepositPrice(
@@ -847,7 +850,7 @@ export default function CoIpchalResult() {
                       </div>
                     </div>
                     <div className="w-[3.46%] h-[100%]">
-                      <div className="h-[100%] w-[100%] border-black leading-[70%] text-center">
+                      <div className="h-[100%] w-[100%] border-solid border-black leading-[70%] text-center">
                         <div className="h-[50%]">
                           <span className="md:text-[11pt] text-[10px] font-batang">
                             <br />
@@ -863,7 +866,7 @@ export default function CoIpchalResult() {
                   </div>
                   {/* 다섯 번째 박스 */}
                   <div className="flex flex-row justify-between items-stretch w-[100%] h-[13%]">
-                    <div className="flex flex-row w-[49.9%] border-black border-r-[2px] h-[100%]">
+                    <div className="flex flex-row w-[49.9%] border-solid border-black border-r-[2px] h-[100%]">
                       <div className="flex items-center justify-start w-[30%] h-[100%] ml-[10px]">
                         <span className="md:text-[11pt] text-[9pt] text-left font-batang">
                           보증의
@@ -876,7 +879,7 @@ export default function CoIpchalResult() {
                           <input
                             type="checkbox"
                             checked={biddingInfo.bidWay === 'M' ? true : false}
-                            className="w-[15px] h-[15px] border-black border-[2px] mr-1 mt-2 indeterminate:bg-white"
+                            className="w-[15px] h-[15px] border-solid border-black border-[2px] mr-1 mt-2 indeterminate:bg-white"
                             readOnly
                           />
                           <span className="md:text-[11pt] font-batang text-[9pt] mt-1">
@@ -887,7 +890,7 @@ export default function CoIpchalResult() {
                           <input
                             type="checkbox"
                             checked={biddingInfo.bidWay === 'W' ? true : false}
-                            className="w-[15px] h-[15px] border-black border-[2px] mr-1 mt-2 indeterminate:bg-white"
+                            className="w-[15px] h-[15px] border-solid border-black border-[2px] mr-1 mt-2 indeterminate:bg-white"
                             readOnly
                           />
                           <span className="md:text-[11pt] text-[9pt] font-batang mt-1">
@@ -922,7 +925,7 @@ export default function CoIpchalResult() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col md:max-w-[850px] w-[90%] leading-[-1px] justify-center items-center absolute top-[750px]">
+            {/* <div className="flex flex-col md:max-w-[850px] w-[90%] leading-[-1px] justify-center items-center absolute top-[750px]">
               <div className="flex flex-col md:w-[90%] w-[100%] text-left items-start justify-start">
                 <span className="md:text-[15pt] text-[14px] font-extrabold font-batang ">
                   주의사항
@@ -980,7 +983,8 @@ export default function CoIpchalResult() {
                   선택하여 표를 기재하십시오.
                 </span>
               </div>
-            </div>
+            </div> */}
+            <IpchalText />
           </div>
           <CoIpchalForm totalResult={totalResult} />
           {totalResult && totalResult?.bidders.length > 10 ? (

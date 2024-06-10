@@ -29,9 +29,9 @@ export default function CoIpchalList({ totalResult, item }: CoIpchalListProps) {
           공 동 입 찰 자 목 록
         </span>
       </div>
-      <div className="flex md:w-[850px] w-[90%] h-[1100px] border border-black absolute top-[150px]">
-        <div className="flex flex-col w-[10%] h-[100%] border-black border-r-[1px]">
-          <div className="flex justify-center items-center border-black border-b-[1px] w-[100%] h-[50px]">
+      <div className="flex md:w-[850px] w-[90%] h-[1100px] border-solid border-[1px] border-black absolute top-[150px]">
+        <div className="flex flex-col w-[10%] h-[100%] border-solid border-black border-r-[1px]">
+          <div className="flex justify-center items-center border-solid border-black border-b-[1px] w-[100%] h-[50px]">
             <span className="md:text-[12pt] text-[12px] font-batang">번호</span>
           </div>
           {Array(10)
@@ -39,8 +39,8 @@ export default function CoIpchalList({ totalResult, item }: CoIpchalListProps) {
             .map((_, idx) => {
               return (
                 <div
-                  className={`flex justify-center items-center border-black ${
-                    idx === 9 ? '' : 'border-b-[1px]'
+                  className={`flex justify-center items-center border-solid border-black ${
+                    idx === 9 ? '' : 'border-solid border-b-[1px]'
                   } w-[100%] h-[105px]`}
                   key={idx}
                 >
@@ -52,20 +52,20 @@ export default function CoIpchalList({ totalResult, item }: CoIpchalListProps) {
             })}
         </div>
         <div className="flex flex-col w-[100%]">
-          <div className="flex flex-row w-[100%] h-[50px] border-black border-b-[1px] justify-start items-center">
-            <div className="flex justify-center items-center text-center w-[20%] border-black border-r-[1px] h-[100%]">
+          <div className="flex flex-row w-[100%] h-[50px] border-solid border-black border-b-[1px] justify-start items-center">
+            <div className="flex justify-center items-center text-center w-[20%] border-solid border-black border-r-[1px] h-[100%]">
               <span className="md:text-[12pt] text-[12px] font-batang">
                 성명
               </span>
             </div>
-            <div className="flex flex-col w-[60%] h-[100%] border-black border-r-[1px] justify-center items-center">
-              <div className="border-black border-b-[1px] w-[100%] justify-center items-center text-center">
+            <div className="flex flex-col w-[60%] h-[100%] border-solid border-black border-r-[1px] justify-center items-center">
+              <div className="flex border-solid border-black border-b-[1px] w-[100%] justify-center items-center text-center h-[50%]">
                 <span className="md:text-[12pt] text-[12px] font-batang">
                   주소
                 </span>
               </div>
-              <div className="flex flex-row w-[100%] justify-center items-center text-center h-[100%]">
-                <div className="flex w-[100%] border-black border-r-[1px] justify-center items-center text-center h-[100%]">
+              <div className="flex flex-row w-[100%] justify-center items-center text-center h-[50%]">
+                <div className="flex w-[100%] border-solid border-black border-r-[1px] justify-center items-center text-center h-[100%]">
                   <span className="md:text-[12pt] text-[12px] font-batang">
                     주민등록번호
                   </span>
@@ -89,12 +89,12 @@ export default function CoIpchalList({ totalResult, item }: CoIpchalListProps) {
                 .map((_, idx) => {
                   return (
                     <div
-                      className={`flex flex-row w-[100%] h-[105px] border-black ${
-                        idx === 9 ? '' : 'border-b-[1px]'
+                      className={`flex flex-row w-[100%] h-[105px] border-solid border-black ${
+                        idx === 9 ? '' : 'border-solid border-b-[1px]'
                       } justify-start items-center text-center`}
                       key={idx}
                     >
-                      <div className="flex justify-center items-center text-center w-[20%] border-black border-r-[1px] h-[100%]">
+                      <div className="flex justify-center items-center text-center w-[20%] border-solid border-black border-r-[1px] h-[100%]">
                         <div className="flex justify-between items-center text-center w-[100%]">
                           <div className="flex w-[60%] justify-end">
                             <span className="md:text-[12pt] text-[10px] font-batang">
@@ -110,8 +110,8 @@ export default function CoIpchalList({ totalResult, item }: CoIpchalListProps) {
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col w-[60%] h-[100%] border-black border-r-[1px]">
-                        <div className="flex border-black border-b-[1px] w-[100%] h-[50%] justify-center items-center text-center">
+                      <div className="flex flex-col w-[60%] h-[100%] border-solid border-black border-r-[1px]">
+                        <div className="flex border-solid border-black border-b-[1px] w-[100%] h-[50%] justify-center items-center text-center">
                           <span className="md:text-[12pt] text-[12px] font-batang">
                             {totalResult && totalResult.bidders[idx]?.address
                               ? totalResult && totalResult.bidders[idx]?.address
@@ -119,7 +119,7 @@ export default function CoIpchalList({ totalResult, item }: CoIpchalListProps) {
                           </span>
                         </div>
                         <div className="flex flex-row w-[100%] h-[50%]">
-                          <div className="flex w-[100%] h-[100%] border-black border-r-[1px] justify-center items-center text-center">
+                          <div className="flex w-[100%] h-[100%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                             <span className="md:text-[12pt] text-[12px] font-batang">
                               {totalResult &&
                               totalResult.bidders[idx]?.bidderType === 'I'
@@ -180,12 +180,12 @@ export default function CoIpchalList({ totalResult, item }: CoIpchalListProps) {
                 .map((_, idx) => {
                   return (
                     <div
-                      className={`flex flex-row w-[100%] h-[105px] border-black ${
+                      className={`flex flex-row w-[100%] h-[105px] border-solid border-black ${
                         idx === 9 ? '' : 'border-b-[1px]'
                       } justify-start items-center text-center`}
                       key={idx}
                     >
-                      <div className="flex justify-center items-center text-center w-[20%] border-black border-r-[1px] h-[100%]">
+                      <div className="flex justify-center items-center text-center w-[20%] border-solid border-black border-r-[1px] h-[100%]">
                         <div className="flex justify-between items-center text-center w-[100%]">
                           <div className="flex w-[60%] justify-end">
                             <span className="md:text-[12pt] text-[10px] font-batang">
@@ -199,14 +199,14 @@ export default function CoIpchalList({ totalResult, item }: CoIpchalListProps) {
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col w-[60%] h-[100%] border-black border-r-[1px]">
-                        <div className="flex border-black border-b-[1px] w-[100%] h-[50%] justify-center items-center text-center">
+                      <div className="flex flex-col w-[60%] h-[100%] border-solid border-black border-r-[1px]">
+                        <div className="flex border-solid border-black border-b-[1px] w-[100%] h-[50%] justify-center items-center text-center">
                           <span className="md:text-[12pt] text-[12px] font-batang">
                             {ipchalList[idx]?.address ?? ''}
                           </span>
                         </div>
                         <div className="flex flex-row w-[100%] h-[50%]">
-                          <div className="flex w-[100%] h-[100%] border-black border-r-[1px] justify-center items-center text-center">
+                          <div className="flex w-[100%] h-[100%] border-solid border-black border-r-[1px] justify-center items-center text-center">
                             <span className="md:text-[12pt] text-[12px] font-batang">
                               {ipchalList[idx]?.bidderType === 'I'
                                 ? biddingInfo.bidCorpYn[

@@ -105,15 +105,6 @@ function Form({ item, index }: ItemProps) {
       onMouseOut={() => {
         removeMarker()
       }}
-      onClick={() => {
-        if (window) {
-          window.open(
-            handleDetailPage(item?.idCode ?? ''),
-            '_blank',
-            'width=1000, height=800',
-          )
-        }
-      }}
     >
       {item?.type === 1 || item?.type === 2 || item?.type === 3 ? (
         <Flex
@@ -121,7 +112,6 @@ function Form({ item, index }: ItemProps) {
           css={ContainerStyle}
           style={{
             borderTop: `${index === 0 ? '' : '0.5px solid #e0e0e0 '}`,
-            cursor: 'pointer',
           }}
         >
           <ListRow
@@ -183,6 +173,16 @@ function Form({ item, index }: ItemProps) {
               position: 'absolute',
               top: 45,
               width: '100%',
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              if (window) {
+                window.open(
+                  handleDetailPage(item?.idCode ?? ''),
+                  '_blank',
+                  'width=1000, height=800',
+                )
+              }
             }}
           >
             <NextImageWithFallback
@@ -308,6 +308,7 @@ function Form({ item, index }: ItemProps) {
           index={index}
           openModal={openModal}
           setOpenModal={setOpenModal}
+          handleDetailPage={handleDetailPage}
         />
       )}
     </div>

@@ -16,7 +16,11 @@ import Script from 'next/script'
 import { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
-import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
+import {
+  mapAtom,
+  mapItemOriginAtom,
+  markerPositionAtom,
+} from '@/store/atom/map'
 import useDebounce from '@/components/shared/hooks/useDebounce'
 import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
@@ -107,13 +111,6 @@ export default function GGIMap({
   const [clickedLatLng, setClickedLatLng] = useState({
     lat: 0,
     lng: 0,
-  })
-
-  const [screenNum, setScreenNum] = useState({
-    first: false,
-    second: false,
-    third: false,
-    fourth: false,
   })
 
   const searchAddrToCoord = (address: string) => {

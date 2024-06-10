@@ -2,10 +2,11 @@
 export default function IpchalText() {
   return (
     <div className="flex flex-col w-[100%] absolute md:top-[750px] top-[720px] leading-[-1px] justify-center items-center">
-      <div className="flex flex-col md:w-[800px] w-[90%] text-left items-start justify-start">
+      <div className="flex flex-col md:w-[800px] w-[90%] text-left items-start justify-start gap-[10px]">
         <span className="md:text-[15pt] text-[14px] font-extrabold font-batang ">
           주의사항
         </span>
+        <br />
         <span className="md:text-[11pt] text-[11px] text-left font-batang">
           1. 입찰표는 물건마다 별도의 용지를 사용하십시오, 다만, 일괄입찰시에는
           1매의 용지를 사용하십시오.

@@ -17,11 +17,13 @@ function KwForm({
   index,
   openModal,
   setOpenModal,
+  handleDetailPage,
 }: {
   item: MapItems
   index: number
   openModal: boolean
   setOpenModal: Dispatch<SetStateAction<boolean>>
+  handleDetailPage: (id: string) => string | undefined
 }) {
   const [auth, setAuth] = useRecoilState(authInfo)
   const { open } = useInterestContext()
@@ -35,7 +37,6 @@ function KwForm({
         css={ContainerStyle}
         style={{
           borderTop: `${index === 0 ? '' : '0.5px solid #e0e0e0 '}`,
-          cursor: 'pointer',
         }}
       >
         <ListRow
@@ -70,6 +71,16 @@ function KwForm({
             width: '90%',
             position: 'absolute',
             top: 60,
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            if (window) {
+              window.open(
+                handleDetailPage(item?.idCode ?? ''),
+                '_blank',
+                'width=1000, height=800',
+              )
+            }
           }}
         >
           <Text css={TextStyle}>청구액</Text>

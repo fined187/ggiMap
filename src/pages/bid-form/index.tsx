@@ -24,20 +24,12 @@ import { biddingInfoState, stepState } from '@/store/atom/bidForm'
 import Spinner from '@/components/bidForm/Spinner'
 
 interface BidFormProps {
-  idcode: string | null
-  token: string | null
-  mstSeq: string | null
-  lastPathPart: string | null
+  idcode?: string | null
+  token?: string | null
+  mstSeq?: string | null
 }
 
-let isCheck = false
-
-export default function BidForm({
-  idcode,
-  token,
-  mstSeq,
-  lastPathPart,
-}: BidFormProps) {
+export default function BidForm({ idcode, token, mstSeq }: BidFormProps) {
   const [stateNum, setStateNum] = useRecoilState(stepState)
   const [biddingForm, setBiddingForm] = useRecoilState(biddingInfoState)
   const [loading, setLoading] = useState<boolean>(false)
@@ -498,7 +490,7 @@ export default function BidForm({
             stateNum === 0 && <StartIpchal isOk={isOk} userId={userId} />
           )}
           {stateNum === 1 && <SearchIpchal />}
-          {stateNum === 2 && <GetIpchalInfo mstSeq={mstSeq} />}
+          {stateNum === 2 && <GetIpchalInfo mstSeq={mstSeq ?? null} />}
           {stateNum === 3 && biddingForm.biddingInfos.length > 1 && (
             <TimeInfo />
           )}
@@ -546,18 +538,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { mstSeq } = context.query
   const { idcode } = context.query
   const { token } = context.query
-  const { req } = context
-  const { url } = req
-  const pathname = new URL(url ?? '', 'http://example.com').pathname
-  const pathParts = pathname.split('/').filter(Boolean)
-  const lastPathPart = pathParts[pathParts.length - 1]
 
   return {
     props: {
-      mstSeq: mstSeq ?? null,
       idcode: idcode ?? null,
       token: token ?? null,
-      lastPathPart: lastPathPart ?? null,
+      mstSeq: mstSeq ?? null,
     },
   }
 }

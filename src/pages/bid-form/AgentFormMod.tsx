@@ -2,10 +2,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Spinner from '@/components/bidForm/Spinner'
 import useAgent from '@/components/bidForm/hooks/useAgent'
-import {
-  handleVerifyIdNum,
-  handleVerifyPhone,
-} from '@/components/bidForm/util/Validation'
 import AgentFormProps from '@/components/bidForm/shared/AgentFormProps'
 import { AgentInfoType } from '@/models/IpchalType'
 import { biddingInfoState, stepState } from '@/store/atom/bidForm'
@@ -96,23 +92,23 @@ export default function AgentForm() {
     }
   }
   const onSubmit: SubmitHandler<AgentInfoType> = async () => {
-    if (
-      handleVerifyIdNum(biddingForm.agentIdNum1 + biddingForm.agentIdNum2) ===
-      false
-    ) {
-      alert('주민등록번호를 다시 확인해주세요')
-      return
-    }
-    if (
-      handleVerifyPhone(
-        biddingForm.agentPhone1 +
-          biddingForm.agentPhone2 +
-          biddingForm.agentPhone3,
-      ) === false
-    ) {
-      alert('전화번호를 확인해주세요')
-      return
-    }
+    // if (
+    //   handleVerifyIdNum(biddingForm.agentIdNum1 + biddingForm.agentIdNum2) ===
+    //   false
+    // ) {
+    //   alert('주민등록번호를 다시 확인해주세요')
+    //   return
+    // }
+    // if (
+    //   handleVerifyPhone(
+    //     biddingForm.agentPhone1 +
+    //       biddingForm.agentPhone2 +
+    //       biddingForm.agentPhone3,
+    //   ) === false
+    // ) {
+    //   alert('전화번호를 확인해주세요')
+    //   return
+    // }
     if (isOpen === false) {
       try {
         await handleNextStep()
