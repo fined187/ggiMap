@@ -131,29 +131,32 @@ export default function Overlay({
         markerPosition.type === 3
       ) {
         if (markerPosition.winYn === 'Y') {
-          if (map.getZoom() === 16) {
-            if (map.getZoom() === 16) {
-              console.log('여기')
-              if (calculateScreenNum.first) {
-                return {
-                  left: markerPosition.position[0] + 100,
-                  top: markerPosition.position[1] + 30,
-                }
-              } else if (calculateScreenNum.second) {
-                return {
-                  left: markerPosition.position[0] - 300,
-                  top: markerPosition.position[1] + 40,
-                }
-              } else if (calculateScreenNum.third) {
-                return {
-                  left: markerPosition.position[0] - 300,
-                  top: markerPosition.position[1] - 320,
-                }
-              } else if (calculateScreenNum.fourth) {
-                return {
-                  left: markerPosition.position[0] + 100,
-                  top: markerPosition.position[1] - 320,
-                }
+          if (map.getZoom() >= 16) {
+            console.log('여기')
+            if (calculateScreenNum.first) {
+              return {
+                left: markerPosition.position[0] + 100,
+                top: markerPosition.position[1] + 90,
+              }
+            } else if (calculateScreenNum.second) {
+              return {
+                left: markerPosition.position[0] - 300,
+                top: markerPosition.position[1] + 100,
+              }
+            } else if (calculateScreenNum.third) {
+              return {
+                left: markerPosition.position[0] - 300,
+                top: markerPosition.position[1] - 320,
+              }
+            } else if (calculateScreenNum.fourth) {
+              return {
+                left: markerPosition.position[0] + 100,
+                top: markerPosition.position[1] - 320,
+              }
+            } else {
+              return {
+                left: 0,
+                top: 0,
               }
             }
           }

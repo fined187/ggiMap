@@ -36,7 +36,7 @@ export const PnuCountIcon = (
     }; background: #FFF;">
       <span style="color: ${
         !isSame
-          ? item.winYn !== 'Y'
+          ? item.winYn === 'Y'
             ? `${colors.winOrange}`
             : `${colors.black}`
           : item.winYn !== 'Y'

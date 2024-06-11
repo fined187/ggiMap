@@ -20,6 +20,7 @@ import {
   SelectedKmItem,
   SelectedKwItem,
 } from '@/models/SelectedItem'
+import { mapAtom, mapListAtom } from '@/store/atom/map'
 
 interface Props {
   data?: {
@@ -40,7 +41,10 @@ function MapComponent({ token, type, idCode }: Props) {
   const { data: map } = useSWR(MAP_KEY)
   const [user, setUser] = useRecoilState(userAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
-  const [cookieValue, setCookieValue] = useState('')
+
+  const [listItems, setListItems] = useRecoilState(mapListAtom) //  좌측 리스트
+  const [mapItems, setMapItems] = useRecoilState(mapAtom) // 지도 마커
+
   const [selectedData, setSelectedData] = useState<
     SelectedKmItem | SelectedGmItem | SelectedGgItem | SelectedKwItem | null
   >(null)
@@ -127,14 +131,7 @@ function MapComponent({ token, type, idCode }: Props) {
               })
               handleGetAddress()
             } else {
-              if (
-                window &&
-                window.confirm(
-                  '지도검색은 유료서비스 입니다. 로그인후 이용하세요',
-                )
-              ) {
-                window.close()
-              }
+              console.log(response.data.data)
             }
           } else {
             alert('사용자 정보를 가져오는데 실패했습니다.')

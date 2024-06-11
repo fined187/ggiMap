@@ -382,7 +382,7 @@ export default function GGIMap({
           }
         }}
       />
-      <div
+      {/* <div
         style={{
           left: 370,
           top: halfDimensions.height,
@@ -401,7 +401,7 @@ export default function GGIMap({
           width: '2px',
           height: '100%',
         }}
-      />
+      /> */}
       {/* <div
         style={{
           backgroundColor: 'red',

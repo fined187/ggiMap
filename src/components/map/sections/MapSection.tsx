@@ -25,7 +25,6 @@ import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import Clusterings from './markers/Clusterings'
 import Overlay from './Overlay'
-import useSWR from 'swr'
 
 interface MapProps {
   formData: Form
@@ -179,14 +178,11 @@ export default function MapSection({ formData, setFormData }: MapProps) {
 
   const handleDuplicatedItems = useCallback(() => {
     if (mapItems) {
-      // type === 1, 2, 3이면서 winYn !== 'Y'인 아이템들과 좌표가 같은 item.winYn === 'Y' 아이템들을 걸러내기
+      // type === 1, 2, 3이면서 winYn !== 'Y'인 아이템들과 pnu가 같은 item.winYn === 'Y' 아이템들을 걸러내기
       const duplicatedItems = mapItems.filter(
         (item) =>
           mapItems.findIndex(
-            (item2) =>
-              item2.x === item.x &&
-              item2.y === item.y &&
-              item2.winYn !== item.winYn,
+            (item2) => item2.pnu === item.pnu && item2.winYn !== item.winYn,
           ) !== -1,
       )
       const duplicatedKwItems = mapItems.filter(
@@ -195,8 +191,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
           mapItems.some(
             (item2) =>
               (item2.type === 1 || item2.type === 2 || item2.type === 3) &&
-              item2.x === item.x &&
-              item2.y === item.y,
+              item2.pnu === item.pnu,
           ),
       )
 
@@ -207,20 +202,17 @@ export default function MapSection({ formData, setFormData }: MapProps) {
           const duplicatedYItems = duplicatedItems
             .filter((item) => item.winYn === 'Y')
             .map((item) => ({
-              x: item.x,
-              y: item.y,
+              pnu: item.pnu,
             }))
           const filteredItems = mapItems.filter((item) => {
             const isDuplicatedYItem = duplicatedYItems.some(
-              (dupItem) => item.x === dupItem.x && item.y === dupItem.y,
+              (dupItem) => item.pnu === dupItem.pnu,
             )
             if (isDuplicatedYItem) {
               // winYn === 'Y' 인 아이템과 item.type === 4인 아이템이 좌표가 같을 경우
               const hasType4 = mapItems.some(
                 (otherItem) =>
-                  otherItem.x === item.x &&
-                  otherItem.y === item.y &&
-                  otherItem.type === 4,
+                  otherItem.pnu === item.pnu && otherItem.type === 4,
               )
               if (item.winYn !== 'Y' && hasType4) {
                 return false // type === 4인 아이템 제거
@@ -228,8 +220,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
               // winYn === 'Y' 인 아이템과 item.type === 1 || 2 || 3 이면서 winYn !== 'Y' 아이템이 좌표가 같은 경우
               const hasType1Or2Or3NonY = mapItems.some(
                 (otherItem) =>
-                  otherItem.x === item.x &&
-                  otherItem.y === item.y &&
+                  otherItem.pnu === item.pnu &&
                   (otherItem.type === 1 ||
                     otherItem.type === 2 ||
                     otherItem.type === 3) &&
@@ -249,9 +240,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
           const filteredItems = mapItems.filter((item) => {
             const isDuplicatedKwItem = duplicatedKwItems.some(
               (dupItem) =>
-                item.x === dupItem.x &&
-                item.y === dupItem.y &&
-                item.type === dupItem.type,
+                item.pnu === dupItem.pnu && item.type === dupItem.type,
             )
             if (isDuplicatedKwItem) {
               // type === 4인 아이템 제거
