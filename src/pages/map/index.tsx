@@ -171,8 +171,8 @@ function MapComponent({ token, type, idCode }: Props) {
                 setFormData((prev) => {
                   return {
                     ...prev,
-                    gm: response.data.data.type === 2 ? true : false,
-                    gg: response.data.data.type === 3 ? true : false,
+                    gm: response.data.data?.type === 2 ? true : false,
+                    gg: response.data.data?.type === 3 ? true : false,
                     egm:
                       response.data.data.type === 2 &&
                       response.data.data.winAmt > 0

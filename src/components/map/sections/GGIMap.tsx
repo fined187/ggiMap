@@ -16,16 +16,13 @@ import Script from 'next/script'
 import { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
-import {
-  mapAtom,
-  mapItemOriginAtom,
-  markerPositionAtom,
-} from '@/store/atom/map'
+import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
 import useDebounce from '@/components/shared/hooks/useDebounce'
 import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
 import { authInfo } from '@/store/atom/auth'
 import getPolypath from '@/remote/map/selected/getPolypath'
+import { debounce } from 'lodash'
 declare global {
   interface Window {
     naver: any
@@ -117,51 +114,126 @@ export default function GGIMap({
     lng: 0,
   })
 
+  const updateHalfDimensions = useCallback(() => {
+    const exceptFilterBox = window.innerWidth - 370
+    const halfHeight = window.innerHeight / 2
+    const halfWidth = exceptFilterBox / 2 + 370
+    setHalfDimensions({
+      width: halfWidth,
+      height: halfHeight,
+    })
+  }, [setHalfDimensions])
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const updateHalfDimensions = () => {
-        const exceptFilterBox = window.innerWidth - 370
-        const halfHeight = window.innerHeight / 2
-        const halfWidth = exceptFilterBox / 2 + 370
-        setHalfDimensions({
-          width: halfWidth,
-          height: halfHeight,
-        })
-      }
       updateHalfDimensions()
       window.addEventListener('resize', updateHalfDimensions)
       return () => window.removeEventListener('resize', updateHalfDimensions)
     }
-  }, [])
+  }, [updateHalfDimensions])
 
-  const searchAddrToCoord = (address: string) => {
-    if (window.naver?.maps.Service?.geocode !== undefined) {
-      window.naver.maps.Service?.geocode(
-        {
-          query: address,
-        },
-        (status: any, response: any) => {
-          if (status === window.naver.maps?.Service?.Status?.ERROR) {
-            alert('지하철 혹은 주소를 입력해주세요')
-            return
-          }
-          const result = response.v2.addresses[0]
-          const { x, y } = result ?? { point: { x: 0, y: 0 } }
-          setUser({
-            ...user,
-            lat: Number(y),
-            lng: Number(x),
-          })
-          mapRef.current?.setCenter({
-            lat: Number(y),
-            lng: Number(x),
-          })
-        },
-      )
+  const searchAddrToCoord = useCallback(
+    (address: string) => {
+      if (window.naver?.maps.Service?.geocode !== undefined) {
+        window.naver.maps.Service?.geocode(
+          {
+            query: address,
+          },
+          (status: any, response: any) => {
+            if (status === window.naver.maps?.Service?.Status?.ERROR) {
+              alert('지하철 혹은 주소를 입력해주세요')
+              return
+            }
+            const result = response.v2.addresses[0]
+            const { x, y } = result ?? { point: { x: 0, y: 0 } }
+            setUser({
+              ...user,
+              lat: Number(y),
+              lng: Number(x),
+            })
+            mapRef.current?.setCenter({
+              lat: Number(y),
+              lng: Number(x),
+            })
+          },
+        )
+      }
+    },
+    [setUser],
+  )
+  const debouncedGetMapItems = debounce(getMapItems, 100)
+  const handleGetBounds = useCallback(() => {
+    if (mapRef.current) {
+      const bounds = mapRef.current.getBounds() as any
+      const sw = bounds.getSW()
+      const ne = bounds.getNE()
+
+      setFormData((prev) => ({
+        ...prev,
+        x1: sw.lng(),
+        y1: sw.lat(),
+        x2: ne.lng(),
+        y2: ne.lat(),
+      }))
+      debouncedGetMapItems()
     }
-  }
+  }, [setFormData, debouncedGetMapItems])
 
-  const initializeMap = () => {
+  const setUpMiniMap = useCallback(
+    (map: NaverMap) => {
+      if (!map) return
+      let semaphore = false
+      const miniMapElement = document.getElementById('minimap')
+      if (!miniMapElement) return
+
+      const controls =
+        map.controls?.get(window.naver.maps.Position.BOTTOM_RIGHT) || []
+      controls.push(miniMapElement)
+
+      const minimap = new window.naver.maps.Map(miniMapElement, {
+        bounds: map.getBounds(),
+        scrollWheel: false,
+        scaleControl: false,
+        mapDataControl: false,
+        logoControl: false,
+      })
+      setMiniMap(minimap)
+
+      const roadview = new window.naver.maps.StreetLayer()
+      roadview.setMap(minimap)
+
+      let marker = new window.naver.maps.Marker({
+        position: {
+          lat: clickedLatLng?.lat ?? 0,
+          lng: clickedLatLng?.lng ?? 0,
+        },
+        map: minimap,
+      })
+
+      window.naver.maps.Event.addListener(map, 'bounds_changed', () => {
+        if (semaphore) return
+        minimap.fitBounds(map.getBounds())
+      })
+
+      window.naver.maps.Event.addListener(minimap, 'click', (e: any) => {
+        const latlng = e.coord
+        marker.setPosition(latlng)
+        setClickedMarker(marker)
+        setIsPanoVisible(true)
+        new window.naver.maps.Panorama('pano', {
+          position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
+          pov: {
+            pan: -135,
+            tilt: 29,
+            fov: 100,
+          },
+        })
+      })
+    },
+    [clickedLatLng],
+  )
+
+  const initializeMap = useCallback(() => {
     const mapOptions = {
       center: new window.naver.maps.LatLng(...initialCenter),
       zoom: zoom ?? 16,
@@ -203,87 +275,13 @@ export default function GGIMap({
       onLoad(map)
     }
     setUpMiniMap(map)
-  }
-
-  const setUpMiniMap = (map: NaverMap) => {
-    if (!map) return
-    let semaphore = false
-    const miniMapElement = document.getElementById('minimap')
-    if (!miniMapElement) return
-
-    if (
-      map.controls &&
-      map.controls.get(window.naver.maps.Position.BOTTOM_RIGHT)
-    ) {
-      map.controls
-        .get(window.naver.maps.Position.BOTTOM_RIGHT)
-        .push(miniMapElement)
-    } else {
-      console.error('Map controls are not properly initialized.')
-    }
-    const minimap = new window.naver.maps.Map(miniMapElement, {
-      bounds: map.getBounds(),
-      scrollWheel: false,
-      scaleControl: false,
-      mapDataControl: false,
-      logoControl: false,
-    })
-    setMiniMap(minimap)
-    const roadview = new window.naver.maps.StreetLayer()
-    roadview.setMap(minimap)
-    let marker = new window.naver.maps.Marker({
-      position: { lat: clickedLatLng?.lat ?? 0, lng: clickedLatLng?.lng ?? 0 },
-      map: minimap,
-    })
-
-    window.naver.maps.Event.addListener(map, 'bounds_changed', () => {
-      if (semaphore) return
-      minimap.fitBounds(map.getBounds())
-    })
-
-    window.naver.maps.Event.addListener(minimap, 'click', (e: any) => {
-      let latlng = e.coord
-      marker.setPosition(latlng)
-      setClickedMarker(marker)
-      setIsPanoVisible(true)
-      new window.naver.maps.Panorama('pano', {
-        position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
-        pov: {
-          pan: -135,
-          tilt: 29,
-          fov: 100,
-        },
-      })
-    })
-  }
+  }, [initialCenter, zoom, onLoad, handleGetBounds, setUpMiniMap])
 
   const closePanorama = () => {
     setIsPanoVisible(false)
   }
 
-  const handleGetBounds = useCallback(() => {
-    if (mapRef.current) {
-      const bounds = mapRef.current.getBounds() as any
-      const sw = bounds.getSW()
-      const ne = bounds.getNE()
-      const x1 = sw.lng()
-      const y1 = sw.lat()
-      const x2 = ne.lng()
-      const y2 = ne.lat()
-      setFormData((prev) => {
-        return {
-          ...prev,
-          x1,
-          y1,
-          x2,
-          y2,
-        }
-      })
-    }
-    getMapItems()
-  }, [setFormData, getMapItems])
-
-  const handleGetPolyPath = async () => {
+  const handleGetPolyPath = useCallback(async () => {
     if (user.lat && user.lng) {
       try {
         const response = await getPolypath(
@@ -295,7 +293,7 @@ export default function GGIMap({
         console.error(error)
       }
     }
-  }
+  }, [user.lat, user.lng])
 
   useEffect(() => {
     return () => {
@@ -312,7 +310,7 @@ export default function GGIMap({
         lng: user.lng,
       })
     }
-  }, [user.address, auth.idCode, user.lat, user.lng])
+  }, [user.address, auth.idCode, user.lat, user.lng, searchAddrToCoord])
 
   useEffect(() => {
     if (debouncedSearch) {
@@ -325,32 +323,35 @@ export default function GGIMap({
         setMapOrigin([])
       }
     }
-  }, [debouncedSearch, mapRef.current?.getZoom()])
+  }, [
+    debouncedSearch,
+    mapRef.current?.getZoom(),
+    getMapItems,
+    getMapCounts,
+    setMapCount,
+    setMapItems,
+    setMapOrigin,
+  ])
 
   useEffect(() => {
     handleGetPolyPath()
-  }, [user.lat, user.lng])
+  }, [user.lat, user.lng, handleGetPolyPath])
 
   useEffect(() => {
-    if (mapRef.current) {
-      const drawPolyline = () => {
-        if (auth.idCode === '' || path?.length === 0) return
-        console.log(path)
-        let polyline = new window.naver.maps.Polyline({
-          map: mapRef.current,
-          path: path.map((item) => {
-            return new window.naver.maps.LatLng(item[0], item[1])
-          }),
-          fillColor: '#ff0000',
-          fillOpacity: 0.3,
-          strokeColor: '#ff0000',
-          strokeOpacity: 0.6,
-          strokeWeight: 3,
-          zIndex: 100,
-        })
-        polyline.setMap(mapRef.current)
-      }
-      drawPolyline()
+    if (mapRef.current && path.length > 0 && auth.idCode !== '') {
+      const polyline = new window.naver.maps.Polyline({
+        map: mapRef.current,
+        path: path.map(
+          (item) => new window.naver.maps.LatLng(item[0], item[1]),
+        ),
+        fillColor: '#ff0000',
+        fillOpacity: 0.3,
+        strokeColor: '#ff0000',
+        strokeOpacity: 0.6,
+        strokeWeight: 3,
+        zIndex: 100,
+      })
+      polyline.setMap(mapRef.current)
     }
   }, [path, auth.idCode])
 
@@ -382,46 +383,6 @@ export default function GGIMap({
           }
         }}
       />
-      {/* <div
-        style={{
-          left: 370,
-          top: halfDimensions.height,
-          position: 'absolute',
-          backgroundColor: 'red',
-          width: 'calc(100% - 370px)',
-          height: '2px',
-        }}
-      />
-      <div
-        style={{
-          left: halfDimensions.width,
-          top: 0,
-          position: 'absolute',
-          backgroundColor: 'red',
-          width: '2px',
-          height: '100%',
-        }}
-      /> */}
-      {/* <div
-        style={{
-          backgroundColor: 'red',
-          width: halfDimensions.width - 390,
-          height: halfDimensions.height,
-          position: 'absolute',
-          top: 0,
-          left: 390,
-        }}
-      /> */}
-      {/* <div
-        style={{
-          backgroundColor: 'blue',
-          width: halfDimensions.width - 370,
-          height: halfDimensions.height,
-          position: 'absolute',
-          top: 0,
-          left: halfDimensions.width,
-        }}
-      /> */}
       <div
         id="pano"
         style={{

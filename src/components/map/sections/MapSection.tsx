@@ -11,7 +11,7 @@ import {
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
 import { NaverMap } from '@/models/Map'
-import useMap, { INITIAL_CENTER, INITIAL_ZOOM, MAP_KEY } from './hooks/useMap'
+import useMap, { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
 import Map from './GGIMap'
 import BoxGuard from '@/components/shared/BoxGuard'
 import SearchBox from '../sideMenu/searchBox'
@@ -103,14 +103,9 @@ export default function MapSection({ formData, setFormData }: MapProps) {
   })
 
   const initialCenter = useMemo(() => {
-    if (user.lat && user.lng) {
-      return {
-        lat: user.lat,
-        lng: user.lng,
-      }
-    } else {
-      INITIAL_CENTER
-    }
+    return user.lat && user.lng
+      ? { lat: user.lat, lng: user.lng }
+      : INITIAL_CENTER
   }, [user.lat, user.lng])
 
   const { initializeMap } = useMap()
@@ -126,7 +121,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         interests: clickedMapType.interest,
       }
     })
-  }, [clickedMapType, setFormData])
+  }, [clickedMapType.interest, setFormData])
 
   const handleGetPnuCounts = useCallback(() => {
     const countsMap: {
@@ -275,7 +270,11 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     <>
       <Map
         onLoad={onLoadMap}
-        initialCenter={[initialCenter?.lat!, initialCenter?.lng!]}
+        initialCenter={
+          initialCenter && 'lat' in initialCenter
+            ? [initialCenter.lat, initialCenter.lng]
+            : undefined
+        }
         zoom={INITIAL_ZOOM}
         formData={formData}
         setFormData={setFormData}

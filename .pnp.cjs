@@ -35,6 +35,7 @@ const RAW_RUNTIME_STATE =
           ["@types/babel-plugin-macros", "npm:3.1.3"],\
           ["@types/body-parser", "npm:1.19.5"],\
           ["@types/jquery", "npm:3.5.30"],\
+          ["@types/lodash", "npm:4.17.5"],\
           ["@types/navermaps", "npm:3.7.5"],\
           ["@types/node", "npm:20.8.9"],\
           ["@types/react", "npm:18.2.33"],\
@@ -60,6 +61,7 @@ const RAW_RUNTIME_STATE =
           ["handlebars", "npm:4.7.8"],\
           ["jquery", "npm:3.7.1"],\
           ["jspdf", "npm:2.5.1"],\
+          ["lodash", "npm:4.17.21"],\
           ["next", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:13.5.6"],\
           ["postcss", "npm:8.4.38"],\
           ["prettier", "npm:3.0.3"],\
@@ -4654,6 +4656,13 @@ const RAW_RUNTIME_STATE =
           ["@types/lodash", "npm:4.17.0"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:4.17.5", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@types-lodash-npm-4.17.5-81b8d6a8ab-10c0.zip/node_modules/@types/lodash/",\
+        "packageDependencies": [\
+          ["@types/lodash", "npm:4.17.5"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@types/lodash.mergewith", [\
@@ -8884,6 +8893,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["lodash", [\
+      ["npm:4.17.21", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/lodash-npm-4.17.21-6382451519-10c0.zip/node_modules/lodash/",\
+        "packageDependencies": [\
+          ["lodash", "npm:4.17.21"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["lodash.camelcase", [\
       ["npm:4.3.0", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/lodash.camelcase-npm-4.3.0-bf268e3bf0-10c0.zip/node_modules/lodash.camelcase/",\
@@ -9847,6 +9865,7 @@ const RAW_RUNTIME_STATE =
           ["@types/babel-plugin-macros", "npm:3.1.3"],\
           ["@types/body-parser", "npm:1.19.5"],\
           ["@types/jquery", "npm:3.5.30"],\
+          ["@types/lodash", "npm:4.17.5"],\
           ["@types/navermaps", "npm:3.7.5"],\
           ["@types/node", "npm:20.8.9"],\
           ["@types/react", "npm:18.2.33"],\
@@ -9872,6 +9891,7 @@ const RAW_RUNTIME_STATE =
           ["handlebars", "npm:4.7.8"],\
           ["jquery", "npm:3.7.1"],\
           ["jspdf", "npm:2.5.1"],\
+          ["lodash", "npm:4.17.21"],\
           ["next", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:13.5.6"],\
           ["postcss", "npm:8.4.38"],\
           ["prettier", "npm:3.0.3"],\

@@ -122,7 +122,7 @@ export default function Overlay({
     },
     [mapOrigin],
   )
-  console.log(map.getZoom())
+
   const handleCalcLeftTop = useCallback(() => {
     if (map.getZoom() > 15) {
       if (
@@ -131,8 +131,35 @@ export default function Overlay({
         markerPosition.type === 3
       ) {
         if (markerPosition.winYn === 'Y') {
-          if (map.getZoom() >= 16) {
+          if (map.getZoom() === 16) {
             console.log('여기')
+            if (calculateScreenNum.first) {
+              return {
+                left: markerPosition.position[0] + 100,
+                top: markerPosition.position[1] + 30,
+              }
+            } else if (calculateScreenNum.second) {
+              return {
+                left: markerPosition.position[0] - 300,
+                top: markerPosition.position[1] + 30,
+              }
+            } else if (calculateScreenNum.third) {
+              return {
+                left: markerPosition.position[0] - 300,
+                top: markerPosition.position[1] - 320,
+              }
+            } else if (calculateScreenNum.fourth) {
+              return {
+                left: markerPosition.position[0] + 100,
+                top: markerPosition.position[1] - 320,
+              }
+            } else {
+              return {
+                left: 0,
+                top: 0,
+              }
+            }
+          } else if (map.getZoom() > 16) {
             if (calculateScreenNum.first) {
               return {
                 left: markerPosition.position[0] + 100,
@@ -243,6 +270,28 @@ export default function Overlay({
                 top: markerPosition.position[1] - 330,
               }
             }
+          } else if (map.getZoom() < 15) {
+            if (calculateScreenNum.first) {
+              return {
+                left: markerPosition.position[0] + 100,
+                top: markerPosition.position[1] + 50,
+              }
+            } else if (calculateScreenNum.second) {
+              return {
+                left: markerPosition.position[0] - 300,
+                top: markerPosition.position[1] + 40,
+              }
+            } else if (calculateScreenNum.third) {
+              return {
+                left: markerPosition.position[0] - 300,
+                top: markerPosition.position[1] - 320,
+              }
+            } else if (calculateScreenNum.fourth) {
+              return {
+                left: markerPosition.position[0] + 100,
+                top: markerPosition.position[1] - 320,
+              }
+            }
           }
         } else {
           if (calculateScreenNum.first) {
@@ -296,8 +345,7 @@ export default function Overlay({
       }
     }
   }, [markerPosition, calculateScreenNum])
-  console.log(calculateScreenNum)
-  console.log(markerPosition)
+
   useGetDetail(
     handleGetIds(clickedItem?.pnu as string),
     handleGetType(clickedItem?.pnu as string),
