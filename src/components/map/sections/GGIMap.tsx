@@ -103,7 +103,7 @@ export default function GGIMap({
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
   const mapRef = useRef<NaverMap | null>(null)
-  const debouncedSearch = useDebounce(formData, 250)
+  const debouncedSearch = useDebounce(formData, 100)
   const [isPanoVisible, setIsPanoVisible] = useState(false)
   const [clickedMarker, setClickedMarker] = useState<naver.maps.Marker | null>(
     null,
@@ -315,7 +315,6 @@ export default function GGIMap({
   useEffect(() => {
     if (debouncedSearch) {
       if (mapRef?.current?.getZoom()! >= 15) {
-        getMapItems()
         setMapCount && setMapCount([])
       } else {
         getMapCounts()
