@@ -69,7 +69,6 @@ export default function Overlay({
     },
     [mapOrigin],
   )
-  console.log(halfDimensions)
   const calculateScreenNum = useMemo(() => {
     let position = {
       first: false,

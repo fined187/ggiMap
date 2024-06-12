@@ -1,4 +1,3 @@
-import { Form } from '@/models/Form'
 import Clustering from './Clustering'
 
 type ItemProps = {
@@ -10,11 +9,10 @@ type ItemProps = {
   y: number
 }
 interface ClusteringProps {
-  formData: Form
   item: ItemProps[]
 }
 
-export default function Clusterings({ formData, item }: ClusteringProps) {
+export default function Clusterings({ item }: ClusteringProps) {
   return (
     <>
       {item && item.length > 0

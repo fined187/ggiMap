@@ -70,7 +70,7 @@ export default function Clustering({ item }: ClusteringProps) {
     })
     naver.maps.Event.addListener(marker, 'click', handleMarkerClick)
     return () => {
-      if (marker) {
+      if (marker || map.getZoom() >= 15) {
         marker.setMap(null)
       }
     }

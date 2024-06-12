@@ -11,17 +11,11 @@ import { mapListAtom } from '@/store/atom/map'
 
 interface ListBoxProps {
   formData: Form
-  setFormData: React.Dispatch<React.SetStateAction<Form>>
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function ListBox({
-  formData,
-  setFormData,
-  isOpen,
-  setIsOpen,
-}: ListBoxProps) {
+export default function ListBox({ formData, isOpen, setIsOpen }: ListBoxProps) {
   const [listItems, setListItems] = useRecoilState(mapListAtom)
   const { data: map } = useSWR(MAP_KEY)
   return (

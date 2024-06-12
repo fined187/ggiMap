@@ -17,7 +17,6 @@ import { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
 import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
-import useDebounce from '@/components/shared/hooks/useDebounce'
 import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
 import { authInfo } from '@/store/atom/auth'
@@ -103,7 +102,6 @@ export default function GGIMap({
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
   const mapRef = useRef<NaverMap | null>(null)
-  const debouncedSearch = useDebounce(formData, 100)
   const [isPanoVisible, setIsPanoVisible] = useState(false)
   const [clickedMarker, setClickedMarker] = useState<naver.maps.Marker | null>(
     null,
@@ -162,12 +160,12 @@ export default function GGIMap({
     [setUser],
   )
   const debouncedGetMapItems = debounce(getMapItems, 100)
+  const zoomLevel = mapRef.current?.getZoom() ?? null
   const handleGetBounds = useCallback(() => {
     if (mapRef.current) {
       const bounds = mapRef.current.getBounds() as any
       const sw = bounds.getSW()
       const ne = bounds.getNE()
-
       setFormData((prev) => ({
         ...prev,
         x1: sw.lng(),
@@ -175,9 +173,32 @@ export default function GGIMap({
         x2: ne.lng(),
         y2: ne.lat(),
       }))
-      debouncedGetMapItems()
+      if (mapRef.current.getZoom() >= 15) {
+        debouncedGetMapItems()
+      } else {
+        setMapItems([])
+        setMapOrigin([])
+      }
     }
   }, [setFormData, debouncedGetMapItems])
+
+  useEffect(() => {
+    handleGetBounds()
+  }, [
+    formData.egg,
+    formData.ekm,
+    formData.egm,
+    formData.gm,
+    formData.gg,
+    formData.km,
+    formData.kw,
+    formData.awardedMonths,
+    formData.interests,
+    formData.fromMinimumAmount,
+    formData.fromAppraisalAmount,
+    formData.toMinimumAmount,
+    formData.toAppraisalAmount,
+  ])
 
   const setUpMiniMap = useCallback(
     (map: NaverMap) => {
@@ -313,24 +334,14 @@ export default function GGIMap({
   }, [user.address, auth.idCode, user.lat, user.lng, searchAddrToCoord])
 
   useEffect(() => {
-    if (debouncedSearch) {
-      if (mapRef?.current?.getZoom()! >= 15) {
-        setMapCount && setMapCount([])
-      } else {
-        getMapCounts()
-        setMapItems([])
-        setMapOrigin([])
-      }
+    if (mapRef?.current?.getZoom()! >= 15) {
+      setMapCount && setMapCount([])
+    } else if (mapRef?.current?.getZoom()! < 15) {
+      getMapCounts()
+      setMapItems([])
+      setMapOrigin([])
     }
-  }, [
-    debouncedSearch,
-    mapRef.current?.getZoom(),
-    getMapItems,
-    getMapCounts,
-    setMapCount,
-    setMapItems,
-    setMapOrigin,
-  ])
+  }, [getMapCounts, setMapCount, zoomLevel, formData])
 
   useEffect(() => {
     handleGetPolyPath()

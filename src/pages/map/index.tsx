@@ -91,6 +91,8 @@ function MapComponent({ token, type, idCode }: Props) {
     }
   }
 
+  let ok = false
+
   const handleParameters = async (
     token?: string,
     type?: string,
@@ -370,8 +372,12 @@ function MapComponent({ token, type, idCode }: Props) {
         } else {
           if (
             window &&
-            window.confirm('지도검색은 유료서비스 입니다. 로그인후 이용하세요')
+            window.confirm(
+              '지도검색은 유료서비스 입니다. 로그인후 이용하세요',
+            ) &&
+            !ok
           ) {
+            ok = true
             window.close()
           }
         }

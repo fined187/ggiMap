@@ -58,18 +58,17 @@ function Result({ formData, isOpen, setIsOpen }: ResultProps) {
     rowsPerPage: ROWS_PER_PAGE,
     mapData,
     page,
-    setListItems,
   })
 
   useEffect(() => {
-    if (map && map.zoom! >= 15) {
+    if (map && map.getZoom() >= 15) {
       setShowingList(true)
       fetchNextPage()
-    } else if (map && map.zoom! < 15) {
+    } else if (map && map.getZoom() < 15) {
       setShowingList(false)
       setIsOpen(true)
     }
-  }, [map?.zoom])
+  }, [map?.getZoom()])
 
   useEffect(() => {
     setMapData({
@@ -105,7 +104,7 @@ function Result({ formData, isOpen, setIsOpen }: ResultProps) {
       } else if (data.pageParams.length > 1) {
         setListItems((prev) => [
           ...(prev ?? []),
-          ...(data && data?.pages[data.pages.length - 1]?.contents),
+          ...((data && data?.pages[data.pages.length - 1]?.contents) ?? []),
         ])
       }
     }
@@ -178,7 +177,7 @@ function Result({ formData, isOpen, setIsOpen }: ResultProps) {
           <ContainerNone isOpen={true}>
             <Spacing size={20} />
             <Text css={NoResultText}>
-              500m 이상에서는 매물 종류(경매/예정/공매)
+              300m 초과에서는 매물 종류(경매/예정/공매)
               <br />와 용도로만 필터링 할 수 있습니다.
             </Text>
           </ContainerNone>
