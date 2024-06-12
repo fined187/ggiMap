@@ -11,7 +11,7 @@ import {
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
 import { NaverMap } from '@/models/Map'
-import useMap, { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
+import useMap, { INITIAL_CENTER, INITIAL_ZOOM, MAP_KEY } from './hooks/useMap'
 import Map from './GGIMap'
 import BoxGuard from '@/components/shared/BoxGuard'
 import SearchBox from '../sideMenu/searchBox'
@@ -25,6 +25,8 @@ import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import Clusterings from './markers/Clusterings'
 import Overlay from './Overlay'
+import useSWR from 'swr'
+import AddressContainer from '../top/AddressContainer'
 
 interface MapProps {
   formData: Form
@@ -37,11 +39,18 @@ type PnuCount = {
   count: number
 }
 
+type jusoProps = {
+  sido: string
+  gungu: string
+  dong: string
+}
+
 type pnuCounts = {
   updatedCounts: PnuCount[]
 }
 
 export default function MapSection({ formData, setFormData }: MapProps) {
+  const { data: map } = useSWR(MAP_KEY)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
   const [pnuCounts, setPnuCounts] = useState<pnuCounts>({ updatedCounts: [] })
@@ -85,12 +94,12 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     lat: user.lat,
     lng: user.lng,
   })
-  const [topJuso, setTopJuso] = useState({
+  const [topJuso, setTopJuso] = useState<jusoProps>({
     sido: '',
     gungu: '',
     dong: '',
   })
-  const [bottomJuso, setBottomJuso] = useState({
+  const [bottomJuso, setBottomJuso] = useState<jusoProps>({
     sido: '',
     gungu: '',
     dong: '',
@@ -101,7 +110,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     width: 0,
     height: 0,
   })
-
+  const [getGungu, setGetGungu] = useState<string>('')
   const initialCenter = useMemo(() => {
     return user.lat && user.lng
       ? { lat: user.lat, lng: user.lng }
@@ -122,6 +131,53 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       }
     })
   }, [clickedMapType.interest, setFormData])
+
+  const searchCoordinateToAddress = useCallback(
+    async (lat: number, lng: number) => {
+      if (window.naver.maps?.Service?.reverseGeocode) {
+        try {
+          const result: any = await new Promise((resolve, reject) => {
+            window.naver.maps.Service.reverseGeocode(
+              {
+                location: new window.naver.maps.LatLng(lat, lng),
+              },
+              (status: any, response: any) => {
+                if (status !== window.naver.maps.Service.Status.OK) {
+                  reject('주소를 찾을 수 없습니다.')
+                } else {
+                  resolve(response.result.items[0].addrdetail)
+                }
+              },
+            )
+          })
+          // 주소 설정
+          setTopJuso({
+            sido: result.sido,
+            gungu:
+              result.sigugun.split(' ')[0] === ''
+                ? '세종시'
+                : result.sigugun.split(' ')[0],
+            dong: result.dongmyun,
+          })
+          // 군구 설정
+          if (
+            result.sigugun.split(' ')[0].match(/시$/) &&
+            !result.sigugun.split(' ')[1]
+          ) {
+            setGetGungu(result.sigugun.split(' ')[0])
+          } else if (
+            result.sigugun.split(' ')[1] &&
+            result.sigugun.split(' ')[1].match(/구$/)
+          ) {
+            setGetGungu(result.sigugun.split(' ')[1])
+          }
+        } catch (error) {
+          alert(error)
+        }
+      }
+    },
+    [setTopJuso, setGetGungu],
+  )
 
   const handleGetPnuCounts = useCallback(() => {
     const countsMap: {
@@ -266,6 +322,17 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       handleDuplicatedItems()
     }
   }, [formData.ekm, formData.kw, mapItems])
+
+  useEffect(() => {
+    if (map) {
+      const mapCenter = map.getCenter()
+      const center: { lat: number; lng: number } = {
+        lat: mapCenter.lat(),
+        lng: mapCenter.lng(),
+      }
+      searchCoordinateToAddress(center.lat, center.lng)
+    }
+  }, [map && map.center])
   return (
     <>
       <Map
@@ -299,61 +366,17 @@ export default function MapSection({ formData, setFormData }: MapProps) {
           center={center}
           setCenter={setCenter}
         />
-        <ListBox
-          formData={formData}
-          setFormData={setFormData}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-        />
+        <ListBox formData={formData} isOpen={isOpen} setIsOpen={setIsOpen} />
       </BoxGuard>
       <Flex direction="column">
         <TopBar openCursor={openCursor}>
-          <TopAddress
-            SidoAddr={true}
-            GunguAddr={false}
-            DongAddr={false}
-            isEnd={false}
-            center={center}
-            setCenter={setCenter}
+          <AddressContainer
             topJuso={topJuso}
             setTopJuso={setTopJuso}
             openCursor={openCursor}
             setOpenCursor={setOpenCursor}
             range={range}
             setRange={setRange}
-            bottomJuso={bottomJuso}
-            setBottomJuso={setBottomJuso}
-          />
-          <TopAddress
-            SidoAddr={false}
-            GunguAddr={true}
-            DongAddr={false}
-            isEnd={false}
-            center={center}
-            setCenter={setCenter}
-            topJuso={topJuso}
-            setTopJuso={setTopJuso}
-            openCursor={openCursor}
-            setOpenCursor={setOpenCursor}
-            range={range}
-            setRange={setRange}
-            bottomJuso={bottomJuso}
-            setBottomJuso={setBottomJuso}
-          />
-          <TopAddress
-            SidoAddr={false}
-            GunguAddr={false}
-            DongAddr={true}
-            isEnd={true}
-            center={center}
-            setCenter={setCenter}
-            topJuso={topJuso}
-            setTopJuso={setTopJuso}
-            openCursor={openCursor}
-            setOpenCursor={setOpenCursor}
-            range={range}
-            setRange={setRange}
-            bottomJuso={bottomJuso}
             setBottomJuso={setBottomJuso}
           />
         </TopBar>
@@ -385,7 +408,7 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         duplicatedItems={duplicatedItems}
         includeWinYn={includeWinYn}
       />
-      <Clusterings formData={formData} item={mapCount} />
+      <Clusterings item={mapCount} />
       {openOverlay && (
         <Overlay
           clickedItem={clickedItem}

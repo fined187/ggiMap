@@ -1,5 +1,12 @@
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import NextArrow from '../icons/NextArrow'
 import SidoList from './DetailAddrList/SidoList'
 import GunguList from './DetailAddrList/GunguList'
@@ -50,7 +57,6 @@ interface BottomAddressProps {
 }
 
 function BottomAddress({
-  setCenter,
   range,
   setRange,
   topJuso,
@@ -66,16 +72,19 @@ function BottomAddress({
     null,
   )
 
-  const SidoRegex = [
-    /광주/g,
-    /대구/g,
-    /대전/g,
-    /부산/g,
-    /서울/g,
-    /울산/g,
-    /인천/g,
-    /세종/g,
-  ]
+  const SidoRegex = useMemo(
+    () => [
+      /광주/g,
+      /대구/g,
+      /대전/g,
+      /부산/g,
+      /서울/g,
+      /울산/g,
+      /인천/g,
+      /세종/g,
+    ],
+    [],
+  )
 
   const searchAddrToCoord = useCallback(
     (address: string) => {
@@ -99,55 +108,36 @@ function BottomAddress({
         )
       }
     },
-    [map.center, setCenter],
+    [map],
   )
 
   const addrToCenter = useCallback(
     async (addr: string) => {
-      if (range === 0 && bottomJuso.sido !== '') {
+      if (range === 0) {
         const address = SidoRegex.map((regex) => regex.test(addr))
-
-        try {
-          const response = await getSubway(
-            address.includes(true) ? addr + '시청' : addr + '도청',
-          )
-          if (response.documents.length === 0) {
-            return
-          } else {
-            const { x, y } = response.documents[0]
-            map.setCenter({
-              lat: Number(y),
-              lng: Number(x),
-            })
-          }
-        } catch (error) {
-          console.error(error)
+        if (address.includes(true)) {
+          searchAddrToCoord(addr)
+        } else {
+          searchAddrToCoord(addr + '청')
         }
-      } else if (
-        range === 1 &&
-        bottomJuso.sido !== '' &&
-        bottomJuso.gungu !== ''
-      ) {
-        try {
-          const response = await getSubway(bottomJuso.sido + addr + '청')
-          if (response.documents.length === 0) {
-            return
-          } else {
-            const { x, y } = response.documents[0]
-            map.setCenter({
-              lat: Number(y),
-              lng: Number(x),
-            })
-          }
-        } catch (error) {
-          console.error(error)
-        }
+      } else if (range === 1 && bottomJuso.sido !== '') {
+        searchAddrToCoord(addr)
       } else if (range === 2 && bottomJuso.gungu !== '') {
         searchAddrToCoord(addr)
       }
     },
-    [bottomJuso, range, searchAddrToCoord, setCenter, map],
+    [bottomJuso, range, searchAddrToCoord, SidoRegex],
   )
+
+  useEffect(() => {
+    if (range === 0) {
+      addrToCenter(bottomJuso.sido)
+    } else if (range === 1) {
+      addrToCenter(bottomJuso.gungu)
+    } else if (range === 2) {
+      addrToCenter(bottomJuso.dong)
+    }
+  }, [range, bottomJuso, addrToCenter])
 
   return (
     <Flex direction="column" css={ContainerStyle}>
@@ -225,6 +215,7 @@ function BottomAddress({
       {range === 1 && (
         <GunguList
           bottomJuso={bottomJuso}
+          setRange={setRange}
           setBottomJuso={setBottomJuso}
           selectedGunguIndex={selectedGunguIndex}
           setSelectedGunguIndex={setSelectedGunguIndex}

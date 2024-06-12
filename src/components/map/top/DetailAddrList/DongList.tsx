@@ -58,7 +58,14 @@ function DongList({
   useEffect(() => {
     handleGetDong(bottomJuso.sido, bottomJuso.gungu)
   }, [bottomJuso.sido, bottomJuso.gungu])
-  console.log(bottomJuso)
+
+  useEffect(() => {
+    if (dongList.length > 0) {
+      const index = dongList.indexOf(bottomJuso.dong)
+      setSelectedDongIndex(index !== -1 ? index : null)
+    }
+  }, [bottomJuso.dong, dongList, setSelectedDongIndex])
+
   return (
     <Flex
       direction="column"
@@ -77,8 +84,6 @@ function DongList({
                 .slice(index, index + 3)
                 .map((item, subIndex) => {
                   const actualIndex = index + subIndex
-                  const isSelected = bottomJuso.gungu === item
-                  const borderColor = isSelected ? '#332EFC' : '#E5E5E5'
                   const shouldHighlightTop =
                     selectedDongIndex != null &&
                     (actualIndex === selectedDongIndex ||

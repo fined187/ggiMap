@@ -7,7 +7,6 @@ export function NumToHan(num: number) {
     //  100억 이상
     const eok = Math.floor(num / 100000000).toFixed(0)
     const man = Math.round((num % 100000000) / 10000000)
-    console.log(eok, man)
     if (man.toString().length > 1) {
       return `${parseInt(eok) + 1}억`
     } else if (man.toString() === '0') {

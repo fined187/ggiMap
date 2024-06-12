@@ -36,8 +36,8 @@ export function usePostListItems(
     () => postListItems(mapData, pageNum, pageSize),
     {
       onSuccess: (data) => {
-        setListItems(data.contents as MapItems[])
-        setPageInfo(data.paging as PageInfo)
+        setListItems((data && (data.contents as MapItems[])) ?? [])
+        setPageInfo((data && (data.paging as PageInfo))!)
       },
     },
   )

@@ -6,13 +6,19 @@ async function postListItems(
   pageNum: number,
   pageSize: number,
 ) {
-  const response = await axios.post(
-    `ggi/api/map/items?pageNumber=${pageNum}&pageSize=${pageSize}`,
-    formData,
-  )
-  return {
-    contents: response.data.data.contents,
-    paging: response.data.data.paging,
+  try {
+    const response = await axios.post(
+      `ggi/api/map/items?pageNumber=${pageNum}&pageSize=${pageSize}`,
+      formData,
+    )
+    if (response.data.success) {
+      return {
+        contents: response.data.data.contents,
+        paging: response.data.data.paging,
+      }
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
 

@@ -14,9 +14,7 @@ export default function App({
   Component,
   pageProps: { dehydratedState, ...pageProps },
 }: AppProps) {
-  console.log(pageProps.lastPathPart)
   const router = useRouter()
-  console.log(router.pathname)
   const lastPathPart = router.pathname.split('/').pop()
   return (
     <RecoilRoot>

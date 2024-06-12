@@ -18,6 +18,7 @@ interface Props {
   selectedGunguIndex: number | null
   setSelectedGunguIndex: Dispatch<SetStateAction<number | null>>
   addrToCenter: (addr: string) => void
+  setRange: Dispatch<SetStateAction<number>>
 }
 
 export default function GunguList({
@@ -26,6 +27,7 @@ export default function GunguList({
   selectedGunguIndex,
   setSelectedGunguIndex,
   addrToCenter,
+  setRange,
 }: Props) {
   const [gunguList, setGunguList] = useState<string[]>([])
   const handleGetGungu = async (siName: string) => {
@@ -53,11 +55,13 @@ export default function GunguList({
 
   const handleClick = useCallback(
     (gungu: string, actualIndex: number) => {
+      setRange(2)
       setSelectedGunguIndex(actualIndex)
       setBottomJuso((prev) => {
         return {
           ...prev,
           gungu,
+          dong: '',
         }
       })
     },
@@ -153,11 +157,9 @@ export default function GunguList({
                             cursor: item === ' ' ? 'default' : 'pointer',
                           }}
                           onClick={() => {
-                            if (item !== ' ' && addrToCenter) {
-                              handleClick(item, actualIndex)
-                              addrToCenter(bottomJuso.sido + ' ' + item)
-                            }
-                            return
+                            if (item === ' ') return
+                            handleClick(item, actualIndex)
+                            addrToCenter(bottomJuso.sido + ' ' + item)
                           }}
                         >
                           <Text

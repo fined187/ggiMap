@@ -159,7 +159,7 @@ export default function GGIMap({
     },
     [setUser],
   )
-  const debouncedGetMapItems = debounce(getMapItems, 100)
+  const debouncedGetMapItems = debounce(getMapItems, 0)
   const zoomLevel = mapRef.current?.getZoom() ?? null
   const handleGetBounds = useCallback(() => {
     if (mapRef.current) {

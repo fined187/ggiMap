@@ -24,19 +24,15 @@ export default function useSearchListQuery({
     page: number,
     rowsPerPage: number,
   ) => {
-    try {
-      const res = await postListItems(mapData, page, rowsPerPage)
-      return res
-    } catch (error) {
-      console.error(error)
-    }
+    const res = await postListItems(mapData, page, rowsPerPage)
+    return res
   }
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery(
       [queryKey, mapData, page],
       ({ pageParam = 1 }) =>
-        map.getZoom() >= 15
+        map?.getZoom() >= 15
           ? fetchSearchList(mapData, pageParam, rowsPerPage)
           : undefined,
       {
@@ -49,7 +45,7 @@ export default function useSearchListQuery({
     )
   const listProducts = useMemo(() => {
     if (!data) return []
-    return data?.pages.flatMap((page) => page?.contents)
+    return data?.pages.flatMap((page) => (page?.contents ? page?.contents : []))
   }, [data])
 
   return {

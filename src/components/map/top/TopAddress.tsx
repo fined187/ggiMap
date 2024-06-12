@@ -2,13 +2,7 @@
 import { css } from '@emotion/react'
 import AddressArrow from '../icons/AddressArrow'
 import AddressCursorArrow from '../icons/AddressCursorArrow'
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { Dispatch, SetStateAction, useCallback } from 'react'
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import useSWR from 'swr'
@@ -19,37 +13,22 @@ declare global {
     naver: any
   }
 }
+type jusoProps = {
+  sido: string
+  gungu: string
+  dong: string
+}
 interface AddressProps {
   SidoAddr: boolean
   GunguAddr: boolean
   DongAddr: boolean
   isEnd: boolean
-  center: {
-    lat: number
-    lng: number
-  }
-  setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
-  topJuso: {
-    sido: string
-    gungu: string
-    dong: string
-  }
-  setTopJuso: Dispatch<
-    SetStateAction<{
-      sido: string
-      gungu: string
-      dong: string
-    }>
-  >
+  topJuso: jusoProps
+  setTopJuso: Dispatch<SetStateAction<jusoProps>>
   openCursor: boolean
   setOpenCursor: Dispatch<SetStateAction<boolean>>
   range: number
   setRange: Dispatch<SetStateAction<number>>
-  bottomJuso: {
-    sido: string
-    gungu: string
-    dong: string
-  }
   setBottomJuso: Dispatch<
     SetStateAction<{
       sido: string
@@ -57,6 +36,7 @@ interface AddressProps {
       dong: string
     }>
   >
+  getGungu: string
 }
 
 function TopAddress({
@@ -64,69 +44,32 @@ function TopAddress({
   GunguAddr,
   DongAddr,
   isEnd,
-  center,
-  setCenter,
   topJuso,
   setTopJuso,
   openCursor,
   setOpenCursor,
-  range,
   setRange,
-  bottomJuso,
   setBottomJuso,
+  getGungu,
 }: AddressProps) {
   const { data: map } = useSWR(MAP_KEY)
-  const [getGungu, setGetGungu] = useState<string>('')
-  function searchCoordinateToAddress(lat: number, lng: number) {
-    if (window.naver.maps?.Service?.geocode !== undefined) {
-      window.naver.maps?.Service?.reverseGeocode(
-        {
-          location: new window.naver.maps.LatLng(lat, lng),
-        },
-        (status: any, response: any) => {
-          if (status === window.naver.maps?.Service?.Status?.ERROR) {
-            alert('주소를 찾을 수 없습니다.')
-            return
-          }
-          const result = response.result.items[0].addrdetail
-          setTopJuso({
-            sido: result.sido,
-            gungu:
-              result.sigugun.split(' ')[0] === ''
-                ? '세종시'
-                : result.sigugun.split(' ')[0],
-            dong: result.dongmyun,
-          })
-          if (
-            result.sigugun.split(' ')[0].match(/시$/) &&
-            result.sigugun.split(' ')[1] === undefined
-          ) {
-            setGetGungu(result.sigugun.split(' ')[0])
-          } else if (
-            result.sigugun.split(' ')[1] !== undefined &&
-            result.sigugun.split(' ')[1].match(/구$/)
-          ) {
-            setGetGungu(result.sigugun.split(' ')[1])
-          }
-        },
-      )
-    }
-  }
-  const handleTopBottomSync = () => {
-    let newSido: string[] = []
+  const handleTopBottomSyncSido = useCallback(() => {
+    let newSido = ''
     if (
       topJuso.sido.match(/시$/) ||
-      topJuso.sido.match(/경기도$/) ||
-      topJuso.sido.match(/강원특별자치도$/) ||
-      topJuso.sido.match(/제주도$/) ||
-      topJuso.sido.match(/제주특별자치도$/)
+      [
+        '경기도',
+        '강원특별자치도',
+        '제주도',
+        '제주특별자치도',
+        '전북특별자치도',
+      ].includes(topJuso.sido)
     ) {
-      newSido.push(topJuso.sido.slice(0, 2))
-    } else if (topJuso.sido.match(/도$/)) {
-      newSido.push(topJuso.sido.slice(0, 1) + topJuso.sido.slice(2, 3))
-    } else if (topJuso.sido.match(/세종특별자치시$/)) {
-      console.log('세종')
-      newSido.push('세종')
+      newSido = topJuso.sido.slice(0, 2)
+    } else if (topJuso.sido.endsWith('도')) {
+      newSido = topJuso.sido.slice(0, 1) + topJuso.sido.slice(2, 3)
+    } else if (topJuso.sido === '세종특별자치시') {
+      newSido = '세종'
       setTopJuso((prev) => {
         return {
           ...prev,
@@ -135,24 +78,18 @@ function TopAddress({
       })
     }
     return newSido
-  }
-  const handleTopBottomSyncGungu = () => {
+  }, [topJuso.sido, setTopJuso])
+
+  const handleTopBottomSyncGungu = useCallback(() => {
+    let newGungu = ''
     if (!topJuso.gungu) return []
-    let newGungu = []
-    if (
-      topJuso.gungu.slice(topJuso.gungu.length - 1, topJuso.gungu.length) ===
-      '시'
-    ) {
-      if (getGungu.match(/구$/)) {
-        newGungu.push(topJuso.gungu + ' ' + getGungu)
-      } else {
-        newGungu.push(topJuso.gungu)
-      }
-      return newGungu
+    if (topJuso.gungu.endsWith('시') && getGungu.endsWith('구')) {
+      newGungu = topJuso.gungu + ' ' + getGungu
+    } else {
+      newGungu = topJuso.gungu
     }
-    newGungu.push(topJuso.gungu)
     return newGungu
-  }
+  }, [topJuso.gungu, getGungu])
 
   const handleControlTopBar = () => {
     if (SidoAddr) {
@@ -166,35 +103,22 @@ function TopAddress({
     } else if (GunguAddr) {
       setRange(1)
       setOpenCursor(!openCursor)
-      setBottomJuso((prev) => {
-        return {
-          ...prev,
-          sido: handleTopBottomSync()[0],
-          gungu: '',
-          dong: '',
-        }
+      setBottomJuso({
+        sido: handleTopBottomSyncSido(),
+        gungu: '',
+        dong: '',
       })
     } else {
       setRange(2)
       setOpenCursor(!openCursor)
       setBottomJuso({
-        sido: handleTopBottomSync()[0],
-        gungu: handleTopBottomSyncGungu()[0] as string,
+        sido: handleTopBottomSyncSido(),
+        gungu: handleTopBottomSyncGungu() as string,
         dong: '',
       })
     }
   }
 
-  useEffect(() => {
-    if (map) {
-      const mapCenter = map.getCenter()
-      const center: { lat: number; lng: number } = {
-        lat: mapCenter.lat(),
-        lng: mapCenter.lng(),
-      }
-      searchCoordinateToAddress(center.lat, center.lng)
-    }
-  }, [map && map.center])
   if (!map) return null
   return (
     <>
