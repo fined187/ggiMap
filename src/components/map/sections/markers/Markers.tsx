@@ -6,6 +6,7 @@ import { mapAtom } from '@/store/atom/map'
 import Marker from './Marker'
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import { MapItem } from '@/models/MapItem'
+import { userAtom } from '@/store/atom/postUser'
 
 type PnuProps = {
   pnu: string
@@ -41,10 +42,13 @@ export default function Markers({
   includeWinYn,
 }: MarkersProps) {
   const { data: map } = useSWR<NaverMap>(MAP_KEY)
+  const [user, setUser] = useRecoilState(userAtom)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   return (
     <>
-      {mapItems
+      {user.address === ''
+        ? null
+        : mapItems
         ? mapItems?.map((item, index) => {
             return (
               <Marker

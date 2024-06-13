@@ -2,7 +2,7 @@ import { Coordinates, NaverMap } from '@/models/Map'
 import { useCallback } from 'react'
 import useSWR, { mutate } from 'swr'
 
-export const INITIAL_CENTER: Coordinates = [37.5262411, 126.99289439]
+export const INITIAL_CENTER: Coordinates = [37.497013, 127.0114263]
 export const INITIAL_ZOOM = 16
 
 export const MAP_KEY = '/map'

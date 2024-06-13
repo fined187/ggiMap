@@ -35,13 +35,21 @@ export default function Carousel({
 }) {
   const [image, setImage] = useState<string[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const pathUrl = usePathUrl(clickedItem?.type || 1)
   useEffect(() => {
     if (clickedInfo) {
-      setImage(clickedInfo.map((info) => pathUrl + info?.path ?? ''))
+      setImage(
+        clickedInfo.map((info) =>
+          info.type === 1
+            ? 'https://www.ggi.co.kr' + info.path
+            : info.type === 2 || info.type === 3
+            ? 'http://file.ggi.co.kr/Gongmae/Pic/' + info.path
+            : 'https://www.ggi.co.kr/' + info?.path,
+        ),
+      )
     }
-  }, [pathUrl, clickedItem, clickedInfo])
+  }, [clickedItem, clickedInfo])
   const { open } = useInterestContext()
+  console.log(image)
 
   const onButtonClick = () => {
     setOpenModal(false)

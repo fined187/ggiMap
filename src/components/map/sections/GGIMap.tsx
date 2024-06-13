@@ -13,7 +13,7 @@ import { useRecoilState } from 'recoil'
 import { userAtom } from '@/store/atom/postUser'
 import { Coordinates, NaverMap } from '@/models/Map'
 import Script from 'next/script'
-import { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
+import { INITIAL_CENTER } from './hooks/useMap'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
 import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
@@ -22,6 +22,9 @@ import MapFunction from './MapFunc/MapFunction'
 import { authInfo } from '@/store/atom/auth'
 import getPolypath from '@/remote/map/selected/getPolypath'
 import { debounce } from 'lodash'
+import { useAuth } from '@/hooks/auth/useAuth'
+import handleToken from '@/remote/map/auth/token'
+import axios from 'axios'
 declare global {
   interface Window {
     naver: any
@@ -47,7 +50,6 @@ interface Props {
   initialCenter?: Coordinates
   zoom?: number
   onLoad?: (map: NaverMap) => void
-  mapCount?: MapCountsResponse[]
   setMapCount?: Dispatch<SetStateAction<MapCountsResponse[]>>
   markerClickedRef: MutableRefObject<boolean>
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
@@ -67,8 +69,9 @@ interface Props {
     }>
   >
   center: { lat: number; lng: number }
-  halfDimensions: { width: number; height: number }
   setHalfDimensions: Dispatch<SetStateAction<{ width: number; height: number }>>
+  setMapOptions: (map: NaverMap) => void
+  token?: string
 }
 
 export default function GGIMap({
@@ -77,10 +80,9 @@ export default function GGIMap({
   clickedMapType,
   mapId = 'map',
   initialCenter = INITIAL_CENTER,
-  zoom = INITIAL_ZOOM,
+  zoom = 17,
   setOpenOverlay,
   onLoad,
-  mapCount,
   setMapCount,
   markerClickedRef,
   clickedItem,
@@ -88,8 +90,9 @@ export default function GGIMap({
   setCenter,
   setClickedMapType,
   center,
-  halfDimensions,
   setHalfDimensions,
+  setMapOptions,
+  token,
 }: Props) {
   const [user, setUser] = useRecoilState(userAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
@@ -112,6 +115,37 @@ export default function GGIMap({
     lng: 0,
   })
 
+  const searchAddrToCoord = useCallback(
+    (address: string) => {
+      if (window.naver?.maps.Service?.geocode !== undefined) {
+        window.naver.maps.Service?.geocode(
+          {
+            query: address,
+          },
+          (status: any, response: any) => {
+            if (status === window.naver.maps?.Service?.Status?.ERROR) {
+              return
+            }
+            const result = response.v2.addresses[0]
+            const { x, y } = result ?? { point: { x: 0, y: 0 } }
+            setUser((prev) => {
+              return {
+                ...prev,
+                lat: Number(y),
+                lng: Number(x),
+              }
+            })
+            mapRef.current?.setCenter({
+              lat: Number(y),
+              lng: Number(x),
+            })
+          },
+        )
+      }
+    },
+    [setUser],
+  )
+
   const updateHalfDimensions = useCallback(() => {
     const exceptFilterBox = window.innerWidth - 370
     const halfHeight = window.innerHeight / 2
@@ -130,35 +164,6 @@ export default function GGIMap({
     }
   }, [updateHalfDimensions])
 
-  const searchAddrToCoord = useCallback(
-    (address: string) => {
-      if (window.naver?.maps.Service?.geocode !== undefined) {
-        window.naver.maps.Service?.geocode(
-          {
-            query: address,
-          },
-          (status: any, response: any) => {
-            if (status === window.naver.maps?.Service?.Status?.ERROR) {
-              alert('지하철 혹은 주소를 입력해주세요')
-              return
-            }
-            const result = response.v2.addresses[0]
-            const { x, y } = result ?? { point: { x: 0, y: 0 } }
-            setUser({
-              ...user,
-              lat: Number(y),
-              lng: Number(x),
-            })
-            mapRef.current?.setCenter({
-              lat: Number(y),
-              lng: Number(x),
-            })
-          },
-        )
-      }
-    },
-    [setUser],
-  )
   const debouncedGetMapItems = debounce(getMapItems, 0)
   const zoomLevel = mapRef.current?.getZoom() ?? null
   const handleGetBounds = useCallback(() => {
@@ -256,9 +261,10 @@ export default function GGIMap({
 
   const initializeMap = useCallback(() => {
     const mapOptions = {
-      center: new window.naver.maps.LatLng(...initialCenter),
-      zoom: zoom ?? 16,
+      center: new window.naver.maps.LatLng(37.497013, 127.0114263),
+      zoom: zoom ?? 17,
       minZoom: 9,
+      draggable: true,
     }
     const map = new window.naver.maps.Map(mapId, mapOptions)
     mapRef.current = map
@@ -296,7 +302,7 @@ export default function GGIMap({
       onLoad(map)
     }
     setUpMiniMap(map)
-  }, [initialCenter, zoom, onLoad, handleGetBounds, setUpMiniMap])
+  }, [initialCenter, zoom, onLoad, handleGetBounds, setUpMiniMap, user.role])
 
   const closePanorama = () => {
     setIsPanoVisible(false)
@@ -323,7 +329,7 @@ export default function GGIMap({
   }, [])
 
   useEffect(() => {
-    if (user.address && auth.idCode === '') {
+    if (user.address !== '' && auth.idCode === '') {
       searchAddrToCoord(user.address)
     } else if (user.address === '' && auth.idCode !== '') {
       mapRef.current?.setCenter({

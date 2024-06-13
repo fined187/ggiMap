@@ -9,5 +9,10 @@
           }
         }
       ]
+    ],
+    "plugins": [
+      [
+        "@emotion/babel-plugin"
+      ]
     ]
 }

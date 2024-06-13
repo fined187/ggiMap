@@ -28,8 +28,8 @@ interface ResultProps {
 const ROWS_PER_PAGE = 10
 
 function Result({ formData, isOpen, setIsOpen }: ResultProps) {
-  const [listItems, setListItems] = useRecoilState(mapListAtom)
   const { data: map } = useSWR(MAP_KEY)
+  const [listItems, setListItems] = useRecoilState(mapListAtom)
   const [showingList, setShowingList] = useState(false)
   const [page, setPage] = useState(1)
   const scrollbarsRef = useRef<HTMLDivElement | null>(null)

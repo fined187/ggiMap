@@ -186,7 +186,7 @@ function Form({ item, index }: ItemProps) {
             }}
           >
             <NextImageWithFallback
-              src={item?.path ? url + item?.path : '/images/no-image.png'}
+              src={item?.path ? url + item?.path : ''}
               alt="KM image"
               fallbackComponent={<NoImage />}
               width={180}

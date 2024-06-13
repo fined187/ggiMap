@@ -4,7 +4,7 @@ import { v4 } from 'uuid'
 export const userAtom = atom({
   key: `auth/user/${v4()}`,
   default: {
-    role: '',
+    role: [''],
     aesUserId: '',
     address: '',
     lng: 127.105399,

@@ -27,10 +27,18 @@ import Clusterings from './markers/Clusterings'
 import Overlay from './Overlay'
 import useSWR from 'swr'
 import AddressContainer from '../top/AddressContainer'
+import { useSearchAddr } from './hooks/useSearchAddr'
 
 interface MapProps {
   formData: Form
   setFormData: Dispatch<SetStateAction<Form>>
+  topJuso: jusoProps
+  setTopJuso: Dispatch<SetStateAction<jusoProps>>
+  bottomJuso: jusoProps
+  setBottomJuso: Dispatch<SetStateAction<jusoProps>>
+  getGungu: string
+  setGetGungu: Dispatch<SetStateAction<string>>
+  setMapOptions: (map: NaverMap) => void
 }
 
 type PnuCount = {
@@ -49,7 +57,18 @@ type pnuCounts = {
   updatedCounts: PnuCount[]
 }
 
-export default function MapSection({ formData, setFormData }: MapProps) {
+export default function MapSection({
+  formData,
+  setFormData,
+  topJuso,
+  setTopJuso,
+  bottomJuso,
+  setBottomJuso,
+  getGungu,
+  setGetGungu,
+  setMapOptions,
+}: MapProps) {
+  console.log('2번')
   const { data: map } = useSWR(MAP_KEY)
   const [mapItems, setMapItems] = useRecoilState(mapAtom)
   const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
@@ -78,7 +97,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     bottom: 0,
   })
   const [duplicatedItems, setDuplicatedItems] = useState<MapItem[]>([])
-
   const [clickedMapType, setClickedMapType] = useState({
     basic: true,
     terrain: false,
@@ -94,47 +112,16 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     lat: user.lat,
     lng: user.lng,
   })
-  const [topJuso, setTopJuso] = useState<jusoProps>({
-    sido: '',
-    gungu: '',
-    dong: '',
-  })
-  const [bottomJuso, setBottomJuso] = useState<jusoProps>({
-    sido: '',
-    gungu: '',
-    dong: '',
-  })
+
   const [openCursor, setOpenCursor] = useState(false)
   const [range, setRange] = useState(0)
   const [halfDimensions, setHalfDimensions] = useState({
     width: 0,
     height: 0,
   })
-  const [getGungu, setGetGungu] = useState<string>('')
-  const initialCenter = useMemo(() => {
-    return user.lat && user.lng
-      ? { lat: user.lat, lng: user.lng }
-      : INITIAL_CENTER
-  }, [user.lat, user.lng])
-
-  const { initializeMap } = useMap()
-
-  const onLoadMap = (map: NaverMap) => {
-    initializeMap(map)
-  }
-
-  const handleSyncMap = useCallback(() => {
-    setFormData((prev) => {
-      return {
-        ...prev,
-        interests: clickedMapType.interest,
-      }
-    })
-  }, [clickedMapType.interest, setFormData])
-
   const searchCoordinateToAddress = useCallback(
     async (lat: number, lng: number) => {
-      if (window.naver.maps?.Service?.reverseGeocode) {
+      if (window.naver?.maps?.Service?.reverseGeocode !== undefined) {
         try {
           const result: any = await new Promise((resolve, reject) => {
             window.naver.maps.Service.reverseGeocode(
@@ -178,6 +165,26 @@ export default function MapSection({ formData, setFormData }: MapProps) {
     },
     [setTopJuso, setGetGungu],
   )
+  const initialCenter = useMemo(() => {
+    return user.lat && user.lng
+      ? { lat: user.lat, lng: user.lng }
+      : INITIAL_CENTER
+  }, [user.lat, user.lng])
+
+  const { initializeMap } = useMap()
+
+  const onLoadMap = (map: NaverMap) => {
+    initializeMap(map)
+  }
+
+  const handleSyncMap = useCallback(() => {
+    setFormData((prev) => {
+      return {
+        ...prev,
+        interests: clickedMapType.interest,
+      }
+    })
+  }, [clickedMapType.interest, setFormData])
 
   const handleGetPnuCounts = useCallback(() => {
     const countsMap: {
@@ -333,6 +340,10 @@ export default function MapSection({ formData, setFormData }: MapProps) {
       searchCoordinateToAddress(center.lat, center.lng)
     }
   }, [map && map.center])
+
+  useEffect(() => {
+    searchCoordinateToAddress(user.lat, user.lng)
+  }, [user.lat, user.lng, user.address])
   return (
     <>
       <Map
@@ -348,7 +359,6 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         setCenter={setCenter}
         clickedMapType={clickedMapType}
         setZoom={setZoom}
-        mapCount={mapCount}
         setMapCount={setMapCount}
         markerClickedRef={markerClickedRef}
         setOpenOverlay={setOpenOverlay}
@@ -356,8 +366,8 @@ export default function MapSection({ formData, setFormData }: MapProps) {
         setClickedItem={setClickedItem}
         setClickedMapType={setClickedMapType}
         center={center}
-        halfDimensions={halfDimensions}
         setHalfDimensions={setHalfDimensions}
+        setMapOptions={setMapOptions}
       />
       <BoxGuard isOpen={isOpen} setIsOpen={setIsOpen}>
         <SearchBox

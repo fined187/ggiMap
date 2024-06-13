@@ -63,7 +63,6 @@ const Marker = ({
   const [originCount, setOriginCount] = useState<number>(0)
   const [isSame, setIsSame] = useState<boolean>(false)
   const markerRef = useRef<naver.maps.Marker | null>(null)
-
   const handleGetItemPnuCounts = useCallback(() => {
     if (
       pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ??
@@ -345,6 +344,18 @@ const Marker = ({
     }
     if (marker) {
       markerRef.current = marker
+      naver.maps.Event?.addListener(marker, 'mouseover', () => {
+        marker.setZIndex(110)
+      })
+      naver.maps.Event?.addListener(marker, 'mouseout', () => {
+        item.type === 1
+          ? marker.setZIndex(100)
+          : item.type === 2
+          ? marker.setZIndex(90)
+          : item.type === 3
+          ? marker.setZIndex(80)
+          : marker.setZIndex(60)
+      })
       naver.maps.Event?.addListener(marker, 'click', () => {
         handleMarkerClick(item)
         const target = document.getElementById(`target_${index}`)
@@ -384,6 +395,8 @@ const Marker = ({
     originCount,
     index,
     setClickedItem,
+    map.getCenter(),
+    setMarkerPosition,
   ])
   return null
 }

@@ -56,7 +56,7 @@ export default function Overlay({
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
   const { data: map } = useSWR(MAP_KEY)
-
+  console.log(clickedInfo)
   const handleGetIds = useCallback(
     (pnu: string) => {
       let ids: string[] = []

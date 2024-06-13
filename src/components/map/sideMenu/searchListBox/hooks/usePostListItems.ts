@@ -1,5 +1,4 @@
 import { Form } from '@/models/Form'
-import { Items } from '@/models/ListItems'
 import { ListData, MapItems, PageInfo } from '@/models/MapItem'
 import postListItems from '@/remote/map/items/postListItems'
 import { useMutation } from 'react-query'

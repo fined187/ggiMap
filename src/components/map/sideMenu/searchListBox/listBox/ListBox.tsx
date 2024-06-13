@@ -1,11 +1,9 @@
 import Flex from '@/components/shared/Flex'
 import { Form } from '@/models/Form'
 import { css } from '@emotion/react'
-import { useState } from 'react'
 import Result from './Result'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
-import { MapItems } from '@/models/MapItem'
 import { useRecoilState } from 'recoil'
 import { mapListAtom } from '@/store/atom/map'
 

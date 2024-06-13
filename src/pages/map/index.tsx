@@ -2,7 +2,7 @@ import { Form } from '@/models/Form'
 import getAddress from '@/remote/map/auth/getAddress'
 import { userAtom } from '@/store/atom/postUser'
 import { GetServerSidePropsContext } from 'next'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import axios from 'axios'
 import MapSection from '@/components/map/sections/MapSection'
@@ -20,8 +20,16 @@ import {
   SelectedKmItem,
   SelectedKwItem,
 } from '@/models/SelectedItem'
-import { mapAtom, mapListAtom } from '@/store/atom/map'
-
+import { mapListAtom } from '@/store/atom/map'
+import { getPosition } from '@/remote/map/auth/getPosition'
+import { NaverMap } from '@/models/Map'
+import { useAuth } from '@/hooks/auth/useAuth'
+import handleToken from '@/remote/map/auth/token'
+type jusoProps = {
+  sido: string
+  gungu: string
+  dong: string
+}
 interface Props {
   data?: {
     userId: string | null
@@ -41,10 +49,18 @@ function MapComponent({ token, type, idCode }: Props) {
   const { data: map } = useSWR(MAP_KEY)
   const [user, setUser] = useRecoilState(userAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
-
-  const [listItems, setListItems] = useRecoilState(mapListAtom) //  좌측 리스트
-  const [mapItems, setMapItems] = useRecoilState(mapAtom) // 지도 마커
-
+  const [mapList, setMapList] = useRecoilState(mapListAtom)
+  const [topJuso, setTopJuso] = useState<jusoProps>({
+    sido: '',
+    gungu: '',
+    dong: '',
+  })
+  const [bottomJuso, setBottomJuso] = useState<jusoProps>({
+    sido: '',
+    gungu: '',
+    dong: '',
+  })
+  const [getGungu, setGetGungu] = useState<string>('')
   const [selectedData, setSelectedData] = useState<
     SelectedKmItem | SelectedGmItem | SelectedGgItem | SelectedKwItem | null
   >(null)
@@ -75,7 +91,16 @@ function MapComponent({ token, type, idCode }: Props) {
     keyword: '',
   })
 
-  const handleGetAddress = async () => {
+  const setMapOptions = useCallback((map: NaverMap) => {
+    if (!map) return
+    map.setOptions({
+      scrollWheel: false,
+      disableDoubleClickZoom: true,
+      draggable: false,
+    })
+  }, [])
+
+  const handleGetAddress = useCallback(async () => {
     try {
       const response = await getAddress()
       if (response) {
@@ -85,318 +110,193 @@ function MapComponent({ token, type, idCode }: Props) {
             address: response.address,
           }
         })
+        handleGetPosition(response.address)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }, [setUser])
+
+  const handleDataFetching = async (type: string, idCode: string) => {
+    try {
+      let response: any
+      switch (type) {
+        case '1':
+          response = await getKmItem(idCode)
+          if (response?.data.success) {
+            setFormData((prev) => ({
+              ...prev,
+              km: true,
+              ekm: response.data.data.winAmt > 0,
+              awardedMonths: 60,
+            }))
+          }
+          break
+        case '2':
+        case '3':
+          response = await getGmItem(idCode)
+          if (response?.data.success) {
+            setFormData((prev) => ({
+              ...prev,
+              gm: type === '2',
+              gg: type === '3',
+              egm: type === '2' && response.data.data.winAmt > 0,
+              egg: type === '3' && response.data.data.winAmt > 0,
+              awardedMonths: 60,
+            }))
+          }
+          break
+        case '4':
+          response = await getKwItem(idCode)
+          if (response?.data.success) {
+            setFormData((prev) => ({
+              ...prev,
+              kw: true,
+            }))
+          }
+          break
+      }
+
+      if (response?.data.success) {
+        setSelectedData(response.data.data)
+        setAuth((prev) => ({
+          ...prev,
+          idCode,
+          type,
+        }))
+        setUser((prev) => ({
+          ...prev,
+          lng: response.data.data.x,
+          lat: response.data.data.y,
+        }))
       }
     } catch (error) {
       console.error(error)
     }
   }
 
-  let ok = false
+  const handleGetPosition = useCallback(
+    async (addr: string) => {
+      try {
+        const response = await getPosition(addr, setUser)
+        if (response) {
+          setUser((prev: any) => ({
+            ...prev,
+            lat: response.data.data.y,
+            lng: response.data.data.x,
+          }))
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [setUser],
+  )
 
-  const handleParameters = async (
-    token?: string,
-    type?: string,
-    idCode?: string,
-  ) => {
-    try {
-      if (token) {
-        const response = await axios.post(
-          `/ggi/api/auth/asp`,
-          {},
-          {
-            headers: {
-              'Content-Type': 'Application/json',
-              Api_Key: 'iyv0Lk8v.GMiSXcZDDSRLquqAm7M9YHVwTF4aY8zr',
-              Authorization: token,
-            },
-          },
-        )
-        if (token && type && !idCode) {
-          setFormData((prev) => {
-            return {
-              ...prev,
-              km: type === '1' ? true : false,
-              kw: type === '4' ? true : false,
-              gm: type === '2' ? true : false,
-              gg: type === '3' ? true : false,
-            }
-          })
-          if (response.data.success === true) {
-            if (response.data.data.authorities[0] === 'ROLE_USER') {
-              setAuth((prev) => {
+  let ok = false
+  const handleParameters = useCallback(
+    async (token?: string, type?: string, idCode?: string) => {
+      const delayExecution = (callback: () => void, delay: number) => {
+        setTimeout(callback, delay)
+      }
+
+      const runDelayedConfirm = () => {
+        delayExecution(() => {
+          if (
+            !ok &&
+            window &&
+            window.confirm('지도검색은 유료서비스 입니다. 로그인후 이용하세요')
+          ) {
+            ok = true
+            window.close()
+          } else {
+            ok = true
+          }
+        }, 1000)
+      }
+
+      try {
+        if (token) {
+          const response = await handleToken(token)
+          if (response?.data.success) {
+            if (response?.data.data.authorities.includes('ROLE_USER')) {
+              setAuth((prev) => ({
+                ...prev,
+                isLogin: true,
+                isAuth: true,
+                role: response.data.data.authorities,
+              }))
+              setUser((prev) => ({
+                ...prev,
+                role: response.data.data.authorities,
+              }))
+              handleGetAddress()
+            } else {
+              setUser((prev) => {
                 return {
                   ...prev,
-                  isLogin: true,
-                  isAuth: true,
                   role: response.data.data.authorities,
                 }
               })
-              handleGetAddress()
-            } else {
-              console.log(response.data.data)
+              setMapOptions(map)
+              setTopJuso({
+                sido: '서울특별시',
+                gungu: '서초구',
+                dong: '서초동',
+              })
+              runDelayedConfirm()
             }
           } else {
             alert('사용자 정보를 가져오는데 실패했습니다.')
           }
-        } else if (token && type && idCode) {
-          try {
-            if (type === '1') {
-              const response = await getKmItem(idCode)
-              if (response?.data.success) {
-                setFormData((prev) => {
-                  return {
-                    ...prev,
-                    km: true,
-                    ekm: response.data.data.winAmt > 0 ? true : false,
-                    awardedMonths: 60,
-                  }
-                })
-                setSelectedData(response.data.data)
-                setAuth((prev) => {
-                  return {
-                    ...prev,
-                    idCode: idCode,
-                    type: type,
-                  }
-                })
-                setUser((prev) => {
-                  return {
-                    ...prev,
-                    lng: response.data.data.x,
-                    lat: response.data.data.y,
-                  }
-                })
-              }
-            } else if (type === '2' || type === '3') {
-              const response = await getGmItem(idCode)
-              if (response?.data.success) {
-                setFormData((prev) => {
-                  return {
-                    ...prev,
-                    gm: response.data.data?.type === 2 ? true : false,
-                    gg: response.data.data?.type === 3 ? true : false,
-                    egm:
-                      response.data.data.type === 2 &&
-                      response.data.data.winAmt > 0
-                        ? true
-                        : false,
-                    egg:
-                      response.data.data.type === 3 &&
-                      response.data.data.winAmt > 0
-                        ? true
-                        : false,
-                    awardedMonths: 60,
-                  }
-                })
-                setSelectedData(response.data.data)
-                setAuth((prev) => {
-                  return {
-                    ...prev,
-                    idCode: idCode,
-                    type: type,
-                  }
-                })
-                setUser((prev) => {
-                  return {
-                    ...prev,
-                    lng: response.data.data.x,
-                    lat: response.data.data.y,
-                  }
-                })
-              }
-            } else if (type === '4') {
-              const response = await getKwItem(idCode)
-              if (response?.data.success) {
-                setFormData((prev) => {
-                  return {
-                    ...prev,
-                    kw: true,
-                  }
-                })
-                setSelectedData(response.data.data)
-                setAuth((prev) => {
-                  return {
-                    ...prev,
-                    idCode: idCode,
-                    type: type,
-                  }
-                })
-                setUser((prev) => {
-                  return {
-                    ...prev,
-                    lng: response.data.data.x,
-                    lat: response.data.data.y,
-                  }
-                })
-              }
-            }
-          } catch (error) {
-            console.error(error)
+          if (type && !idCode) {
+            setFormData((prev) => ({
+              ...prev,
+              km: type === '1',
+              kw: type === '4',
+              gm: type === '2',
+              gg: type === '3',
+            }))
+          } else if (type && idCode) {
+            await handleDataFetching(type, idCode)
           }
-        }
-      } else {
-        if (auth.role[0] === 'ROLE_USER') {
-          if (idCode) {
-            try {
-              if (type === '1') {
-                const response = await getKmItem(idCode)
-                if (response?.data.success) {
-                  setFormData((prev) => {
-                    return {
-                      ...prev,
-                      km: true,
-                      ekm: response.data.data.winAmt > 0 ? true : false,
-                      awardedMonths: 60,
-                    }
-                  })
-                  setSelectedData(response.data.data)
-                  setAuth((prev) => {
-                    return {
-                      ...prev,
-                      idCode: idCode,
-                      type: type,
-                    }
-                  })
-                  setUser((prev) => {
-                    return {
-                      ...prev,
-                      lng: response.data.data.x,
-                      lat: response.data.data.y,
-                    }
-                  })
-                }
-              } else if (type === '2' || type === '3') {
-                const response = await getGmItem(idCode)
-                if (response?.data.success) {
-                  setFormData((prev) => {
-                    return {
-                      ...prev,
-                      gm: response.data.data.type === 2 ? true : false,
-                      gg: response.data.data.type === 3 ? true : false,
-                      egm:
-                        response.data.data.type === 2 &&
-                        response.data.data.winAmt > 0
-                          ? true
-                          : false,
-                      egg:
-                        response.data.data.type === 3 &&
-                        response.data.data.winAmt > 0
-                          ? true
-                          : false,
-                      awardedMonths: 60,
-                    }
-                  })
-                  setSelectedData(response.data.data)
-                  setAuth((prev) => {
-                    return {
-                      ...prev,
-                      idCode: idCode,
-                      type: type,
-                    }
-                  })
-                  setUser((prev) => {
-                    return {
-                      ...prev,
-                      lng: response.data.data.x,
-                      lat: response.data.data.y,
-                    }
-                  })
-                }
-              } else if (type === '4') {
-                const response = await getKwItem(idCode)
-                if (response?.data.success) {
-                  setFormData((prev) => {
-                    return {
-                      ...prev,
-                      kw: true,
-                    }
-                  })
-                  setSelectedData(response.data.data)
-                  setAuth((prev) => {
-                    return {
-                      ...prev,
-                      idCode: idCode,
-                      type: type,
-                    }
-                  })
-                  setUser((prev) => {
-                    return {
-                      ...prev,
-                      lng: response.data.data.x,
-                      lat: response.data.data.y,
-                    }
-                  })
-                }
-              } else {
-                switch (type) {
-                  case '1':
-                    setFormData((prev) => {
-                      return {
-                        ...prev,
-                        km: true,
-                      }
-                    })
-                    break
-                  case '2':
-                    setFormData((prev) => {
-                      return {
-                        ...prev,
-                        gm: true,
-                      }
-                    })
-                    break
-                  case '3':
-                    setFormData((prev) => {
-                      return {
-                        ...prev,
-                        gg: true,
-                      }
-                    })
-                    break
-                  case '4':
-                    setFormData((prev) => {
-                      return {
-                        ...prev,
-                        kw: true,
-                      }
-                    })
-                    break
-                  default:
-                    break
-                }
-              }
-            } catch (error) {
-              console.error(error)
-            }
-          }
+        } else if (auth.role.includes('ROLE_USER') && idCode && type) {
+          await handleDataFetching(type, idCode)
         } else {
-          if (
-            window &&
-            window.confirm(
-              '지도검색은 유료서비스 입니다. 로그인후 이용하세요',
-            ) &&
-            !ok
-          ) {
-            ok = true
-            window.close()
-          }
+          setTopJuso({
+            sido: '서울특별시',
+            gungu: '서초구',
+            dong: '서초동',
+          })
+          runDelayedConfirm()
         }
+      } catch (error) {
+        console.error(error)
       }
-    } catch (error) {
-      console.error(error)
-    }
-  }
+    },
+    [handleGetAddress, auth.role],
+  )
 
   useEffect(() => {
     handleParameters(token as string, type as string, idCode as string)
     if (window) {
       window.history.pushState({}, '', '/map')
     }
-  }, [token, map])
+  }, [token, map, idCode, type])
 
   return (
     <>
-      <MapSection formData={formData} setFormData={setFormData} />
+      <MapSection
+        formData={formData}
+        setFormData={setFormData}
+        topJuso={topJuso}
+        setTopJuso={setTopJuso}
+        bottomJuso={bottomJuso}
+        setBottomJuso={setBottomJuso}
+        getGungu={getGungu}
+        setGetGungu={setGetGungu}
+        setMapOptions={setMapOptions}
+      />
     </>
   )
 }
