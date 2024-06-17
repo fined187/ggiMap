@@ -1,4 +1,3 @@
-import { NaverMap } from '@/models/Map'
 import { MapItem } from '@/models/MapItem'
 import {
   Dispatch,
@@ -20,6 +19,8 @@ import {
 import { AmountBottomIcon, UsageTopIcon } from './Icon/Marker2'
 import { useRecoilState } from 'recoil'
 import { markerPositionAtom } from '@/store/atom/map'
+import useSWR from 'swr'
+import { MAP_KEY } from '../hooks/useMap'
 
 type PnuProps = {
   pnu: string
@@ -29,7 +30,6 @@ type PnuProps = {
 
 interface MarkerProps {
   item: MapItem
-  map: NaverMap
   setMapItems: any
   mapItems: MapItem[]
   pnuCounts: {
@@ -44,12 +44,12 @@ interface MarkerProps {
   setClickedItem: any
   markerClickedRef: MutableRefObject<boolean>
   index: number
+  handleFilterMarkers: () => MapItem[] | undefined
 }
 
 const Marker = ({
   item,
   index,
-  map,
   pnuCounts,
   openOverlay,
   setOpenOverlay,
@@ -57,91 +57,65 @@ const Marker = ({
   setClickedItem,
   markerClickedRef,
   originPnuCounts,
+  handleFilterMarkers,
 }: MarkerProps) => {
+  const { data: map } = useSWR(MAP_KEY)
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [count, setCount] = useState<number>(0)
   const [originCount, setOriginCount] = useState<number>(0)
   const [isSame, setIsSame] = useState<boolean>(false)
   const markerRef = useRef<naver.maps.Marker | null>(null)
-  const handleGetItemPnuCounts = useCallback(() => {
-    if (
-      pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ??
-      0 > 1
-    ) {
-      setCount(
-        pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ?? 0,
-      )
-    }
-  }, [item, pnuCounts])
-
-  const handleGetItemOriginPnuCounts = useCallback(() => {
-    if (
+  const handleGetItemCounts = useCallback(() => {
+    const pnuCount =
+      pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ?? 0
+    const pnuOriginCount =
       originPnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)
-        ?.count ??
-      0 > 1
-    ) {
-      setOriginCount(
-        originPnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)
-          ?.count ?? 0,
-      )
-    }
-  }, [item, originPnuCounts])
+        ?.count ?? 0
+    setCount(pnuCount)
+    setOriginCount(pnuOriginCount)
+    setIsSame(pnuCount === pnuOriginCount)
+  }, [item.pnu, pnuCounts, originPnuCounts])
 
   const handleItemUsage = useCallback(() => {
     if (item.usage.length >= 4) {
-      if (item.usage === '단독,다가구') {
-        return '다가구'
-      } else if (item.usage === '연립.다세대') {
-        return '다세대'
-      } else if (item.usage === '전,답,과수') {
-        return '전답과'
-      } else if (item.usage === '기타토지') {
-        return '기타'
-      } else if (item.usage === '상업시설') {
-        return '상업'
-      } else if (item.usage === '공업시설') {
-        return '공업'
-      }
+      if (item.usage === '단독,다가구') return '다가구'
+      if (item.usage === '연립.다세대') return '다세대'
+      if (item.usage === '전,답,과수') return '전답과'
+      if (item.usage === '기타토지') return '기타'
+      if (item.usage === '상업시설') return '상업'
+      if (item.usage === '공업시설') return '공업'
       return item.usage.slice(0, 2) + '<br />' + item.usage.slice(2, 4)
-    } else {
-      return item.usage
     }
+    return item.usage
   }, [item.usage])
 
   useEffect(() => {
-    handleGetItemPnuCounts()
-    handleGetItemOriginPnuCounts()
-    setIsSame(originCount === count)
-  }, [
-    pnuCounts,
-    handleGetItemPnuCounts,
-    handleGetItemOriginPnuCounts,
-    originPnuCounts,
-    count,
-    originCount,
-  ])
+    handleGetItemCounts()
+  }, [handleGetItemCounts])
 
-  const handleMarkerClick = (item: MapItem) => {
-    if (!openOverlay && clickedItem === null) {
-      setOpenOverlay(true)
-      markerClickedRef.current = true
-      setClickedItem(item)
-    } else if (openOverlay && clickedItem === item) {
-      setOpenOverlay(false)
-      markerClickedRef.current = false
-      setClickedItem(null)
-    } else if (openOverlay && clickedItem !== item) {
-      setOpenOverlay(true)
-      markerClickedRef.current = true
-      setClickedItem(item)
-    } else if (!openOverlay && clickedItem !== item) {
-      setOpenOverlay(true)
-      markerClickedRef.current = true
-      setClickedItem(item)
-    }
-  }
+  const handleMarkerClick = useCallback(
+    (item: MapItem) => {
+      if (clickedItem === item) {
+        setOpenOverlay(!openOverlay)
+        markerClickedRef.current = !openOverlay
+        setClickedItem(openOverlay ? null : item)
+      } else {
+        setOpenOverlay(true)
+        markerClickedRef.current = true
+        setClickedItem(item)
+      }
+    },
+    [
+      clickedItem,
+      openOverlay,
+      setOpenOverlay,
+      setClickedItem,
+      markerClickedRef,
+    ],
+  )
   useEffect(() => {
     if (map === null) return
+    if (handleFilterMarkers() === undefined) return
     const zoomLevel = map?.getZoom()
     let marker: naver.maps.Marker | null = null
     if (item.winYn !== 'Y') {
@@ -170,7 +144,6 @@ const Marker = ({
                   ? PnuCountIcon(item, originCount, item.type, isSame)
                   : ''
               }
-
               ${UsageIcon(item, handleItemUsage, item.type, isSame)}
               ${AmountIcon(item, item.type)}
             </div>
@@ -191,7 +164,7 @@ const Marker = ({
           position: new naver.maps.LatLng(item.y, item.x),
           icon: {
             content: `
-            <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 100;">
+            <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px;">
               ${UsageTopIcon(item, originCount, item.type, isSame)}
               ${AmountBottomIcon(item, item.type)}
             </div>
@@ -395,7 +368,7 @@ const Marker = ({
     originCount,
     index,
     setClickedItem,
-    map.getCenter(),
+    map?.getCenter(),
     setMarkerPosition,
   ])
   return null

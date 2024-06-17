@@ -1,20 +1,26 @@
 import Flex from '@/components/shared/Flex'
-import { Form } from '@/models/Form'
 import { css } from '@emotion/react'
 import Result from './Result'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { useRecoilState } from 'recoil'
-import { mapListAtom } from '@/store/atom/map'
+import { formDataAtom, mapListAtom } from '@/store/atom/map'
 
 interface ListBoxProps {
-  formData: Form
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  page: number
+  setPage: React.Dispatch<React.SetStateAction<number>>
 }
 
-export default function ListBox({ formData, isOpen, setIsOpen }: ListBoxProps) {
-  const [listItems, setListItems] = useRecoilState(mapListAtom)
+export default function ListBox({
+  isOpen,
+  setIsOpen,
+  page,
+  setPage,
+}: ListBoxProps) {
+  const [formData, setFormData] = useRecoilState(formDataAtom)
+  const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
   const { data: map } = useSWR(MAP_KEY)
   return (
     <Flex
@@ -30,13 +36,18 @@ export default function ListBox({ formData, isOpen, setIsOpen }: ListBoxProps) {
             ? 'calc(100vh - 380px)'
             : formData.lastFilter === 4 && formData.isSubFilterBoxOpen
             ? 'calc(100vh - 380px)'
-            : map && map.zoom! >= 15 && listItems?.length! > 0
+            : map && map.zoom! >= 15 && mapListItems?.contents.length! > 0
             ? 'calc(100vh - 150px)'
             : '150px'
           : '59px',
       }}
     >
-      <Result formData={formData} isOpen={isOpen} setIsOpen={setIsOpen} />
+      <Result
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        page={page}
+        setPage={setPage}
+      />
     </Flex>
   )
 }

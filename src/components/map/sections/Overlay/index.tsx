@@ -15,7 +15,7 @@ import Bottom from './Bottom'
 import { ItemDetail } from '@/models/ItemDetail'
 import { MapItem } from '@/models/MapItem'
 import { useRecoilState } from 'recoil'
-import { mapItemOriginAtom, markerPositionAtom } from '@/store/atom/map'
+import { mapItemsOriginAtom, markerPositionAtom } from '@/store/atom/map'
 import { useGetDetail } from './hooks/useGetDetail'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
@@ -29,30 +29,17 @@ type PositionSet = {
 interface OverlayProps {
   clickedItem: MapItem | null
   setClickedItem: Dispatch<SetStateAction<MapItem | null>>
-  setOpenOverlay: Dispatch<SetStateAction<boolean>>
-  markerClickedRef: MutableRefObject<boolean>
-  openOverlay: boolean
-  style: any
-  setIncludeWinYn: Dispatch<SetStateAction<boolean>>
-  positionSet: PositionSet
-  setPositionSet: Dispatch<SetStateAction<PositionSet>>
   halfDimensions: { width: number; height: number }
-  setHalfDimensions: Dispatch<SetStateAction<{ width: number; height: number }>>
 }
 
 export default function Overlay({
   clickedItem,
   setClickedItem,
-  style,
-  setIncludeWinYn,
-  positionSet,
-  setPositionSet,
   halfDimensions,
-  setHalfDimensions,
 }: OverlayProps) {
   const [clickedInfo, setClickedInfo] = useState<ItemDetail[] | null>(null)
   const ref = useRef<HTMLDivElement>(null)
-  const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
+  const [mapOrigin, setMapOrigin] = useRecoilState(mapItemsOriginAtom)
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
   const { data: map } = useSWR(MAP_KEY)

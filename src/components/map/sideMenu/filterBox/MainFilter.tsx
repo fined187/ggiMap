@@ -5,6 +5,9 @@ import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
 import { Dispatch, SetStateAction } from 'react'
 import FilterProps from './FilterProps'
+import { MAP_KEY } from '../../sections/hooks/useMap'
+import useSWR from 'swr'
+import { NaverMap } from '@/models/Map'
 
 interface SearchBoxProps {
   formData: Form
@@ -12,6 +15,7 @@ interface SearchBoxProps {
 }
 
 export default function MainFilter({ formData, setFormData }: SearchBoxProps) {
+  const { data: map } = useSWR<NaverMap>(MAP_KEY)
   return (
     <Flex justify="center" direction="row" css={ContainerStyle}>
       <FilterProps
@@ -41,7 +45,7 @@ export default function MainFilter({ formData, setFormData }: SearchBoxProps) {
         bgColorType={colors.ggPurple}
         onButtonClick={() => setFormData({ ...formData, gg: !formData.gg })}
         textType={FILTERS.SOLD}
-        isDisabled={Boolean(formData.map.zoom! < 15)}
+        isDisabled={Boolean(map?.getZoom()! < 15)}
       />
     </Flex>
   )

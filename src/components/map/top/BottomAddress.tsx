@@ -1,22 +1,16 @@
 import { css } from '@emotion/react'
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import NextArrow from '../icons/NextArrow'
 import SidoList from './DetailAddrList/SidoList'
 import GunguList from './DetailAddrList/GunguList'
-import getSubway from '@/remote/map/subway/getSubway'
 import DongList from './DetailAddrList/DongList'
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import Spacing from '@/components/shared/Spacing'
 import useSWR from 'swr'
 import { MAP_KEY } from '../sections/hooks/useMap'
+import { useRecoilState } from 'recoil'
+import { jusoAtom } from '@/store/atom/map'
 
 interface BottomAddressProps {
   center?: {
@@ -29,41 +23,12 @@ interface BottomAddressProps {
   range: number
   setRange: Dispatch<SetStateAction<number>>
   setOpenCursor?: Dispatch<SetStateAction<boolean>>
-  topJuso: {
-    sido: string
-    gungu: string
-    dong: string
-  }
-  setTopJuso: Dispatch<
-    SetStateAction<{
-      sido: string
-      gungu: string
-      dong: string
-    }>
-  >
-  bottomJuso: {
-    sido: string
-    gungu: string
-    dong: string
-  }
-  setBottomJuso: Dispatch<
-    SetStateAction<{
-      sido: string
-      gungu: string
-      dong: string
-    }>
-  >
   openCursor?: boolean
 }
 
-function BottomAddress({
-  range,
-  setRange,
-  topJuso,
-  bottomJuso,
-  setBottomJuso,
-}: BottomAddressProps) {
+function BottomAddress({ range, setRange }: BottomAddressProps) {
   const { data: map } = useSWR(MAP_KEY)
+  const [juso, setJuso] = useRecoilState(jusoAtom)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [selectedGunguIndex, setSelectedGunguIndex] = useState<number | null>(
     null,
@@ -72,72 +37,17 @@ function BottomAddress({
     null,
   )
 
-  const SidoRegex = useMemo(
-    () => [
-      /광주/g,
-      /대구/g,
-      /대전/g,
-      /부산/g,
-      /서울/g,
-      /울산/g,
-      /인천/g,
-      /세종/g,
-    ],
-    [],
-  )
-
-  const searchAddrToCoord = useCallback(
-    (address: string) => {
-      if (window.naver.maps?.Service?.geocode !== undefined) {
-        window.naver.maps?.Service?.geocode(
-          {
-            query: address,
-          },
-          (status: any, response: any) => {
-            if (status === window.naver.maps?.Service?.Status?.ERROR) {
-              alert('지하철 혹은 주소를 입력해주세요')
-              return
-            }
-            const result = response.v2.addresses[0]
-            const { x, y } = result ?? { point: { x: 0, y: 0 } }
-            map.setCenter({
-              lat: Number(y),
-              lng: Number(x),
-            })
-          },
-        )
+  const addrToCenter = useCallback(
+    async (x: number, y: number) => {
+      if (map) {
+        map.setCenter({
+          lat: y,
+          lng: x,
+        })
       }
     },
     [map],
   )
-
-  const addrToCenter = useCallback(
-    async (addr: string) => {
-      if (range === 0) {
-        const address = SidoRegex.map((regex) => regex.test(addr))
-        if (address.includes(true)) {
-          searchAddrToCoord(addr)
-        } else {
-          searchAddrToCoord(addr + '청')
-        }
-      } else if (range === 1 && bottomJuso.sido !== '') {
-        searchAddrToCoord(addr)
-      } else if (range === 2 && bottomJuso.gungu !== '') {
-        searchAddrToCoord(addr)
-      }
-    },
-    [bottomJuso, range, searchAddrToCoord, SidoRegex],
-  )
-
-  useEffect(() => {
-    if (range === 0) {
-      addrToCenter(bottomJuso.sido)
-    } else if (range === 1) {
-      addrToCenter(bottomJuso.gungu)
-    } else if (range === 2) {
-      addrToCenter(bottomJuso.dong)
-    }
-  }, [range, bottomJuso, addrToCenter])
 
   return (
     <Flex direction="column" css={ContainerStyle}>
@@ -155,7 +65,7 @@ function BottomAddress({
           css={TextStyle}
           style={{
             color:
-              range === 0 || bottomJuso.sido !== '' || topJuso.sido !== ''
+              range === 0 || juso.bottomSido !== '' || juso.topSido !== ''
                 ? '#000001'
                 : '#9d9999',
             cursor: 'pointer',
@@ -164,48 +74,46 @@ function BottomAddress({
             setRange(0)
           }}
         >
-          {bottomJuso.sido === '' ? '시 / 도' : bottomJuso.sido}
+          {juso.bottomSido === '' ? '시 / 도' : juso.bottomSido}
         </Text>
         <NextArrow />
         <Text
           css={TextStyle}
           style={{
-            color: bottomJuso.gungu !== '' ? '#000001' : '#9d9999',
+            color: juso.bottomGungu !== '' ? '#000001' : '#9d9999',
             cursor: 'pointer',
           }}
           onClick={() => {
-            if (bottomJuso.sido === '') {
+            if (juso.bottomSido === '') {
               alert('시 / 도를 먼저 선택해주세요.')
               return
             }
             setRange(1)
           }}
         >
-          {bottomJuso.gungu === '' ? '시 / 군 / 구' : bottomJuso.gungu}
+          {juso.bottomGungu === '' ? '시 / 군 / 구' : juso.bottomGungu}
         </Text>
         <NextArrow />
         <Text
           css={TextStyle}
           style={{
-            color: bottomJuso.dong !== '' ? '#000001' : '#9d9999',
+            color: juso.bottomDong !== '' ? '#000001' : '#9d9999',
             cursor: 'pointer',
           }}
           onClick={() => {
-            if (bottomJuso.gungu === '' || selectedGunguIndex === null) {
+            if (juso.bottomGungu === '' || selectedGunguIndex === null) {
               alert('시 / 군 / 구를 먼저 선택해주세요.')
               return
             }
             setRange(2)
           }}
         >
-          {bottomJuso.dong === '' ? '읍 / 면 / 동' : bottomJuso.dong}
+          {juso.bottomDong === '' ? '읍 / 면 / 동' : juso.bottomDong}
         </Text>
       </Flex>
       <Spacing size={20} />
       {range === 0 && (
         <SidoList
-          bottomJuso={bottomJuso}
-          setBottomJuso={setBottomJuso}
           setRange={setRange}
           selectedIndex={selectedIndex}
           setSelectedIndex={setSelectedIndex}
@@ -214,9 +122,7 @@ function BottomAddress({
       )}
       {range === 1 && (
         <GunguList
-          bottomJuso={bottomJuso}
           setRange={setRange}
-          setBottomJuso={setBottomJuso}
           selectedGunguIndex={selectedGunguIndex}
           setSelectedGunguIndex={setSelectedGunguIndex}
           addrToCenter={addrToCenter}
@@ -224,8 +130,6 @@ function BottomAddress({
       )}
       {range === 2 && (
         <DongList
-          bottomJuso={bottomJuso}
-          setBottomJuso={setBottomJuso}
           selectedDongIndex={selectedDongIndex}
           setSelectedDongIndex={setSelectedDongIndex}
           addrToCenter={addrToCenter}

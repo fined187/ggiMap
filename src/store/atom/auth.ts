@@ -8,10 +8,11 @@ export const authInfo = atom({
     isAuth: false,
     token: '',
     Api_Key: 'iyv0Lk8v.GMiSXcZDDSRLquqAm7M9YHVwTF4aY8zr',
-    userId: '',
     role: [''],
     address: '',
     idCode: '',
     type: '',
+    lng: 127.105399,
+    lat: 37.3595704,
   },
 })

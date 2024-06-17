@@ -72,11 +72,7 @@ export const UsageTopIcon = (
       ${item.winYn === 'Y' ? WinIcon() : ''}
       ${item.interest === 'Y' ? InterestIcon() : ''}
       ${item.share === 'Y' && count < 2 ? ShareIcon(item, type, '-5') : ''}
-      ${
-        item.interest !== 'Y' && item.share !== 'Y' && count > 1
-          ? PnuCountIcon(item, count, type, isSame, '-5')
-          : ''
-      }
+      ${count > 1 ? PnuCountIcon(item, count, type, isSame, '-5') : ''}
       <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 14px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.14px;">
         ${
           item.usage === '단독,다가구'
@@ -128,7 +124,7 @@ export const AmountBottomIcon = (item: MapItem, type: number) => {
           ${NumToHan(parseInt(item.amount))}
         </span>
         <span style="color: #676767; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 600; line-height: 135%; letter-spacing: -0.5px; margin-top: 2px;">
-          ${parseInt(item.ratio) > 0 ? '(' + item.ratio + '%)' : '(-)'}
+            ${item.ratio > 0 ? '(' + String(item.ratio) + '%)' : '(-)'}
         </span>
       </div> 
       <div style="display: flex; flex-direction: row; gap: 5px; ">

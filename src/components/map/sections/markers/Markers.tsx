@@ -2,11 +2,10 @@ import { NaverMap } from '@/models/Map'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 import { useRecoilState } from 'recoil'
-import { mapAtom } from '@/store/atom/map'
+import { mapItemsAtom } from '@/store/atom/map'
 import Marker from './Marker'
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import { MapItem } from '@/models/MapItem'
-import { userAtom } from '@/store/atom/postUser'
 
 type PnuProps = {
   pnu: string
@@ -23,11 +22,10 @@ interface MarkersProps {
   }
   openOverlay: boolean
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
-  clickedItem: any
-  setClickedItem: any
+  clickedItem: MapItem | null
+  setClickedItem: Dispatch<SetStateAction<MapItem | null>>
   markerClickedRef: MutableRefObject<boolean>
-  duplicatedItems: MapItem[]
-  includeWinYn: boolean
+  handleFilterMarkers: () => MapItem[] | undefined
 }
 
 export default function Markers({
@@ -37,25 +35,22 @@ export default function Markers({
   clickedItem,
   setClickedItem,
   markerClickedRef,
-  duplicatedItems,
   originPnuCounts,
-  includeWinYn,
+  handleFilterMarkers,
 }: MarkersProps) {
-  const { data: map } = useSWR<NaverMap>(MAP_KEY)
-  const [user, setUser] = useRecoilState(userAtom)
-  const [mapItems, setMapItems] = useRecoilState(mapAtom)
+  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
+  if (handleFilterMarkers() === undefined) {
+    return null
+  }
   return (
     <>
-      {user.address === ''
-        ? null
-        : mapItems
-        ? mapItems?.map((item, index) => {
+      {handleFilterMarkers()
+        ? handleFilterMarkers()?.map((item, index) => {
             return (
               <Marker
                 key={item.id}
                 index={index}
                 item={item}
-                map={map as NaverMap}
                 setMapItems={setMapItems}
                 mapItems={mapItems}
                 pnuCounts={pnuCounts}
@@ -65,6 +60,7 @@ export default function Markers({
                 setClickedItem={setClickedItem}
                 markerClickedRef={markerClickedRef}
                 originPnuCounts={originPnuCounts}
+                handleFilterMarkers={handleFilterMarkers}
               />
             )
           })

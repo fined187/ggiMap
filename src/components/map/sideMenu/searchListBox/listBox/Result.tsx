@@ -1,67 +1,82 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Flex from '@/components/shared/Flex'
-import { Form } from '@/models/Form'
 import Header from './Header'
 import styled from '@emotion/styled'
 import ListSkeleton from './Skeleton'
 import Text from '@/components/shared/Text'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { css } from '@emotion/react'
 import Spacing from '@/components/shared/Spacing'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
-import { ListData, MapItems } from '@/models/MapItem'
 import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import useSearchListQuery from './hooks/useSearchListQuery'
 import Loader from './icon/loader/Loader'
-import InterestContextProvider from '@/contexts/useModalContext'
 import { useRecoilState } from 'recoil'
-import { mapListAtom } from '@/store/atom/map'
+import { formDataAtom, mapListAtom } from '@/store/atom/map'
+import { usePostListItems } from '@/hooks/items/usePostListItems'
 
 interface ResultProps {
-  formData: Form
+  page: number
+  setPage: React.Dispatch<React.SetStateAction<number>>
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ROWS_PER_PAGE = 10
 
-function Result({ formData, isOpen, setIsOpen }: ResultProps) {
+function Result({ isOpen, setIsOpen, page, setPage }: ResultProps) {
   const { data: map } = useSWR(MAP_KEY)
-  const [listItems, setListItems] = useRecoilState(mapListAtom)
+  const [formData, setFormData] = useRecoilState(formDataAtom)
+  const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
   const [showingList, setShowingList] = useState(false)
-  const [page, setPage] = useState(1)
   const scrollbarsRef = useRef<HTMLDivElement | null>(null)
-  const [mapData, setMapData] = useState<ListData>({
-    ids:
-      formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
-    fromAppraisalAmount: formData.fromAppraisalAmount,
-    toAppraisalAmount: formData.toAppraisalAmount,
-    fromMinimumAmount: formData.fromMinimumAmount,
-    toMinimumAmount: formData.toMinimumAmount,
-    interests: formData.interests,
-    x1: formData.x1,
-    y1: formData.y1,
-    x2: formData.x2,
-    y2: formData.y2,
-    awardedMonths: formData.awardedMonths,
-    km: formData.km,
-    kw: formData.kw,
-    gm: formData.gm,
-    gg: formData.gg,
-    ekm: formData.ekm,
-    egm: formData.egm,
-    egg: formData.egg,
-  })
-  const { data, fetchNextPage, hasNextPage, isLoading } = useSearchListQuery({
-    rowsPerPage: ROWS_PER_PAGE,
-    mapData,
+  const { mutate: getMapLists } = usePostListItems(
+    formData,
     page,
-  })
+    ROWS_PER_PAGE,
+  )
+  const [isLoading, setIsLoading] = useState(false)
+  const fetchNextPage = useCallback(() => {
+    if (
+      mapListItems?.paging.totalElements > mapListItems?.contents.length &&
+      !isLoading
+    ) {
+      setIsLoading(true)
+      setPage((prev) => prev + 1)
+      getMapLists()
+      setIsLoading(false)
+    }
+  }, [
+    getMapLists,
+    isLoading,
+    mapListItems?.contents.length,
+    mapListItems?.paging.totalElements,
+  ])
+
+  const handleScroll = useCallback(() => {
+    const scrollElement = scrollbarsRef.current
+    if (!scrollElement) return
+    if (
+      scrollElement.scrollTop + scrollElement.clientHeight >=
+      scrollElement.scrollHeight
+    ) {
+      fetchNextPage()
+    }
+  }, [fetchNextPage])
 
   useEffect(() => {
-    if (map && map.getZoom() >= 15) {
+    const scrollElement = scrollbarsRef.current
+    if (!scrollElement) return
+    scrollElement.addEventListener('scroll', handleScroll)
+    return () => {
+      scrollElement.removeEventListener('scroll', handleScroll)
+    }
+  }, [scrollbarsRef.current, handleScroll])
+
+  useEffect(() => {
+    if (!map) return
+    if (map.getZoom() >= 15) {
       setShowingList(true)
       fetchNextPage()
     } else if (map && map.getZoom() < 15) {
@@ -70,50 +85,16 @@ function Result({ formData, isOpen, setIsOpen }: ResultProps) {
     }
   }, [map?.getZoom()])
 
-  useEffect(() => {
-    setMapData({
-      ids:
-        formData.ids.length === 12
-          ? '0'
-          : formData.ids.map((id) => id).join(','),
-      fromAppraisalAmount: formData.fromAppraisalAmount,
-      toAppraisalAmount: formData.toAppraisalAmount,
-      fromMinimumAmount: formData.fromMinimumAmount,
-      toMinimumAmount: formData.toMinimumAmount,
-      interests: formData.interests,
-      x1: formData.x1,
-      y1: formData.y1,
-      x2: formData.x2,
-      y2: formData.y2,
-      awardedMonths: formData.awardedMonths,
-      km: formData.km,
-      kw: formData.kw,
-      gm: formData.gm,
-      gg: formData.gg,
-      ekm: formData.ekm,
-      egm: formData.egm,
-      egg: formData.egg,
-    })
-  }, [formData])
-
-  useEffect(() => {
-    if (data) {
-      if (data.pageParams.length === 1) {
-        scrollToTop()
-        setListItems(data.pages[0]?.contents)
-      } else if (data.pageParams.length > 1) {
-        setListItems((prev) => [
-          ...(prev ?? []),
-          ...((data && data?.pages[data.pages.length - 1]?.contents) ?? []),
-        ])
-      }
-    }
-  }, [data, setListItems])
-
-  const scrollToTop = () => {
+  const scrollToTop = useCallback(() => {
     if (!scrollbarsRef.current) return
     scrollbarsRef.current?.scrollTo(0, 0)
-  }
+  }, [scrollbarsRef.current])
+
+  useEffect(() => {
+    scrollToTop()
+    setPage(1)
+  }, [formData.x1, formData.y1, formData.x2, formData.y2])
+
   return (
     <Flex
       direction="column"
@@ -124,26 +105,29 @@ function Result({ formData, isOpen, setIsOpen }: ResultProps) {
       }}
     >
       {showingList ? (
-        listItems && listItems?.length > 0 ? (
+        mapListItems?.contents && mapListItems?.contents.length > 0 ? (
           <>
             <Header
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               isLoading={isLoading}
-              pageInfo={data?.pages[0]?.paging.totalElements ?? 0}
+              pageInfo={mapListItems?.paging?.totalElements ?? 0}
             />
             <Container isOpen={isOpen} id="scrollbarDiv" ref={scrollbarsRef}>
               {isLoading ? (
                 <Loader />
               ) : (
                 <InfiniteScroll
-                  dataLength={listItems.length}
+                  dataLength={mapListItems.contents.length}
+                  hasMore={
+                    mapListItems.paging.totalElements >
+                    mapListItems.contents.length
+                  }
                   next={fetchNextPage}
-                  hasMore={hasNextPage ?? false}
                   loader={<ListSkeleton />}
                   scrollableTarget="scrollbarDiv"
                 >
-                  {listItems.map((item, index) => (
+                  {mapListItems.contents.map((item, index) => (
                     <Forms key={index} item={item} index={index} />
                   ))}
                 </InfiniteScroll>
@@ -156,7 +140,7 @@ function Result({ formData, isOpen, setIsOpen }: ResultProps) {
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               isLoading={isLoading}
-              pageInfo={data?.pages[0]?.paging.totalElements ?? 0}
+              pageInfo={mapListItems?.paging?.totalElements}
             />
             <ContainerNone isOpen={true}>
               <Spacing size={20} />
@@ -172,7 +156,7 @@ function Result({ formData, isOpen, setIsOpen }: ResultProps) {
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             isLoading={isLoading}
-            pageInfo={data?.pages[0]?.paging.totalElements ?? 0}
+            pageInfo={mapListItems?.paging?.totalElements ?? 0}
           />
           <ContainerNone isOpen={true}>
             <Spacing size={20} />

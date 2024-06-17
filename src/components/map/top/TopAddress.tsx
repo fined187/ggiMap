@@ -7,36 +7,25 @@ import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import useSWR from 'swr'
 import { MAP_KEY } from '../sections/hooks/useMap'
+import { jusoProps } from '@/models/Juso'
+import { useRecoilState } from 'recoil'
+import { jusoAtom } from '@/store/atom/map'
 
 declare global {
   interface Window {
     naver: any
   }
 }
-type jusoProps = {
-  sido: string
-  gungu: string
-  dong: string
-}
+
 interface AddressProps {
   SidoAddr: boolean
   GunguAddr: boolean
   DongAddr: boolean
   isEnd: boolean
-  topJuso: jusoProps
-  setTopJuso: Dispatch<SetStateAction<jusoProps>>
   openCursor: boolean
   setOpenCursor: Dispatch<SetStateAction<boolean>>
   range: number
   setRange: Dispatch<SetStateAction<number>>
-  setBottomJuso: Dispatch<
-    SetStateAction<{
-      sido: string
-      gungu: string
-      dong: string
-    }>
-  >
-  getGungu: string
 }
 
 function TopAddress({
@@ -44,33 +33,30 @@ function TopAddress({
   GunguAddr,
   DongAddr,
   isEnd,
-  topJuso,
-  setTopJuso,
   openCursor,
   setOpenCursor,
   setRange,
-  setBottomJuso,
-  getGungu,
 }: AddressProps) {
   const { data: map } = useSWR(MAP_KEY)
+  const [juso, setJuso] = useRecoilState<jusoProps>(jusoAtom)
   const handleTopBottomSyncSido = useCallback(() => {
     let newSido = ''
     if (
-      topJuso.sido.match(/시$/) ||
+      juso.topSido.match(/시$/) ||
       [
         '경기도',
         '강원특별자치도',
         '제주도',
         '제주특별자치도',
         '전북특별자치도',
-      ].includes(topJuso.sido)
+      ].includes(juso.topSido)
     ) {
-      newSido = topJuso.sido.slice(0, 2)
-    } else if (topJuso.sido.endsWith('도')) {
-      newSido = topJuso.sido.slice(0, 1) + topJuso.sido.slice(2, 3)
-    } else if (topJuso.sido === '세종특별자치시') {
+      newSido = juso.topSido.slice(0, 2)
+    } else if (juso.topSido.endsWith('도')) {
+      newSido = juso.topSido.slice(0, 1) + juso.topSido.slice(2, 3)
+    } else if (juso.topSido === '세종특별자치시') {
       newSido = '세종'
-      setTopJuso((prev) => {
+      setJuso((prev) => {
         return {
           ...prev,
           sido: '세종시',
@@ -78,43 +64,52 @@ function TopAddress({
       })
     }
     return newSido
-  }, [topJuso.sido, setTopJuso])
+  }, [juso.topSido, setJuso])
 
   const handleTopBottomSyncGungu = useCallback(() => {
     let newGungu = ''
-    if (!topJuso.gungu) return []
-    if (topJuso.gungu.endsWith('시') && getGungu.endsWith('구')) {
-      newGungu = topJuso.gungu + ' ' + getGungu
+    if (!juso.topGungu) return []
+    if (juso.topGungu.endsWith('시') && juso.topGungu.endsWith('구')) {
+      newGungu = juso.topGungu + ' ' + juso.topGungu
     } else {
-      newGungu = topJuso.gungu
+      newGungu = juso.topGungu
     }
     return newGungu
-  }, [topJuso.gungu, getGungu])
+  }, [juso.topGungu, juso.topGungu])
 
   const handleControlTopBar = () => {
     if (SidoAddr) {
       setRange(0)
       setOpenCursor(!openCursor)
-      setBottomJuso({
-        sido: '',
-        gungu: '',
-        dong: '',
+      setJuso((prev) => {
+        return {
+          ...prev,
+          bottomSido: '',
+          bottomGungu: '',
+          bottomDong: '',
+        }
       })
     } else if (GunguAddr) {
       setRange(1)
       setOpenCursor(!openCursor)
-      setBottomJuso({
-        sido: handleTopBottomSyncSido(),
-        gungu: '',
-        dong: '',
+      setJuso((prev) => {
+        return {
+          ...prev,
+          bottomSido: handleTopBottomSyncSido() as string,
+          bottomGungu: '',
+          bottomDong: '',
+        }
       })
     } else {
       setRange(2)
       setOpenCursor(!openCursor)
-      setBottomJuso({
-        sido: handleTopBottomSyncSido(),
-        gungu: handleTopBottomSyncGungu() as string,
-        dong: '',
+      setJuso((prev) => {
+        return {
+          ...prev,
+          bottomSido: handleTopBottomSyncSido() as string,
+          bottomGungu: handleTopBottomSyncGungu() as string,
+          bottomDong: '',
+        }
       })
     }
   }
@@ -137,7 +132,7 @@ function TopAddress({
           }}
         >
           <Text css={TextStyle}>
-            {SidoAddr ? topJuso.sido : GunguAddr ? topJuso.gungu : ''}
+            {SidoAddr ? juso.topSido : GunguAddr ? juso.topGungu : ''}
           </Text>
         </Flex>
         {isEnd ? (
@@ -157,13 +152,13 @@ function TopAddress({
                 handleControlTopBar()
               }}
             >
-              {DongAddr ? topJuso.dong : ''}
+              {DongAddr ? juso.topDong : ''}
             </Text>
             <AddressCursorArrow
               openCursor={openCursor}
               setOpenCursor={setOpenCursor}
-              setBottomJuso={setBottomJuso}
               setRange={setRange}
+              setJuso={setJuso}
             />
           </Flex>
         ) : (

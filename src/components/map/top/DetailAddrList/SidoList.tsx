@@ -1,6 +1,7 @@
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
-import { BottomJusoProps } from '@/models/Juso'
+import { SidoProps, jusoProps } from '@/models/Juso'
+import { jusoAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
 import axios from 'axios'
 import {
@@ -10,80 +11,88 @@ import {
   useEffect,
   useState,
 } from 'react'
+import { useRecoilState } from 'recoil'
 
 interface Props {
-  bottomJuso: BottomJusoProps
-  setBottomJuso: Dispatch<SetStateAction<BottomJusoProps>>
   setRange: Dispatch<SetStateAction<number>>
   selectedIndex: number | null
   setSelectedIndex: Dispatch<SetStateAction<number | null>>
-  addrToCenter: (addr: string) => void
+  addrToCenter: (x: number, y: number) => void
 }
 
 export default function SidoList({
-  bottomJuso,
-  setBottomJuso,
   setRange,
   selectedIndex,
   setSelectedIndex,
   addrToCenter,
 }: Props) {
-  const [sidoList, setSidoList] = useState<string[]>([])
+  const [juso, setJuso] = useRecoilState<jusoProps>(jusoAtom)
+  const [sidoList, setSidoList] = useState<SidoProps[]>([
+    {
+      sd: '',
+      x: 0,
+      y: 0,
+    },
+  ])
 
   const handleClick = useCallback(
     (sido: string, actualIndex: number) => {
       setSelectedIndex(actualIndex)
-      if (bottomJuso.sido === sido) {
+      if (juso.bottomSido === sido) {
         setRange(1)
-        setBottomJuso((prev) => {
+        setJuso((prev) => {
           return {
             ...prev,
-            sido,
+            bottomSido: sido,
           }
         })
       } else {
         setRange(1)
-        setBottomJuso((prev) => {
+        setJuso((prev) => {
           return {
             ...prev,
-            sido,
-            gungu: '',
-            dong: '',
+            bottomSido: sido,
+            bottomGungu: '',
+            bottomDong: '',
           }
         })
       }
     },
-    [bottomJuso, setBottomJuso, setRange, setSelectedIndex],
+    [setRange, setSelectedIndex, setJuso, juso.bottomSido],
   )
 
-  const handleGetSidoList = async () => {
+  const handleGetSidoList = useCallback(async () => {
     try {
       const response = await axios.get(`/ggi/api/location/sds`)
       if (response.data.success === true) {
         setSidoList(response.data.data.sds)
         setSidoList((prev) => {
-          return [...prev, ' ']
+          return [...prev, { sd: ' ', x: 0, y: 0 }]
         })
-        if (bottomJuso.sido === '') {
+        if (juso.bottomSido === '') {
           setSelectedIndex(null)
-        } else if (sidoList.indexOf(bottomJuso.sido) > 0) {
-          setSelectedIndex(sidoList.indexOf(bottomJuso.sido))
+        } else if (
+          sidoList.map((item) => item.sd).indexOf(juso.bottomSido) > 0
+        ) {
+          setSelectedIndex(
+            sidoList.map((item) => item.sd).indexOf(juso.bottomSido),
+          )
         }
       }
     } catch (error) {
       console.error(error)
     }
-  }
+  }, [juso.bottomSido, setSelectedIndex, setSidoList])
   useEffect(() => {
     handleGetSidoList()
   }, [])
 
   useEffect(() => {
     if (sidoList.length > 0) {
-      const index = sidoList.indexOf(bottomJuso.sido)
+      const index = sidoList.map((item) => item.sd).indexOf(juso.bottomSido)
       setSelectedIndex(index !== -1 ? index : null)
     }
-  }, [bottomJuso.sido, setSelectedIndex, sidoList])
+  }, [juso.bottomSido, setSelectedIndex, sidoList])
   return (
     <Flex direction="column">
       {Array.from(sidoList).map(
@@ -94,7 +103,7 @@ export default function SidoList({
                 .slice(index, index + 3)
                 .map((item, subIndex) => {
                   const actualIndex = index + subIndex
-                  const isSelected = bottomJuso.sido === item
+                  const isSelected = juso.bottomSido === item.sd
                   const shouldHighlightTop =
                     selectedIndex != null
                       ? actualIndex === selectedIndex ||
@@ -111,11 +120,11 @@ export default function SidoList({
                           ? '1px solid #332EFC'
                           : '1px solid #E5E5E5',
                         borderRight:
-                          sidoList[Math.ceil(sidoList.length / 3) * 3 - 1] ===
-                            ' ' &&
+                          sidoList[Math.ceil(sidoList.length / 3) * 3 - 1]
+                            ?.sd === ' ' &&
                           actualIndex === Math.ceil(sidoList.length / 3) * 3 - 1
                             ? ''
-                            : bottomJuso.sido === item
+                            : juso.bottomSido === item.sd
                             ? '1px solid #332EFC'
                             : actualIndex % 3 === 2
                             ? '1px solid #E5E5E5'
@@ -124,15 +133,15 @@ export default function SidoList({
                             : '',
                         borderLeft:
                           subIndex % 3 === 0
-                            ? bottomJuso.sido === item
+                            ? juso.bottomSido === item.sd
                               ? '1px solid #332EFC'
                               : '1px solid #E5E5E5'
                             : subIndex % 3 === 1
-                            ? bottomJuso.sido === item
+                            ? juso.bottomSido === item.sd
                               ? '1px solid #332EFC'
                               : '1px solid #E5E5E5'
                             : subIndex % 3 === 2
-                            ? bottomJuso.sido === item
+                            ? juso.bottomSido === item.sd
                               ? '1px solid #332EFC'
                               : ''
                             : '',
@@ -145,18 +154,18 @@ export default function SidoList({
                                 Math.ceil(sidoList.length / 3) * 3 -
                                   3 +
                                   subIndex
-                              ] === ' '
+                              ]?.sd === ' '
                               ? ''
-                              : bottomJuso.sido === item
+                              : juso.bottomSido === item.sd
                               ? '1px solid #332EFC'
                               : '1px solid #E5E5E5'
                             : '',
-                        cursor: item === ' ' ? 'default' : 'pointer',
+                        cursor: item.sd === ' ' ? 'default' : 'pointer',
                       }}
                       onClick={() => {
-                        if (item !== ' ') {
-                          handleClick(item, actualIndex)
-                          addrToCenter(item)
+                        if (item.sd !== ' ') {
+                          handleClick(item.sd, actualIndex)
+                          addrToCenter(item.x, item.y)
                         }
                         return
                       }}
@@ -164,10 +173,10 @@ export default function SidoList({
                       <Text
                         style={{
                           color:
-                            bottomJuso.sido === item ? '#332EFC' : '#000001',
+                            juso.bottomSido === item.sd ? '#332EFC' : '#000001',
                         }}
                       >
-                        {item}
+                        {item.sd}
                       </Text>
                     </Flex>
                   )

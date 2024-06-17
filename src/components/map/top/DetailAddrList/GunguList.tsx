@@ -10,26 +10,31 @@ import { css } from '@emotion/react'
 import Text from '@/components/shared/Text'
 import Spacing from '@/components/shared/Spacing'
 import axios from 'axios'
-import { BottomJusoProps } from '@/models/Juso'
+import { GunguProps } from '@/models/Juso'
+import { useRecoilState } from 'recoil'
+import { jusoAtom } from '@/store/atom/map'
 
 interface Props {
-  bottomJuso: BottomJusoProps
-  setBottomJuso: Dispatch<SetStateAction<BottomJusoProps>>
   selectedGunguIndex: number | null
   setSelectedGunguIndex: Dispatch<SetStateAction<number | null>>
-  addrToCenter: (addr: string) => void
+  addrToCenter: (x: number, y: number) => void
   setRange: Dispatch<SetStateAction<number>>
 }
 
 export default function GunguList({
-  bottomJuso,
-  setBottomJuso,
   selectedGunguIndex,
   setSelectedGunguIndex,
   addrToCenter,
   setRange,
 }: Props) {
-  const [gunguList, setGunguList] = useState<string[]>([])
+  const [juso, setJuso] = useRecoilState(jusoAtom)
+  const [gunguList, setGunguList] = useState<GunguProps[]>([
+    {
+      sgg: '',
+      x: 0,
+      y: 0,
+    },
+  ])
   const handleGetGungu = async (siName: string) => {
     try {
       const response = await axios.get(`/ggi/api/location/${siName}/sggs`)
@@ -38,14 +43,22 @@ export default function GunguList({
         const addArray =
           response.data.data.sggs.length % 3 === 0
             ? null
-            : Array(3 - (response.data.data.sggs.length % 3)).fill(' ')
+            : Array(3 - (response.data.data.sggs.length % 3)).fill({
+                sgg: ' ',
+                x: 0,
+                y: 0,
+              })
         setGunguList((prev) => {
           return [...prev, ...(addArray === null ? [] : addArray)]
         })
-        if (bottomJuso.gungu === '') {
+        if (juso.bottomGungu === '') {
           setSelectedGunguIndex(null)
-        } else if (gunguList.indexOf(bottomJuso.gungu) > 0) {
-          setSelectedGunguIndex(gunguList.indexOf(bottomJuso.gungu))
+        } else if (
+          gunguList.map((item) => item.sgg).indexOf(juso.bottomGungu)
+        ) {
+          setSelectedGunguIndex(
+            gunguList.map((item) => item.sgg).indexOf(juso.bottomGungu),
+          )
         }
       }
     } catch (error) {
@@ -57,27 +70,27 @@ export default function GunguList({
     (gungu: string, actualIndex: number) => {
       setRange(2)
       setSelectedGunguIndex(actualIndex)
-      setBottomJuso((prev) => {
+      setJuso((prev) => {
         return {
           ...prev,
-          gungu,
-          dong: '',
+          bottomGungu: gungu,
+          bottomDong: '',
         }
       })
     },
-    [setBottomJuso, setSelectedGunguIndex],
+    [setJuso, setSelectedGunguIndex, setRange],
   )
 
   useEffect(() => {
-    handleGetGungu(bottomJuso.sido)
-  }, [bottomJuso.sido])
+    handleGetGungu(juso.bottomSido)
+  }, [juso.bottomSido])
 
   useEffect(() => {
     if (gunguList.length > 0) {
-      const index = gunguList.indexOf(bottomJuso.gungu)
+      const index = gunguList.map((item) => item.sgg).indexOf(juso.bottomGungu)
       setSelectedGunguIndex(index !== -1 ? index : null)
     }
-  }, [bottomJuso.gungu, gunguList, setSelectedGunguIndex])
+  }, [juso.bottomGungu, gunguList, setSelectedGunguIndex])
   return (
     <>
       <Flex direction="column" css={ContainerStyle}>
@@ -89,13 +102,14 @@ export default function GunguList({
                   .slice(index, index + 3)
                   .map((item, subIndex) => {
                     const actualIndex = index + subIndex
-                    const isSelected = bottomJuso.gungu === item
+                    const isSelected = juso.bottomGungu === item.sgg
                     const shouldHighlightTop =
-                      selectedGunguIndex != null &&
-                      (actualIndex === selectedGunguIndex ||
-                        actualIndex === selectedGunguIndex + 3)
+                      selectedGunguIndex != null
+                        ? actualIndex === selectedGunguIndex ||
+                          actualIndex === selectedGunguIndex + 3
+                        : false
                     return (
-                      item !== '' && (
+                      item.sgg !== '' && (
                         <Flex
                           direction="row"
                           key={actualIndex}
@@ -105,35 +119,34 @@ export default function GunguList({
                             borderTop: shouldHighlightTop
                               ? `1px solid #332EFC`
                               : actualIndex < 3
-                              ? item === ' '
+                              ? item.sgg === ' '
                                 ? ''
                                 : '1px solid #E5E5E5'
                               : '1px solid #E5E5E5',
                             borderRight:
-                              gunguList[
-                                Math.ceil(gunguList.length / 3) * 3 - 1
-                              ] === ' ' &&
+                              gunguList[Math.ceil(gunguList.length / 3) * 3 - 1]
+                                ?.sgg === ' ' &&
                               actualIndex ===
                                 Math.ceil(gunguList.length / 3) * 3 - 1
                                 ? ''
-                                : bottomJuso.gungu === item
+                                : juso.bottomGungu === item.sgg
                                 ? '1px solid #332EFC'
-                                : actualIndex % 3 === 2 && item !== ' '
+                                : actualIndex % 3 === 2 && item.sgg !== ' '
                                 ? '1px solid #E5E5E5'
-                                : actualIndex % 3 === 1 && item !== ' '
+                                : actualIndex % 3 === 1 && item.sgg !== ' '
                                 ? '1px solid #E5E5E5'
                                 : '',
                             borderLeft:
                               subIndex % 3 === 0
-                                ? bottomJuso.gungu === item
+                                ? juso.bottomGungu === item.sgg
                                   ? '1px solid #332EFC'
                                   : '1px solid #E5E5E5'
                                 : subIndex % 3 === 1
-                                ? bottomJuso.gungu === item
+                                ? juso.bottomGungu === item.sgg
                                   ? '1px solid #332EFC'
                                   : '1px solid #E5E5E5'
                                 : subIndex % 3 === 2
-                                ? bottomJuso.gungu === item
+                                ? juso.bottomGungu === item.sgg
                                   ? '1px solid #332EFC'
                                   : ''
                                 : '',
@@ -148,29 +161,29 @@ export default function GunguList({
                                     Math.ceil(gunguList.length / 3) * 3 -
                                       3 +
                                       subIndex
-                                  ] === ' '
+                                  ]?.sgg === ' '
                                   ? ''
-                                  : bottomJuso.gungu === item
+                                  : juso.bottomGungu === item.sgg
                                   ? '1px solid #332EFC'
                                   : '1px solid #E5E5E5'
                                 : '',
-                            cursor: item === ' ' ? 'default' : 'pointer',
+                            cursor: item.sgg === ' ' ? 'default' : 'pointer',
                           }}
                           onClick={() => {
-                            if (item === ' ') return
-                            handleClick(item, actualIndex)
-                            addrToCenter(bottomJuso.sido + ' ' + item)
+                            if (item.sgg === ' ') return
+                            handleClick(item.sgg, actualIndex)
+                            addrToCenter(item.x, item.y)
                           }}
                         >
                           <Text
                             style={{
                               color:
-                                bottomJuso.gungu === item
+                                juso.bottomGungu === item.sgg
                                   ? '#332EFC'
                                   : '#000001',
                             }}
                           >
-                            {item}
+                            {item.sgg}
                           </Text>
                         </Flex>
                       )

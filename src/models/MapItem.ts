@@ -11,7 +11,7 @@ export interface MapItem {
   buildingArea: string
   landArea: string
   share: string
-  ratio: string
+  ratio: number
 }
 
 export interface ListData {
@@ -87,6 +87,11 @@ export interface PageInfo {
   isEmpty: boolean
   pageSize: number
   totalElements: number
+}
+
+export interface MapListResponse {
+  contents: MapItems[]
+  paging: PageInfo
 }
 
 export interface SearchListResponse {

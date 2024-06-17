@@ -1,31 +1,29 @@
+import { jusoProps } from '@/models/Juso'
 import { Dispatch, SetStateAction } from 'react'
 
 interface AddressCursorArrowProps {
   openCursor: boolean
   setOpenCursor: Dispatch<SetStateAction<boolean>>
-  setBottomJuso: Dispatch<
-    SetStateAction<{
-      sido: string
-      gungu: string
-      dong: string
-    }>
-  >
   setRange: Dispatch<SetStateAction<number>>
+  setJuso: Dispatch<SetStateAction<jusoProps>>
 }
 
 function AddressCursorArrow({
   openCursor,
   setOpenCursor,
-  setBottomJuso,
   setRange,
+  setJuso,
 }: AddressCursorArrowProps) {
   const handleCursor = () => {
     if (!openCursor) {
       setOpenCursor(true)
-      setBottomJuso({
-        sido: '',
-        gungu: '',
-        dong: '',
+      setJuso((prev) => {
+        return {
+          ...prev,
+          bottomSido: '',
+          bottomGungu: '',
+          bottomDong: '',
+        }
       })
       setRange(0)
     } else {

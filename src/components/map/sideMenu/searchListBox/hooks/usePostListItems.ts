@@ -7,8 +7,6 @@ export function usePostListItems(
   formData: Form,
   setListItems: React.Dispatch<React.SetStateAction<MapItems[] | null>>,
   pageNum: number,
-  pageSize: number,
-  setPageInfo: React.Dispatch<React.SetStateAction<PageInfo>>,
 ) {
   const mapData: ListData = {
     ids:
@@ -32,11 +30,10 @@ export function usePostListItems(
     egg: formData.egg,
   }
   const { mutate, isLoading } = useMutation(
-    () => postListItems(mapData, pageNum, pageSize),
+    () => postListItems(mapData, pageNum, 10),
     {
       onSuccess: (data) => {
         setListItems((data && (data.contents as MapItems[])) ?? [])
-        setPageInfo((data && (data.paging as PageInfo))!)
       },
     },
   )

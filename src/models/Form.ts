@@ -5,8 +5,6 @@ export interface Form {
   kw: boolean
   gm: boolean
   gg: boolean
-  gk: boolean
-  usageCodes: string
   fromAppraisalAmount: number
   toAppraisalAmount: number
   fromMinimumAmount: number
@@ -23,6 +21,5 @@ export interface Form {
   ekm: boolean
   egm: boolean
   egg: boolean
-  map: NaverMapProps
   keyword: string
 }

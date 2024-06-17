@@ -1,5 +1,4 @@
 import usePostMapItems from '@/hooks/items/usePostMapItems'
-import { Form } from '@/models/Form'
 import {
   Dispatch,
   MutableRefObject,
@@ -10,29 +9,30 @@ import {
   useState,
 } from 'react'
 import { useRecoilState } from 'recoil'
-import { userAtom } from '@/store/atom/postUser'
 import { Coordinates, NaverMap } from '@/models/Map'
 import Script from 'next/script'
 import { INITIAL_CENTER } from './hooks/useMap'
 import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
-import { mapAtom, mapItemOriginAtom } from '@/store/atom/map'
+import {
+  formDataAtom,
+  mapItemsAtom,
+  mapItemsOriginAtom,
+} from '@/store/atom/map'
 import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
 import { authInfo } from '@/store/atom/auth'
 import getPolypath from '@/remote/map/selected/getPolypath'
+import { usePostListItems } from '@/hooks/items/usePostListItems'
 import { debounce } from 'lodash'
-import { useAuth } from '@/hooks/auth/useAuth'
-import handleToken from '@/remote/map/auth/token'
-import axios from 'axios'
 declare global {
   interface Window {
     naver: any
   }
 }
 interface Props {
-  formData: Form
-  setFormData: Dispatch<SetStateAction<Form>>
+  page: number
+  setPage: Dispatch<SetStateAction<number>>
   setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
   setZoom: Dispatch<SetStateAction<number>>
   clickedMapType: {
@@ -70,13 +70,9 @@ interface Props {
   >
   center: { lat: number; lng: number }
   setHalfDimensions: Dispatch<SetStateAction<{ width: number; height: number }>>
-  setMapOptions: (map: NaverMap) => void
-  token?: string
 }
 
 export default function GGIMap({
-  formData,
-  setFormData,
   clickedMapType,
   mapId = 'map',
   initialCenter = INITIAL_CENTER,
@@ -91,19 +87,20 @@ export default function GGIMap({
   setClickedMapType,
   center,
   setHalfDimensions,
-  setMapOptions,
-  token,
+  page,
+  setPage,
 }: Props) {
-  const [user, setUser] = useRecoilState(userAtom)
+  const [formData, setFormData] = useRecoilState(formDataAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
   const { mutate: getMapItems } = usePostMapItems(formData)
+  const { mutate: getMapLists } = usePostListItems(formData, page, 10)
   const { mutate: getMapCounts } = useMapCounts(
     formData,
     setMapCount as Dispatch<SetStateAction<MapCountsResponse[]>>,
   )
   const [path, setPath] = useState<number[][]>([])
-  const [mapItems, setMapItems] = useRecoilState(mapAtom)
-  const [mapOrigin, setMapOrigin] = useRecoilState(mapItemOriginAtom)
+  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
+  const [mapOrigin, setMapOrigin] = useRecoilState(mapItemsOriginAtom)
   const mapRef = useRef<NaverMap | null>(null)
   const [isPanoVisible, setIsPanoVisible] = useState(false)
   const [clickedMarker, setClickedMarker] = useState<naver.maps.Marker | null>(
@@ -115,8 +112,13 @@ export default function GGIMap({
     lng: 0,
   })
 
-  const searchAddrToCoord = useCallback(
-    (address: string) => {
+  const zoomLevel = mapRef.current?.getZoom() ?? null
+  const searchAddrToCoord = (
+    address: string,
+    map: NaverMap | null,
+    setAuth: any,
+  ) => {
+    if (map) {
       if (window.naver?.maps.Service?.geocode !== undefined) {
         window.naver.maps.Service?.geocode(
           {
@@ -128,23 +130,22 @@ export default function GGIMap({
             }
             const result = response.v2.addresses[0]
             const { x, y } = result ?? { point: { x: 0, y: 0 } }
-            setUser((prev) => {
+            setAuth((prev: any) => {
               return {
                 ...prev,
                 lat: Number(y),
                 lng: Number(x),
               }
             })
-            mapRef.current?.setCenter({
+            map?.setCenter({
               lat: Number(y),
               lng: Number(x),
             })
           },
         )
       }
-    },
-    [setUser],
-  )
+    }
+  }
 
   const updateHalfDimensions = useCallback(() => {
     const exceptFilterBox = window.innerWidth - 370
@@ -164,9 +165,9 @@ export default function GGIMap({
     }
   }, [updateHalfDimensions])
 
-  const debouncedGetMapItems = debounce(getMapItems, 0)
-  const zoomLevel = mapRef.current?.getZoom() ?? null
-  const handleGetBounds = useCallback(() => {
+  const debouncedGetMapItems = debounce(getMapItems, 500)
+  const debouncedGetMapLists = debounce(getMapLists, 500)
+  const handleGetBounds = useCallback(async () => {
     if (mapRef.current) {
       const bounds = mapRef.current.getBounds() as any
       const sw = bounds.getSW()
@@ -185,10 +186,15 @@ export default function GGIMap({
         setMapOrigin([])
       }
     }
-  }, [setFormData, debouncedGetMapItems])
+  }, [setFormData, debouncedGetMapItems, setMapItems, setMapOrigin])
+
+  const handlePromiseAll = useCallback(() => {
+    handleGetBounds()
+    debouncedGetMapLists()
+  }, [handleGetBounds, debouncedGetMapLists])
 
   useEffect(() => {
-    handleGetBounds()
+    handlePromiseAll()
   }, [
     formData.egg,
     formData.ekm,
@@ -269,7 +275,7 @@ export default function GGIMap({
     const map = new window.naver.maps.Map(mapId, mapOptions)
     mapRef.current = map
 
-    window.naver.maps.Event.addListener(map, 'idle', handleGetBounds)
+    window.naver.maps.Event.addListener(map, 'idle', handlePromiseAll)
     window.naver.maps.Event.addListener(map, 'click', (e: any) => {
       if (map.streetLayer) {
         let latlng = e.coord
@@ -302,25 +308,25 @@ export default function GGIMap({
       onLoad(map)
     }
     setUpMiniMap(map)
-  }, [initialCenter, zoom, onLoad, handleGetBounds, setUpMiniMap, user.role])
+  }, [initialCenter, zoom, onLoad, setUpMiniMap, auth.role])
 
   const closePanorama = () => {
     setIsPanoVisible(false)
   }
 
   const handleGetPolyPath = useCallback(async () => {
-    if (user.lat && user.lng) {
+    if (auth.lat && auth.lng) {
       try {
         const response = await getPolypath(
-          user?.lng as number,
-          user?.lat as number,
+          auth?.lng as number,
+          auth?.lat as number,
         )
         setPath(response)
       } catch (error) {
         console.error(error)
       }
     }
-  }, [user.lat, user.lng])
+  }, [auth.lat, auth.lng])
 
   useEffect(() => {
     return () => {
@@ -329,32 +335,29 @@ export default function GGIMap({
   }, [])
 
   useEffect(() => {
-    if (user.address !== '' && auth.idCode === '') {
-      searchAddrToCoord(user.address)
-    } else if (user.address === '' && auth.idCode !== '') {
-      mapRef.current?.setCenter({
-        lat: user.lat,
-        lng: user.lng,
-      })
+    if (auth.address && !auth.idCode) {
+      searchAddrToCoord(auth.address, mapRef.current, setAuth)
+    } else if (!auth.address && auth.idCode) {
+      mapRef.current?.setCenter({ lat: auth.lat, lng: auth.lng })
     }
-  }, [user.address, auth.idCode, user.lat, user.lng, searchAddrToCoord])
+  }, [auth.address, auth.idCode, auth.lat, auth.lng, setAuth])
 
   useEffect(() => {
-    if (mapRef?.current?.getZoom()! >= 15) {
+    if (zoomLevel && zoomLevel >= 15) {
       setMapCount && setMapCount([])
     } else if (mapRef?.current?.getZoom()! < 15) {
       getMapCounts()
       setMapItems([])
       setMapOrigin([])
     }
-  }, [getMapCounts, setMapCount, zoomLevel, formData])
+  }, [getMapCounts, setMapCount, zoomLevel, formData, zoomLevel])
 
   useEffect(() => {
     handleGetPolyPath()
-  }, [user.lat, user.lng, handleGetPolyPath])
+  }, [auth.lat, auth.lng, handleGetPolyPath])
 
   useEffect(() => {
-    if (mapRef.current && path.length > 0 && auth.idCode !== '') {
+    if (path.length > 0 && auth.idCode) {
       const polyline = new window.naver.maps.Polyline({
         map: mapRef.current,
         path: path.map(

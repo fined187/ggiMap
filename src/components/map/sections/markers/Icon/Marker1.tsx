@@ -2,47 +2,52 @@ import { MapItem } from '@/models/MapItem'
 import { NumToHan } from '@/utils/NumToHan'
 import { colors } from '@/styles/colorPalette'
 
+const getColor = (item: MapItem, type: number): string => {
+  if (item.winYn === 'Y') {
+    return colors.winOrange
+  } else {
+    return colors.black
+  }
+}
+
+const getBorderColor = (item: MapItem, type: number): string => {
+  if (item.winYn === 'Y') {
+    return `1px solid ${colors.winOrange}`
+  } else {
+    switch (type) {
+      case 1:
+        return `1px solid ${colors.kmBlue}`
+      case 2:
+        return `1px solid ${colors.gmBlue}`
+      case 3:
+        return `1px solid ${colors.ggPurple}`
+      case 4:
+        return `1px solid ${colors.kwGreen}`
+      default:
+        return `1px solid ${colors.black}`
+    }
+  }
+}
+
 export const PnuCountIcon = (
   item: MapItem,
   count: number,
   type: number,
-  isSame?: boolean,
+  isSame: boolean,
   top?: string,
 ) => {
   return `
   <div style="position: absolute; right: 0px; top: ${
     top ? `${top}px` : '-42px'
-  }; ">
-    <div style="display: inline-flex; width: 22px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${
-      !isSame
-        ? item.winYn === 'Y'
-          ? `1px solid ${colors.winOrange}`
-          : type === 1
-          ? `1px solid ${colors.kmBlue}`
-          : type === 3
-          ? `1px solid ${colors.ggPurple}`
-          : type === 2
-          ? `1px solid ${colors.gmBlue}`
-          : `1px solid ${colors.kwGreen}`
-        : item.winYn === 'Y'
-        ? `1px solid ${colors.winOrange}`
-        : type === 1
-        ? `1px solid ${colors.kmBlue}`
-        : type === 3
-        ? `1px solid ${colors.ggPurple}`
-        : type === 2
-        ? `1px solid ${colors.gmBlue}`
-        : `1px solid ${colors.kwGreen}`
-    }; background: #FFF;">
-      <span style="color: ${
-        !isSame
-          ? item.winYn === 'Y'
-            ? `${colors.winOrange}`
-            : `${colors.black}`
-          : item.winYn !== 'Y'
-          ? `${colors.black}`
-          : `${colors.winOrange}`
-      }; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
+  }; z-index: 110;">
+    <div style="display: inline-flex; width: 22px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${getBorderColor(
+      item,
+      type,
+    )}; background: #FFF;">
+      <span style="color: ${getColor(
+        item,
+        type,
+      )}; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
         ${count > 99 ? '99+' : count}
       </span>
     </div>

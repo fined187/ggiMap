@@ -1,32 +1,16 @@
 import { Dispatch, SetStateAction } from 'react'
 import TopAddress from './TopAddress'
-
-type JusoProps = {
-  sido: string
-  gungu: string
-  dong: string
-}
+import { jusoProps } from '@/models/Juso'
 
 interface AddressContainerProps {
-  topJuso: JusoProps
-  setTopJuso: Dispatch<SetStateAction<JusoProps>>
   openCursor: boolean
   setOpenCursor: Dispatch<SetStateAction<boolean>>
   range: number
   setRange: Dispatch<SetStateAction<number>>
-  setBottomJuso: Dispatch<SetStateAction<JusoProps>>
 }
 
 const AddressContainer = (props: AddressContainerProps) => {
-  const {
-    topJuso,
-    setTopJuso,
-    openCursor,
-    setOpenCursor,
-    range,
-    setRange,
-    setBottomJuso,
-  } = props
+  const { openCursor, setOpenCursor, range, setRange } = props
 
   const addressConfigs = [
     { SidoAddr: true, GunguAddr: false, DongAddr: false, isEnd: false },
@@ -40,14 +24,10 @@ const AddressContainer = (props: AddressContainerProps) => {
         <TopAddress
           key={index}
           {...config}
-          topJuso={topJuso}
-          setTopJuso={setTopJuso}
           openCursor={openCursor}
           setOpenCursor={setOpenCursor}
-          getGungu={topJuso.gungu}
           range={range}
           setRange={setRange}
-          setBottomJuso={setBottomJuso}
         />
       ))}
     </>

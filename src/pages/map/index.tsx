@@ -4,7 +4,6 @@ import { userAtom } from '@/store/atom/postUser'
 import { GetServerSidePropsContext } from 'next'
 import { useCallback, useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
-import axios from 'axios'
 import MapSection from '@/components/map/sections/MapSection'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
@@ -20,16 +19,16 @@ import {
   SelectedKmItem,
   SelectedKwItem,
 } from '@/models/SelectedItem'
-import { mapListAtom } from '@/store/atom/map'
+import {
+  formDataAtom,
+  jusoAtom,
+  mapItemsAtom,
+  mapListAtom,
+} from '@/store/atom/map'
 import { getPosition } from '@/remote/map/auth/getPosition'
 import { NaverMap } from '@/models/Map'
-import { useAuth } from '@/hooks/auth/useAuth'
 import handleToken from '@/remote/map/auth/token'
-type jusoProps = {
-  sido: string
-  gungu: string
-  dong: string
-}
+import { getSampleItems } from '@/remote/map/auth/getSampleItems'
 interface Props {
   data?: {
     userId: string | null
@@ -47,49 +46,16 @@ declare global {
 
 function MapComponent({ token, type, idCode }: Props) {
   const { data: map } = useSWR(MAP_KEY)
-  const [user, setUser] = useRecoilState(userAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
   const [mapList, setMapList] = useRecoilState(mapListAtom)
-  const [topJuso, setTopJuso] = useState<jusoProps>({
-    sido: '',
-    gungu: '',
-    dong: '',
-  })
-  const [bottomJuso, setBottomJuso] = useState<jusoProps>({
-    sido: '',
-    gungu: '',
-    dong: '',
-  })
+  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
+  const [juso, setJuso] = useRecoilState(jusoAtom)
+
   const [getGungu, setGetGungu] = useState<string>('')
   const [selectedData, setSelectedData] = useState<
     SelectedKmItem | SelectedGmItem | SelectedGgItem | SelectedKwItem | null
   >(null)
-  const [formData, setFormData] = useState<Form>({
-    usageCodes: '',
-    ids: ['2', '3', '4', '5', '6', '7', '9', '10', '11', '12', '13', '14'],
-    fromAppraisalAmount: 0,
-    toAppraisalAmount: 0,
-    fromMinimumAmount: 0,
-    toMinimumAmount: 0,
-    interests: false,
-    x1: 1,
-    y1: 1,
-    x2: 1,
-    y2: 1,
-    awardedMonths: 0,
-    km: false,
-    kw: false,
-    gm: false,
-    gg: false,
-    gk: false,
-    isSubFilterBoxOpen: false,
-    lastFilter: 1,
-    ekm: false,
-    egm: false,
-    egg: false,
-    map: {},
-    keyword: '',
-  })
+  const [formData, setFormData] = useRecoilState(formDataAtom)
 
   const setMapOptions = useCallback((map: NaverMap) => {
     if (!map) return
@@ -104,7 +70,7 @@ function MapComponent({ token, type, idCode }: Props) {
     try {
       const response = await getAddress()
       if (response) {
-        setUser((prev) => {
+        setAuth((prev) => {
           return {
             ...prev,
             address: response.address,
@@ -115,7 +81,7 @@ function MapComponent({ token, type, idCode }: Props) {
     } catch (error) {
       console.error(error)
     }
-  }, [setUser])
+  }, [setAuth])
 
   const handleDataFetching = async (type: string, idCode: string) => {
     try {
@@ -163,9 +129,6 @@ function MapComponent({ token, type, idCode }: Props) {
           ...prev,
           idCode,
           type,
-        }))
-        setUser((prev) => ({
-          ...prev,
           lng: response.data.data.x,
           lat: response.data.data.y,
         }))
@@ -178,9 +141,9 @@ function MapComponent({ token, type, idCode }: Props) {
   const handleGetPosition = useCallback(
     async (addr: string) => {
       try {
-        const response = await getPosition(addr, setUser)
+        const response = await getPosition(addr, setAuth)
         if (response) {
-          setUser((prev: any) => ({
+          setAuth((prev) => ({
             ...prev,
             lat: response.data.data.y,
             lng: response.data.data.x,
@@ -190,18 +153,17 @@ function MapComponent({ token, type, idCode }: Props) {
         console.error(error)
       }
     },
-    [setUser],
+    [setAuth],
   )
 
   let ok = false
   const handleParameters = useCallback(
-    async (token?: string, type?: string, idCode?: string) => {
+    async (token?: string, type?: string, idCode?: string, map?: NaverMap) => {
       const delayExecution = (callback: () => void, delay: number) => {
         setTimeout(callback, delay)
       }
-
       const runDelayedConfirm = () => {
-        delayExecution(() => {
+        delayExecution(async () => {
           if (
             !ok &&
             window &&
@@ -211,10 +173,14 @@ function MapComponent({ token, type, idCode }: Props) {
             window.close()
           } else {
             ok = true
+            const res = await getSampleItems(
+              parseInt(type!),
+              setMapItems,
+              setMapList,
+            )
           }
         }, 1000)
       }
-
       try {
         if (token) {
           const response = await handleToken(token)
@@ -226,23 +192,22 @@ function MapComponent({ token, type, idCode }: Props) {
                 isAuth: true,
                 role: response.data.data.authorities,
               }))
-              setUser((prev) => ({
-                ...prev,
-                role: response.data.data.authorities,
-              }))
               handleGetAddress()
             } else {
-              setUser((prev) => {
+              setMapOptions(map as NaverMap)
+              setAuth((prev) => {
                 return {
                   ...prev,
                   role: response.data.data.authorities,
                 }
               })
-              setMapOptions(map)
-              setTopJuso({
-                sido: '서울특별시',
-                gungu: '서초구',
-                dong: '서초동',
+              setJuso((prev) => {
+                return {
+                  ...prev,
+                  topSido: '서울특별시',
+                  topGungu: '서초구',
+                  topDong: '서초동',
+                }
               })
               runDelayedConfirm()
             }
@@ -263,10 +228,13 @@ function MapComponent({ token, type, idCode }: Props) {
         } else if (auth.role.includes('ROLE_USER') && idCode && type) {
           await handleDataFetching(type, idCode)
         } else {
-          setTopJuso({
-            sido: '서울특별시',
-            gungu: '서초구',
-            dong: '서초동',
+          setJuso((prev) => {
+            return {
+              ...prev,
+              topSido: '서울특별시',
+              topGungu: '서초구',
+              topDong: '서초동',
+            }
           })
           runDelayedConfirm()
         }
@@ -278,26 +246,19 @@ function MapComponent({ token, type, idCode }: Props) {
   )
 
   useEffect(() => {
-    handleParameters(token as string, type as string, idCode as string)
     if (window) {
       window.history.pushState({}, '', '/map')
     }
   }, [token, map, idCode, type])
 
   return (
-    <>
-      <MapSection
-        formData={formData}
-        setFormData={setFormData}
-        topJuso={topJuso}
-        setTopJuso={setTopJuso}
-        bottomJuso={bottomJuso}
-        setBottomJuso={setBottomJuso}
-        getGungu={getGungu}
-        setGetGungu={setGetGungu}
-        setMapOptions={setMapOptions}
-      />
-    </>
+    <MapSection
+      setGetGungu={setGetGungu}
+      token={token as string}
+      idCode={idCode as string}
+      type={type as string}
+      handleParameters={handleParameters}
+    />
   )
 }
 

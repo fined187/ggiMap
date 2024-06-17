@@ -5,20 +5,19 @@ import Spacing from '@/components/shared/Spacing'
 import { Form } from '@/models/Form'
 import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
-import React, { ChangeEvent, KeyboardEvent, useCallback, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useState } from 'react'
 import MainFilter from '../filterBox/MainFilter'
 import SubFilter from '../filterBox/SubFilter'
 import DetailBox from '../filterBox/SubFilterDetail/DetailBox'
-import { useNavermaps } from 'react-naver-maps'
 import getSubway from '@/remote/map/subway/getSubway'
 import Logo from '../../icons/Logo'
 import Search from '../../icons/Search'
 import useSWR from 'swr'
 import { MAP_KEY } from '../../sections/hooks/useMap'
+import { useRecoilState } from 'recoil'
+import { formDataAtom } from '@/store/atom/map'
 
 interface SearchBoxProps {
-  formData: Form
-  setFormData: React.Dispatch<React.SetStateAction<Form>>
   center: { lat: number; lng: number }
   setCenter: React.Dispatch<React.SetStateAction<{ lat: number; lng: number }>>
 }
@@ -28,13 +27,9 @@ declare global {
   }
 }
 
-export default function SearchBox({
-  formData,
-  setFormData,
-  center,
-  setCenter,
-}: SearchBoxProps) {
+export default function SearchBox({ center, setCenter }: SearchBoxProps) {
   const { data: map } = useSWR(MAP_KEY)
+  const [formData, setFormData] = useRecoilState(formDataAtom)
   const [keyword, setKeyword] = useState('')
   const [isBoxOpen, setIsBoxOpen] = useState({
     finished: false,
