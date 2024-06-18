@@ -2,7 +2,6 @@ import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import usePathUrl from '../../sideMenu/searchListBox/listBox/hooks/usePathUrl'
 import { ItemDetail } from '@/models/ItemDetail'
 import { MapItem } from '@/models/MapItem'
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules'
@@ -49,7 +48,6 @@ export default function Carousel({
     }
   }, [clickedItem, clickedInfo])
   const { open } = useInterestContext()
-  console.log(image)
 
   const onButtonClick = () => {
     setOpenModal(false)

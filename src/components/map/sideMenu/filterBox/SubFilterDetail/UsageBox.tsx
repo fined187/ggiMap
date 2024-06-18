@@ -1,16 +1,13 @@
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import { USAGE } from '@/constants/SubFilter'
-import { Form } from '@/models/Form'
+import { formDataAtom } from '@/store/atom/map'
 import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
+import { useRecoilState } from 'recoil'
 
-interface UsageBoxProps {
-  formData: Form
-  setFormData: React.Dispatch<React.SetStateAction<Form>>
-}
-
-export default function UsageBox({ formData, setFormData }: UsageBoxProps) {
+export default function UsageBox() {
+  const [formData, setFormData] = useRecoilState(formDataAtom)
   const handleAddUsage = (ids: number) => {
     if (formData.ids.includes(ids.toString())) {
       const index = formData.ids.indexOf(ids.toString())

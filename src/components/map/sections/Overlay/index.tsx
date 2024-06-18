@@ -3,7 +3,6 @@ import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import {
   Dispatch,
-  MutableRefObject,
   SetStateAction,
   useCallback,
   useMemo,
@@ -43,7 +42,6 @@ export default function Overlay({
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
   const { data: map } = useSWR(MAP_KEY)
-  console.log(clickedInfo)
   const handleGetIds = useCallback(
     (pnu: string) => {
       let ids: string[] = []
@@ -118,7 +116,6 @@ export default function Overlay({
       ) {
         if (markerPosition.winYn === 'Y') {
           if (map.getZoom() === 16) {
-            console.log('여기')
             if (calculateScreenNum.first) {
               return {
                 left: markerPosition.position[0] + 100,

@@ -222,6 +222,11 @@ export default function NoGroupBtn({
                 gap: '5px',
                 justifyContent: 'start',
                 alignItems: 'center',
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                setIsFocus(false)
+                setGroupName(category)
               }}
             >
               <Input
@@ -235,10 +240,6 @@ export default function NoGroupBtn({
                   width: '15px',
                   height: '15px',
                   marginTop: '5px',
-                }}
-                onClick={() => {
-                  setIsFocus(false)
-                  setGroupName(category)
                 }}
                 onChange={() => {
                   setGroupName(category)
@@ -289,6 +290,21 @@ export default function NoGroupBtn({
                       gap: '5px',
                       justifyContent: 'start',
                       alignItems: 'center',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      setIsFocus(false)
+                      setGroupName(category)
+                      setFormData((prev) => {
+                        return {
+                          ...prev,
+                          isNewCategory: false,
+                          interestInfo: {
+                            ...prev.interestInfo,
+                            category: category,
+                          },
+                        }
+                      })
                     }}
                   >
                     <Input
@@ -301,20 +317,6 @@ export default function NoGroupBtn({
                         width: '15px',
                         height: '15px',
                         marginTop: '5px',
-                      }}
-                      onClick={() => {
-                        setIsFocus(false)
-                        setGroupName(category)
-                        setFormData((prev) => {
-                          return {
-                            ...prev,
-                            isNewCategory: false,
-                            interestInfo: {
-                              ...prev.interestInfo,
-                              category: category,
-                            },
-                          }
-                        })
                       }}
                       onChange={() => {
                         setGroupName(category)

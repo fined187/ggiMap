@@ -24,6 +24,7 @@ export default function MainFilter({ formData, setFormData }: SearchBoxProps) {
         bgColorType={colors.kmBlue}
         onButtonClick={() => setFormData({ ...formData, km: !formData.km })}
         textType={FILTERS.AUTION}
+        isDisabled={Boolean(map?.getZoom()! < 15)}
       />
       <FilterProps
         dataType={formData.kw}
@@ -31,6 +32,7 @@ export default function MainFilter({ formData, setFormData }: SearchBoxProps) {
         bgColorType={colors.kwGreen}
         onButtonClick={() => setFormData({ ...formData, kw: !formData.kw })}
         textType={FILTERS.EXPECTED}
+        isDisabled={Boolean(map?.getZoom()! < 15)}
       />
       <FilterProps
         dataType={formData.gm}
@@ -38,6 +40,7 @@ export default function MainFilter({ formData, setFormData }: SearchBoxProps) {
         bgColorType={colors.gmBlue}
         onButtonClick={() => setFormData({ ...formData, gm: !formData.gm })}
         textType={FILTERS.CAMCO}
+        isDisabled={Boolean(map?.getZoom()! < 15)}
       />
       <FilterProps
         dataType={formData.gg}

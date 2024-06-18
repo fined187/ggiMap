@@ -3,7 +3,6 @@ import TitlePage from './Title'
 import TableFrame from './TableFrame'
 import Spacing from '../shared/Spacing'
 import TopLine from './TopLine'
-import TextField from '../shared/TextField'
 import { useCallback, useEffect, useState } from 'react'
 import GroupElements from './Group'
 import NoGroupBtn from './Register/NoGroup'
@@ -352,13 +351,15 @@ export default function InterestProps({
                 <TableFrame
                   title="메모"
                   contents={
-                    <TextField
+                    <textarea
                       maxLength={1500}
                       style={{
                         width: '600px',
                         height: '100px',
                         border: '1px solid #BDBDBD',
                         borderRadius: '5px',
+                        padding: '10px',
+                        resize: 'none',
                       }}
                       onChange={(e) => {
                         setFormData((prev) => {

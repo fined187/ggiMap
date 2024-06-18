@@ -11,6 +11,7 @@ type PnuProps = {
   pnu: string
   count: number
   type: number
+  includeYn: boolean
 }
 
 interface MarkersProps {

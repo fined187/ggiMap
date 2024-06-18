@@ -1,20 +1,17 @@
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import { Form } from '@/models/Form'
+import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
 import { useEffect, useState } from 'react'
+import { useRecoilState } from 'recoil'
 
 interface SelectAllProps {
-  formData: Form
-  setFormData: React.Dispatch<React.SetStateAction<Form>>
   type: number
 }
 
-export default function SelectAll({
-  formData,
-  setFormData,
-  type,
-}: SelectAllProps) {
+export default function SelectAll({ type }: SelectAllProps) {
+  const [formData, setFormData] = useRecoilState(formDataAtom)
   const [isAllSelected, setIsAllSelected] = useState({
     finished: false,
     usage: false,

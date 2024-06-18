@@ -137,3 +137,8 @@ export const jusoAtom = atom<jusoProps>({
     bottomDong: '',
   },
 })
+
+export const loaderAtom = atom<boolean>({
+  key: `loader/${v4()}`,
+  default: false,
+})

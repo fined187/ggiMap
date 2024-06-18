@@ -3,68 +3,70 @@ import PriceRange from '@/components/shared/PriceRange'
 import Text from '@/components/shared/Text'
 import { PRICE } from '@/constants/SubFilter'
 import { Form } from '@/models/Form'
+import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import React, { useState } from 'react'
+import { useRecoilState } from 'recoil'
 
 interface LowPriceBoxProps {
-  formData: Form
-  setFormData: React.Dispatch<React.SetStateAction<Form>>
+  fromToMinPrice: number[]
+  setFromToMinPrice: React.Dispatch<React.SetStateAction<number[]>>
 }
 
 export default function LowPriceBox({
-  formData,
-  setFormData,
+  fromToMinPrice,
+  setFromToMinPrice,
 }: LowPriceBoxProps) {
-  const [fromToPrice, setFromToPrice] = useState([0, 0])
-  const handleFromToPrice = (price: number) => {
-    if (fromToPrice[0] === 0 && fromToPrice[1] === 0) {
-      setFromToPrice([0, price])
+  const [formData, setFormData] = useRecoilState(formDataAtom)
+  const handlefromToMinPrice = (price: number) => {
+    if (fromToMinPrice[0] === 0 && fromToMinPrice[1] === 0) {
+      setFromToMinPrice([0, price])
       setFormData({
         ...formData,
         toMinimumAmount: price,
       })
     } else if (
-      fromToPrice[0] === 0 &&
-      fromToPrice[1] !== 0 &&
-      price < fromToPrice[1]
+      fromToMinPrice[0] === 0 &&
+      fromToMinPrice[1] !== 0 &&
+      price < fromToMinPrice[1]
     ) {
-      setFromToPrice([price, fromToPrice[1]])
+      setFromToMinPrice([price, fromToMinPrice[1]])
       setFormData({
         ...formData,
-        toMinimumAmount: fromToPrice[1],
+        toMinimumAmount: fromToMinPrice[1],
         fromMinimumAmount: price,
       })
-    } else if (fromToPrice[0] !== 0 && fromToPrice[1] !== 0) {
-      setFromToPrice([0, price])
+    } else if (fromToMinPrice[0] !== 0 && fromToMinPrice[1] !== 0) {
+      setFromToMinPrice([0, price])
       setFormData({
         ...formData,
         toMinimumAmount: price,
         fromMinimumAmount: 0,
       })
-    } else if (fromToPrice[0] !== 0 && fromToPrice[1] === 0) {
-      setFromToPrice([fromToPrice[0], price])
+    } else if (fromToMinPrice[0] !== 0 && fromToMinPrice[1] === 0) {
+      setFromToMinPrice([fromToMinPrice[0], price])
       setFormData({
         ...formData,
-        fromMinimumAmount: fromToPrice[0],
+        fromMinimumAmount: fromToMinPrice[0],
         toMinimumAmount: price,
       })
-    } else if (fromToPrice[0] === price) {
-      setFromToPrice([0, 0])
+    } else if (fromToMinPrice[0] === price) {
+      setFromToMinPrice([0, 0])
       setFormData({
         ...formData,
         fromMinimumAmount: 0,
         toMinimumAmount: 0,
       })
     } else if (
-      fromToPrice[0] === 0 &&
-      fromToPrice[1] !== 0 &&
-      price > fromToPrice[1]
+      fromToMinPrice[0] === 0 &&
+      fromToMinPrice[1] !== 0 &&
+      price > fromToMinPrice[1]
     ) {
-      setFromToPrice([fromToPrice[1], price])
+      setFromToMinPrice([fromToMinPrice[1], price])
       setFormData({
         ...formData,
-        fromMinimumAmount: fromToPrice[1],
+        fromMinimumAmount: fromToMinPrice[1],
         toMinimumAmount: price,
       })
     }
@@ -206,7 +208,7 @@ export default function LowPriceBox({
                 }`,
               }}
               onClick={() => {
-                handleFromToPrice(parseInt(Object.keys(PRICE)[index]))
+                handlefromToMinPrice(parseInt(Object.keys(PRICE)[index]))
               }}
             >
               <Text

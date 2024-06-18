@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
 import TopAddress from './TopAddress'
-import { jusoProps } from '@/models/Juso'
 
 interface AddressContainerProps {
   openCursor: boolean

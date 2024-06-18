@@ -13,17 +13,8 @@ import { useRecoilState } from 'recoil'
 import { jusoAtom } from '@/store/atom/map'
 
 interface BottomAddressProps {
-  center?: {
-    lat: number
-    lng: number
-  }
-  setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
-  zoom: number
-  setZoom: Dispatch<SetStateAction<number>>
   range: number
   setRange: Dispatch<SetStateAction<number>>
-  setOpenCursor?: Dispatch<SetStateAction<boolean>>
-  openCursor?: boolean
 }
 
 function BottomAddress({ range, setRange }: BottomAddressProps) {

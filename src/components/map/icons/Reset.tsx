@@ -1,40 +1,4 @@
-import { Form } from '@/models/Form'
-import { SetStateAction } from 'react'
-
-interface ResetProps {
-  formData: Form
-  setFormData: React.Dispatch<SetStateAction<Form>>
-}
-
-export default function Reset({ formData, setFormData }: ResetProps) {
-  const handleReset = () => {
-    if (formData.lastFilter === 2) {
-      setFormData({
-        ...formData,
-        ids: [],
-      })
-    } else if (formData.lastFilter === 3) {
-      setFormData({
-        ...formData,
-        fromAppraisalAmount: 0,
-        toAppraisalAmount: 0,
-      })
-    } else if (formData.lastFilter === 4) {
-      setFormData({
-        ...formData,
-        fromMinimumAmount: 0,
-        toMinimumAmount: 0,
-      })
-    } else if (formData.lastFilter === 1) {
-      setFormData({
-        ...formData,
-        ekm: false,
-        egm: false,
-        egg: false,
-        awardedMonths: 0,
-      })
-    }
-  }
+export default function Reset() {
   return (
     <div
       style={{
@@ -43,7 +7,6 @@ export default function Reset({ formData, setFormData }: ResetProps) {
         alignItems: 'center',
         cursor: 'pointer',
       }}
-      onClick={handleReset}
     >
       <svg
         width="17"

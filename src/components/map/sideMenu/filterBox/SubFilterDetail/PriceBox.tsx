@@ -3,65 +3,70 @@ import PriceRange from '@/components/shared/PriceRange'
 import Text from '@/components/shared/Text'
 import { PRICE } from '@/constants/SubFilter'
 import { Form } from '@/models/Form'
+import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import React, { useState } from 'react'
+import { useRecoilState } from 'recoil'
 
 interface PriceBoxProps {
-  formData: Form
-  setFormData: React.Dispatch<React.SetStateAction<Form>>
+  fromToAppraisalPrice: number[]
+  setFromToAppraisalPrice: React.Dispatch<React.SetStateAction<number[]>>
 }
 
-export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
-  const [fromToPrice, setFromToPrice] = useState([0, 0])
-  const handleFromToPrice = (price: number) => {
-    if (fromToPrice[0] === 0 && fromToPrice[1] === 0) {
-      setFromToPrice([0, price])
+export default function PriceBox({
+  fromToAppraisalPrice,
+  setFromToAppraisalPrice,
+}: PriceBoxProps) {
+  const [formData, setFormData] = useRecoilState(formDataAtom)
+  const handlefromToAppraisalPrice = (price: number) => {
+    if (fromToAppraisalPrice[0] === 0 && fromToAppraisalPrice[1] === 0) {
+      setFromToAppraisalPrice([0, price])
       setFormData({
         ...formData,
         toAppraisalAmount: price,
       })
     } else if (
-      fromToPrice[0] === 0 &&
-      fromToPrice[1] !== 0 &&
-      price < fromToPrice[1]
+      fromToAppraisalPrice[0] === 0 &&
+      fromToAppraisalPrice[1] !== 0 &&
+      price < fromToAppraisalPrice[1]
     ) {
-      setFromToPrice([price, fromToPrice[1]])
+      setFromToAppraisalPrice([price, fromToAppraisalPrice[1]])
       setFormData({
         ...formData,
-        toAppraisalAmount: fromToPrice[1],
+        toAppraisalAmount: fromToAppraisalPrice[1],
         fromAppraisalAmount: price,
       })
-    } else if (fromToPrice[0] !== 0 && fromToPrice[1] !== 0) {
-      setFromToPrice([0, price])
+    } else if (fromToAppraisalPrice[0] !== 0 && fromToAppraisalPrice[1] !== 0) {
+      setFromToAppraisalPrice([0, price])
       setFormData({
         ...formData,
         toAppraisalAmount: price,
         fromAppraisalAmount: 0,
       })
-    } else if (fromToPrice[0] !== 0 && fromToPrice[1] === 0) {
-      setFromToPrice([fromToPrice[0], price])
+    } else if (fromToAppraisalPrice[0] !== 0 && fromToAppraisalPrice[1] === 0) {
+      setFromToAppraisalPrice([fromToAppraisalPrice[0], price])
       setFormData({
         ...formData,
-        fromAppraisalAmount: fromToPrice[0],
+        fromAppraisalAmount: fromToAppraisalPrice[0],
         toAppraisalAmount: price,
       })
-    } else if (fromToPrice[0] === price) {
-      setFromToPrice([0, 0])
+    } else if (fromToAppraisalPrice[0] === price) {
+      setFromToAppraisalPrice([0, 0])
       setFormData({
         ...formData,
         fromAppraisalAmount: 0,
         toAppraisalAmount: 0,
       })
     } else if (
-      fromToPrice[0] === 0 &&
-      fromToPrice[1] !== 0 &&
-      price > fromToPrice[1]
+      fromToAppraisalPrice[0] === 0 &&
+      fromToAppraisalPrice[1] !== 0 &&
+      price > fromToAppraisalPrice[1]
     ) {
-      setFromToPrice([fromToPrice[1], price])
+      setFromToAppraisalPrice([fromToAppraisalPrice[1], price])
       setFormData({
         ...formData,
-        fromAppraisalAmount: fromToPrice[1],
+        fromAppraisalAmount: fromToAppraisalPrice[1],
         toAppraisalAmount: price,
       })
     }
@@ -202,7 +207,7 @@ export default function PriceBox({ formData, setFormData }: PriceBoxProps) {
                 }`,
               }}
               onClick={() => {
-                handleFromToPrice(parseInt(Object.keys(PRICE)[index]))
+                handlefromToAppraisalPrice(parseInt(Object.keys(PRICE)[index]))
               }}
             >
               <Text

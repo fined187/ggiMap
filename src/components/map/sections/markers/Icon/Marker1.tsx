@@ -6,7 +6,28 @@ const getColor = (item: MapItem, type: number): string => {
   if (item.winYn === 'Y') {
     return colors.winOrange
   } else {
+    switch (type) {
+      case 1:
+        return colors.kmBlue
+      case 2:
+        return colors.gmBlue
+      case 3:
+        return colors.ggPurple
+      case 4:
+        return colors.kwGreen
+      default:
+        return colors.black
+    }
+  }
+}
+
+const getCountColor = (item: MapItem, isSame: boolean, includeYn: boolean) => {
+  if (item.winYn === 'Y') {
+    return colors.winOrange
+  } else if (isSame && !includeYn) {
     return colors.black
+  } else if (isSame && includeYn) {
+    return colors.winOrange
   }
 }
 
@@ -34,6 +55,7 @@ export const PnuCountIcon = (
   count: number,
   type: number,
   isSame: boolean,
+  includeYn: boolean,
   top?: string,
 ) => {
   return `
@@ -44,9 +66,10 @@ export const PnuCountIcon = (
       item,
       type,
     )}; background: #FFF;">
-      <span style="color: ${getColor(
+      <span style="color: ${getCountColor(
         item,
-        type,
+        isSame,
+        includeYn,
       )}; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
         ${count > 99 ? '99+' : count}
       </span>
@@ -62,48 +85,17 @@ export const UsageIcon = (
   isSame?: boolean,
 ) => {
   return `
-  <div style="display: inline-flex; padding: 10px 6px; width: 45px; height: 32px; justify-content: center; align-items: center;border-radius: 17.5px 0px 0px 0px; border-left: ${
-    item.winYn === 'Y'
-      ? `1px solid ${colors.winOrange}`
-      : type === 1
-      ? `1px solid ${colors.kmBlue}`
-      : type === 3
-      ? `1px solid ${colors.ggPurple}`
-      : type === 2
-      ? `1px solid ${colors.gmBlue}`
-      : `1px solid ${colors.kwGreen}`
-  }; border-top: ${
-    item.winYn === 'Y'
-      ? `1px solid ${colors.winOrange}`
-      : type === 1
-      ? `1px solid ${colors.kmBlue}`
-      : type === 3
-      ? `1px solid ${colors.ggPurple}`
-      : type === 2
-      ? `1px solid ${colors.gmBlue}`
-      : `1px solid ${colors.kwGreen}`
-  }; border-bottom: ${
-    item.winYn === 'Y'
-      ? `1px solid ${colors.winOrange}`
-      : type === 1
-      ? `1px solid ${colors.kmBlue}`
-      : type === 3
-      ? `1px solid ${colors.ggPurple}`
-      : type === 2
-      ? `1px solid ${colors.gmBlue}`
-      : `1px solid ${colors.kwGreen}`
-  }; background: #FFF;">
-    <span style="color: ${
-      item.winYn === 'Y'
-        ? `${colors.winOrange}`
-        : type === 1
-        ? `${colors.kmBlue}`
-        : type === 3
-        ? `${colors.ggPurple}`
-        : type === 2
-        ? `${colors.gmBlue}`
-        : `${colors.kwGreen}`
-    }; text-align: center; font-family: SUIT; font-size: 11px; font-style: normal; font-weight: 800; line-height: 110%; letter-spacing: -0.22px;">
+  <div style="display: inline-flex; padding: 10px 6px; width: 45px; height: 32px; justify-content: center; align-items: center;border-radius: 17.5px 0px 0px 0px; border-left: ${getBorderColor(
+    item,
+    type,
+  )}; border-top: ${getBorderColor(
+    item,
+    type,
+  )}; border-bottom: ${getBorderColor(item, type)}; background: #FFF;">
+    <span style="color: ${getColor(
+      item,
+      type,
+    )}; text-align: center; font-family: SUIT; font-size: 11px; font-style: normal; font-weight: 800; line-height: 110%; letter-spacing: -0.22px;">
       ${item.winYn === 'Y' ? '낙찰' : handleItemUsage()}
     </span>
   </div>
@@ -163,17 +155,10 @@ export const ShareIcon = (item: MapItem, type: number, top?: string) => {
   <div style="position: absolute; z-index: 90; right: 0px; top: ${
     top ? `${top}px` : '-42px'
   };">
-    <div style="display: inline-flex; z-index: 90; height: 15px; width: 32px; padding: 0px 6px 1px 6px; justify-content: center; align-items: center; border-radius: 100px; border: ${
-      item.winYn === 'Y'
-        ? `1px solid ${colors.winOrange}`
-        : type === 1
-        ? `1px solid ${colors.kmBlue}`
-        : type === 3
-        ? `1px solid ${colors.ggPurple}`
-        : type === 2
-        ? `1px solid ${colors.gmBlue}`
-        : `1px solid ${colors.kwGreen}`
-    }; background: #FFF;">
+    <div style="display: inline-flex; z-index: 90; height: 15px; width: 32px; padding: 0px 6px 1px 6px; justify-content: center; align-items: center; border-radius: 100px; border: ${getBorderColor(
+      item,
+      type,
+    )}; background: #FFF;">
       <span style="color: #000001; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
         지분
       </span>
@@ -192,34 +177,17 @@ export const InterestIcon = (item: MapItem, type: number) => {
     ">
       <svg xmlns="http://www.w3.org/2000/svg" width="17" height="15" viewBox="0 0 17 15" fill="none">
         <rect x="0.5" y="0.5" width="16" height="14" rx="7" fill="white"/>
-        <rect x="0.5" y="0.5" width="16" height="14" rx="7" stroke=${
-          item.winYn === 'Y'
-            ? `${colors.winOrange}`
-            : type === 1
-            ? `${colors.kmBlue}`
-            : type === 3
-            ? `${colors.ggPurple}`
-            : type === 2
-            ? `${colors.gmBlue}`
-            : `${colors.kwGreen}`
-        } />
-        <path d="M8.50283 11.5108L4.6835 8.05124C2.60777 5.97552 5.65909 1.99013 8.50283 5.21442C11.3466 1.99013 14.3841 5.98936 12.3222 8.05124L8.50283 11.5108Z" fill=${
-          type === 1
-            ? `${colors.kmBlue}`
-            : type === 3
-            ? `${colors.ggPurple}`
-            : type === 2
-            ? `${colors.gmBlue}`
-            : `${colors.kwGreen}`
-        } stroke=${
-          type === 1
-            ? `${colors.kmBlue}`
-            : type === 3
-            ? `${colors.ggPurple}`
-            : type === 2
-            ? `${colors.gmBlue}`
-            : `${colors.kwGreen}`
-        } stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="0.5" y="0.5" width="16" height="14" rx="7" stroke=${getColor(
+          item,
+          type,
+        )} />
+        <path d="M8.50283 11.5108L4.6835 8.05124C2.60777 5.97552 5.65909 1.99013 8.50283 5.21442C11.3466 1.99013 14.3841 5.98936 12.3222 8.05124L8.50283 11.5108Z" fill=${getColor(
+          item,
+          type,
+        )} stroke=${getColor(
+          item,
+          type,
+        )} stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
   </div>

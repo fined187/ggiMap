@@ -39,14 +39,13 @@ export const useGetDetail = (
         const SortedData = data.sort((a, b) => {
           if (a?.winAmt !== undefined && b?.winAmt !== undefined) {
             if (a.winAmt > 0 && b.winAmt === 0) {
-              return -1
+              return 1
             } else if (a.winAmt === 0 && b.winAmt > 0) {
-              // 낙찰 물건이 뒤로가도록 정렬
-              return -1
+              return 1
             } else if (a.winAmt > 0 && b.type === 4) {
-              return 1
+              return -1
             } else if (a.type !== 4 && b.type === 4) {
-              return 1
+              return -1
             }
           }
           return 0

@@ -3,18 +3,13 @@ import Spacing from '@/components/shared/Spacing'
 import Text from '@/components/shared/Text'
 import { MULGUN, MULGUN_SUB } from '@/constants/SubFilter'
 import { Form } from '@/models/Form'
+import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
 import { Dispatch, SetStateAction } from 'react'
+import { useRecoilState } from 'recoil'
 
-interface FinishedBoxProps {
-  formData: Form
-  setFormData: Dispatch<SetStateAction<Form>>
-}
-
-export default function FinishedBox({
-  formData,
-  setFormData,
-}: FinishedBoxProps) {
+export default function FinishedBox() {
+  const [formData, setFormData] = useRecoilState(formDataAtom)
   const handleGubunBoxClick = (index: number) => {
     if (index === 0) {
       setFormData({

@@ -4,11 +4,9 @@ import Flex from './Flex'
 export default function BoxGuard({
   children,
   isOpen,
-  setIsOpen,
 }: {
   children: React.ReactNode
   isOpen: boolean
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
   return (
     <Flex

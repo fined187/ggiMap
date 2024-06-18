@@ -1,5 +1,4 @@
 import Flex from '@/components/shared/Flex'
-import Spacing from '@/components/shared/Spacing'
 import Text from '@/components/shared/Text'
 import { Form } from '@/models/Form'
 import { css } from '@emotion/react'
@@ -9,32 +8,61 @@ import PriceBox from './PriceBox'
 import UsageBox from './UsageBox'
 import SelectAll from '@/components/map/icons/SelectAll'
 import Reset from '@/components/map/icons/Reset'
+import { useRecoilState } from 'recoil'
+import { formDataAtom } from '@/store/atom/map'
+import { useState } from 'react'
 
 interface SearchBoxProps {
-  formData: Form
-  setFormData: React.Dispatch<React.SetStateAction<Form>>
   isBoxOpen: {
     finished: boolean
     usage: boolean
     lowPrice: boolean
     price: boolean
   }
-  setIsBoxOpen: React.Dispatch<
-    React.SetStateAction<{
-      finished: boolean
-      usage: boolean
-      lowPrice: boolean
-      price: boolean
-    }>
-  >
 }
 
-export default function DetailBox({
-  formData,
-  setFormData,
-  isBoxOpen,
-  setIsBoxOpen,
-}: SearchBoxProps) {
+export default function DetailBox({ isBoxOpen }: SearchBoxProps) {
+  const [formData, setFormData] = useRecoilState(formDataAtom)
+  const [fromToAppraisalPrice, setFromToAppraisalPrice] = useState([0, 0])
+  const [fromToMinPrice, setFromToMinPrice] = useState([0, 0])
+  const handleReset = () => {
+    if (formData.lastFilter === 2) {
+      setFormData((prev) => {
+        return {
+          ...prev,
+          ids: [],
+        }
+      })
+    } else if (formData.lastFilter === 3) {
+      setFormData((prev) => {
+        return {
+          ...prev,
+          fromAppraisalAmount: 0,
+          toAppraisalAmount: 0,
+        }
+      })
+      setFromToAppraisalPrice([0, 0])
+    } else if (formData.lastFilter === 4) {
+      setFormData((prev) => {
+        return {
+          ...prev,
+          fromMinimumAmount: 0,
+          toMinimumAmount: 0,
+        }
+      })
+      setFromToMinPrice([0, 0])
+    } else if (formData.lastFilter === 1) {
+      setFormData((prev) => {
+        return {
+          ...prev,
+          ekm: false,
+          egm: false,
+          egg: false,
+          awardedMonths: 0,
+        }
+      })
+    }
+  }
   return (
     <Flex
       css={ContainerStyle}
@@ -56,38 +84,40 @@ export default function DetailBox({
       }}
     >
       {formData.lastFilter === 1 || formData.lastFilter === 0 ? null : (
-        <SelectAll
-          formData={formData}
-          setFormData={setFormData}
-          type={formData.lastFilter}
+        <SelectAll type={formData.lastFilter} />
+      )}
+      {isBoxOpen.usage && <UsageBox />}
+      {isBoxOpen.price && (
+        <PriceBox
+          fromToAppraisalPrice={fromToAppraisalPrice}
+          setFromToAppraisalPrice={setFromToAppraisalPrice}
         />
       )}
-      {isBoxOpen.usage && (
-        <UsageBox formData={formData} setFormData={setFormData} />
-      )}
-      {isBoxOpen.price && (
-        <PriceBox formData={formData} setFormData={setFormData} />
-      )}
       {isBoxOpen.lowPrice && (
-        <LowPriceBox formData={formData} setFormData={setFormData} />
+        <LowPriceBox
+          fromToMinPrice={fromToMinPrice}
+          setFromToMinPrice={setFromToMinPrice}
+        />
       )}
-      {isBoxOpen.finished && (
-        <FinishedBox formData={formData} setFormData={setFormData} />
-      )}
+      {isBoxOpen.finished && <FinishedBox />}
       {!isBoxOpen.usage &&
       !isBoxOpen.price &&
       !isBoxOpen.lowPrice &&
       !isBoxOpen.finished ? null : (
-        <Flex direction="row" justify="right" css={ResetStyle}>
+        <Flex
+          direction="row"
+          justify="right"
+          css={ResetStyle}
+          style={{
+            cursor: 'pointer',
+          }}
+          onClick={handleReset}
+        >
           <Text typography="t6" fontWeight="600" textAlign="center">
             초기화
           </Text>
-          <Flex
-            style={{
-              cursor: 'pointer',
-            }}
-          >
-            <Reset formData={formData} setFormData={setFormData} />
+          <Flex>
+            <Reset />
           </Flex>
         </Flex>
       )}

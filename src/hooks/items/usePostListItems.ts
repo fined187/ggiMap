@@ -1,7 +1,7 @@
 import { Form } from '@/models/Form'
 import { MapListResponse } from '@/models/MapItem'
 import postListItems from '@/remote/map/items/postListItems'
-import { mapListAtom } from '@/store/atom/map'
+import { loaderAtom, mapListAtom } from '@/store/atom/map'
 import { useMutation } from 'react-query'
 import { useRecoilState } from 'recoil'
 
@@ -10,6 +10,7 @@ export const usePostListItems = (
   pageNum: number,
   pageSize: number,
 ) => {
+  const [loader, setLoader] = useRecoilState(loaderAtom)
   const param = {
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -61,6 +62,7 @@ export const usePostListItems = (
             },
           })
           setMapListItems(data as MapListResponse)
+          setLoader(false)
         }
       },
       onError: () => {

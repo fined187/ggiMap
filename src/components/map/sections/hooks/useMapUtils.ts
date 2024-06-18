@@ -22,6 +22,7 @@ type PnuCount = {
   pnu: string
   type: number
   count: number
+  includeYn: boolean
 }
 
 type pnuCounts = {
@@ -58,9 +59,6 @@ const useMapUtils = (
     updatedCounts: [],
   })
   const [duplicatedItems, setDuplicatedItems] = useState<MapItem[]>([])
-  const [includeWinYn, setIncludeWinYn] = useState<boolean>(false)
-  const [center, setCenter] = useState({ lat: auth.lat, lng: auth.lng })
-  const [zoom, setZoom] = useState<number>(16)
   const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
   const [openOverlay, setOpenOverlay] = useState(false)
   const [clickedItem, setClickedItem] = useState<MapItem | null>(null)
@@ -137,23 +135,28 @@ const useMapUtils = (
 
   const createPnuCounts = (items: MapItem[]) => {
     const countsMap: CountMap = items.reduce((map, item) => {
-      map[item.pnu as string] = (map[item.pnu as string] || 0) + 1
-      return map
+      // items의 pnu를 key로 하는 객체 생성
+      map[item.pnu as string] = (map[item.pnu as string] || 0) + 1 // pnu가 같은 아이템이 있을 때마다 count 증가
+      return map // { pnu: count } 형태의 객체 반환
     }, {} as CountMap)
 
     const maxCounts: CountMap = Object.keys(countsMap).reduce((map, pnu) => {
+      //  pnu가 같은 아이템 중 가장 큰 count를 가진 아이템만 남기기
       if (!map[pnu] || countsMap[pnu] > map[pnu]) {
-        map[pnu] = countsMap[pnu]
+        // map에 pnu가 없거나 countsMap의 pnu가 map의 pnu보다 크면
+        map[pnu] = countsMap[pnu] // map의 pnu에 countsMap의 pnu를 할당
       }
       return map
     }, {} as CountMap)
 
     const updatedCounts: PnuCount[] = Object.keys(maxCounts).map((pnu) => {
-      const foundItem = items.find((item) => item.pnu === pnu)
+      const foundItem = items.find((item) => item.pnu === pnu) //  pnu가 같은 아이템 중 가장 큰 count를 가진 아이템 찾기
       return {
+        //  pnu, type, count, includeYn을 updatedCounts에 추가
         pnu,
         type: foundItem?.type as number,
         count: maxCounts[pnu],
+        includeYn: items.some((item) => item.pnu === pnu && item.winYn === 'Y'), //  pnu가 같은 아이템 중 winYn이 'Y'인 아이템이 있는지 확인
       }
     })
     return updatedCounts
@@ -309,14 +312,6 @@ const useMapUtils = (
     }
   }, [mapItems, mapOrigin])
 
-  const handleCenterChanged = useCallback(() => {
-    if (map) {
-      const mapCenter = map.getCenter()
-      const centerCoords = { lat: mapCenter.lat(), lng: mapCenter.lng() }
-      searchCoordinateToAddress(centerCoords.lat, centerCoords.lng, setGetGungu)
-    }
-  }, [map, searchCoordinateToAddress, setJuso, setGetGungu])
-
   useEffect(() => {
     if (mapItems) {
       handleDuplicatedItems()
@@ -324,26 +319,11 @@ const useMapUtils = (
   }, [formData.ekm, formData.kw, mapItems])
 
   useEffect(() => {
-    if (map) {
-      map.addListener('idle', handleCenterChanged)
-      return () => {
-        map.removeListener('idle', handleCenterChanged)
-      }
-    }
-  }, [map, handleCenterChanged])
-
-  useEffect(() => {
     searchCoordinateToAddress(auth.lat, auth.lng, setGetGungu)
   }, [auth.lat, auth.lng, auth.address, searchCoordinateToAddress])
   return {
     pnuCounts,
     originPnuCounts,
-    duplicatedItems,
-    includeWinYn,
-    center,
-    setCenter,
-    zoom,
-    setZoom,
     mapCount,
     setMapCount,
     openOverlay,
@@ -355,6 +335,7 @@ const useMapUtils = (
     clickedMapType,
     setClickedMapType,
     handleFilterMarkers,
+    searchCoordinateToAddress,
   }
 }
 

@@ -32,15 +32,11 @@ interface MapTypeProps {
       area: boolean
     }>
   >
-  center: { lat: number; lng: number }
-  setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
 }
 
 export default function MapFunction({
   clickedMapType,
   setClickedMapType,
-  center,
-  setCenter,
 }: MapTypeProps) {
   return (
     <Flex css={ContainerStyle}>
@@ -56,7 +52,7 @@ export default function MapFunction({
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}
       />
-      <CurrentBtn center={center} setCenter={setCenter} />
+      <CurrentBtn />
       <ToolsBtn
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}

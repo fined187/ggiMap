@@ -16,6 +16,7 @@ import { MapCountsResponse, MapItem } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
 import {
   formDataAtom,
+  jusoAtom,
   mapItemsAtom,
   mapItemsOriginAtom,
 } from '@/store/atom/map'
@@ -32,9 +33,6 @@ declare global {
 }
 interface Props {
   page: number
-  setPage: Dispatch<SetStateAction<number>>
-  setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
-  setZoom: Dispatch<SetStateAction<number>>
   clickedMapType: {
     basic: boolean
     terrain: boolean
@@ -46,9 +44,9 @@ interface Props {
     distance: boolean
     area: boolean
   }
+  zoom: number
   mapId?: string
   initialCenter?: Coordinates
-  zoom?: number
   onLoad?: (map: NaverMap) => void
   setMapCount?: Dispatch<SetStateAction<MapCountsResponse[]>>
   markerClickedRef: MutableRefObject<boolean>
@@ -68,31 +66,39 @@ interface Props {
       area: boolean
     }>
   >
-  center: { lat: number; lng: number }
   setHalfDimensions: Dispatch<SetStateAction<{ width: number; height: number }>>
+  searchCoordinateToAddress: (
+    lat: number,
+    lng: number,
+    setGetGungu: Dispatch<SetStateAction<string>>,
+  ) => void
 }
+
+const DEBOUNCE_DELAY = 500
 
 export default function GGIMap({
   clickedMapType,
   mapId = 'map',
   initialCenter = INITIAL_CENTER,
-  zoom = 17,
   setOpenOverlay,
   onLoad,
   setMapCount,
   markerClickedRef,
   clickedItem,
   setClickedItem,
-  setCenter,
   setClickedMapType,
-  center,
   setHalfDimensions,
+  zoom,
   page,
-  setPage,
+  searchCoordinateToAddress,
 }: Props) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
-  const { mutate: getMapItems } = usePostMapItems(formData)
+  const dragStateRef = useRef(false)
+  const { mutate: getMapItems } = usePostMapItems(
+    formData,
+    dragStateRef.current,
+  )
   const { mutate: getMapLists } = usePostListItems(formData, page, 10)
   const { mutate: getMapCounts } = useMapCounts(
     formData,
@@ -111,8 +117,9 @@ export default function GGIMap({
     lat: 0,
     lng: 0,
   })
-
   const zoomLevel = mapRef.current?.getZoom() ?? null
+  const [getGungu, setGetGungu] = useState('')
+  const [juso, setJuso] = useRecoilState(jusoAtom)
   const searchAddrToCoord = (
     address: string,
     map: NaverMap | null,
@@ -157,6 +164,14 @@ export default function GGIMap({
     })
   }, [setHalfDimensions])
 
+  const handleCenterChanged = useCallback(() => {
+    if (mapRef.current) {
+      const mapCenter: naver.maps.Point = mapRef.current.getCenter()
+      const centerCoords = { lat: mapCenter.y, lng: mapCenter.x }
+      searchCoordinateToAddress(centerCoords.lat, centerCoords.lng, setGetGungu)
+    }
+  }, [mapRef.current, searchCoordinateToAddress, setJuso, setGetGungu])
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       updateHalfDimensions()
@@ -165,51 +180,41 @@ export default function GGIMap({
     }
   }, [updateHalfDimensions])
 
-  const debouncedGetMapItems = debounce(getMapItems, 500)
-  const debouncedGetMapLists = debounce(getMapLists, 500)
-  const handleGetBounds = useCallback(async () => {
-    if (mapRef.current) {
-      const bounds = mapRef.current.getBounds() as any
-      const sw = bounds.getSW()
-      const ne = bounds.getNE()
-      setFormData((prev) => ({
-        ...prev,
-        x1: sw.lng(),
-        y1: sw.lat(),
-        x2: ne.lng(),
-        y2: ne.lat(),
-      }))
-      if (mapRef.current.getZoom() >= 15) {
-        debouncedGetMapItems()
-      } else {
-        setMapItems([])
-        setMapOrigin([])
-      }
+  const debouncedGetMapItems = debounce(getMapItems, DEBOUNCE_DELAY)
+  const debouncedGetMapLists = debounce(getMapLists, DEBOUNCE_DELAY)
+  const debounceGetCenterChanged = debounce(handleCenterChanged, DEBOUNCE_DELAY)
+  const handleGetBounds = useCallback(() => {
+    if (!mapRef.current) return
+    const bounds = mapRef.current.getBounds() as any
+    const sw = bounds.getSW()
+    const ne = bounds.getNE()
+    setFormData((prev) => ({
+      ...prev,
+      x1: sw.lng(),
+      y1: sw.lat(),
+      x2: ne.lng(),
+      y2: ne.lat(),
+    }))
+    if (mapRef.current.getZoom() >= 15) {
+      debouncedGetMapItems()
+    } else {
+      setMapItems([])
+      setMapOrigin([])
     }
   }, [setFormData, debouncedGetMapItems, setMapItems, setMapOrigin])
 
   const handlePromiseAll = useCallback(() => {
-    handleGetBounds()
-    debouncedGetMapLists()
+    if (!mapRef.current) return
+    dragStateRef.current = true
+    if (dragStateRef.current) {
+      debounceGetCenterChanged()
+      handleGetBounds()
+      if (mapRef.current.getZoom() >= 15) {
+        debouncedGetMapLists()
+      }
+      dragStateRef.current = false
+    }
   }, [handleGetBounds, debouncedGetMapLists])
-
-  useEffect(() => {
-    handlePromiseAll()
-  }, [
-    formData.egg,
-    formData.ekm,
-    formData.egm,
-    formData.gm,
-    formData.gg,
-    formData.km,
-    formData.kw,
-    formData.awardedMonths,
-    formData.interests,
-    formData.fromMinimumAmount,
-    formData.fromAppraisalAmount,
-    formData.toMinimumAmount,
-    formData.toAppraisalAmount,
-  ])
 
   const setUpMiniMap = useCallback(
     (map: NaverMap) => {
@@ -308,25 +313,42 @@ export default function GGIMap({
       onLoad(map)
     }
     setUpMiniMap(map)
-  }, [initialCenter, zoom, onLoad, setUpMiniMap, auth.role])
+  }, [initialCenter, zoom, onLoad, setUpMiniMap])
 
   const closePanorama = () => {
     setIsPanoVisible(false)
   }
 
   const handleGetPolyPath = useCallback(async () => {
-    if (auth.lat && auth.lng) {
-      try {
-        const response = await getPolypath(
-          auth?.lng as number,
-          auth?.lat as number,
-        )
-        setPath(response)
-      } catch (error) {
-        console.error(error)
-      }
+    if (!auth.lat || !auth.lng) return
+    try {
+      const response = await getPolypath(
+        auth?.lng as number,
+        auth?.lat as number,
+      )
+      setPath(response)
+    } catch (error) {
+      console.error(error)
     }
   }, [auth.lat, auth.lng])
+
+  useEffect(() => {
+    handlePromiseAll()
+  }, [
+    formData.egg,
+    formData.ekm,
+    formData.egm,
+    formData.gm,
+    formData.gg,
+    formData.km,
+    formData.kw,
+    formData.awardedMonths,
+    formData.interests,
+    formData.fromMinimumAmount,
+    formData.fromAppraisalAmount,
+    formData.toMinimumAmount,
+    formData.toAppraisalAmount,
+  ])
 
   useEffect(() => {
     return () => {
@@ -353,27 +375,39 @@ export default function GGIMap({
   }, [getMapCounts, setMapCount, zoomLevel, formData, zoomLevel])
 
   useEffect(() => {
-    handleGetPolyPath()
-  }, [auth.lat, auth.lng, handleGetPolyPath])
-
-  useEffect(() => {
-    if (path.length > 0 && auth.idCode) {
-      const polyline = new window.naver.maps.Polyline({
-        map: mapRef.current,
-        path: path.map(
-          (item) => new window.naver.maps.LatLng(item[0], item[1]),
-        ),
-        fillColor: '#ff0000',
-        fillOpacity: 0.3,
-        strokeColor: '#ff0000',
-        strokeOpacity: 0.6,
-        strokeWeight: 3,
-        zIndex: 100,
-      })
-      polyline.setMap(mapRef.current)
+    const updatePolyPath = async () => {
+      if (auth.lat && auth.lng) {
+        try {
+          const response = await getPolypath(
+            auth.lng as number,
+            auth.lat as number,
+          )
+          if (response.length > 0 && auth.idCode) {
+            const polyline = new window.naver.maps.Polyline({
+              map: mapRef.current,
+              path: response.map(
+                (item: number[][]) =>
+                  new window.naver.maps.LatLng(item[0], item[1]),
+              ),
+              fillColor: '#ff0000',
+              fillOpacity: 0.3,
+              strokeColor: '#ff0000',
+              strokeOpacity: 0.6,
+              strokeWeight: 3,
+              zIndex: 100,
+            })
+            return () => {
+              polyline.setMap(null)
+            }
+          }
+        } catch (error) {
+          console.error(error)
+        }
+      }
     }
-  }, [path, auth.idCode])
 
+    updatePolyPath()
+  }, [auth.lat, auth.lng, auth.idCode])
   return (
     <>
       <Script
@@ -414,24 +448,22 @@ export default function GGIMap({
         }}
       />
       {isPanoVisible && (
-        <>
-          <button
-            onClick={closePanorama}
-            style={{
-              position: 'absolute',
-              zIndex: 100,
-              top: '50px',
-              right: '50px',
-              display: 'block',
-              backgroundColor: 'black',
-              color: 'white',
-              width: '50px',
-              height: '30px',
-            }}
-          >
-            X
-          </button>
-        </>
+        <button
+          onClick={closePanorama}
+          style={{
+            position: 'absolute',
+            zIndex: 100,
+            top: '50px',
+            right: '50px',
+            display: 'block',
+            backgroundColor: 'black',
+            color: 'white',
+            width: '50px',
+            height: '30px',
+          }}
+        >
+          X
+        </button>
       )}
       <div
         id="minimap"
@@ -452,8 +484,6 @@ export default function GGIMap({
       <MapFunction
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}
-        center={center}
-        setCenter={setCenter}
       />
     </>
   )

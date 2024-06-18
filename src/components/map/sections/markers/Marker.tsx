@@ -26,6 +26,7 @@ type PnuProps = {
   pnu: string
   count: number
   type: number
+  includeYn: boolean
 }
 
 interface MarkerProps {
@@ -64,16 +65,25 @@ const Marker = ({
   const [count, setCount] = useState<number>(0)
   const [originCount, setOriginCount] = useState<number>(0)
   const [isSame, setIsSame] = useState<boolean>(false)
+  const [includeYn, setIncludeYn] = useState<boolean>(false)
   const markerRef = useRef<naver.maps.Marker | null>(null)
+
   const handleGetItemCounts = useCallback(() => {
     const pnuCount =
       pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ?? 0
     const pnuOriginCount =
       originPnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)
         ?.count ?? 0
+    const originIncludeYn = originPnuCounts.updatedCounts.find(
+      (pnu) => pnu.pnu === item.pnu && pnu.includeYn === true,
+    )
+    const includeYn = pnuCounts.updatedCounts.find(
+      (pnu) => pnu.pnu === item.pnu && pnu.includeYn === true,
+    )
     setCount(pnuCount)
     setOriginCount(pnuOriginCount)
     setIsSame(pnuCount === pnuOriginCount)
+    setIncludeYn(originIncludeYn ? true : includeYn ? true : false)
   }, [item.pnu, pnuCounts, originPnuCounts])
 
   const handleItemUsage = useCallback(() => {
@@ -140,8 +150,14 @@ const Marker = ({
                   : ''
               }
               ${
-                item.interest !== 'Y' && originCount > 1
-                  ? PnuCountIcon(item, originCount, item.type, isSame)
+                originCount > 1
+                  ? PnuCountIcon(
+                      item,
+                      originCount,
+                      item.type,
+                      isSame,
+                      includeYn,
+                    )
                   : ''
               }
               ${UsageIcon(item, handleItemUsage, item.type, isSame)}
@@ -165,7 +181,7 @@ const Marker = ({
           icon: {
             content: `
             <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px;">
-              ${UsageTopIcon(item, originCount, item.type, isSame)}
+              ${UsageTopIcon(item, originCount, item.type, isSame, includeYn)}
               ${AmountBottomIcon(item, item.type)}
             </div>
           `,
@@ -194,8 +210,14 @@ const Marker = ({
                       : ''
                   }
                   ${
-                    item.interest !== 'Y' && originCount > 1
-                      ? PnuCountIcon(item, originCount, item.type, true)
+                    originCount > 1
+                      ? PnuCountIcon(
+                          item,
+                          originCount,
+                          item.type,
+                          isSame,
+                          includeYn,
+                        )
                       : ''
                   }
                   ${UsageIcon(item, handleItemUsage, item.type)}
@@ -285,10 +307,14 @@ const Marker = ({
                           : ''
                       }
                       ${
-                        item.interest !== 'Y' &&
-                        item.share !== 'Y' &&
                         originCount > 1
-                          ? PnuCountIcon(item, originCount, item.type, isSame)
+                          ? PnuCountIcon(
+                              item,
+                              originCount,
+                              item.type,
+                              isSame,
+                              includeYn,
+                            )
                           : ''
                       }
                       ${UsageIcon(item, handleItemUsage, item.type, isSame)}
@@ -305,7 +331,13 @@ const Marker = ({
             icon: {
               content: `
                     <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px; z-index: 100;">
-                    ${UsageTopIcon(item, originCount, item.type, isSame)}
+                    ${UsageTopIcon(
+                      item,
+                      originCount,
+                      item.type,
+                      isSame,
+                      includeYn,
+                    )}
                     ${AmountBottomIcon(item, item.type)}
                   </div>
                   `,

@@ -1,3 +1,4 @@
+import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import { css } from '@emotion/react'
 
@@ -19,7 +20,7 @@ export default function FilterProps({
   isDisabled,
 }: FilterType) {
   return (
-    <div
+    <Flex
       css={FilterStyle}
       style={{
         backgroundColor: dataType ? bgColorType : 'white',
@@ -43,7 +44,7 @@ export default function FilterProps({
       >
         {textType}
       </Text>
-    </div>
+    </Flex>
   )
 }
 

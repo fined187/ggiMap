@@ -13,7 +13,7 @@ import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Loader from './icon/loader/Loader'
 import { useRecoilState } from 'recoil'
-import { formDataAtom, mapListAtom } from '@/store/atom/map'
+import { formDataAtom, loaderAtom, mapListAtom } from '@/store/atom/map'
 import { usePostListItems } from '@/hooks/items/usePostListItems'
 
 interface ResultProps {
@@ -31,6 +31,7 @@ function Result({ isOpen, setIsOpen, page, setPage }: ResultProps) {
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
   const [showingList, setShowingList] = useState(false)
   const scrollbarsRef = useRef<HTMLDivElement | null>(null)
+  const [loader, setLoader] = useRecoilState(loaderAtom)
   const { mutate: getMapLists } = usePostListItems(
     formData,
     page,
@@ -58,7 +59,7 @@ function Result({ isOpen, setIsOpen, page, setPage }: ResultProps) {
     const scrollElement = scrollbarsRef.current
     if (!scrollElement) return
     if (
-      scrollElement.scrollTop + scrollElement.clientHeight >=
+      scrollElement.scrollTop + scrollElement.clientHeight ===
       scrollElement.scrollHeight
     ) {
       fetchNextPage()
@@ -67,12 +68,13 @@ function Result({ isOpen, setIsOpen, page, setPage }: ResultProps) {
 
   useEffect(() => {
     const scrollElement = scrollbarsRef.current
-    if (!scrollElement) return
-    scrollElement.addEventListener('scroll', handleScroll)
-    return () => {
-      scrollElement.removeEventListener('scroll', handleScroll)
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', handleScroll)
+      return () => {
+        scrollElement.removeEventListener('scroll', handleScroll)
+      }
     }
-  }, [scrollbarsRef.current, handleScroll])
+  }, [handleScroll])
 
   useEffect(() => {
     if (!map) return
@@ -91,6 +93,7 @@ function Result({ isOpen, setIsOpen, page, setPage }: ResultProps) {
   }, [scrollbarsRef.current])
 
   useEffect(() => {
+    setLoader(true)
     scrollToTop()
     setPage(1)
   }, [formData.x1, formData.y1, formData.x2, formData.y2])
@@ -114,7 +117,7 @@ function Result({ isOpen, setIsOpen, page, setPage }: ResultProps) {
               pageInfo={mapListItems?.paging?.totalElements ?? 0}
             />
             <Container isOpen={isOpen} id="scrollbarDiv" ref={scrollbarsRef}>
-              {isLoading ? (
+              {loader ? (
                 <Loader />
               ) : (
                 <InfiniteScroll

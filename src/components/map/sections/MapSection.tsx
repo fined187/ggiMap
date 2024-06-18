@@ -48,12 +48,6 @@ export default function MapSection({
   const {
     pnuCounts,
     originPnuCounts,
-    duplicatedItems,
-    includeWinYn,
-    center,
-    setCenter,
-    zoom,
-    setZoom,
     mapCount,
     setMapCount,
     openOverlay,
@@ -65,6 +59,7 @@ export default function MapSection({
     clickedMapType,
     setClickedMapType,
     handleFilterMarkers,
+    searchCoordinateToAddress,
   } = useMapUtils(
     token,
     type ?? '',
@@ -83,7 +78,6 @@ export default function MapSection({
   const onLoadMap = (map: NaverMap) => {
     initializeMap(map)
   }
-
   return (
     <>
       <Map
@@ -94,22 +88,19 @@ export default function MapSection({
             : undefined
         }
         zoom={INITIAL_ZOOM}
-        setCenter={setCenter}
         clickedMapType={clickedMapType}
-        setZoom={setZoom}
         setMapCount={setMapCount}
         markerClickedRef={markerClickedRef}
         setOpenOverlay={setOpenOverlay}
         clickedItem={clickedItem}
         setClickedItem={setClickedItem}
         setClickedMapType={setClickedMapType}
-        center={center}
         setHalfDimensions={setHalfDimensions}
+        searchCoordinateToAddress={searchCoordinateToAddress}
         page={page}
-        setPage={setPage}
       />
-      <BoxGuard isOpen={isOpen} setIsOpen={setIsOpen}>
-        <SearchBox center={center} setCenter={setCenter} />
+      <BoxGuard isOpen={isOpen}>
+        <SearchBox />
         <ListBox
           isOpen={isOpen}
           setIsOpen={setIsOpen}
@@ -127,16 +118,7 @@ export default function MapSection({
           />
         </TopBar>
         {openCursor ? (
-          <BottomAddress
-            center={center}
-            setCenter={setCenter}
-            zoom={zoom}
-            setZoom={setZoom}
-            range={range}
-            setRange={setRange}
-            openCursor={openCursor}
-            setOpenCursor={setOpenCursor}
-          />
+          <BottomAddress range={range} setRange={setRange} />
         ) : null}
       </Flex>
       <Markers

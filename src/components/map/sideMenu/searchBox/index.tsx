@@ -17,17 +17,13 @@ import { MAP_KEY } from '../../sections/hooks/useMap'
 import { useRecoilState } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
 
-interface SearchBoxProps {
-  center: { lat: number; lng: number }
-  setCenter: React.Dispatch<React.SetStateAction<{ lat: number; lng: number }>>
-}
 declare global {
   interface Window {
     naver: any
   }
 }
 
-export default function SearchBox({ center, setCenter }: SearchBoxProps) {
+export default function SearchBox() {
   const { data: map } = useSWR(MAP_KEY)
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [keyword, setKeyword] = useState('')
@@ -47,9 +43,12 @@ export default function SearchBox({ center, setCenter }: SearchBoxProps) {
         },
         (status: any, response: any) => {
           if (status === window.naver.maps?.Service?.Status?.ERROR) {
-            alert('지하철 혹은 주소를 입력해주세요')
+            alert('주소를 다시 확인해주세요.')
             return
           } else if (response.v2.meta.totalCount === 0) {
+            alert('검색 결과가 없습니다. 주소를 다시 입력해주세요.')
+            return
+          } else if (!response.v2.addresses[0].roadAddress.includes(keyword)) {
             alert('검색 결과가 없습니다. 주소를 다시 입력해주세요.')
             return
           }
@@ -145,12 +144,7 @@ export default function SearchBox({ center, setCenter }: SearchBoxProps) {
       />
       {formData.isSubFilterBoxOpen ? (
         <Flex css={animation}>
-          <DetailBox
-            formData={formData}
-            setFormData={setFormData}
-            isBoxOpen={isBoxOpen}
-            setIsBoxOpen={setIsBoxOpen}
-          />
+          <DetailBox isBoxOpen={isBoxOpen} />
         </Flex>
       ) : null}
     </Flex>

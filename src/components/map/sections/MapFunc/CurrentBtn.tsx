@@ -3,12 +3,7 @@ import { Dispatch, SetStateAction } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 
-interface CurrentBtnProps {
-  center: { lat: number; lng: number }
-  setCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>
-}
-
-export default function CurrentBtn({ center, setCenter }: CurrentBtnProps) {
+export default function CurrentBtn() {
   const { data: map } = useSWR(MAP_KEY)
   const handleMoveCurrentLocation = () => {
     navigator?.geolocation?.getCurrentPosition((position) => {

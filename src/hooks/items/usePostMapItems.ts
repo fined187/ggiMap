@@ -4,7 +4,7 @@ import { mapItemsAtom, mapItemsOriginAtom } from '@/store/atom/map'
 import { useMutation } from 'react-query'
 import { useRecoilState } from 'recoil'
 
-export default function usePostMapItems(formData: Form) {
+export default function usePostMapItems(formData: Form, dragState: boolean) {
   const param = {
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -30,9 +30,13 @@ export default function usePostMapItems(formData: Form) {
   const [mapItemOrigin, setMapItemOrigin] = useRecoilState(mapItemsOriginAtom)
   const { mutate } = useMutation(async () => await postMapItems(param), {
     onSuccess: (data) => {
-      setMapItems([])
-      setMapItems(data.mapItems)
-      setMapItemOrigin(data.mapItems)
+      dragState = true
+      if (dragState) {
+        setMapItems([])
+        setMapItems(data.mapItems)
+        setMapItemOrigin(data.mapItems)
+        dragState = false
+      }
     },
     onError: () => {
       console.log('error')
