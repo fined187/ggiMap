@@ -110,6 +110,13 @@ const MarkerRenderer = ({
     if (!map || typeof window.naver === 'undefined' || !handleFilterMarkers())
       return
 
+    if (markers) {
+      markers.forEach((marker) => {
+        naver.maps.Event?.clearInstanceListeners(marker)
+        marker.setMap(null)
+      })
+    }
+    markers = []
     const zoomLevel = map?.getZoom()
     const marker = new window.naver.maps.Marker({
       map: map,
@@ -128,6 +135,7 @@ const MarkerRenderer = ({
       },
     })
     markers.push(marker)
+
     if (marker) {
       markerRef.current = marker
       naver.maps.Event?.addListener(marker, 'mouseover', () => {

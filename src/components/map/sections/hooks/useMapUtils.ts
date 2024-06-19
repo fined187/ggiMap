@@ -274,6 +274,7 @@ const useMapUtils = (
   }, [mapItems, setMapItems, setDuplicatedItems, formData])
 
   const handleFilterMarkers = useCallback(() => {
+    //  마커 중복 제거
     if (mapItems) {
       const seen = new Set()
       const filteredMarkers = mapItems.filter((item) => {

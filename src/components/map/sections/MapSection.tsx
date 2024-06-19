@@ -15,6 +15,7 @@ import Overlay from './Overlay'
 import AddressContainer from '../top/AddressContainer'
 import useMapUtils from './hooks/useMapUtils'
 import { authInfo } from '@/store/atom/auth'
+import MarkerCluster from './markers/MarkerCluster'
 
 interface MapProps {
   setGetGungu: Dispatch<SetStateAction<string>>
@@ -117,15 +118,23 @@ export default function MapSection({
           <BottomAddress range={range} setRange={setRange} />
         ) : null}
       </Flex>
-      <Markers
+      {/* <Markers
         pnuCounts={pnuCounts}
         originPnuCounts={originPnuCounts}
         openOverlay={openOverlay}
         setOpenOverlay={setOpenOverlay}
         markerClickedRef={markerClickedRef}
         handleFilterMarkers={handleFilterMarkers}
-      />
+      /> */}
       <Clusterings item={mapCount} />
+      <MarkerCluster
+        handleFilterMarkers={handleFilterMarkers}
+        pnuCounts={pnuCounts}
+        originPnuCounts={originPnuCounts}
+        openOverlay={openOverlay}
+        setOpenOverlay={setOpenOverlay}
+        markerClickedRef={markerClickedRef}
+      />
       {openOverlay && <Overlay halfDimensions={halfDimensions} />}
     </>
   )
