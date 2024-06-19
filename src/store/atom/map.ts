@@ -142,3 +142,8 @@ export const loaderAtom = atom<boolean>({
   key: `loader/${v4()}`,
   default: false,
 })
+
+export const clickedItemAtom = atom<MapItem | null>({
+  key: `clicked/${v4()}`,
+  default: null,
+})

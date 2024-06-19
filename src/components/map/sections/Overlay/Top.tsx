@@ -2,20 +2,13 @@
 import Flex from '@/components/shared/Flex'
 import { ItemDetail } from '@/models/ItemDetail'
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction, useEffect } from 'react'
-import styled from '@emotion/styled'
-import Text from '@/components/shared/Text'
+import { Dispatch, SetStateAction } from 'react'
 import { MapItem } from '@/models/MapItem'
-import Interest from '../../icons/Interest'
-import MiniMap from './MiniMap'
 import Carousel from './Carousel'
-import KwCarousel from './KwCarousel'
 
 interface TopProps {
   clickedInfo: ItemDetail[] | null
   setClickedInfo: Dispatch<SetStateAction<ItemDetail[] | null>>
-  clickedItem: MapItem | null
-  setClickedItem: Dispatch<SetStateAction<MapItem | null>>
   nowIndex: number
   setNowIndex: Dispatch<SetStateAction<number>>
 }
@@ -23,8 +16,6 @@ interface TopProps {
 export default function Top({
   clickedInfo,
   setClickedInfo,
-  clickedItem,
-  setClickedItem,
   nowIndex,
   setNowIndex,
 }: TopProps) {
@@ -32,7 +23,6 @@ export default function Top({
     <Flex css={ContainerStyle}>
       <Carousel
         clickedInfo={clickedInfo}
-        clickedItem={clickedItem}
         nowIndex={nowIndex}
         setNowIndex={setNowIndex}
         setClickedInfo={setClickedInfo}

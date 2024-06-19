@@ -1,11 +1,8 @@
-import { NaverMap } from '@/models/Map'
-import useSWR from 'swr'
-import { MAP_KEY } from '../hooks/useMap'
-import { useRecoilState } from 'recoil'
-import { mapItemsAtom } from '@/store/atom/map'
-import Marker from './Marker'
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import { MapItem } from '@/models/MapItem'
+import Marker from './Marker'
+import { useRecoilState } from 'recoil'
+import { clickedItemAtom } from '@/store/atom/map'
 
 type PnuProps = {
   pnu: string
@@ -23,8 +20,6 @@ interface MarkersProps {
   }
   openOverlay: boolean
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
-  clickedItem: MapItem | null
-  setClickedItem: Dispatch<SetStateAction<MapItem | null>>
   markerClickedRef: MutableRefObject<boolean>
   handleFilterMarkers: () => MapItem[] | undefined
 }
@@ -33,16 +28,10 @@ export default function Markers({
   pnuCounts,
   openOverlay,
   setOpenOverlay,
-  clickedItem,
-  setClickedItem,
   markerClickedRef,
   originPnuCounts,
   handleFilterMarkers,
 }: MarkersProps) {
-  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
-  if (handleFilterMarkers() === undefined) {
-    return null
-  }
   return (
     <>
       {handleFilterMarkers()
@@ -50,16 +39,12 @@ export default function Markers({
             return (
               <Marker
                 key={item.id}
-                index={index}
                 item={item}
-                setMapItems={setMapItems}
-                mapItems={mapItems}
                 pnuCounts={pnuCounts}
                 openOverlay={openOverlay}
                 setOpenOverlay={setOpenOverlay}
-                clickedItem={clickedItem}
-                setClickedItem={setClickedItem}
                 markerClickedRef={markerClickedRef}
+                index={index}
                 originPnuCounts={originPnuCounts}
                 handleFilterMarkers={handleFilterMarkers}
               />

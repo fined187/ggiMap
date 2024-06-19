@@ -107,7 +107,7 @@ export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
       })
       polyline.setMap(mapRef.current)
       let bounds = new window.kakao.maps.LatLngBounds()
-      path.forEach((coord) => {
+      path?.forEach((coord) => {
         bounds.extend(new window.kakao.maps.LatLng(coord[0], coord[1]))
       })
       maps.setBounds(bounds)

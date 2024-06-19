@@ -52,15 +52,15 @@ function Form({ item, index }: ItemProps) {
         })
         setMarker(newMarker)
         setIsBlinking(true)
-        setBlinkingInterval(
-          setInterval(() => {
-            if (newMarker.getMap()) {
-              newMarker.setMap(null)
-            } else {
-              newMarker.setMap(map)
-            }
-          }, 500),
-        )
+        const intervalId = setInterval(() => {
+          if (newMarker.getMap()) {
+            newMarker.setMap(null)
+          } else {
+            newMarker.setMap(map)
+          }
+        }, 500)
+
+        setBlinkingInterval(intervalId)
       }
     }
   }, [])
@@ -73,13 +73,14 @@ function Form({ item, index }: ItemProps) {
     if (blinkingInterval) {
       clearInterval(blinkingInterval as number)
     }
+    setBlinkingInterval(null)
   }, [marker, blinkingInterval])
 
   useEffect(() => {
     return () => {
       removeMarker()
     }
-  }, [])
+  }, [removeMarker])
 
   const onButtonClick = () => {
     setOpenModal(false)

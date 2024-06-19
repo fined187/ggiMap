@@ -1,6 +1,4 @@
-import { Form } from '@/models/Form'
 import getAddress from '@/remote/map/auth/getAddress'
-import { userAtom } from '@/store/atom/postUser'
 import { GetServerSidePropsContext } from 'next'
 import { useCallback, useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
@@ -66,6 +64,24 @@ function MapComponent({ token, type, idCode }: Props) {
     })
   }, [])
 
+  const handleGetPosition = useCallback(
+    async (addr: string) => {
+      try {
+        const response = await getPosition(addr, setAuth)
+        if (response) {
+          setAuth((prev) => ({
+            ...prev,
+            lat: response.data.data.y,
+            lng: response.data.data.x,
+          }))
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [setAuth],
+  )
+
   const handleGetAddress = useCallback(async () => {
     try {
       const response = await getAddress()
@@ -81,7 +97,7 @@ function MapComponent({ token, type, idCode }: Props) {
     } catch (error) {
       console.error(error)
     }
-  }, [setAuth])
+  }, [setAuth, handleGetPosition])
 
   const handleDataFetching = async (type: string, idCode: string) => {
     try {
@@ -137,24 +153,6 @@ function MapComponent({ token, type, idCode }: Props) {
       console.error(error)
     }
   }
-
-  const handleGetPosition = useCallback(
-    async (addr: string) => {
-      try {
-        const response = await getPosition(addr, setAuth)
-        if (response) {
-          setAuth((prev) => ({
-            ...prev,
-            lat: response.data.data.y,
-            lng: response.data.data.x,
-          }))
-        }
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    [setAuth],
-  )
 
   let ok = false
   const handleParameters = useCallback(

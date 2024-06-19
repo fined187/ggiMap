@@ -61,7 +61,6 @@ const useMapUtils = (
   const [duplicatedItems, setDuplicatedItems] = useState<MapItem[]>([])
   const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
   const [openOverlay, setOpenOverlay] = useState(false)
-  const [clickedItem, setClickedItem] = useState<MapItem | null>(null)
   const [isOpen, setIsOpen] = useState(true)
 
   const [clickedMapType, setClickedMapType] = useState({
@@ -328,8 +327,6 @@ const useMapUtils = (
     setMapCount,
     openOverlay,
     setOpenOverlay,
-    clickedItem,
-    setClickedItem,
     isOpen,
     setIsOpen,
     clickedMapType,

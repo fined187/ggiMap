@@ -52,8 +52,6 @@ export default function MapSection({
     setMapCount,
     openOverlay,
     setOpenOverlay,
-    clickedItem,
-    setClickedItem,
     isOpen,
     setIsOpen,
     clickedMapType,
@@ -92,8 +90,6 @@ export default function MapSection({
         setMapCount={setMapCount}
         markerClickedRef={markerClickedRef}
         setOpenOverlay={setOpenOverlay}
-        clickedItem={clickedItem}
-        setClickedItem={setClickedItem}
         setClickedMapType={setClickedMapType}
         setHalfDimensions={setHalfDimensions}
         searchCoordinateToAddress={searchCoordinateToAddress}
@@ -126,19 +122,11 @@ export default function MapSection({
         originPnuCounts={originPnuCounts}
         openOverlay={openOverlay}
         setOpenOverlay={setOpenOverlay}
-        clickedItem={clickedItem}
-        setClickedItem={setClickedItem}
         markerClickedRef={markerClickedRef}
         handleFilterMarkers={handleFilterMarkers}
       />
       <Clusterings item={mapCount} />
-      {openOverlay && (
-        <Overlay
-          clickedItem={clickedItem}
-          setClickedItem={setClickedItem}
-          halfDimensions={halfDimensions}
-        />
-      )}
+      {openOverlay && <Overlay halfDimensions={halfDimensions} />}
     </>
   )
 }

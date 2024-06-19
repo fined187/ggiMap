@@ -61,7 +61,7 @@ export const PnuCountIcon = (
   return `
   <div style="position: absolute; right: 0px; top: ${
     top ? `${top}px` : '-42px'
-  }; z-index: 110;">
+  };">
     <div style="display: inline-flex; width: 22px; height: 15px; justify-content: center; align-items: center; border-radius: 100px; border: ${getBorderColor(
       item,
       type,

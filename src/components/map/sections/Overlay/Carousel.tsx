@@ -19,29 +19,30 @@ import MiniMap from './MiniMap'
 import NoImage from './icon/NoImage'
 import NextImageWithFallback from '../../NextImageWithFallback'
 import { useInterestContext } from '@/contexts/useModalContext'
+import { useRecoilValue } from 'recoil'
+import { clickedItemAtom } from '@/store/atom/map'
 
 export default function Carousel({
   clickedInfo,
-  clickedItem,
   nowIndex,
   setNowIndex,
 }: {
   clickedInfo: ItemDetail[] | null
-  clickedItem: MapItem | null
   nowIndex: number
   setNowIndex: Dispatch<SetStateAction<number>>
   setClickedInfo?: Dispatch<SetStateAction<ItemDetail[] | null>>
 }) {
   const [image, setImage] = useState<string[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const clickedItem = useRecoilValue(clickedItemAtom)
   useEffect(() => {
     if (clickedInfo) {
       setImage(
         clickedInfo.map((info) =>
-          info.type === 1
-            ? 'https://www.ggi.co.kr' + info.path
-            : info.type === 2 || info.type === 3
-            ? 'http://file.ggi.co.kr/Gongmae/Pic/' + info.path
+          info?.type === 1
+            ? 'https://www.ggi.co.kr' + info?.path
+            : info?.type === 2 || info?.type === 3
+            ? 'http://file.ggi.co.kr/Gongmae/Pic/' + info?.path
             : 'https://www.ggi.co.kr/' + info?.path,
         ),
       )

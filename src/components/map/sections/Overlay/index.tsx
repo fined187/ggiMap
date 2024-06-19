@@ -12,9 +12,12 @@ import {
 import Top from './Top'
 import Bottom from './Bottom'
 import { ItemDetail } from '@/models/ItemDetail'
-import { MapItem } from '@/models/MapItem'
 import { useRecoilState } from 'recoil'
-import { mapItemsOriginAtom, markerPositionAtom } from '@/store/atom/map'
+import {
+  clickedItemAtom,
+  mapItemsOriginAtom,
+  markerPositionAtom,
+} from '@/store/atom/map'
 import { useGetDetail } from './hooks/useGetDetail'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
@@ -26,22 +29,17 @@ type PositionSet = {
   bottom: number
 }
 interface OverlayProps {
-  clickedItem: MapItem | null
-  setClickedItem: Dispatch<SetStateAction<MapItem | null>>
   halfDimensions: { width: number; height: number }
 }
 
-export default function Overlay({
-  clickedItem,
-  setClickedItem,
-  halfDimensions,
-}: OverlayProps) {
+export default function Overlay({ halfDimensions }: OverlayProps) {
   const [clickedInfo, setClickedInfo] = useState<ItemDetail[] | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [mapOrigin, setMapOrigin] = useRecoilState(mapItemsOriginAtom)
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
   const { data: map } = useSWR(MAP_KEY)
+  const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
   const handleGetIds = useCallback(
     (pnu: string) => {
       let ids: string[] = []
@@ -357,16 +355,10 @@ export default function Overlay({
       <Top
         clickedInfo={clickedInfo}
         setClickedInfo={setClickedInfo}
-        clickedItem={clickedItem}
-        setClickedItem={setClickedItem}
         nowIndex={nowIndex}
         setNowIndex={setNowIndex}
       />
-      <Bottom
-        clickedInfo={clickedInfo}
-        clickedItem={clickedItem}
-        nowIndex={nowIndex}
-      />
+      <Bottom clickedInfo={clickedInfo} nowIndex={nowIndex} />
     </Flex>
   )
 }
