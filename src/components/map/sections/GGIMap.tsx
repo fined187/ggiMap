@@ -27,6 +27,8 @@ import { authInfo } from '@/store/atom/auth'
 import getPolypath from '@/remote/map/selected/getPolypath'
 import { usePostListItems } from '@/hooks/items/usePostListItems'
 import useDebounce from '@/components/shared/hooks/useDebounce'
+import { useGeoCode } from './hooks/useGeoCode'
+import { useReverseGeoCode } from './hooks/useReverseGeoCode'
 declare global {
   interface Window {
     naver: any
@@ -66,11 +68,6 @@ interface Props {
     }>
   >
   setHalfDimensions: Dispatch<SetStateAction<{ width: number; height: number }>>
-  searchCoordinateToAddress: (
-    lat: number,
-    lng: number,
-    setGetGungu: Dispatch<SetStateAction<string>>,
-  ) => void
 }
 
 const DEBOUNCE_DELAY = 500
@@ -88,7 +85,6 @@ export default function GGIMap({
   setHalfDimensions,
   zoom,
   page,
-  searchCoordinateToAddress,
 }: Props) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
@@ -102,7 +98,6 @@ export default function GGIMap({
     formData,
     setMapCount as Dispatch<SetStateAction<MapCountsResponse[]>>,
   )
-  const [path, setPath] = useState<number[][]>([])
   const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
   const [mapOrigin, setMapOrigin] = useRecoilState(mapItemsOriginAtom)
   const mapRef = useRef<NaverMap | null>(null)
@@ -120,65 +115,36 @@ export default function GGIMap({
   const [juso, setJuso] = useRecoilState(jusoAtom)
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
 
-  const searchAddrToCoord = (
-    address: string,
-    map: NaverMap | null,
-    setAuth: any,
-  ) => {
-    if (map) {
-      if (window.naver?.maps.Service?.geocode !== undefined) {
-        window.naver.maps.Service?.geocode(
-          {
-            query: address,
-          },
-          (status: any, response: any) => {
-            if (status === window.naver.maps?.Service?.Status?.ERROR) {
-              return
-            }
-            const result = response.v2.addresses[0]
-            const { x, y } = result ?? { point: { x: 0, y: 0 } }
-            setAuth((prev: any) => {
-              return {
-                ...prev,
-                lat: Number(y),
-                lng: Number(x),
-              }
-            })
-            map?.setCenter({
-              lat: Number(y),
-              lng: Number(x),
-            })
-          },
-        )
-      }
-    }
-  }
-
-  const updateHalfDimensions = useCallback(() => {
-    const exceptFilterBox = window.innerWidth - 370
-    const halfHeight = window.innerHeight / 2
-    const halfWidth = exceptFilterBox / 2 + 370
-    setHalfDimensions({
-      width: halfWidth,
-      height: halfHeight,
-    })
-  }, [setHalfDimensions])
-
   const handleCenterChanged = useCallback(() => {
     if (mapRef.current) {
       const mapCenter: naver.maps.Point = mapRef.current.getCenter()
       const centerCoords = { lat: mapCenter.y, lng: mapCenter.x }
-      searchCoordinateToAddress(centerCoords.lat, centerCoords.lng, setGetGungu)
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useReverseGeoCode(
+        centerCoords.lat,
+        centerCoords.lng,
+        setGetGungu,
+        setJuso,
+      )
     }
-  }, [mapRef.current, searchCoordinateToAddress, setJuso, setGetGungu])
+  }, [mapRef.current, setJuso, setGetGungu, useReverseGeoCode])
 
   useEffect(() => {
+    const updateHalfDimensions = () => {
+      const exceptFilterBox = window.innerWidth - 370
+      const halfHeight = window.innerHeight / 2
+      const halfWidth = exceptFilterBox / 2 + 370
+      setHalfDimensions({
+        width: halfWidth,
+        height: halfHeight,
+      })
+    }
     if (typeof window !== 'undefined') {
       updateHalfDimensions()
       window.addEventListener('resize', updateHalfDimensions)
       return () => window.removeEventListener('resize', updateHalfDimensions)
     }
-  }, [updateHalfDimensions])
+  }, [setHalfDimensions])
 
   const debouncedGetMapItems = useDebounce(getMapItems, DEBOUNCE_DELAY)
   const debouncedGetMapLists = useDebounce(getMapLists, DEBOUNCE_DELAY)
@@ -203,16 +169,6 @@ export default function GGIMap({
     const adjustedNe = projection.fromOffsetToCoord(
       adjustedNE,
     ) as naver.maps.LatLng
-
-    // const sw = bounds.getSW()
-    // const ne = bounds.getNE()
-    // setFormData((prev) => ({
-    //   ...prev,
-    //   x1: sw.lng(),
-    //   y1: sw.lat(),
-    //   x2: ne.lng(),
-    //   y2: ne.lat(),
-    // }))
     setFormData((prev) => ({
       ...prev,
       x1: adjustedSw.lng(),
@@ -373,7 +329,8 @@ export default function GGIMap({
 
   useEffect(() => {
     if (auth.address && !auth.idCode) {
-      searchAddrToCoord(auth.address, mapRef.current, setAuth)
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useGeoCode(auth.address, mapRef.current, setAuth)
     } else if (!auth.address && auth.idCode) {
       mapRef.current?.setCenter({ lat: auth.lat, lng: auth.lng })
     }

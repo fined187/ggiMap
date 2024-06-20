@@ -36,6 +36,7 @@ export const useGetDetail = (
     },
     {
       onSuccess: (data) => {
+        console.log(data)
         const SortedData = data.sort((a, b) => {
           if (a?.winAmt !== undefined && b?.winAmt !== undefined) {
             if (a.winAmt > 0 && b.winAmt === 0) {

@@ -1,11 +1,11 @@
+import { Auth } from '@/models/Auth'
 import { NaverMap } from '@/models/Map'
-import { authInfo } from '@/store/atom/auth'
-import { useRecoilState } from 'recoil'
+import { Dispatch, SetStateAction, useCallback } from 'react'
 
-export const useSearchAddrToCoord = (
+export const useGeoCode = (
   address: string,
   map: NaverMap | null,
-  setAuth: any,
+  setAuth: Dispatch<SetStateAction<Auth>>,
 ) => {
   if (map) {
     if (window.naver?.maps.Service?.geocode !== undefined) {
@@ -26,7 +26,7 @@ export const useSearchAddrToCoord = (
               lng: Number(x),
             }
           })
-          map?.setCenter({
+          map.setCenter({
             lat: Number(y),
             lng: Number(x),
           })

@@ -66,7 +66,7 @@ export default function KwCarousel({
         >
           {kwInfo.map((_, index) => (
             <SwiperSlide key={index}>
-              <TypeStyle type={clickedItem?.type || 1}>
+              <TypeStyle type={clickedItem?.types[0] || 1}>
                 <Text css={TextStyle}>예정</Text>
               </TypeStyle>
               <ShareType>

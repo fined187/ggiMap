@@ -2,11 +2,11 @@ import { MapItem } from '@/models/MapItem'
 import { NumToHan } from '@/utils/NumToHan'
 import { colors } from '@/styles/colorPalette'
 
-const getColor = (item: MapItem, type: number): string => {
+const getColor = (item: MapItem, types: number): string => {
   if (item.winYn === 'Y') {
     return colors.winOrange
   } else {
-    switch (type) {
+    switch (types) {
       case 1:
         return colors.kmBlue
       case 2:
@@ -82,7 +82,6 @@ export const UsageIcon = (
   item: MapItem,
   handleItemUsage: () => string,
   type: number,
-  isSame?: boolean,
 ) => {
   return `
   <div style="display: inline-flex; padding: 10px 6px; width: 45px; height: 32px; justify-content: center; align-items: center;border-radius: 17.5px 0px 0px 0px; border-left: ${getBorderColor(
@@ -167,7 +166,7 @@ export const ShareIcon = (item: MapItem, type: number, top?: string) => {
   `
 }
 
-export const InterestIcon = (item: MapItem, type: number) => {
+export const InterestIcon = (item: MapItem, types: number) => {
   return `
   <div style="flex-direction: row; display: flex;">
     <div style="position: absolute; right: ${
@@ -179,14 +178,14 @@ export const InterestIcon = (item: MapItem, type: number) => {
         <rect x="0.5" y="0.5" width="16" height="14" rx="7" fill="white"/>
         <rect x="0.5" y="0.5" width="16" height="14" rx="7" stroke=${getColor(
           item,
-          type,
+          types,
         )} />
         <path d="M8.50283 11.5108L4.6835 8.05124C2.60777 5.97552 5.65909 1.99013 8.50283 5.21442C11.3466 1.99013 14.3841 5.98936 12.3222 8.05124L8.50283 11.5108Z" fill=${getColor(
           item,
-          type,
+          types,
         )} stroke=${getColor(
           item,
-          type,
+          types,
         )} stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>

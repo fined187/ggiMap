@@ -6,7 +6,7 @@ import { v4 } from 'uuid'
 
 type Props = {
   position: [number, number]
-  type: number
+  type: number[]
   winYn: string
 }
 
@@ -17,8 +17,8 @@ export const mapItemsAtom = atom<MapItem[]>({
       pnu: '',
       x: 0,
       y: 0,
-      type: 1,
-      id: '',
+      types: [1],
+      ids: [''],
       winYn: '',
       usage: '',
       buildingArea: '',
@@ -27,6 +27,7 @@ export const mapItemsAtom = atom<MapItem[]>({
       ratio: 0,
       amount: '',
       interest: '',
+      count: 0,
     },
   ],
 })
@@ -38,8 +39,8 @@ export const mapItemsOriginAtom = atom<MapItem[]>({
       pnu: '',
       x: 0,
       y: 0,
-      type: 1,
-      id: '',
+      types: [1],
+      ids: [''],
       winYn: '',
       usage: '',
       buildingArea: '',
@@ -48,6 +49,7 @@ export const mapItemsOriginAtom = atom<MapItem[]>({
       ratio: 0,
       amount: '',
       interest: '',
+      count: 0,
     },
   ],
 })
@@ -94,7 +96,7 @@ export const markerPositionAtom = atom<Props>({
   key: `markerPosition/${v4()}`,
   default: {
     position: [0, 0],
-    type: 1,
+    type: [1],
     winYn: '',
   },
 })

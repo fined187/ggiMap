@@ -1,7 +1,8 @@
+import { Auth } from '@/models/Auth'
 import { atom } from 'recoil'
 import { v4 } from 'uuid'
 
-export const authInfo = atom({
+export const authInfo = atom<Auth>({
   key: `auth/${v4()}`,
   default: {
     isLogin: false,

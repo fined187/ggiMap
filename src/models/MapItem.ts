@@ -2,8 +2,8 @@ export interface MapItem {
   pnu: string
   x: number
   y: number
-  type: number
-  id: string
+  types: number[]
+  ids: string[]
   interest: string
   usage: string
   winYn: string
@@ -12,6 +12,7 @@ export interface MapItem {
   landArea: string
   share: string
   ratio: number
+  count: number
 }
 
 export interface ListData {

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { NaverMap } from '@/models/Map'
 import useMap, { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
@@ -15,10 +15,8 @@ import Overlay from './Overlay'
 import AddressContainer from '../top/AddressContainer'
 import useMapUtils from './hooks/useMapUtils'
 import { authInfo } from '@/store/atom/auth'
-import MarkerCluster from './markers/MarkerCluster'
 
 interface MapProps {
-  setGetGungu: Dispatch<SetStateAction<string>>
   token: string
   handleParameters: (
     params1?: string,
@@ -31,7 +29,6 @@ interface MapProps {
 }
 
 export default function MapSection({
-  setGetGungu,
   token,
   idCode,
   type,
@@ -47,8 +44,6 @@ export default function MapSection({
   })
   const [range, setRange] = useState<number>(0)
   const {
-    pnuCounts,
-    originPnuCounts,
     mapCount,
     setMapCount,
     openOverlay,
@@ -57,15 +52,7 @@ export default function MapSection({
     setIsOpen,
     clickedMapType,
     setClickedMapType,
-    handleFilterMarkers,
-    searchCoordinateToAddress,
-  } = useMapUtils(
-    token,
-    type ?? '',
-    idCode ?? '',
-    setGetGungu,
-    handleParameters,
-  )
+  } = useMapUtils(token, type ?? '', idCode ?? '', handleParameters)
   const initialCenter = useMemo(() => {
     return auth.lat && auth.lng
       ? { lat: auth.lat, lng: auth.lng }
@@ -93,7 +80,6 @@ export default function MapSection({
         setOpenOverlay={setOpenOverlay}
         setClickedMapType={setClickedMapType}
         setHalfDimensions={setHalfDimensions}
-        searchCoordinateToAddress={searchCoordinateToAddress}
         page={page}
       />
       <BoxGuard isOpen={isOpen}>
@@ -118,23 +104,12 @@ export default function MapSection({
           <BottomAddress range={range} setRange={setRange} />
         ) : null}
       </Flex>
-      {/* <Markers
-        pnuCounts={pnuCounts}
-        originPnuCounts={originPnuCounts}
-        openOverlay={openOverlay}
-        setOpenOverlay={setOpenOverlay}
-        markerClickedRef={markerClickedRef}
-        handleFilterMarkers={handleFilterMarkers}
-      /> */}
-      <Clusterings item={mapCount} />
-      <MarkerCluster
-        handleFilterMarkers={handleFilterMarkers}
-        pnuCounts={pnuCounts}
-        originPnuCounts={originPnuCounts}
+      <Markers
         openOverlay={openOverlay}
         setOpenOverlay={setOpenOverlay}
         markerClickedRef={markerClickedRef}
       />
+      <Clusterings item={mapCount} />
       {openOverlay && <Overlay halfDimensions={halfDimensions} />}
     </>
   )

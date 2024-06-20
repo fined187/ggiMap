@@ -37,7 +37,6 @@ export const usePostListItems = (
     async () => await postListItems(param, pageNum, pageSize),
     {
       onSuccess: (data) => {
-        console.log(data)
         if (
           pageNum > 1 &&
           mapListItems.contents.length > 0 &&

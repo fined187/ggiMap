@@ -48,8 +48,6 @@ function MapComponent({ token, type, idCode }: Props) {
   const [mapList, setMapList] = useRecoilState(mapListAtom)
   const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
   const [juso, setJuso] = useRecoilState(jusoAtom)
-
-  const [getGungu, setGetGungu] = useState<string>('')
   const [selectedData, setSelectedData] = useState<
     SelectedKmItem | SelectedGmItem | SelectedGgItem | SelectedKwItem | null
   >(null)
@@ -251,7 +249,6 @@ function MapComponent({ token, type, idCode }: Props) {
 
   return (
     <MapSection
-      setGetGungu={setGetGungu}
       token={token as string}
       idCode={idCode as string}
       type={type as string}

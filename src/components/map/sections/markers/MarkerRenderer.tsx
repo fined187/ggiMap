@@ -14,65 +14,27 @@ import IconContent from './IconContent'
 import { useRecoilState } from 'recoil'
 import { clickedItemAtom, markerPositionAtom } from '@/store/atom/map'
 
-type PnuProps = {
-  pnu: string
-  count: number
-  type: number
-  includeYn: boolean
-}
-
 interface MarkerRendererProps {
   item: MapItem
   index: number
-  pnuCounts: {
-    updatedCounts: PnuProps[]
-  }
-  originPnuCounts: {
-    updatedCounts: PnuProps[]
-  }
   openOverlay: boolean
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
   markerClickedRef: MutableRefObject<boolean>
-  handleFilterMarkers: () => MapItem[] | undefined
 }
 
 const MarkerRenderer = ({
   item,
   index,
-  pnuCounts,
-  originPnuCounts,
   openOverlay,
   setOpenOverlay,
   markerClickedRef,
-  handleFilterMarkers,
 }: MarkerRendererProps) => {
   const { data: map } = useSWR(MAP_KEY)
-  const [count, setCount] = useState<number>(0)
-  const [originCount, setOriginCount] = useState<number>(0)
   const [isSame, setIsSame] = useState<boolean>(false)
   const [includeYn, setIncludeYn] = useState<boolean>(false)
   const markerRef = useRef<naver.maps.Marker | null>(null)
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
-  const targetRef = useRef<HTMLElement | HTMLDivElement | null>(null)
-
-  const handleGetItemCounts = useCallback(() => {
-    const pnuCount =
-      pnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)?.count ?? 0
-    const pnuOriginCount =
-      originPnuCounts.updatedCounts.find((pnu) => pnu.pnu === item.pnu)
-        ?.count ?? 0
-    const originIncludeYn = originPnuCounts.updatedCounts.find(
-      (pnu) => pnu.pnu === item.pnu && pnu.includeYn === true,
-    )
-    const includeYn = pnuCounts.updatedCounts.find(
-      (pnu) => pnu.pnu === item.pnu && pnu.includeYn === true,
-    )
-    setCount(pnuCount)
-    setOriginCount(pnuOriginCount)
-    setIsSame(pnuCount === pnuOriginCount)
-    setIncludeYn(originIncludeYn ? true : includeYn ? true : false)
-  }, [item.pnu, pnuCounts, originPnuCounts])
 
   const handleItemUsage = useCallback(() => {
     if (item.usage.length >= 4) {
@@ -87,9 +49,12 @@ const MarkerRenderer = ({
     return item.usage
   }, [item.usage])
 
-  useEffect(() => {
-    handleGetItemCounts()
-  }, [handleGetItemCounts])
+  const handleZIndex = useCallback((types: number) => {
+    if (types === 1) return 100
+    if (types === 2) return 90
+    if (types === 3) return 80
+    if (types === 4) return 60
+  }, [])
 
   const handleMarkerClick = useCallback(
     (item: MapItem) => {
@@ -103,11 +68,22 @@ const MarkerRenderer = ({
         setClickedItem(item)
       }
     },
-    [clickedItem, setOpenOverlay, setClickedItem, markerClickedRef],
+    [
+      clickedItem,
+      setOpenOverlay,
+      setClickedItem,
+      markerClickedRef,
+      openOverlay,
+    ],
   )
   let markers: naver.maps.Marker[] = []
   useEffect(() => {
-    if (!map || typeof window.naver === 'undefined' || !handleFilterMarkers())
+    if (
+      !map ||
+      typeof window === 'undefined' ||
+      IconContent === undefined ||
+      typeof window.naver.maps.Marker === 'undefined'
+    )
       return
 
     if (markers) {
@@ -124,16 +100,17 @@ const MarkerRenderer = ({
       icon: {
         content: IconContent({
           item,
-          originCount,
           isSame,
+          count: item.count || 0,
           includeYn,
           handleItemUsage,
           index,
-          zoomLevel,
-          ref: targetRef.current,
+          zoomLevel: zoomLevel || 0,
         }),
+        anchor: new window.naver.maps.Point(12, 12),
       },
     })
+    marker.setZIndex(handleZIndex(item.types[0]))
     markers.push(marker)
 
     if (marker) {
@@ -142,11 +119,11 @@ const MarkerRenderer = ({
         marker.setZIndex(110)
       })
       naver.maps.Event?.addListener(marker, 'mouseout', () => {
-        item.type === 1
+        item.types[0] === 1
           ? marker.setZIndex(100)
-          : item.type === 2
+          : item.types[0] === 2
           ? marker.setZIndex(90)
-          : item.type === 3
+          : item.types[0] === 3
           ? marker.setZIndex(80)
           : marker.setZIndex(60)
       })
@@ -158,14 +135,14 @@ const MarkerRenderer = ({
           setMarkerPosition((prev) => {
             return {
               position: [0, 0],
-              type: 1,
+              type: [1],
               winYn: item.winYn,
             }
           })
           setMarkerPosition((prev) => {
             return {
               position: [rect.left, rect.top],
-              type: item.type,
+              type: item.types,
               winYn: item.winYn,
             }
           })
@@ -184,16 +161,13 @@ const MarkerRenderer = ({
     map,
     item,
     index,
-    originCount,
     isSame,
     includeYn,
     handleItemUsage,
-    pnuCounts,
     openOverlay,
     clickedItem,
     handleMarkerClick,
     setMarkerPosition,
-    handleFilterMarkers,
   ])
   return null
 }

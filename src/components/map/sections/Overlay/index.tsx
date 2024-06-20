@@ -13,21 +13,11 @@ import Top from './Top'
 import Bottom from './Bottom'
 import { ItemDetail } from '@/models/ItemDetail'
 import { useRecoilState } from 'recoil'
-import {
-  clickedItemAtom,
-  mapItemsOriginAtom,
-  markerPositionAtom,
-} from '@/store/atom/map'
+import { clickedItemAtom, markerPositionAtom } from '@/store/atom/map'
 import { useGetDetail } from './hooks/useGetDetail'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 
-type PositionSet = {
-  top: number
-  left: number
-  right: number
-  bottom: number
-}
 interface OverlayProps {
   halfDimensions: { width: number; height: number }
 }
@@ -35,23 +25,10 @@ interface OverlayProps {
 export default function Overlay({ halfDimensions }: OverlayProps) {
   const [clickedInfo, setClickedInfo] = useState<ItemDetail[] | null>(null)
   const ref = useRef<HTMLDivElement>(null)
-  const [mapOrigin, setMapOrigin] = useRecoilState(mapItemsOriginAtom)
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
   const { data: map } = useSWR(MAP_KEY)
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
-  const handleGetIds = useCallback(
-    (pnu: string) => {
-      let ids: string[] = []
-      for (const pnus of mapOrigin ?? []) {
-        if (pnus.pnu === pnu) {
-          ids.push(pnus.id)
-        }
-      }
-      return ids
-    },
-    [mapOrigin],
-  )
   const calculateScreenNum = useMemo(() => {
     let position = {
       first: false,
@@ -59,7 +36,6 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
       third: false,
       fourth: false,
     }
-
     if (
       markerPosition.position[0] > 390 &&
       markerPosition.position[0] < halfDimensions.width &&
@@ -92,25 +68,12 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
     return position
   }, [markerPosition, halfDimensions])
 
-  const handleGetType = useCallback(
-    (pnu: string) => {
-      let type: number[] = []
-      for (const pnus of mapOrigin ?? []) {
-        if (pnus.pnu === pnu) {
-          type.push(pnus.type)
-        }
-      }
-      return type
-    },
-    [mapOrigin],
-  )
-
   const handleCalcLeftTop = useCallback(() => {
     if (map.getZoom() > 15) {
       if (
-        markerPosition.type === 1 ||
-        markerPosition.type === 2 ||
-        markerPosition.type === 3
+        markerPosition.type[0] === 1 ||
+        markerPosition.type[0] === 2 ||
+        markerPosition.type[0] === 3
       ) {
         if (markerPosition.winYn === 'Y') {
           if (map.getZoom() === 16) {
@@ -194,7 +157,7 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
             top: 0,
           }
         }
-      } else if (markerPosition.type === 4) {
+      } else if (markerPosition.type[0] === 4) {
         if (calculateScreenNum.first) {
           return {
             left: markerPosition.position[0] + 100,
@@ -224,9 +187,9 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
       }
     } else {
       if (
-        markerPosition.type === 1 ||
-        markerPosition.type === 2 ||
-        markerPosition.type === 3
+        markerPosition.type[0] === 1 ||
+        markerPosition.type[0] === 2 ||
+        markerPosition.type[0] === 3
       ) {
         if (markerPosition.winYn === 'Y') {
           if (map.getZoom() === 15) {
@@ -297,7 +260,7 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
             }
           }
         }
-      } else if (markerPosition.type === 4) {
+      } else if (markerPosition.type[0] === 4) {
         if (calculateScreenNum.first) {
           return {
             left: markerPosition.position[0] + 10,
@@ -328,8 +291,8 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
   }, [markerPosition, calculateScreenNum])
 
   useGetDetail(
-    handleGetIds(clickedItem?.pnu as string),
-    handleGetType(clickedItem?.pnu as string),
+    clickedItem?.ids!,
+    clickedItem?.types!,
     setClickedInfo,
     clickedItem,
   )
