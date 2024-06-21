@@ -26,6 +26,7 @@ import { authInfo } from '@/store/atom/auth'
 import getPolypath from '@/remote/map/selected/getPolypath'
 import { useGeoCode } from './hooks/useGeoCode'
 import MiniMap from './MiniMap'
+import useDebounce from '@/components/shared/hooks/useDebounce'
 declare global {
   interface Window {
     naver: any
@@ -196,7 +197,12 @@ export default function GGIMap({
   }, [setHalfDimensions])
 
   useEffect(() => {
-    getMapItems()
+    if (!mapRef.current) return
+    if (mapRef?.current.getZoom() >= 15) {
+      getMapItems()
+    } else {
+      getMapCounts()
+    }
   }, [
     formData.egg,
     formData.ekm,
@@ -232,11 +238,22 @@ export default function GGIMap({
     if (zoomLevel && zoomLevel >= 15) {
       setMapCount && setMapCount([])
     } else if (mapRef?.current?.getZoom()! < 15) {
-      getMapCounts()
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useDebounce(getMapCounts(), 250)
       setMapItems([])
       setMapOrigin([])
     }
-  }, [getMapCounts, setMapCount, zoomLevel, setMapItems, setMapOrigin])
+  }, [
+    getMapCounts,
+    setMapCount,
+    zoomLevel,
+    setMapItems,
+    setMapOrigin,
+    formData.x1,
+    formData.y1,
+    formData.x2,
+    formData.y2,
+  ])
 
   useEffect(() => {
     const updatePolyPath = async () => {

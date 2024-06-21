@@ -8,6 +8,8 @@ import { formDataAtom } from '@/store/atom/map'
 import usePostMapItems from '@/hooks/items/usePostMapItems'
 import { usePostListItems } from '@/hooks/items/usePostListItems'
 import postMapItems from '@/remote/map/items/postMapItems'
+import useSWR from 'swr'
+import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 
 interface SearchListQueryProps {
   mapData: ListData
@@ -27,6 +29,7 @@ export default function useSearchListQuery({
   page,
 }: SearchListQueryProps) {
   const [formData] = useRecoilState(formDataAtom)
+  const { data: map } = useSWR(MAP_KEY)
   const { mutate: getMapItems } = usePostMapItems(
     formData,
     dragStateRef.current,
@@ -38,6 +41,11 @@ export default function useSearchListQuery({
     PAGE_SIZE: number,
   ) => {
     try {
+      if (!mapData) return
+      if (map?.getZoom() < 15) {
+        await Promise.all([handleCenterChanged()])
+        return
+      }
       const [listItems] =
         page > 1
           ? await Promise.all([postListItems(mapData, page, PAGE_SIZE)])
@@ -59,10 +67,9 @@ export default function useSearchListQuery({
       ({ pageParam = 1 }) => fetchSearchList(mapData, pageParam, PAGE_SIZE),
       {
         getNextPageParam: (lastPage) => {
-          console.log('lastPage:', lastPage)
           return lastPage?.paging?.isLast
             ? undefined
-            : lastPage?.paging?.pageNumber + 1
+            : (lastPage?.paging?.pageNumber ?? 0) + 1
         },
       },
     )

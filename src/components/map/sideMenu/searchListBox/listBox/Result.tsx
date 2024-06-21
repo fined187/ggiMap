@@ -146,7 +146,7 @@ function Result({
         if (data.pageParams.length === 1) {
           setLoader(true)
           scrollToTop()
-          setMapListItems((prev) => {
+          setMapListItems((prev: any) => {
             return {
               ...prev,
               contents: data.pages[0]?.contents,
@@ -160,7 +160,8 @@ function Result({
               ...prev,
               contents: [
                 ...(prev?.contents ?? []),
-                ...(data && data?.pages[data.pages.length - 1]?.contents),
+                ...((data && data?.pages[data.pages.length - 1]?.contents) ??
+                  []),
               ],
             }
           })

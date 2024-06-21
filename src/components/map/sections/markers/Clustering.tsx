@@ -15,25 +15,22 @@ interface ClusteringProps {
 
 export default function Clustering({ item }: ClusteringProps) {
   const { data: map } = useSWR(MAP_KEY)
+
+  const placeName = useMemo(() => {
+    if (!map) return ''
+
+    const zoomLevel = map.getZoom()
+    if (zoomLevel >= 13) return item.umd
+    if (zoomLevel > 10 && zoomLevel < 13) {
+      return item.sgg.replace(
+        /^((창원시)|(고양시)|(성남시)|(용인시)|(안양시)|(안산시)|(수원시)|(천안시)|(청주시)|(전주시)|(포항시)|(부천시))\s*/,
+        '',
+      )
+    }
+    return item.sd
+  }, [map, item])
+
   const markerContent = useMemo(() => {
-    const placeName =
-      map?.getZoom() >= 13
-        ? item.umd
-        : map?.getZoom() > 10 && map?.getZoom() < 13
-        ? item.sgg
-            .replace(/^창원시\s*/, '')
-            .replace(/^고양시\s*/, '')
-            .replace(/^성남시\s*/, '')
-            .replace(/^용인시\s*/, '')
-            .replace(/^안양시\s*/, '')
-            .replace(/^안산시\s*/, '')
-            .replace(/^수원시\s*/, '')
-            .replace(/^천안시\s*/, '')
-            .replace(/^청주시\s*/, '')
-            .replace(/^전주시\s*/, '')
-            .replace(/^포항시\s*/, '')
-            .replace(/^부천시\s*/, '')
-        : item.sd
     return `
       <div style="display: flex; width: 80px; height: 50px; justify-content: center; align-items: center; flex-direction: column;">
         <div style="display: flex; width: 100%; height: 25px; background: #332EFC; justify-content: center; align-items: center; border-radius: 12px 12px 0px 0px; border-left: 1px solid #332EFC; border-top: 1px solid #332EFC; border-right: 1px solid #332EFC;">
@@ -48,7 +45,7 @@ export default function Clustering({ item }: ClusteringProps) {
         </div>
       </div>
     `
-  }, [map?.getZoom, item])
+  }, [placeName, item.count])
 
   const handleMarkerClick = useCallback(() => {
     if (map) {
@@ -59,8 +56,8 @@ export default function Clustering({ item }: ClusteringProps) {
 
   useEffect(() => {
     if (!map) return
-    let marker: naver.maps.Marker | null = null
-    marker = new naver.maps.Marker({
+
+    const marker = new naver.maps.Marker({
       map: map,
       position: new naver.maps.LatLng(item.y, item.x),
       icon: {
@@ -68,12 +65,14 @@ export default function Clustering({ item }: ClusteringProps) {
         anchor: new naver.maps.Point(12, 12),
       },
     })
+
     naver.maps.Event.addListener(marker, 'click', handleMarkerClick)
+
+    // Clean up the marker on component unmount or zoom level change to >= 15
     return () => {
-      if (marker || map.getZoom() >= 15) {
-        marker.setMap(null)
-      }
+      marker.setMap(null)
     }
-  }, [map, item.x, item.y, markerContent, handleMarkerClick])
+  }, [map, item.y, item.x, markerContent, handleMarkerClick])
+
   return null
 }
