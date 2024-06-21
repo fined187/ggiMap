@@ -12,7 +12,11 @@ import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 import IconContent from './IconContent'
 import { useRecoilState } from 'recoil'
-import { clickedItemAtom, markerPositionAtom } from '@/store/atom/map'
+import {
+  clickedItemAtom,
+  listOverItemAtom,
+  markerPositionAtom,
+} from '@/store/atom/map'
 
 interface MarkerRendererProps {
   item: MapItem
@@ -35,38 +39,45 @@ const MarkerRenderer = ({
   const markerRef = useRef<naver.maps.Marker | null>(null)
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
+  const [listOver, setListOver] = useRecoilState(listOverItemAtom)
+  // const [markers, setMarkers] = useState<naver.maps.Marker[]>([])
+  let markers: naver.maps.Marker[] = []
 
   const handleItemUsage = useCallback(() => {
-    if (item.usage.length >= 4) {
-      if (item.usage === '단독,다가구') return '다가구'
-      if (item.usage === '연립.다세대') return '다세대'
-      if (item.usage === '전,답,과수') return '전답과'
-      if (item.usage === '기타토지') return '기타'
-      if (item.usage === '상업시설') return '상업'
-      if (item.usage === '공업시설') return '공업'
-      return item.usage.slice(0, 2) + '<br />' + item.usage.slice(2, 4)
+    switch (item.usage) {
+      case '단독,다가구':
+        return '다가구'
+      case '연립.다세대':
+        return '다세대'
+      case '전,답,과수':
+        return '전답과'
+      case '기타토지':
+        return '기타'
+      case '상업시설':
+        return '상업'
+      case '공업시설':
+        return '공업'
+      default:
+        return item.usage.length >= 4
+          ? `${item.usage.slice(0, 2)}<br />${item.usage.slice(2, 4)}`
+          : item.usage
     }
-    return item.usage
   }, [item.usage])
 
-  const handleZIndex = useCallback((types: number) => {
+  const handleZIndex = useCallback((types: number, yn: string) => {
     if (types === 1) return 100
     if (types === 2) return 90
     if (types === 3) return 80
     if (types === 4) return 60
+    if (yn === 'Y') return 70
   }, [])
 
   const handleMarkerClick = useCallback(
     (item: MapItem) => {
-      if (clickedItem === item) {
-        setOpenOverlay(!openOverlay)
-        markerClickedRef.current = !openOverlay
-        setClickedItem(openOverlay ? null : item)
-      } else {
-        setOpenOverlay(true)
-        markerClickedRef.current = true
-        setClickedItem(item)
-      }
+      const isSelected = clickedItem === item
+      setOpenOverlay(isSelected ? !openOverlay : true)
+      markerClickedRef.current = isSelected ? !openOverlay : true
+      setClickedItem(isSelected ? null : item)
     },
     [
       clickedItem,
@@ -76,24 +87,19 @@ const MarkerRenderer = ({
       openOverlay,
     ],
   )
-  let markers: naver.maps.Marker[] = []
-  useEffect(() => {
-    if (
-      !map ||
-      typeof window === 'undefined' ||
-      IconContent === undefined ||
-      typeof window.naver.maps.Marker === 'undefined'
-    )
-      return
 
-    if (markers) {
+  useEffect(() => {
+    if (!map || !item || map.getZoom() < 15) return
+
+    const removeAllMarkers = () => {
       markers.forEach((marker) => {
         naver.maps.Event?.clearInstanceListeners(marker)
         marker.setMap(null)
       })
+      markers = []
     }
-    markers = []
-    const zoomLevel = map?.getZoom()
+    removeAllMarkers()
+    const zoomLevel = map.getZoom()
     const marker = new window.naver.maps.Marker({
       map: map,
       position: new window.naver.maps.LatLng(item.y, item.x),
@@ -109,54 +115,35 @@ const MarkerRenderer = ({
         }),
         anchor: new window.naver.maps.Point(12, 12),
       },
+      animation:
+        listOver.isOver && item.x === listOver.x && item.y === listOver.y
+          ? naver.maps.Animation.BOUNCE
+          : null,
     })
-    marker.setZIndex(handleZIndex(item.types[0]))
+    marker.setZIndex(handleZIndex(item.types[0], item.winYn))
     markers.push(marker)
 
-    if (marker) {
-      markerRef.current = marker
-      naver.maps.Event?.addListener(marker, 'mouseover', () => {
-        marker.setZIndex(110)
-      })
-      naver.maps.Event?.addListener(marker, 'mouseout', () => {
-        item.types[0] === 1
-          ? marker.setZIndex(100)
-          : item.types[0] === 2
-          ? marker.setZIndex(90)
-          : item.types[0] === 3
-          ? marker.setZIndex(80)
-          : marker.setZIndex(60)
-      })
-      naver.maps.Event?.addListener(marker, 'click', () => {
-        handleMarkerClick(item)
-        const target = document.getElementById(`target_${index}`)
-        if (target) {
-          const rect = target.getBoundingClientRect()
-          setMarkerPosition((prev) => {
-            return {
-              position: [0, 0],
-              type: [1],
-              winYn: item.winYn,
-            }
-          })
-          setMarkerPosition((prev) => {
-            return {
-              position: [rect.left, rect.top],
-              type: item.types,
-              winYn: item.winYn,
-            }
-          })
-        }
-      })
-    }
+    markerRef.current = marker
 
-    return () => {
-      if (markers) {
-        markers.forEach((marker) => {
-          marker.setMap(null)
+    naver.maps.Event?.addListener(marker, 'mouseover', () => {
+      marker.setZIndex(110)
+    })
+    naver.maps.Event?.addListener(marker, 'mouseout', () => {
+      marker.setZIndex(handleZIndex(item.types[0], item.winYn))
+    })
+    naver.maps.Event?.addListener(marker, 'click', () => {
+      handleMarkerClick(item)
+      const target = document.getElementById(`target_${index}`)
+      if (target) {
+        const rect = target.getBoundingClientRect()
+        setMarkerPosition({
+          position: [rect.left, rect.top],
+          type: item.types,
+          winYn: item.winYn,
         })
       }
-    }
+    })
+    return () => removeAllMarkers()
   }, [
     map,
     item,
@@ -168,6 +155,7 @@ const MarkerRenderer = ({
     clickedItem,
     handleMarkerClick,
     setMarkerPosition,
+    listOver.isOver,
   ])
   return null
 }

@@ -72,10 +72,10 @@ export const UsageTopIcon = (
     };">
       ${item.winYn === 'Y' ? WinIcon() : ''}
       ${item.interest === 'Y' ? InterestIcon() : ''}
-      ${item.share === 'Y' && count < 2 ? ShareIcon(item, type, '-5') : ''}
+      ${item.share === 'Y' && item.count < 2 ? ShareIcon(item, type, '-5') : ''}
       ${
         count > 1
-          ? PnuCountIcon(item, count, type, isSame, includeYn, '-5')
+          ? PnuCountIcon(item, item.count, type, isSame, includeYn, '-5')
           : ''
       }
       <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 14px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.14px;">

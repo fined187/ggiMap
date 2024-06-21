@@ -68,9 +68,10 @@ interface Props {
     }>
   >
   setHalfDimensions: Dispatch<SetStateAction<{ width: number; height: number }>>
+  dragStateRef: MutableRefObject<boolean>
 }
 
-const DEBOUNCE_DELAY = 500
+const DEBOUNCE_DELAY = 100
 const ADJUST_WIDTH = 300
 
 export default function GGIMap({
@@ -85,10 +86,11 @@ export default function GGIMap({
   setHalfDimensions,
   zoom,
   page,
+  dragStateRef,
 }: Props) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
-  const dragStateRef = useRef(false)
+
   const { mutate: getMapItems } = usePostMapItems(
     formData,
     dragStateRef.current,
@@ -111,23 +113,17 @@ export default function GGIMap({
     lng: 0,
   })
   const zoomLevel = mapRef.current?.getZoom() ?? null
-  const [getGungu, setGetGungu] = useState('')
   const [juso, setJuso] = useRecoilState(jusoAtom)
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
 
-  const handleCenterChanged = useCallback(() => {
-    if (mapRef.current) {
-      const mapCenter: naver.maps.Point = mapRef.current.getCenter()
-      const centerCoords = { lat: mapCenter.y, lng: mapCenter.x }
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useReverseGeoCode(
-        centerCoords.lat,
-        centerCoords.lng,
-        setGetGungu,
-        setJuso,
-      )
-    }
-  }, [mapRef.current, setJuso, setGetGungu, useReverseGeoCode])
+  // const handleCenterChanged = useCallback(() => {
+  //   if (mapRef.current) {
+  //     const mapCenter: naver.maps.Point = mapRef.current.getCenter()
+  //     const centerCoords = { lat: mapCenter.y, lng: mapCenter.x }
+  //     // eslint-disable-next-line react-hooks/rules-of-hooks
+  //     useReverseGeoCode(centerCoords.lat, centerCoords.lng, setJuso)
+  //   }
+  // }, [mapRef.current, setJuso, useReverseGeoCode])
 
   useEffect(() => {
     const updateHalfDimensions = () => {
@@ -146,52 +142,55 @@ export default function GGIMap({
     }
   }, [setHalfDimensions])
 
-  const debouncedGetMapItems = useDebounce(getMapItems, DEBOUNCE_DELAY)
-  const debouncedGetMapLists = useDebounce(getMapLists, DEBOUNCE_DELAY)
-  const debounceGetCenterChanged = useDebounce(
-    handleCenterChanged,
-    DEBOUNCE_DELAY,
-  )
+  // const debouncedGetMapItems = useDebounce(getMapItems, DEBOUNCE_DELAY)
+  // const debouncedGetMapLists = useDebounce(getMapLists, DEBOUNCE_DELAY)
+  // const debounceGetCenterChanged = useDebounce(
+  //   handleCenterChanged,
+  //   DEBOUNCE_DELAY,
+  // )
+  // const handleGetBounds = useCallback(() => {
+  //   if (!mapRef.current) return
+  //   const bounds = mapRef.current.getBounds() as any
+  //   const sw = bounds.getSW()
+  //   const ne = bounds.getNE()
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     x1: sw.lng(),
+  //     y1: sw.lat(),
+  //     x2: ne.lng(),
+  //     y2: ne.lat(),
+  //   }))
+  //   if (mapRef.current.getZoom() >= 15) {
+  //     debouncedGetMapItems()
+  //   } else {
+  //     setMapItems([])
+  //     setMapOrigin([])
+  //   }
+  // }, [setFormData, debouncedGetMapItems, setMapItems, setMapOrigin])
+
   const handleGetBounds = useCallback(() => {
     if (!mapRef.current) return
+    console.log('실행!')
     const bounds = mapRef.current.getBounds() as any
-    const projection = mapRef.current.getProjection()
-
-    const swPixel = projection.fromCoordToOffset(bounds.getSW())
-    const nePixel = projection.fromCoordToOffset(bounds.getNE())
-
-    const adjustedSW = new naver.maps.Point(swPixel.x + ADJUST_WIDTH, swPixel.y)
-    const adjustedNE = new naver.maps.Point(nePixel.x + ADJUST_WIDTH, nePixel.y)
-
-    const adjustedSw = projection.fromOffsetToCoord(
-      adjustedSW,
-    ) as naver.maps.LatLng
-    const adjustedNe = projection.fromOffsetToCoord(
-      adjustedNE,
-    ) as naver.maps.LatLng
+    const sw = bounds.getSW()
+    const ne = bounds.getNE()
     setFormData((prev) => ({
       ...prev,
-      x1: adjustedSw.lng(),
-      y1: adjustedSw.lat(),
-      x2: adjustedNe.lng(),
-      y2: adjustedNe.lat(),
+      x1: sw.lng(),
+      y1: sw.lat(),
+      x2: ne.lng(),
+      y2: ne.lat(),
     }))
-    if (mapRef.current.getZoom() >= 15) {
-      debouncedGetMapItems()
-    } else {
-      setMapItems([])
-      setMapOrigin([])
-    }
-  }, [setFormData, debouncedGetMapItems, setMapItems, setMapOrigin])
+  }, [setFormData])
 
-  const handlePromiseAll = useCallback(() => {
-    if (!mapRef.current || dragStateRef.current) return
-    debounceGetCenterChanged()
-    handleGetBounds()
-    if (mapRef.current.getZoom() >= 15) {
-      debouncedGetMapLists()
-    }
-  }, [handleGetBounds, debouncedGetMapLists])
+  // const handlePromiseAll = useCallback(() => {
+  //   if (!mapRef.current || dragStateRef.current) return
+  //   debounceGetCenterChanged()
+  //   handleGetBounds()
+  //   if (mapRef.current.getZoom() >= 15) {
+  //     debouncedGetMapLists()
+  //   }
+  // }, [handleGetBounds, debouncedGetMapLists])
 
   const setUpMiniMap = useCallback(
     (map: NaverMap) => {
@@ -257,13 +256,15 @@ export default function GGIMap({
     const map = new window.naver.maps.Map(mapId, mapOptions)
     mapRef.current = map
 
-    window.naver.maps.Event.addListener(map, 'idle', handlePromiseAll)
+    window.naver.maps.Event.addListener(map, 'zoom_changed', handleGetBounds)
+    window.naver.maps.Event.addListener(map, 'init', handleGetBounds)
+    window.naver.maps.Event.addListener(map, 'idle', handleGetBounds)
     window.naver.maps.Event.addListener(map, 'dragstart', () => {
       dragStateRef.current = true
     })
     window.naver.maps.Event.addListener(map, 'dragend', () => {
       dragStateRef.current = false
-      handlePromiseAll()
+      handleGetBounds()
     })
     window.naver.maps.Event.addListener(map, 'click', (e: any) => {
       if (map.streetLayer) {
@@ -304,7 +305,7 @@ export default function GGIMap({
   }
 
   useEffect(() => {
-    handlePromiseAll()
+    getMapItems()
   }, [
     formData.egg,
     formData.ekm,

@@ -53,10 +53,10 @@ export default function MapFunction({
         setClickedMapType={setClickedMapType}
       />
       <CurrentBtn />
-      <ToolsBtn
+      {/* <ToolsBtn
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}
-      />
+      /> */}
     </Flex>
   )
 }

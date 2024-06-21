@@ -13,79 +13,80 @@ import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Loader from './icon/loader/Loader'
 import { useRecoilState } from 'recoil'
-import { formDataAtom, loaderAtom, mapListAtom } from '@/store/atom/map'
+import {
+  formDataAtom,
+  jusoAtom,
+  loaderAtom,
+  mapListAtom,
+} from '@/store/atom/map'
 import { usePostListItems } from '@/hooks/items/usePostListItems'
+import useDebounce from '@/components/shared/hooks/useDebounce'
+import { useInView } from 'react-intersection-observer'
+import { ListData } from '@/models/MapItem'
+import useSearchListQuery from './hooks/useSearchListQuery'
+import { useReverseGeoCode } from '@/components/map/sections/hooks/useReverseGeoCode'
 
 interface ResultProps {
   page: number
   setPage: React.Dispatch<React.SetStateAction<number>>
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  dragStateRef: React.MutableRefObject<boolean>
 }
 
 const ROWS_PER_PAGE = 10
 
-function Result({ isOpen, setIsOpen, page, setPage }: ResultProps) {
+function Result({
+  isOpen,
+  setIsOpen,
+  page,
+  setPage,
+  dragStateRef,
+}: ResultProps) {
   const { data: map } = useSWR(MAP_KEY)
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
   const [showingList, setShowingList] = useState(false)
   const scrollbarsRef = useRef<HTMLDivElement | null>(null)
+  const [juso, setJuso] = useRecoilState(jusoAtom)
   const [loader, setLoader] = useRecoilState(loaderAtom)
-  const { mutate: getMapLists } = usePostListItems(
-    formData,
+  const [mapData, setMapData] = useState<ListData>({
+    ids:
+      formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
+    fromAppraisalAmount: formData.fromAppraisalAmount,
+    toAppraisalAmount: formData.toAppraisalAmount,
+    fromMinimumAmount: formData.fromMinimumAmount,
+    toMinimumAmount: formData.toMinimumAmount,
+    interests: formData.interests,
+    x1: formData.x1,
+    y1: formData.y1,
+    x2: formData.x2,
+    y2: formData.y2,
+    awardedMonths: formData.awardedMonths,
+    km: formData.km,
+    kw: formData.kw,
+    gm: formData.gm,
+    gg: formData.gg,
+    ekm: formData.ekm,
+    egm: formData.egm,
+    egg: formData.egg,
+  })
+
+  const handleCenterChanged = useCallback(() => {
+    if (map) {
+      const mapCenter: naver.maps.Point = map.getCenter()
+      const centerCoords = { lat: mapCenter.y, lng: mapCenter.x }
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useReverseGeoCode(centerCoords.lat, centerCoords.lng, setJuso)
+    }
+  }, [map, setJuso, useReverseGeoCode])
+
+  const { data, fetchNextPage, hasNextPage, isLoading } = useSearchListQuery({
+    mapData,
+    handleCenterChanged,
+    dragStateRef,
     page,
-    ROWS_PER_PAGE,
-  )
-  const [isLoading, setIsLoading] = useState(false)
-  const fetchNextPage = useCallback(() => {
-    if (
-      mapListItems?.paging.totalElements > mapListItems?.contents.length &&
-      !isLoading
-    ) {
-      setIsLoading(true)
-      setPage((prev) => prev + 1)
-      getMapLists()
-      setIsLoading(false)
-    }
-  }, [
-    getMapLists,
-    isLoading,
-    mapListItems?.contents.length,
-    mapListItems?.paging.totalElements,
-  ])
-
-  const handleScroll = useCallback(() => {
-    const scrollElement = scrollbarsRef.current
-    if (!scrollElement) return
-    if (
-      scrollElement.scrollTop + scrollElement.clientHeight ===
-      scrollElement.scrollHeight
-    ) {
-      fetchNextPage()
-    }
-  }, [fetchNextPage])
-
-  useEffect(() => {
-    const scrollElement = scrollbarsRef.current
-    if (scrollElement) {
-      scrollElement.addEventListener('scroll', handleScroll)
-      return () => {
-        scrollElement.removeEventListener('scroll', handleScroll)
-      }
-    }
-  }, [handleScroll])
-
-  useEffect(() => {
-    if (!map) return
-    if (map.getZoom() >= 15) {
-      setShowingList(true)
-      fetchNextPage()
-    } else if (map && map.getZoom() < 15) {
-      setShowingList(false)
-      setIsOpen(true)
-    }
-  }, [map?.getZoom()])
+  })
 
   const scrollToTop = useCallback(() => {
     if (!scrollbarsRef.current) return
@@ -93,11 +94,81 @@ function Result({ isOpen, setIsOpen, page, setPage }: ResultProps) {
   }, [scrollbarsRef.current])
 
   useEffect(() => {
-    setLoader(true)
-    scrollToTop()
-    setPage(1)
-  }, [formData.x1, formData.y1, formData.x2, formData.y2])
+    if (map && map.zoom! >= 15) {
+      setShowingList(true)
+      fetchNextPage()
+    } else if (map && map.zoom! < 15) {
+      setShowingList(false)
+      setIsOpen(true)
+    }
+  }, [map?.zoom])
 
+  useEffect(() => {
+    if (!map) return
+    if (map.getZoom() >= 15) {
+      setShowingList(true)
+      setPage(1)
+    } else if (map && map.getZoom() < 15) {
+      setShowingList(false)
+      setIsOpen(true)
+    }
+  }, [map?.getZoom(), setPage, setIsOpen])
+
+  useEffect(() => {
+    setMapData({
+      ids:
+        formData.ids.length === 12
+          ? '0'
+          : formData.ids.map((id) => id).join(','),
+      fromAppraisalAmount: formData.fromAppraisalAmount,
+      toAppraisalAmount: formData.toAppraisalAmount,
+      fromMinimumAmount: formData.fromMinimumAmount,
+      toMinimumAmount: formData.toMinimumAmount,
+      interests: formData.interests,
+      x1: formData.x1,
+      y1: formData.y1,
+      x2: formData.x2,
+      y2: formData.y2,
+      awardedMonths: formData.awardedMonths,
+      km: formData.km,
+      kw: formData.kw,
+      gm: formData.gm,
+      gg: formData.gg,
+      ekm: formData.ekm,
+      egm: formData.egm,
+      egg: formData.egg,
+    })
+  }, [formData])
+
+  useEffect(() => {
+    const handleUpdateMapList = () => {
+      if (data) {
+        if (data.pageParams.length === 1) {
+          setLoader(true)
+          scrollToTop()
+          setMapListItems((prev) => {
+            return {
+              ...prev,
+              contents: data.pages[0]?.contents,
+              paging: data.pages[0]?.paging,
+            }
+          })
+          setLoader(false)
+        } else if (data.pageParams.length > 1) {
+          setMapListItems((prev) => {
+            return {
+              ...prev,
+              contents: [
+                ...(prev?.contents ?? []),
+                ...(data && data?.pages[data.pages.length - 1]?.contents),
+              ],
+            }
+          })
+        }
+      }
+    }
+    handleUpdateMapList()
+  }, [data, setMapListItems])
   return (
     <Flex
       direction="column"
@@ -120,20 +191,19 @@ function Result({ isOpen, setIsOpen, page, setPage }: ResultProps) {
               {loader ? (
                 <Loader />
               ) : (
-                <InfiniteScroll
-                  dataLength={mapListItems.contents.length}
-                  hasMore={
-                    mapListItems.paging.totalElements >
-                    mapListItems.contents.length
-                  }
-                  next={fetchNextPage}
-                  loader={<ListSkeleton />}
-                  scrollableTarget="scrollbarDiv"
-                >
-                  {mapListItems.contents.map((item, index) => (
-                    <Forms key={index} item={item} index={index} />
-                  ))}
-                </InfiniteScroll>
+                <>
+                  <InfiniteScroll
+                    dataLength={mapListItems.contents.length}
+                    next={fetchNextPage}
+                    hasMore={hasNextPage ?? true}
+                    loader={<ListSkeleton />}
+                    scrollableTarget="scrollbarDiv"
+                  >
+                    {mapListItems.contents.map((item, index) => (
+                      <Forms key={index} item={item} index={index} />
+                    ))}
+                  </InfiniteScroll>
+                </>
               )}
             </Container>
           </>

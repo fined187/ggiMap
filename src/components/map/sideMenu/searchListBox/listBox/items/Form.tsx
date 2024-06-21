@@ -12,10 +12,12 @@ import { MapItems } from '@/models/MapItem'
 import KwForm from './KwForm'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import NextImageWithFallback from '@/components/map/NextImageWithFallback'
 import NoImage from '../icon/NoImage'
 import { useInterestContext } from '@/contexts/useModalContext'
+import { useRecoilState } from 'recoil'
+import { listOverItemAtom } from '@/store/atom/map'
 
 interface ItemProps {
   item: MapItems
@@ -24,64 +26,9 @@ interface ItemProps {
 
 function Form({ item, index }: ItemProps) {
   const url = usePathUrl(item?.type ?? 1)
-  const { data: map } = useSWR(MAP_KEY)
-  const [isBlinking, setIsBlinking] = useState(false)
-  const [blinkingInterval, setBlinkingInterval] = useState<
-    NodeJS.Timeout | null | number
-  >(null)
-  const [marker, setMarker] = useState<null | naver.maps.Marker>(null)
   const [openModal, setOpenModal] = useState(false)
   const { open } = useInterestContext()
-  const createMarker = useCallback((lat: number, lng: number) => {
-    if (map) {
-      if (marker) {
-        marker.setPosition(new naver.maps.LatLng(lat, lng))
-        marker.setMap(map)
-      } else {
-        const newMarker = new naver.maps.Marker({
-          position: new naver.maps.LatLng(lat, lng),
-          map: map,
-          icon: {
-            content: `<div style="margin-left: -20px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                          <circle cx="16" cy="16" r="15.75" fill="#3C3C3C" fill-opacity="0.25" stroke="#D9D9D9" stroke-width="0.5"/>
-                          <circle cx="16.5" cy="15.5" r="7.25" fill="#3C3C3C" stroke="#D9D9D9" stroke-width="0.5"/>
-                        </svg>
-                      </div>`,
-          },
-        })
-        setMarker(newMarker)
-        setIsBlinking(true)
-        const intervalId = setInterval(() => {
-          if (newMarker.getMap()) {
-            newMarker.setMap(null)
-          } else {
-            newMarker.setMap(map)
-          }
-        }, 500)
-
-        setBlinkingInterval(intervalId)
-      }
-    }
-  }, [])
-
-  const removeMarker = useCallback(() => {
-    if (marker) {
-      marker.setMap(null)
-    }
-    setIsBlinking(false)
-    if (blinkingInterval) {
-      clearInterval(blinkingInterval as number)
-    }
-    setBlinkingInterval(null)
-  }, [marker, blinkingInterval])
-
-  useEffect(() => {
-    return () => {
-      removeMarker()
-    }
-  }, [removeMarker])
-
+  const [overList, setOverList] = useRecoilState(listOverItemAtom)
   const onButtonClick = () => {
     setOpenModal(false)
   }
@@ -95,16 +42,21 @@ function Form({ item, index }: ItemProps) {
       return `https://www.ggi.co.kr/wait/mulgun_detail_popup_w.asp?idcode=${idCode}&new=new&viewchk=P`
     }
   }
-
   return (
     <div
       onMouseOver={() => {
-        const lat = item?.y ?? 0
-        const lng = item?.x ?? 0
-        createMarker(lat, lng)
+        setOverList({
+          isOver: true,
+          x: item.x,
+          y: item.y,
+        })
       }}
       onMouseOut={() => {
-        removeMarker()
+        setOverList({
+          isOver: false,
+          x: 0, // 또는 0 if you prefer
+          y: 0, // 또는 0 if you prefer
+        })
       }}
     >
       {item?.type === 1 || item?.type === 2 || item?.type === 3 ? (
@@ -267,6 +219,7 @@ function Form({ item, index }: ItemProps) {
                 <Text
                   css={appraisalAmt}
                   style={{
+                    width: '70px',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',

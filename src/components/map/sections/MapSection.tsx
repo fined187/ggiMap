@@ -43,6 +43,7 @@ export default function MapSection({
     height: 0,
   })
   const [range, setRange] = useState<number>(0)
+  const dragStateRef = useRef(false)
   const {
     mapCount,
     setMapCount,
@@ -81,6 +82,7 @@ export default function MapSection({
         setClickedMapType={setClickedMapType}
         setHalfDimensions={setHalfDimensions}
         page={page}
+        dragStateRef={dragStateRef}
       />
       <BoxGuard isOpen={isOpen}>
         <SearchBox />
@@ -89,6 +91,7 @@ export default function MapSection({
           setIsOpen={setIsOpen}
           page={page}
           setPage={setPage}
+          dragStateRef={dragStateRef}
         />
       </BoxGuard>
       <Flex direction="column">

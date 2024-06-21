@@ -149,3 +149,12 @@ export const clickedItemAtom = atom<MapItem | null>({
   key: `clicked/${v4()}`,
   default: null,
 })
+
+export const listOverItemAtom = atom({
+  key: `listOver/${v4()}`,
+  default: {
+    x: 0,
+    y: 0,
+    isOver: false,
+  },
+})

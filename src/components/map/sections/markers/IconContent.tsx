@@ -7,7 +7,6 @@ import {
   UsageIcon,
 } from './Icon/Marker1'
 import { AmountBottomIcon, UsageTopIcon } from './Icon/Marker2'
-import { MutableRefObject } from 'react'
 
 interface IconContentProps {
   item: MapItem
@@ -31,24 +30,27 @@ export default function IconContent({
   const commonStyle1 = `
     <div id="target_${index}" style="flex-direction: row; display: flex; margin-top: -30px;">
       ${
-        item.interest === 'Y' && count < 2
+        item.interest === 'Y' && item.count < 2
           ? InterestIcon(item, item.types[0])
           : ''
       }
-      ${item.share === 'Y' && count < 2 ? ShareIcon(item, item.types[0]) : ''}
       ${
-        count > 1
-          ? PnuCountIcon(item, count, item.types[0], isSame, includeYn)
+        item.share === 'Y' && item.count < 2
+          ? ShareIcon(item, item.types[0])
+          : ''
+      }
+      ${
+        item.count > 1
+          ? PnuCountIcon(item, item.count, item.types[0], isSame, includeYn)
           : ''
       }
       ${UsageIcon(item, handleItemUsage, item.types[0])}
       ${AmountIcon(item, item.types[0])}
     </div>
   `
-
   const commonStyle2 = `
     <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px;">
-      ${UsageTopIcon(item, count, item.types[0], isSame, includeYn)}
+      ${UsageTopIcon(item, item.count, item.types[0], isSame, includeYn)}
       ${AmountBottomIcon(item, item.types[0])}
     </div>
   `

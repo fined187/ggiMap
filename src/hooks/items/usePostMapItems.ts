@@ -30,7 +30,6 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
   const [mapItemOrigin, setMapItemOrigin] = useRecoilState(mapItemsOriginAtom)
   const { mutate } = useMutation(async () => await postMapItems(param), {
     onSuccess: (data) => {
-      console.log(data)
       setMapItems([])
       setMapItems(data.mapItems)
       setMapItemOrigin(data.mapItems)

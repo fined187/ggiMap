@@ -1,15 +1,4 @@
-import { MapItem } from '@/models/MapItem'
-import {
-  Dispatch,
-  MutableRefObject,
-  RefObject,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
-import useSWR from 'swr'
-import { MAP_KEY } from '../hooks/useMap'
+import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import Markers from './Markers'
 
 interface MarkerClusterProps {

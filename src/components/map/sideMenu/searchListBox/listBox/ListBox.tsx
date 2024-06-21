@@ -11,6 +11,7 @@ interface ListBoxProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   page: number
   setPage: React.Dispatch<React.SetStateAction<number>>
+  dragStateRef: React.MutableRefObject<boolean>
 }
 
 export default function ListBox({
@@ -18,6 +19,7 @@ export default function ListBox({
   setIsOpen,
   page,
   setPage,
+  dragStateRef,
 }: ListBoxProps) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
@@ -36,7 +38,7 @@ export default function ListBox({
             ? 'calc(100vh - 380px)'
             : formData.lastFilter === 4 && formData.isSubFilterBoxOpen
             ? 'calc(100vh - 380px)'
-            : map && map.zoom! >= 15 && mapListItems?.contents.length! > 0
+            : map && map.zoom! >= 15 && mapListItems?.contents?.length! > 0
             ? 'calc(100vh - 150px)'
             : '150px'
           : '59px',
@@ -47,6 +49,7 @@ export default function ListBox({
         setIsOpen={setIsOpen}
         page={page}
         setPage={setPage}
+        dragStateRef={dragStateRef}
       />
     </Flex>
   )
