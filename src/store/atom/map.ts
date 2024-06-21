@@ -28,6 +28,7 @@ export const mapItemsAtom = atom<MapItem[]>({
       amount: '',
       interest: '',
       count: 0,
+      winExist: false,
     },
   ],
 })
@@ -50,6 +51,7 @@ export const mapItemsOriginAtom = atom<MapItem[]>({
       amount: '',
       interest: '',
       count: 0,
+      winExist: false,
     },
   ],
 })
@@ -115,10 +117,10 @@ export const formDataAtom = atom<Form>({
     x2: 1,
     y2: 1,
     awardedMonths: 0,
-    km: false,
-    kw: false,
-    gm: false,
-    gg: false,
+    km: true,
+    kw: true,
+    gm: true,
+    gg: true,
     ekm: false,
     egm: false,
     egg: false,
@@ -138,11 +140,6 @@ export const jusoAtom = atom<jusoProps>({
     bottomGungu: '',
     bottomDong: '',
   },
-})
-
-export const loaderAtom = atom<boolean>({
-  key: `loader/${v4()}`,
-  default: false,
 })
 
 export const clickedItemAtom = atom<MapItem | null>({

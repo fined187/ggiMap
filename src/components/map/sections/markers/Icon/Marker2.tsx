@@ -27,8 +27,7 @@ export const UsageTopIcon = (
   item: MapItem,
   count: number,
   type: number,
-  isSame: boolean,
-  includeYn: boolean,
+  winExist: boolean,
 ) => {
   return `
     <div style="flex-direction: row; display: flex; width: 100px; height: 27px; padding: 2px 4px; justify-content: center; align-items: center; gap: 2px; border-radius: 12px 12px 0px 0px; border-top: ${
@@ -73,11 +72,7 @@ export const UsageTopIcon = (
       ${item.winYn === 'Y' ? WinIcon() : ''}
       ${item.interest === 'Y' ? InterestIcon() : ''}
       ${item.share === 'Y' && item.count < 2 ? ShareIcon(item, type, '-5') : ''}
-      ${
-        count > 1
-          ? PnuCountIcon(item, item.count, type, isSame, includeYn, '-5')
-          : ''
-      }
+      ${count > 1 ? PnuCountIcon(item, item.count, type, winExist, '-5') : ''}
       <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 14px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.14px;">
         ${
           item.usage === '단독,다가구'

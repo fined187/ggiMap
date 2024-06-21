@@ -40,6 +40,17 @@ export default function GroupElements({
           flexDirection: 'row',
           display: 'flex',
           position: 'relative',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          setFormData({
+            ...formData,
+            importance: '0',
+            interestInfo: {
+              ...formData.interestInfo,
+              starRating: '0',
+            },
+          })
         }}
       >
         <Input
@@ -59,6 +70,17 @@ export default function GroupElements({
         style={{
           flexDirection: 'row',
           display: 'flex',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          setFormData({
+            ...formData,
+            importance: '1',
+            interestInfo: {
+              ...formData.interestInfo,
+              starRating: '1',
+            },
+          })
         }}
       >
         <Input
@@ -78,6 +100,17 @@ export default function GroupElements({
         style={{
           flexDirection: 'row',
           display: 'flex',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          setFormData({
+            ...formData,
+            importance: '2',
+            interestInfo: {
+              ...formData.interestInfo,
+              starRating: '2',
+            },
+          })
         }}
       >
         <Input
@@ -97,6 +130,17 @@ export default function GroupElements({
         style={{
           flexDirection: 'row',
           display: 'flex',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          setFormData({
+            ...formData,
+            importance: '3',
+            interestInfo: {
+              ...formData.interestInfo,
+              starRating: '3',
+            },
+          })
         }}
       >
         <Input
@@ -116,6 +160,17 @@ export default function GroupElements({
         style={{
           flexDirection: 'row',
           display: 'flex',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          setFormData({
+            ...formData,
+            importance: '4',
+            interestInfo: {
+              ...formData.interestInfo,
+              starRating: '4',
+            },
+          })
         }}
       >
         <Input
@@ -135,6 +190,17 @@ export default function GroupElements({
         style={{
           flexDirection: 'row',
           display: 'flex',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          setFormData({
+            ...formData,
+            importance: '5',
+            interestInfo: {
+              ...formData.interestInfo,
+              starRating: '5',
+            },
+          })
         }}
       >
         <Input

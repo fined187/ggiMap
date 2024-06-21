@@ -21,13 +21,13 @@ const getColor = (item: MapItem, types: number): string => {
   }
 }
 
-const getCountColor = (item: MapItem, isSame: boolean, includeYn: boolean) => {
-  if (item.winYn === 'Y') {
-    return colors.winOrange
-  } else if (isSame && !includeYn) {
+const getCountColor = (item: MapItem, winExist: boolean) => {
+  if (item.winYn === 'Y' && winExist) {
     return colors.black
-  } else if (isSame && includeYn) {
+  } else if (item.winYn !== 'Y' && winExist) {
     return colors.winOrange
+  } else {
+    return colors.black
   }
 }
 
@@ -54,8 +54,7 @@ export const PnuCountIcon = (
   item: MapItem,
   count: number,
   type: number,
-  isSame: boolean,
-  includeYn: boolean,
+  winExist: boolean,
   top?: string,
 ) => {
   return `
@@ -68,8 +67,7 @@ export const PnuCountIcon = (
     )}; background: #FFF;">
       <span style="color: ${getCountColor(
         item,
-        isSame,
-        includeYn,
+        winExist,
       )}; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
         ${count > 99 ? '99+' : count}
       </span>
@@ -103,15 +101,10 @@ export const UsageIcon = (
 
 export const AmountIcon = (item: MapItem, type: number) => {
   return `
-  <div style="display: flex; width: 56px; height: 32px; padding: 2px 4px 2px 2px; justify-content: center; align-items: center; gap: 10px; flex-shrink: 0; border-radius: 0px 100px 100px 0px; background: ${
-    type === 1
-      ? `${colors.kmBlue}`
-      : type === 3
-      ? `${colors.ggPurple}`
-      : type === 2
-      ? `${colors.gmBlue}`
-      : `${colors.kwGreen}`
-  }; border-right: ${
+  <div style="display: flex; width: 56px; height: 32px; padding: 2px 4px 2px 2px; justify-content: center; align-items: center; gap: 10px; flex-shrink: 0; border-radius: 0px 100px 100px 0px; background: ${getColor(
+    item,
+    type,
+  )}; border-right: ${
     item.winYn === 'Y'
       ? `1px solid ${colors.winOrange}`
       : type === 1

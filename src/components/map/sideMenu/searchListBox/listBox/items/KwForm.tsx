@@ -25,7 +25,6 @@ function KwForm({
   setOpenModal: Dispatch<SetStateAction<boolean>>
   handleDetailPage: (id: string) => string | undefined
 }) {
-  const [auth, setAuth] = useRecoilState(authInfo)
   const { open } = useInterestContext()
   const onButtonClick = () => {
     setOpenModal(false)
@@ -78,7 +77,7 @@ function KwForm({
               window.open(
                 handleDetailPage(item?.idCode ?? ''),
                 '_blank',
-                'width=1000, height=800',
+                'width=1600, height=1000',
               )
             }
           }}

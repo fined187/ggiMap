@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import Flex from '@/components/shared/Flex'
 import Header from './Header'
 import styled from '@emotion/styled'
@@ -13,15 +12,7 @@ import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Loader from './icon/loader/Loader'
 import { useRecoilState } from 'recoil'
-import {
-  formDataAtom,
-  jusoAtom,
-  loaderAtom,
-  mapListAtom,
-} from '@/store/atom/map'
-import { usePostListItems } from '@/hooks/items/usePostListItems'
-import useDebounce from '@/components/shared/hooks/useDebounce'
-import { useInView } from 'react-intersection-observer'
+import { formDataAtom, jusoAtom, mapListAtom } from '@/store/atom/map'
 import { ListData } from '@/models/MapItem'
 import useSearchListQuery from './hooks/useSearchListQuery'
 import { useReverseGeoCode } from '@/components/map/sections/hooks/useReverseGeoCode'
@@ -33,8 +24,6 @@ interface ResultProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   dragStateRef: React.MutableRefObject<boolean>
 }
-
-const ROWS_PER_PAGE = 10
 
 function Result({
   isOpen,
@@ -49,7 +38,6 @@ function Result({
   const [showingList, setShowingList] = useState(false)
   const scrollbarsRef = useRef<HTMLDivElement | null>(null)
   const [juso, setJuso] = useRecoilState(jusoAtom)
-  const [loader, setLoader] = useRecoilState(loaderAtom)
   const [mapData, setMapData] = useState<ListData>({
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -144,7 +132,6 @@ function Result({
     const handleUpdateMapList = () => {
       if (data) {
         if (data.pageParams.length === 1) {
-          setLoader(true)
           scrollToTop()
           setMapListItems((prev: any) => {
             return {
@@ -153,7 +140,6 @@ function Result({
               paging: data.pages[0]?.paging,
             }
           })
-          setLoader(false)
         } else if (data.pageParams.length > 1) {
           setMapListItems((prev) => {
             return {
@@ -189,7 +175,7 @@ function Result({
               pageInfo={mapListItems?.paging?.totalElements ?? 0}
             />
             <Container isOpen={isOpen} id="scrollbarDiv" ref={scrollbarsRef}>
-              {loader ? (
+              {isLoading ? (
                 <Loader />
               ) : (
                 <>

@@ -13,6 +13,7 @@ export interface MapItem {
   share: string
   ratio: number
   count: number
+  winExist: boolean
 }
 
 export interface ListData {

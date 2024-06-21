@@ -112,6 +112,7 @@ const MarkerRenderer = ({
           handleItemUsage,
           index,
           zoomLevel: zoomLevel || 0,
+          winExist: item.winExist,
         }),
         anchor: new window.naver.maps.Point(12, 12),
       },

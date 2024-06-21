@@ -133,7 +133,7 @@ function Form({ item, index }: ItemProps) {
                 window.open(
                   handleDetailPage(item?.idCode ?? ''),
                   '_blank',
-                  'width=1000, height=800',
+                  'width=1600, height=1000',
                 )
               }
             }}
