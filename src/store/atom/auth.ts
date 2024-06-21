@@ -15,5 +15,7 @@ export const authInfo = atom<Auth>({
     type: '',
     lng: 127.105399,
     lat: 37.3595704,
+    detailLng: 0,
+    detailLat: 0,
   },
 })

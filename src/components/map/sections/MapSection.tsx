@@ -19,8 +19,8 @@ import { authInfo } from '@/store/atom/auth'
 interface MapProps {
   token: string
   handleParameters: (
-    params1?: string,
-    params2?: string,
+    params1: string,
+    params2: string,
     params3?: string,
     map?: NaverMap,
   ) => void

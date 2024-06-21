@@ -113,10 +113,10 @@ export default function IconContent({
             </defs>
           </svg>
         </div>`
-    } else if (zoomLevel > 15) {
-      return commonStyle2
-    } else {
+    } else if (zoomLevel === 16) {
       return commonStyle1
+    } else {
+      return commonStyle2
     }
   }
 }

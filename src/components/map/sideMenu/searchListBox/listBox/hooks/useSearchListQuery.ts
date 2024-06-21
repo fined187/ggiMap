@@ -37,7 +37,6 @@ export default function useSearchListQuery({
     page: number,
     PAGE_SIZE: number,
   ) => {
-    console.log(page)
     try {
       const [listItems] =
         page > 1
@@ -72,14 +71,6 @@ export default function useSearchListQuery({
     if (!data) return []
     return data?.pages.flatMap((page) => page?.contents)
   }, [data])
-
-  useEffect(() => {
-    console.log(`Data:`, data)
-    console.log(`Fetch Next Page:`, fetchNextPage)
-    console.log(`Has Next Page:`, hasNextPage)
-    console.log(`Is Fetching:`, isFetching)
-    console.log(`Is Loading:`, isLoading)
-  }, [data, fetchNextPage, hasNextPage, isFetching, isLoading])
 
   return {
     data,

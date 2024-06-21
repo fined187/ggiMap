@@ -99,3 +99,32 @@ export interface SearchListResponse {
   contents: MapItems[]
   pageInfo: PageInfo
 }
+
+export interface GetItemResponse {
+  success: boolean
+  code: number
+  message: string
+  data: {
+    id?: string
+    idCode?: string
+    caseNo?: string
+    type: number
+    appraisalAmt: number
+    minAmt: number
+    winAmt: number
+    ratio: number
+    buildingArea: string
+    landArea: string
+    path: string
+    interest: string
+    x: number
+    y: number
+    checkInfo?: string
+    status?: string
+    startDate?: string
+    dividendDate?: string
+    claim?: number
+    goodsId?: string
+    manageNo?: string
+  }
+}

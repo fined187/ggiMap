@@ -8,7 +8,6 @@ interface FilterType {
   bgColorType: string
   onButtonClick: () => void
   textType: string
-  isDisabled?: boolean
 }
 
 export default function FilterProps({
@@ -17,7 +16,6 @@ export default function FilterProps({
   bgColorType,
   onButtonClick,
   textType,
-  isDisabled,
 }: FilterType) {
   return (
     <Flex
@@ -28,11 +26,7 @@ export default function FilterProps({
         borderRadius: '8px',
       }}
       onClick={() => {
-        if (isDisabled) {
-          return
-        } else {
-          onButtonClick()
-        }
+        onButtonClick()
       }}
     >
       <Text

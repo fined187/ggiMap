@@ -18,8 +18,8 @@ const useMapUtils = (
   type: string,
   idCode: string,
   handleParameters: (
-    params1?: string,
-    params2?: string,
+    params1: string,
+    params2: string,
     params3?: string,
     map?: NaverMap,
   ) => void,

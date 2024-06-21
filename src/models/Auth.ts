@@ -9,4 +9,6 @@ export interface Auth {
   type: string
   lng: number
   lat: number
+  detailLng: number
+  detailLat: number
 }

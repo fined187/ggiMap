@@ -17,7 +17,6 @@ import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
 import {
   clickedItemAtom,
   formDataAtom,
-  jusoAtom,
   mapItemsAtom,
   mapItemsOriginAtom,
 } from '@/store/atom/map'
@@ -25,10 +24,8 @@ import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
 import { authInfo } from '@/store/atom/auth'
 import getPolypath from '@/remote/map/selected/getPolypath'
-import { usePostListItems } from '@/hooks/items/usePostListItems'
-import useDebounce from '@/components/shared/hooks/useDebounce'
 import { useGeoCode } from './hooks/useGeoCode'
-import { useReverseGeoCode } from './hooks/useReverseGeoCode'
+import MiniMap from './MiniMap'
 declare global {
   interface Window {
     naver: any
@@ -71,9 +68,6 @@ interface Props {
   dragStateRef: MutableRefObject<boolean>
 }
 
-const DEBOUNCE_DELAY = 100
-const ADJUST_WIDTH = 300
-
 export default function GGIMap({
   clickedMapType,
   mapId = 'map',
@@ -85,7 +79,6 @@ export default function GGIMap({
   setClickedMapType,
   setHalfDimensions,
   zoom,
-  page,
   dragStateRef,
 }: Props) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
@@ -95,7 +88,6 @@ export default function GGIMap({
     formData,
     dragStateRef.current,
   )
-  const { mutate: getMapLists } = usePostListItems(formData, page, 10)
   const { mutate: getMapCounts } = useMapCounts(
     formData,
     setMapCount as Dispatch<SetStateAction<MapCountsResponse[]>>,
@@ -113,64 +105,10 @@ export default function GGIMap({
     lng: 0,
   })
   const zoomLevel = mapRef.current?.getZoom() ?? null
-  const [juso, setJuso] = useRecoilState(jusoAtom)
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
-
-  // const handleCenterChanged = useCallback(() => {
-  //   if (mapRef.current) {
-  //     const mapCenter: naver.maps.Point = mapRef.current.getCenter()
-  //     const centerCoords = { lat: mapCenter.y, lng: mapCenter.x }
-  //     // eslint-disable-next-line react-hooks/rules-of-hooks
-  //     useReverseGeoCode(centerCoords.lat, centerCoords.lng, setJuso)
-  //   }
-  // }, [mapRef.current, setJuso, useReverseGeoCode])
-
-  useEffect(() => {
-    const updateHalfDimensions = () => {
-      const exceptFilterBox = window.innerWidth - 370
-      const halfHeight = window.innerHeight / 2
-      const halfWidth = exceptFilterBox / 2 + 370
-      setHalfDimensions({
-        width: halfWidth,
-        height: halfHeight,
-      })
-    }
-    if (typeof window !== 'undefined') {
-      updateHalfDimensions()
-      window.addEventListener('resize', updateHalfDimensions)
-      return () => window.removeEventListener('resize', updateHalfDimensions)
-    }
-  }, [setHalfDimensions])
-
-  // const debouncedGetMapItems = useDebounce(getMapItems, DEBOUNCE_DELAY)
-  // const debouncedGetMapLists = useDebounce(getMapLists, DEBOUNCE_DELAY)
-  // const debounceGetCenterChanged = useDebounce(
-  //   handleCenterChanged,
-  //   DEBOUNCE_DELAY,
-  // )
-  // const handleGetBounds = useCallback(() => {
-  //   if (!mapRef.current) return
-  //   const bounds = mapRef.current.getBounds() as any
-  //   const sw = bounds.getSW()
-  //   const ne = bounds.getNE()
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     x1: sw.lng(),
-  //     y1: sw.lat(),
-  //     x2: ne.lng(),
-  //     y2: ne.lat(),
-  //   }))
-  //   if (mapRef.current.getZoom() >= 15) {
-  //     debouncedGetMapItems()
-  //   } else {
-  //     setMapItems([])
-  //     setMapOrigin([])
-  //   }
-  // }, [setFormData, debouncedGetMapItems, setMapItems, setMapOrigin])
 
   const handleGetBounds = useCallback(() => {
     if (!mapRef.current) return
-    console.log('실행!')
     const bounds = mapRef.current.getBounds() as any
     const sw = bounds.getSW()
     const ne = bounds.getNE()
@@ -182,69 +120,6 @@ export default function GGIMap({
       y2: ne.lat(),
     }))
   }, [setFormData])
-
-  // const handlePromiseAll = useCallback(() => {
-  //   if (!mapRef.current || dragStateRef.current) return
-  //   debounceGetCenterChanged()
-  //   handleGetBounds()
-  //   if (mapRef.current.getZoom() >= 15) {
-  //     debouncedGetMapLists()
-  //   }
-  // }, [handleGetBounds, debouncedGetMapLists])
-
-  const setUpMiniMap = useCallback(
-    (map: NaverMap) => {
-      if (!map) return
-      let semaphore = false
-      const miniMapElement = document.getElementById('minimap')
-      if (!miniMapElement) return
-
-      const controls =
-        map.controls?.get(window.naver.maps.Position.BOTTOM_RIGHT) || []
-      controls.push(miniMapElement)
-
-      const minimap = new window.naver.maps.Map(miniMapElement, {
-        bounds: map.getBounds(),
-        scrollWheel: false,
-        scaleControl: false,
-        mapDataControl: false,
-        logoControl: false,
-      })
-      setMiniMap(minimap)
-
-      const roadview = new window.naver.maps.StreetLayer()
-      roadview.setMap(minimap)
-
-      let marker = new window.naver.maps.Marker({
-        position: {
-          lat: clickedLatLng?.lat ?? 0,
-          lng: clickedLatLng?.lng ?? 0,
-        },
-        map: minimap,
-      })
-
-      window.naver.maps.Event.addListener(map, 'bounds_changed', () => {
-        if (semaphore) return
-        minimap.fitBounds(map.getBounds())
-      })
-
-      window.naver.maps.Event.addListener(minimap, 'click', (e: any) => {
-        const latlng = e.coord
-        marker.setPosition(latlng)
-        setClickedMarker(marker)
-        setIsPanoVisible(true)
-        new window.naver.maps.Panorama('pano', {
-          position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
-          pov: {
-            pan: -135,
-            tilt: 29,
-            fov: 100,
-          },
-        })
-      })
-    },
-    [clickedLatLng],
-  )
 
   const initializeMap = useCallback(() => {
     const mapOptions = {
@@ -297,12 +172,28 @@ export default function GGIMap({
     if (onLoad) {
       onLoad(map)
     }
-    setUpMiniMap(map)
-  }, [initialCenter, zoom, onLoad, setUpMiniMap])
+  }, [initialCenter, zoom, onLoad])
 
   const closePanorama = () => {
     setIsPanoVisible(false)
   }
+
+  useEffect(() => {
+    const updateHalfDimensions = () => {
+      const exceptFilterBox = window.innerWidth - 370
+      const halfHeight = window.innerHeight / 2
+      const halfWidth = exceptFilterBox / 2 + 370
+      setHalfDimensions({
+        width: halfWidth,
+        height: halfHeight,
+      })
+    }
+    if (typeof window !== 'undefined') {
+      updateHalfDimensions()
+      window.addEventListener('resize', updateHalfDimensions)
+      return () => window.removeEventListener('resize', updateHalfDimensions)
+    }
+  }, [setHalfDimensions])
 
   useEffect(() => {
     getMapItems()
@@ -345,42 +236,46 @@ export default function GGIMap({
       setMapItems([])
       setMapOrigin([])
     }
-  }, [getMapCounts, setMapCount, zoomLevel, formData, zoomLevel])
+  }, [getMapCounts, setMapCount, zoomLevel, setMapItems, setMapOrigin])
 
   useEffect(() => {
     const updatePolyPath = async () => {
-      if (auth.lat && auth.lng) {
-        try {
-          const response = await getPolypath(
-            auth.lng as number,
-            auth.lat as number,
-          )
-          if (response.length > 0 && auth.idCode) {
-            const polyline = new window.naver.maps.Polyline({
-              map: mapRef.current,
-              path: response.map(
-                (item: number[][]) =>
-                  new window.naver.maps.LatLng(item[0], item[1]),
-              ),
-              fillColor: '#ff0000',
-              fillOpacity: 0.3,
-              strokeColor: '#ff0000',
-              strokeOpacity: 0.6,
-              strokeWeight: 3,
-              zIndex: 100,
-            })
-            return () => {
-              polyline.setMap(null)
-            }
+      if (!auth.detailLat || !auth.detailLng || !auth.idCode || !mapRef.current)
+        return
+      try {
+        const response = await getPolypath(
+          auth.detailLng as number,
+          auth.detailLat as number,
+        )
+        if (response.length > 0 && auth.idCode) {
+          const polyline = new window.naver.maps.Polyline({
+            map: mapRef.current,
+            path: response.map(
+              (item: number[][]) =>
+                new window.naver.maps.LatLng(item[0], item[1]),
+            ),
+            fillColor: '#ff0000',
+            fillOpacity: 0.3,
+            strokeColor: '#ff0000',
+            strokeOpacity: 0.6,
+            strokeWeight: 3,
+            zIndex: 100,
+          })
+          mapRef.current.setCenter({
+            lat: auth.detailLat,
+            lng: auth.detailLng,
+          })
+          mapRef.current.setZoom(17)
+          return () => {
+            polyline.setMap(null)
           }
-        } catch (error) {
-          console.error(error)
         }
+      } catch (error) {
+        console.error(error)
       }
     }
-
     updatePolyPath()
-  }, [auth.lat, auth.lng, auth.idCode])
+  }, [auth.detailLat, auth.detailLng, auth.idCode])
   return (
     <>
       <Script
@@ -438,17 +333,12 @@ export default function GGIMap({
           X
         </button>
       )}
-      <div
-        id="minimap"
-        style={{
-          width: '300px',
-          height: '300px',
-          position: 'absolute',
-          zIndex: 100,
-          bottom: '0',
-          right: '0',
-          display: isPanoVisible ? 'block' : 'none',
-        }}
+      <MiniMap
+        isPanoVisible={isPanoVisible}
+        setIsPanoVisible={setIsPanoVisible}
+        setClickedMarker={setClickedMarker}
+        clickedLatLng={clickedLatLng}
+        map={mapRef.current as NaverMap}
       />
       <MapType
         clickedMapType={clickedMapType}
