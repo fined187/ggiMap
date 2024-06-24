@@ -14,12 +14,7 @@ import Script from 'next/script'
 import { INITIAL_CENTER } from './hooks/useMap'
 import { MapCountsResponse } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
-import {
-  clickedItemAtom,
-  formDataAtom,
-  mapItemsAtom,
-  mapItemsOriginAtom,
-} from '@/store/atom/map'
+import { clickedItemAtom, formDataAtom, mapItemsAtom } from '@/store/atom/map'
 import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
 import { authInfo } from '@/store/atom/auth'
@@ -94,7 +89,6 @@ export default function GGIMap({
     setMapCount as Dispatch<SetStateAction<MapCountsResponse[]>>,
   )
   const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
-  const [mapOrigin, setMapOrigin] = useRecoilState(mapItemsOriginAtom)
   const mapRef = useRef<NaverMap | null>(null)
   const [isPanoVisible, setIsPanoVisible] = useState(false)
   const [clickedMarker, setClickedMarker] = useState<naver.maps.Marker | null>(
@@ -241,14 +235,12 @@ export default function GGIMap({
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useDebounce(getMapCounts(), 250)
       setMapItems([])
-      setMapOrigin([])
     }
   }, [
     getMapCounts,
     setMapCount,
     zoomLevel,
     setMapItems,
-    setMapOrigin,
     formData.x1,
     formData.y1,
     formData.x2,
@@ -282,7 +274,7 @@ export default function GGIMap({
             lat: auth.detailLat,
             lng: auth.detailLng,
           })
-          mapRef.current.setZoom(17)
+          mapRef.current.setZoom(19)
           return () => {
             polyline.setMap(null)
           }

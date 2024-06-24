@@ -101,10 +101,15 @@ export const UsageIcon = (
 
 export const AmountIcon = (item: MapItem, type: number) => {
   return `
-  <div style="display: flex; width: 56px; height: 32px; padding: 2px 4px 2px 2px; justify-content: center; align-items: center; gap: 10px; flex-shrink: 0; border-radius: 0px 100px 100px 0px; background: ${getColor(
-    item,
-    type,
-  )}; border-right: ${
+  <div style="display: flex; width: 56px; height: 32px; padding: 2px 4px 2px 2px; justify-content: center; align-items: center; gap: 10px; flex-shrink: 0; border-radius: 0px 100px 100px 0px; background: ${
+    type === 1
+      ? `${colors.kmBlue}`
+      : type === 3
+      ? `${colors.ggPurple}`
+      : type === 2
+      ? `${colors.gmBlue}`
+      : `${colors.kwGreen}`
+  }; border-right: ${
     item.winYn === 'Y'
       ? `1px solid ${colors.winOrange}`
       : type === 1

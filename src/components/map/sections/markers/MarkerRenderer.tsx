@@ -62,12 +62,12 @@ const MarkerRenderer = ({
           ? `${item.usage.slice(0, 2)}<br />${item.usage.slice(2, 4)}`
           : item.usage
     }
-  }, [item.usage])
+  }, [item?.usage])
 
   const handleZIndex = useCallback((types: number, yn: string) => {
-    if (types === 1) return 100
-    if (types === 2) return 90
-    if (types === 3) return 80
+    if (types === 1 && yn !== 'Y') return 100
+    if (types === 2 && yn !== 'Y') return 90
+    if (types === 3 && yn !== 'Y') return 80
     if (types === 4) return 60
     if (yn === 'Y') return 70
   }, [])
@@ -106,9 +106,6 @@ const MarkerRenderer = ({
       icon: {
         content: IconContent({
           item,
-          isSame,
-          count: item.count || 0,
-          includeYn,
           handleItemUsage,
           index,
           zoomLevel: zoomLevel || 0,

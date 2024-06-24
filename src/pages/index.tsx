@@ -59,7 +59,6 @@ export default function Home({ lastPathPart }: { lastPathPart: string }) {
 
 export const getServerSideProps = (context: GetServerSidePropsContext) => {
   const { req } = context
-  console.log('req.url', req)
   const pathParts = req.url?.split('/') || []
   const lastPathPart = pathParts[pathParts.length - 1]
   console.log('lastPathPart', lastPathPart)

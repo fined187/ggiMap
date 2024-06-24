@@ -1,6 +1,8 @@
 import { Form } from '@/models/Form'
+import { MapItem } from '@/models/MapItem'
 import postMapItems from '@/remote/map/items/postMapItems'
-import { mapItemsAtom, mapItemsOriginAtom } from '@/store/atom/map'
+import { authInfo } from '@/store/atom/auth'
+import { mapItemsAtom } from '@/store/atom/map'
 import { useMutation } from 'react-query'
 import { useRecoilState } from 'recoil'
 
@@ -27,12 +29,12 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
     egg: formData.egg,
   }
   const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
-  const [mapItemOrigin, setMapItemOrigin] = useRecoilState(mapItemsOriginAtom)
+  const [auth, setAuth] = useRecoilState(authInfo)
+
   const { mutate } = useMutation(async () => await postMapItems(param), {
     onSuccess: (data) => {
       setMapItems([])
-      setMapItems(data.mapItems)
-      setMapItemOrigin(data.mapItems)
+      setMapItems(data?.mapItems as MapItem[])
       dragState = false
     },
     onError: () => {

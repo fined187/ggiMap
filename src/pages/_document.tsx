@@ -8,10 +8,10 @@ export default function Document() {
       <Head>
         <Script src={KAKAO_SDK_URL} strategy="beforeInteractive" />
         <link rel="icon" href="/favicon.ico" />
-        <link
+        {/* <link
           href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT/fonts/static/woff2/SUIT.css"
           rel="stylesheet"
-        />
+        /> */}
       </Head>
       <meta
         name="viewport"

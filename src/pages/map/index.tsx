@@ -1,33 +1,30 @@
 import getAddress from '@/remote/map/auth/getAddress'
 import { GetServerSidePropsContext } from 'next'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useRecoilState } from 'recoil'
 import MapSection from '@/components/map/sections/MapSection'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { authInfo } from '@/store/atom/auth'
 import {
+  getGgItem,
   getGmItem,
   getKmItem,
   getKwItem,
 } from '@/remote/map/selectedItem/getItem'
 import {
-  SelectedGgItem,
-  SelectedGmItem,
-  SelectedKmItem,
-  SelectedKwItem,
-} from '@/models/SelectedItem'
-import {
   formDataAtom,
   jusoAtom,
   mapItemsAtom,
   mapListAtom,
+  selectedItemAtom,
 } from '@/store/atom/map'
 import { getPosition } from '@/remote/map/auth/getPosition'
 import { NaverMap } from '@/models/Map'
 import handleToken from '@/remote/map/auth/token'
 import { getSampleItems } from '@/remote/map/auth/getSampleItems'
-import { GetItemResponse } from '@/models/MapItem'
+import { GetItemResponse, MapItem, MapItems } from '@/models/MapItem'
+import { SelectedItems } from '@/models/DetailItems'
 interface Props {
   data?: {
     userId: string | null
@@ -49,9 +46,7 @@ function MapComponent({ token, type, idCode }: Props) {
   const [mapList, setMapList] = useRecoilState(mapListAtom)
   const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
   const [juso, setJuso] = useRecoilState(jusoAtom)
-  const [selectedData, setSelectedData] = useState<
-    SelectedKmItem | SelectedGmItem | SelectedGgItem | SelectedKwItem | null
-  >(null)
+  const [selectedData, setSelectedData] = useRecoilState(selectedItemAtom)
   const [formData, setFormData] = useRecoilState(formDataAtom)
 
   const setMapOptions = useCallback((map: NaverMap) => {
@@ -104,77 +99,87 @@ function MapComponent({ token, type, idCode }: Props) {
       switch (type) {
         case '1':
           response = (await getKmItem(idCode)) || null
-          if (response?.success) {
-            setFormData((prev) => ({
-              ...prev,
-              km: true,
-              ekm: response?.data.winAmt! > 0,
-              awardedMonths: 60,
-            }))
-            setAuth((prev) => {
-              return {
-                ...prev,
-                detailLng: response?.data.x || 0, // Assign a default value of 0 if undefined
-                detailLat: response?.data.y || 0, // Assign a default value of 0 if undefined
-              }
-            })
-          }
+          console.log(response)
+          setFormData((prev) => ({
+            ...prev,
+            km: true,
+          }))
           break
         case '2':
-        case '3':
           response = (await getGmItem(idCode)) || null
-          if (response?.success) {
-            setFormData((prev) => ({
-              ...prev,
-              gm: type === '2',
-              gg: type === '3',
-              egm: (type === '2' && response?.data.winAmt! > 0) || false,
-              egg: (type === '3' && response?.data.winAmt! > 0) || false,
-              awardedMonths: 60,
-            }))
-            setAuth((prev) => {
-              return {
-                ...prev,
-                detailLng: response?.data.x || 0, // Assign a default value of 0 if undefined
-                detailLat: response?.data.y || 0, // Assign a default value of 0 if undefined
-              }
-            })
-          }
+          console.log(response)
+          setFormData((prev) => ({
+            ...prev,
+            gm: true,
+            gg: true,
+            awardedMonths: 60,
+          }))
+          break
+        case '3':
+          response = (await getGgItem(idCode)) || null
+          console.log(response)
+          setFormData((prev) => ({
+            ...prev,
+            gm: true,
+            gg: true,
+          }))
           break
         case '4':
           response = (await getKwItem(idCode)) || null
-          if (response?.success) {
-            setFormData((prev) => ({
-              ...prev,
-              kw: true,
-            }))
-            setAuth((prev) => {
-              return {
-                ...prev,
-                detailLng: response?.data.x ?? 0, // Assign a default value of 0 if undefined
-                detailLat: response?.data.y ?? 0, // Assign a default value of 0 if undefined
-              }
-            })
-          }
+          setFormData((prev) => ({
+            ...prev,
+            kw: true,
+          }))
           break
       }
-
       if (response?.success) {
-        setSelectedData(response?.data as any)
+        if (type === '1') {
+          setSelectedData((prev: any) => {
+            return {
+              ...prev,
+              kmItem: response.data.kmItem,
+              mapItems: response.data.mapItem,
+            }
+          })
+        } else if (type === '2') {
+          setSelectedData((prev: any) => {
+            return {
+              ...prev,
+              gmItem: response.data.gmItem,
+              mapItems: response.data.mapItem,
+            }
+          })
+        } else if (type === '3') {
+          setSelectedData((prev: any) => {
+            return {
+              ...prev,
+              ggItem: response.data.gmItem,
+              mapItems: response.data.mapItem,
+            }
+          })
+        } else if (type === '4') {
+          setSelectedData((prev: any) => {
+            return {
+              ...prev,
+              kwItem: response.data.kwItem,
+              mapItems: response.data.mapItem,
+            }
+          })
+        }
         setAuth((prev) => ({
           ...prev,
-          type,
-          lng: response.data.x || 0, // Assign a default value of 0 if undefined
-          lat: response.data.y || 0, // Assign a default value of 0 if undefined
-          idCode: response.data.idCode ?? '', // Assign a default value of '' if undefined
-          goodsId: response.data.goodsId ?? '', // Assign a default value of '' if undefined
+          lat: response.data.mapItem.y,
+          lng: response.data.mapItem.x,
+          detailLat: response.data.mapItem.y,
+          detailLng: response.data.mapItem.x,
+          idCode: idCode,
+          type: type,
         }))
       }
     } catch (error) {
       console.error(error)
     }
   }
-
   let ok = false
   const handleParameters = useCallback(
     async (token: string, type: string, idCode?: string, map?: NaverMap) => {
@@ -208,8 +213,8 @@ function MapComponent({ token, type, idCode }: Props) {
               ...prev,
               km: type === '1',
               kw: type === '4',
-              gm: type === '2',
-              gg: type === '3',
+              gm: type === '2' || type === '3',
+              gg: type === '3' || type === '2',
             }))
 
             if (!idCode) {
@@ -223,6 +228,8 @@ function MapComponent({ token, type, idCode }: Props) {
             setMapOptions(map as NaverMap)
             setAuth((prev) => ({
               ...prev,
+              isLogin: false,
+              isAuth: true,
               role: response.data.data.authorities,
             }))
             setJuso((prev) => ({
@@ -235,8 +242,8 @@ function MapComponent({ token, type, idCode }: Props) {
               ...prev,
               km: type === '1',
               kw: type === '4',
-              gm: type === '2',
-              gg: type === '3',
+              gm: type === '2' || type === '3',
+              gg: type === '3' || type === '2',
             }))
             runDelayedConfirm()
           }

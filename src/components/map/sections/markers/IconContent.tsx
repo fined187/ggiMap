@@ -10,9 +10,6 @@ import { AmountBottomIcon, UsageTopIcon } from './Icon/Marker2'
 
 interface IconContentProps {
   item: MapItem
-  isSame: boolean
-  count: number
-  includeYn: boolean
   handleItemUsage: () => string
   index: number
   zoomLevel: number
@@ -21,9 +18,6 @@ interface IconContentProps {
 
 export default function IconContent({
   item,
-  isSame,
-  count,
-  includeYn,
   handleItemUsage,
   index,
   zoomLevel,
@@ -51,7 +45,7 @@ export default function IconContent({
     </div>
   `
   const commonStyle2 = `
-    <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; width: 100px; height: 100px; padding: 1px 4px 2px 6px; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px;">
+    <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px;">
       ${UsageTopIcon(item, item.count, item.types[0], winExist)}
       ${AmountBottomIcon(item, item.types[0])}
     </div>

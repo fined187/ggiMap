@@ -106,26 +106,54 @@ export interface GetItemResponse {
   code: number
   message: string
   data: {
-    id?: string
-    idCode?: string
-    caseNo?: string
-    type: number
-    appraisalAmt: number
-    minAmt: number
-    winAmt: number
-    ratio: number
-    buildingArea: string
-    landArea: string
-    path: string
-    interest: string
-    x: number
-    y: number
-    checkInfo?: string
-    status?: string
-    startDate?: string
-    dividendDate?: string
-    claim?: number
-    goodsId?: string
-    manageNo?: string
+    kmItem?: {
+      id: string
+      idCode: string
+      caseNo: string
+      type: number
+      status: string
+      appraisalAmt: number
+      minAmt: number
+      winAmt: number
+      ratio: number
+      buildingArea: string
+      landArea: string
+      path: string
+      interest: string
+      x: number
+      y: number
+      checkInfo: string
+    }
+    kwItem?: {
+      id: string
+      idCode: string
+      caseNo: string
+      type: number
+      status: string
+      startDate: string
+      dividendDate: string
+      claim: number
+      interest: string
+      x: number
+      y: number
+    }
+    gmItem?: {
+      goodsId: string
+      type: number
+      status: string
+      manageNo: string
+      appraisalAmt: number
+      minAmt: number
+      winAmt: number
+      ratio: number
+      buildingArea: string
+      landArea: string
+      path: string
+      interest: string
+      x: number
+      y: number
+      checkInfo: string
+    }
+    mapItem: MapItem
   }
 }

@@ -12,10 +12,17 @@ import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Loader from './icon/loader/Loader'
 import { useRecoilState } from 'recoil'
-import { formDataAtom, jusoAtom, mapListAtom } from '@/store/atom/map'
-import { ListData } from '@/models/MapItem'
+import {
+  formDataAtom,
+  isOnlySelectedAtom,
+  jusoAtom,
+  mapListAtom,
+  selectedItemAtom,
+} from '@/store/atom/map'
+import { ListData, MapItems } from '@/models/MapItem'
 import useSearchListQuery from './hooks/useSearchListQuery'
 import { useReverseGeoCode } from '@/components/map/sections/hooks/useReverseGeoCode'
+import { authInfo } from '@/store/atom/auth'
 
 interface ResultProps {
   page: number
@@ -38,6 +45,9 @@ function Result({
   const [showingList, setShowingList] = useState(false)
   const scrollbarsRef = useRef<HTMLDivElement | null>(null)
   const [juso, setJuso] = useRecoilState(jusoAtom)
+  const [auth, setAuth] = useRecoilState(authInfo)
+  const [selectedItem, setSelectedItem] = useRecoilState(selectedItemAtom)
+  const [isOnlySelected, setIsOnlySelected] = useRecoilState(isOnlySelectedAtom)
   const [mapData, setMapData] = useState<ListData>({
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -174,22 +184,30 @@ function Result({
               isLoading={isLoading}
               pageInfo={mapListItems?.paging?.totalElements ?? 0}
             />
+            {auth.idCode !== '' && <Forms index={0} isSelected={true} />}
             <Container isOpen={isOpen} id="scrollbarDiv" ref={scrollbarsRef}>
               {isLoading ? (
                 <Loader />
               ) : (
                 <>
-                  <InfiniteScroll
-                    dataLength={mapListItems.contents.length}
-                    next={fetchNextPage}
-                    hasMore={hasNextPage ?? true}
-                    loader={<ListSkeleton />}
-                    scrollableTarget="scrollbarDiv"
-                  >
-                    {mapListItems.contents.map((item, index) => (
-                      <Forms key={index} item={item} index={index} />
-                    ))}
-                  </InfiniteScroll>
+                  {!isOnlySelected && (
+                    <InfiniteScroll
+                      dataLength={mapListItems.contents.length}
+                      next={fetchNextPage}
+                      hasMore={hasNextPage ?? true}
+                      loader={<ListSkeleton />}
+                      scrollableTarget="scrollbarDiv"
+                    >
+                      {mapListItems.contents.map((item, index) => (
+                        <Forms
+                          key={index}
+                          item={item}
+                          index={auth.idCode === '' ? index : index + 1}
+                          isSelected={false}
+                        />
+                      ))}
+                    </InfiniteScroll>
+                  )}
                 </>
               )}
             </Container>

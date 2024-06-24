@@ -10,8 +10,6 @@ import useNum2Han from '@/utils/useNum2Han'
 import Interest from '@/components/map/icons/Interest'
 import { MapItems } from '@/models/MapItem'
 import KwForm from './KwForm'
-import useSWR from 'swr'
-import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { useState } from 'react'
 import NextImageWithFallback from '@/components/map/NextImageWithFallback'
 import NoImage from '../icon/NoImage'
@@ -22,9 +20,10 @@ import { listOverItemAtom } from '@/store/atom/map'
 interface ItemProps {
   item: MapItems
   index: number
+  isSelected?: boolean
 }
 
-function Form({ item, index }: ItemProps) {
+function Form({ item, index, isSelected }: ItemProps) {
   const url = usePathUrl(item?.type ?? 1)
   const [openModal, setOpenModal] = useState(false)
   const { open } = useInterestContext()
@@ -42,6 +41,31 @@ function Form({ item, index }: ItemProps) {
       return `https://www.ggi.co.kr/wait/mulgun_detail_popup_w.asp?idcode=${idCode}&new=new&viewchk=P`
     }
   }
+  const handleTitle = (type: number) => {
+    if (isSelected) {
+      switch (type) {
+        case 1:
+          return `[본건 : ${item.status}] 경매 `
+        case 2:
+          return `[본건 : ${item.status}] 캠코 `
+        case 3:
+          return `[본건 : ${item.status}] 기관매각 `
+        default:
+          break
+      }
+    } else {
+      switch (type) {
+        case 1:
+          return '경매 '
+        case 2:
+          return '캠코 '
+        case 3:
+          return '기관매각 '
+        default:
+          break
+      }
+    }
+  }
   return (
     <div
       onMouseOver={() => {
@@ -54,8 +78,8 @@ function Form({ item, index }: ItemProps) {
       onMouseOut={() => {
         setOverList({
           isOver: false,
-          x: 0, // 또는 0 if you prefer
-          y: 0, // 또는 0 if you prefer
+          x: 0,
+          y: 0,
         })
       }}
     >
@@ -78,11 +102,7 @@ function Form({ item, index }: ItemProps) {
                     : '#0038FF'
                 }
               >
-                {item?.type === 2
-                  ? '캠코'
-                  : item?.type === 3
-                  ? '기관매각'
-                  : '경매'}
+                {handleTitle(item?.type ?? 1)}
               </LeftTextStyle>
             }
             contents={

@@ -7,6 +7,9 @@ import Text from '@/components/shared/Text'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import useSWR from 'swr'
+import SelectedOnly from './icons/SelectedOnly'
+import { useRecoilValue } from 'recoil'
+import { authInfo } from '@/store/atom/auth'
 
 interface Props {
   isOpen: boolean
@@ -22,6 +25,7 @@ export default function Header({
   pageInfo,
 }: Props) {
   const { data: map } = useSWR(MAP_KEY)
+  const auth = useRecoilValue(authInfo)
   return (
     <>
       <Flex direction="row" css={ContainerStyle}>
@@ -34,9 +38,18 @@ export default function Header({
         ) : map && map.zoom! >= 15 ? (
           <ListRow
             left={<SearchText isOpen={isOpen}>검색결과</SearchText>}
-            right={<BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />}
+            right={
+              <Flex
+                direction="row"
+                style={{
+                  gap: '10px',
+                }}
+              >
+                {auth.idCode !== '' && <SelectedOnly />}
+                <BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />
+              </Flex>
+            }
             contents={<SearchText isOpen={isOpen}>{pageInfo}건</SearchText>}
-            onClick={() => setIsOpen((prev) => !prev)}
           />
         ) : map && map.zoom! < 15 ? (
           <ListRow

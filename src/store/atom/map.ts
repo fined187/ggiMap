@@ -1,6 +1,8 @@
+import { SelectedItems } from '@/models/DetailItems'
 import { Form } from '@/models/Form'
 import { jusoProps } from '@/models/Juso'
 import { MapItem, MapListResponse } from '@/models/MapItem'
+import { SelectedItem } from '@/models/SelectedItem'
 import { atom } from 'recoil'
 import { v4 } from 'uuid'
 
@@ -12,29 +14,6 @@ type Props = {
 
 export const mapItemsAtom = atom<MapItem[]>({
   key: `mapItems/${v4()}`,
-  default: [
-    {
-      pnu: '',
-      x: 0,
-      y: 0,
-      types: [1],
-      ids: [''],
-      winYn: '',
-      usage: '',
-      buildingArea: '',
-      landArea: '',
-      share: '',
-      ratio: 0,
-      amount: '',
-      interest: '',
-      count: 0,
-      winExist: false,
-    },
-  ],
-})
-
-export const mapItemsOriginAtom = atom<MapItem[]>({
-  key: `mapItemOrigin/${v4()}`,
   default: [
     {
       pnu: '',
@@ -154,4 +133,14 @@ export const listOverItemAtom = atom({
     y: 0,
     isOver: false,
   },
+})
+
+export const selectedItemAtom = atom<SelectedItem | null>({
+  key: `selectedItem/${v4()}`,
+  default: null,
+})
+
+export const isOnlySelectedAtom = atom<boolean>({
+  key: `isOnlySelected/${v4()}`,
+  default: false,
 })

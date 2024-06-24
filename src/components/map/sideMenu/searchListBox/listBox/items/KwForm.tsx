@@ -40,7 +40,7 @@ function KwForm({
       >
         <ListRow
           left={<LeftTextStyle color={'#00926F'}>{'예정'}</LeftTextStyle>}
-          contents={<LeftTextStyle color="#000">{item.caseNo}</LeftTextStyle>}
+          contents={<LeftTextStyle color="#000">{item?.caseNo}</LeftTextStyle>}
           right={
             <Flex
               onClick={() => {
@@ -59,7 +59,7 @@ function KwForm({
                 }
               }}
             >
-              <Interest interest={item.interest ?? ''} />
+              <Interest interest={item?.interest ?? ''} />
             </Flex>
           }
           style={ListLeftStyle}
@@ -83,7 +83,7 @@ function KwForm({
           }}
         >
           <Text css={TextStyle}>청구액</Text>
-          <Text css={ClaimStyle}>{`${useNum2Han(item.claim)}`}</Text>
+          <Text css={ClaimStyle}>{`${useNum2Han(item?.claim)}`}</Text>
           <Spacing size={10} />
           <Flex
             direction="row"
@@ -118,7 +118,7 @@ function KwForm({
                 fontSize: '14px',
               }}
             >
-              {item.startDate}
+              {item?.startDate}
             </Text>
             <Spacing direction="horizontal" size={5} />
             <Text css={TextStyle}>배당종기일</Text>
@@ -128,7 +128,7 @@ function KwForm({
                 fontSize: '14px',
               }}
             >
-              {item.dividendDate}
+              {item?.dividendDate}
             </Text>
           </Flex>
         </Flex>

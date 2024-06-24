@@ -1,15 +1,13 @@
-import useDebounce from '@/components/shared/hooks/useDebounce'
-import { ListData, MapListResponse } from '@/models/MapItem'
+import { ListData, MapItems, MapListResponse } from '@/models/MapItem'
 import postListItems from '@/remote/map/items/postListItems'
-import { Dispatch, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useInfiniteQuery } from 'react-query'
-import { useRecoilState } from 'recoil'
-import { formDataAtom } from '@/store/atom/map'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { formDataAtom, selectedItemAtom } from '@/store/atom/map'
 import usePostMapItems from '@/hooks/items/usePostMapItems'
-import { usePostListItems } from '@/hooks/items/usePostListItems'
-import postMapItems from '@/remote/map/items/postMapItems'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
+import { authInfo } from '@/store/atom/auth'
 
 interface SearchListQueryProps {
   mapData: ListData
@@ -19,7 +17,6 @@ interface SearchListQueryProps {
 }
 
 const QUERY_KEY = 'searchList'
-const DEBOUNCE_DELAY = 100
 const PAGE_SIZE = 10
 
 export default function useSearchListQuery({
@@ -28,6 +25,8 @@ export default function useSearchListQuery({
   dragStateRef,
   page,
 }: SearchListQueryProps) {
+  const auth = useRecoilValue(authInfo)
+  const [selectedItem, setSelectedItem] = useRecoilState(selectedItemAtom)
   const [formData] = useRecoilState(formDataAtom)
   const { data: map } = useSWR(MAP_KEY)
   const { mutate: getMapItems } = usePostMapItems(
@@ -42,18 +41,28 @@ export default function useSearchListQuery({
   ) => {
     try {
       if (!mapData) return
-      if (map?.getZoom() < 15) {
-        await Promise.all([handleCenterChanged()])
+      if (!map || typeof map.getZoom !== 'function') {
         return
       }
-      const [listItems] =
-        page > 1
-          ? await Promise.all([postListItems(mapData, page, PAGE_SIZE)])
-          : await Promise.all([
-              postListItems(mapData, page, PAGE_SIZE),
-              getMapItems(),
-              handleCenterChanged(),
-            ])
+      if (map?.getZoom() < 15) {
+        await handleCenterChanged()
+        return
+      }
+      const promises = [postListItems(mapData, page, PAGE_SIZE)]
+      if (page === 1) {
+        promises.push(getMapItems()!, handleCenterChanged()!)
+      }
+      const [listItems] = await Promise.all(promises)
+      if (
+        listItems?.contents.some(
+          (item: MapItems) => item.idCode === auth.idCode,
+        )
+      ) {
+        listItems.contents = listItems.contents.filter(
+          (item: MapItems) => item.idCode !== auth.idCode,
+        )
+        return { ...listItems } as MapListResponse
+      }
       return listItems as unknown as MapListResponse
     } catch (error) {
       console.error('fetchSearchList error:', error)
