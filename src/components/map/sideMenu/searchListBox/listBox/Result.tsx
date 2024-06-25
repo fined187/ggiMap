@@ -19,7 +19,7 @@ import {
   mapListAtom,
   selectedItemAtom,
 } from '@/store/atom/map'
-import { ListData, MapItem, MapItems } from '@/models/MapItem'
+import { ListData, MapItems } from '@/models/MapItem'
 import useSearchListQuery from './hooks/useSearchListQuery'
 import { useReverseGeoCode } from '@/components/map/sections/hooks/useReverseGeoCode'
 import { authInfo } from '@/store/atom/auth'
@@ -68,6 +68,8 @@ function Result({
     ekm: formData.ekm,
     egm: formData.egm,
     egg: formData.egg,
+    selectedId: auth.idCode !== '' ? auth.idCode : null,
+    selectedType: auth.type !== '' ? parseInt(auth.type) : null,
   })
 
   const handleCenterChanged = useCallback(() => {
@@ -136,6 +138,8 @@ function Result({
       ekm: formData.ekm,
       egm: formData.egm,
       egg: formData.egg,
+      selectedId: auth.idCode !== '' ? auth.idCode : null,
+      selectedType: auth.type !== '' ? parseInt(auth.type) : null,
     })
   }, [formData])
 
@@ -177,6 +181,22 @@ function Result({
       return selectedItem?.kwItem
     }
   }, [auth.type, selectedItem])
+
+  const handleReturnPageInfo = useCallback(() => {
+    let pageInfo = 0
+    if (auth.idCode !== '') {
+      if (isOnlySelected) {
+        pageInfo = 1
+        return pageInfo
+      } else {
+        pageInfo = mapListItems?.paging?.totalElements + 1
+        return pageInfo
+      }
+    } else {
+      pageInfo = mapListItems?.paging?.totalElements
+      return pageInfo
+    }
+  }, [auth.idCode, isOnlySelected, mapListItems])
   return (
     <Flex
       direction="column"
@@ -193,13 +213,7 @@ function Result({
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               isLoading={isLoading}
-              pageInfo={
-                auth.idCode !== ''
-                  ? handleReturnSelectedItems()?.status === '진행'
-                    ? mapListItems?.paging?.totalElements
-                    : mapListItems?.paging?.totalElements + 1
-                  : mapListItems?.paging?.totalElements
-              }
+              pageInfo={handleReturnPageInfo() as number}
             />
             {isOpen && auth.idCode !== '' && (
               <Forms
@@ -243,13 +257,25 @@ function Result({
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               isLoading={isLoading}
-              pageInfo={mapListItems?.paging?.totalElements}
+              pageInfo={handleReturnPageInfo() as number}
             />
-            <ContainerNone isOpen={true}>
-              <Spacing size={20} />
-              <Text css={NoResultText}>
-                검색 결과가 없습니다. 좌표를 이동해주세요.
-              </Text>
+            {isOpen && auth.idCode !== '' && (
+              <Forms
+                item={handleReturnSelectedItems() as MapItems}
+                index={0}
+                isSelected={true}
+                isDetailed={true}
+              />
+            )}
+            <ContainerNone isOpen={true} idCode={auth.idCode}>
+              {auth.idCode === '' && (
+                <>
+                  <Spacing size={20} />
+                  <Text css={NoResultText}>
+                    검색 결과가 없습니다. 좌표를 이동해주세요.
+                  </Text>
+                </>
+              )}
             </ContainerNone>
           </>
         )
@@ -261,7 +287,7 @@ function Result({
             isLoading={isLoading}
             pageInfo={mapListItems?.paging?.totalElements ?? 0}
           />
-          <ContainerNone isOpen={true}>
+          <ContainerNone isOpen={true} idCode={auth.idCode}>
             <Spacing size={20} />
             <Text css={NoResultText}>
               300m 초과에서는 매물 종류(경매/예정/공매)
@@ -274,8 +300,15 @@ function Result({
   )
 }
 
-const ContainerNone = styled.div<{ isOpen: boolean }>`
-  height: ${({ isOpen }) => (isOpen ? 'calc(100% - 60px)' : '0px')};
+const ContainerNone = styled.div<{ isOpen: boolean; idCode: string }>`
+  height: ${({ isOpen, idCode }) =>
+    idCode === ''
+      ? isOpen
+        ? 'calc(100% - 60px)'
+        : '0px'
+      : isOpen
+      ? 'calc(100% - 60px)'
+      : '0px'};
   display: flex;
   position: relative;
   flex-direction: column;

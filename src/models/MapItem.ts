@@ -35,6 +35,8 @@ export interface ListData {
   toMinimumAmount: number
   interests: boolean
   awardedMonths: number
+  selectedId: string | null
+  selectedType: number | null
 }
 
 export interface MapCounts {

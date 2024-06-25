@@ -1,15 +1,17 @@
 import { Form } from '@/models/Form'
 import { MapListResponse } from '@/models/MapItem'
 import postListItems from '@/remote/map/items/postListItems'
+import { authInfo } from '@/store/atom/auth'
 import { mapListAtom } from '@/store/atom/map'
 import { useMutation } from 'react-query'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 
 export const usePostListItems = (
   formData: Form,
   pageNum: number,
   pageSize: number,
 ) => {
+  const auth = useRecoilValue(authInfo)
   const param = {
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -30,6 +32,8 @@ export const usePostListItems = (
     ekm: formData.ekm,
     egm: formData.egm,
     egg: formData.egg,
+    selectedId: auth.idCode !== '' ? auth.idCode : null,
+    selectedType: auth.type !== '' ? parseInt(auth.type) : null,
   }
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
   const { mutate } = useMutation(

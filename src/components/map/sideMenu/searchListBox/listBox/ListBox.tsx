@@ -3,8 +3,9 @@ import { css } from '@emotion/react'
 import Result from './Result'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { formDataAtom, mapListAtom } from '@/store/atom/map'
+import { authInfo } from '@/store/atom/auth'
 
 interface ListBoxProps {
   isOpen: boolean
@@ -24,6 +25,7 @@ export default function ListBox({
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
   const { data: map } = useSWR(MAP_KEY)
+  const auth = useRecoilValue(authInfo)
   return (
     <Flex
       css={ContainerStyle}
@@ -39,6 +41,16 @@ export default function ListBox({
             : formData.lastFilter === 4 && formData.isSubFilterBoxOpen
             ? 'calc(100vh - 380px)'
             : map && map.zoom! >= 15 && mapListItems?.contents?.length! > 0
+            ? 'calc(100vh - 150px)'
+            : auth.idCode !== '' &&
+              map &&
+              map.zoom >= 15 &&
+              mapListItems?.contents?.length! > 0
+            ? 'calc(100vh - 150px)'
+            : auth.idCode !== '' &&
+              map &&
+              map.zoom >= 15 &&
+              mapListItems?.contents?.length! === 0
             ? 'calc(100vh - 150px)'
             : '150px'
           : '59px',

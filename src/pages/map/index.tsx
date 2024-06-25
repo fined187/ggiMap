@@ -116,8 +116,9 @@ function MapComponent({ token, type, idCode }: Props) {
           setFormData((prev) => ({
             ...prev,
             km: true,
-            ekm: response?.data?.winAmt! > 0,
-            awardedMonths: 60,
+            ekm: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
+            awardedMonths:
+              response?.data?.winAmt && response?.data.winAmt > 0 ? 60 : 0,
           }))
           break
         case '2':
@@ -126,9 +127,10 @@ function MapComponent({ token, type, idCode }: Props) {
             ...prev,
             gm: true,
             gg: true,
-            egg: response?.data?.winAmt! > 0,
-            egm: response?.data?.winAmt! > 0,
-            awardedMonths: 60,
+            egg: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
+            egm: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
+            awardedMonths:
+              response?.data?.winAmt && response?.data.winAmt > 0 ? 60 : 0,
           }))
           break
         case '3':
@@ -137,9 +139,10 @@ function MapComponent({ token, type, idCode }: Props) {
             ...prev,
             gm: true,
             gg: true,
-            egg: response?.data?.winAmt! > 0,
-            egm: response?.data?.winAmt! > 0,
-            awardedMonths: 60,
+            egg: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
+            egm: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
+            awardedMonths:
+              response?.data?.winAmt && response?.data.winAmt > 0 ? 60 : 0,
           }))
           break
         case '4':

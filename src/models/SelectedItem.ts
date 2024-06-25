@@ -31,6 +31,7 @@ export interface SelectedItem {
     interest: string
     x: number
     y: number
+    winAmt: number
   }
   gmItem?: {
     goodsId: string
