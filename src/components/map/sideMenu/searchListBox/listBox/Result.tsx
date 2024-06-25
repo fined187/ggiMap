@@ -92,14 +92,15 @@ function Result({
   }, [scrollbarsRef.current])
 
   useEffect(() => {
-    if (map && map.zoom! >= 15) {
+    if (map && map.getZoom()! >= 15) {
+      console.log('실행')
       setShowingList(true)
-      fetchNextPage()
-    } else if (map && map.zoom! < 15) {
+      setPage(1)
+    } else if (map && map.getZoom()! < 15) {
       setShowingList(false)
       setIsOpen(true)
     }
-  }, [map?.zoom])
+  }, [map, map?.getZoom(), setPage, setIsOpen])
 
   useEffect(() => {
     if (!map) return
@@ -200,11 +201,12 @@ function Result({
                   : mapListItems?.paging?.totalElements
               }
             />
-            {auth.idCode !== '' && (
+            {isOpen && auth.idCode !== '' && (
               <Forms
                 item={handleReturnSelectedItems() as MapItems}
                 index={0}
                 isSelected={true}
+                isDetailed={true}
               />
             )}
             <Container isOpen={isOpen} id="scrollbarDiv" ref={scrollbarsRef}>
@@ -226,6 +228,7 @@ function Result({
                           item={item}
                           index={auth.idCode === '' ? index : index + 1}
                           isSelected={false}
+                          isDetailed={false}
                         />
                       ))}
                     </InfiniteScroll>

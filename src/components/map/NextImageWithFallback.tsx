@@ -6,12 +6,18 @@ interface NextImageWithFallbackProps extends ImageProps {
   src: string
   alt: string
   fallbackComponent: React.ReactNode
+  handleDetailPage: (idCode: string, type: number) => string | undefined
+  type: number
+  idCode: string
 }
 
 export default function NextImageWithFallback({
   src,
   alt,
   fallbackComponent,
+  handleDetailPage,
+  type,
+  idCode,
   ...rest
 }: NextImageWithFallbackProps) {
   const [imgError, setImgError] = useState(false)
@@ -32,6 +38,16 @@ export default function NextImageWithFallback({
         onError={() => {
           setImgError(true)
           setImagSrc('')
+        }}
+        onClick={() => {
+          window.open(
+            handleDetailPage(idCode, type),
+            '_blank',
+            'width=1600, height=1000',
+          )
+        }}
+        style={{
+          cursor: 'pointer',
         }}
       />
     )

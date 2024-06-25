@@ -20,7 +20,7 @@ import NoImage from './icon/NoImage'
 import NextImageWithFallback from '../../NextImageWithFallback'
 import { useInterestContext } from '@/contexts/useModalContext'
 import { useRecoilValue } from 'recoil'
-import { clickedItemAtom } from '@/store/atom/map'
+import { clickedItemAtom, isOnlySelectedAtom } from '@/store/atom/map'
 
 export default function Carousel({
   clickedInfo,
@@ -35,6 +35,7 @@ export default function Carousel({
   const [image, setImage] = useState<string[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
   const clickedItem = useRecoilValue(clickedItemAtom)
+  const isOnlySelected = useRecoilValue(isOnlySelectedAtom)
   useEffect(() => {
     if (clickedInfo) {
       setImage(
@@ -48,6 +49,16 @@ export default function Carousel({
       )
     }
   }, [clickedItem, clickedInfo])
+
+  const handleDetailPage = (idCode: string, type: number) => {
+    if (type === 1) {
+      return `https://www.ggi.co.kr/kyungmae/mulgun_detail_popup_h.asp?idcode=${idCode}`
+    } else if (type === 2 || type === 3) {
+      return `https://www.ggi.co.kr/gongmae/GongMae_popup.asp?goodsid=${idCode}&new=new`
+    } else if (type === 4) {
+      return `https://www.ggi.co.kr/wait/mulgun_detail_popup_w.asp?idcode=${idCode}&new=new&viewchk=P`
+    }
+  }
   const { open } = useInterestContext()
 
   const onButtonClick = () => {
@@ -108,6 +119,15 @@ export default function Carousel({
                         width: '300px',
                         height: '180px',
                       }}
+                      handleDetailPage={handleDetailPage}
+                      type={clickedInfo && clickedInfo[index]?.type!}
+                      idCode={
+                        clickedInfo && clickedInfo[index]?.type === 1
+                          ? clickedInfo[index]?.idCode!
+                          : clickedInfo[index]?.type === 2 || 3
+                          ? clickedInfo[index]?.goodsID!
+                          : clickedInfo[index]?.idCode!
+                      }
                     />
                     <TypeStyle
                       style={{
@@ -131,13 +151,15 @@ export default function Carousel({
                           : '예정'}
                       </Text>
                     </TypeStyle>
-                    {clickedInfo && clickedInfo.length > 1 && (
-                      <PageCount>
-                        <Text css={PageCountTextStyle}>
-                          {index + 1}/{clickedInfo.length}
-                        </Text>
-                      </PageCount>
-                    )}
+                    {clickedInfo &&
+                      clickedInfo.length > 1 &&
+                      !isOnlySelected && (
+                        <PageCount>
+                          <Text css={PageCountTextStyle}>
+                            {index + 1}/{clickedInfo.length}
+                          </Text>
+                        </PageCount>
+                      )}
                     {clickedInfo && clickedInfo[index]?.share === 'Y' && (
                       <ShareType>
                         <Text css={TextStyle}>지분</Text>
@@ -265,7 +287,7 @@ export default function Carousel({
               </SwiperSlide>
             </div>
           ))}
-        {clickedInfo && clickedInfo.length > 1 ? (
+        {clickedInfo && clickedInfo.length > 1 && !isOnlySelected ? (
           <>
             <NextBtn />
             <PrevBtn />

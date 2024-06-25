@@ -65,6 +65,8 @@ export default function InterestProps({
     isWait: false,
   })
 
+  console.log(interestData)
+
   const [updatedData, setUpdatedData] = useState<UpdatedInterest>({
     infoId: '',
     caseNo: '',

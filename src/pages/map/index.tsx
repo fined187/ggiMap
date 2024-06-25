@@ -116,6 +116,8 @@ function MapComponent({ token, type, idCode }: Props) {
           setFormData((prev) => ({
             ...prev,
             km: true,
+            ekm: response?.data?.winAmt! > 0,
+            awardedMonths: 60,
           }))
           break
         case '2':
@@ -124,6 +126,8 @@ function MapComponent({ token, type, idCode }: Props) {
             ...prev,
             gm: true,
             gg: true,
+            egg: response?.data?.winAmt! > 0,
+            egm: response?.data?.winAmt! > 0,
             awardedMonths: 60,
           }))
           break
@@ -133,6 +137,9 @@ function MapComponent({ token, type, idCode }: Props) {
             ...prev,
             gm: true,
             gg: true,
+            egg: response?.data?.winAmt! > 0,
+            egm: response?.data?.winAmt! > 0,
+            awardedMonths: 60,
           }))
           break
         case '4':
@@ -166,7 +173,6 @@ function MapComponent({ token, type, idCode }: Props) {
       console.error(error)
     }
   }
-  console.log(selectedData)
   let ok = false
   const handleParameters = useCallback(
     async (token: string, type: string, idCode?: string, map?: NaverMap) => {

@@ -3,7 +3,7 @@ import postListItems from '@/remote/map/items/postListItems'
 import { useMemo } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { formDataAtom, selectedItemAtom } from '@/store/atom/map'
+import { formDataAtom } from '@/store/atom/map'
 import usePostMapItems from '@/hooks/items/usePostMapItems'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
@@ -26,7 +26,6 @@ export default function useSearchListQuery({
   page,
 }: SearchListQueryProps) {
   const auth = useRecoilValue(authInfo)
-  const [selectedItem, setSelectedItem] = useRecoilState(selectedItemAtom)
   const [formData] = useRecoilState(formDataAtom)
   const { data: map } = useSWR(MAP_KEY)
   const { mutate: getMapItems } = usePostMapItems(
@@ -80,6 +79,7 @@ export default function useSearchListQuery({
             ? undefined
             : (lastPage?.paging?.pageNumber ?? 0) + 1
         },
+        refetchOnWindowFocus: false,
       },
     )
 

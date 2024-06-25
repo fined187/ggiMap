@@ -2,10 +2,9 @@
 import Flex from '@/components/shared/Flex'
 import Input from '@/components/shared/Input'
 import Spacing from '@/components/shared/Spacing'
-import { Form } from '@/models/Form'
 import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
-import React, { ChangeEvent, KeyboardEvent, useState } from 'react'
+import { ChangeEvent, KeyboardEvent, useCallback, useState } from 'react'
 import MainFilter from '../filterBox/MainFilter'
 import SubFilter from '../filterBox/SubFilter'
 import DetailBox from '../filterBox/SubFilterDetail/DetailBox'
@@ -67,45 +66,52 @@ export default function SearchBox() {
     setKeyword(e.target.value)
   }
 
-  const handleEnter = async (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      if (keyword.match(/역$/)) {
-        try {
-          const response = await getSubway(keyword)
-          if (response.documents.length === 0) {
-            alert('검색 결과가 없습니다.')
-            return
-          } else {
-            const { x, y } = response.documents[0]
-            map.setCenter({
-              lat: Number(y),
-              lng: Number(x),
-            })
-          }
-        } catch (error) {
-          console.error(error)
+  const handleSearch = async (inputKeyword: string) => {
+    if (inputKeyword.match(/역$/)) {
+      try {
+        const response = await getSubway(inputKeyword)
+        if (response.documents.length === 0) {
+          alert('검색 결과가 없습니다.')
+          return
+        } else {
+          const { x, y } = response.documents[0]
+          map.setCenter({
+            lat: Number(y),
+            lng: Number(x),
+          })
         }
-      } else if (
-        keyword.match(/시$/) ||
-        keyword.match(/구$/) ||
-        keyword.match(/동$/) ||
-        keyword.match(/읍$/) ||
-        keyword.match(/면$/) ||
-        keyword.match(/리$/) ||
-        keyword.match(/가$/) ||
-        keyword.match(/로$/) ||
-        keyword.match(/길$/) ||
-        keyword.match(/도$/) ||
-        keyword.match(/번길$/) ||
-        keyword.match(/길$/) ||
-        keyword.match(/[0-9]$/)
-      ) {
-        searchAddrToCoord(keyword)
-      } else {
-        alert('지하철역 혹은 주소를 입력해주세요')
-        // searchAddrToCoord(keyword)
+      } catch (error) {
+        console.error(error)
       }
+    } else if (
+      inputKeyword.match(/시$/) ||
+      inputKeyword.match(/구$/) ||
+      inputKeyword.match(/동$/) ||
+      inputKeyword.match(/읍$/) ||
+      inputKeyword.match(/면$/) ||
+      inputKeyword.match(/리$/) ||
+      inputKeyword.match(/가$/) ||
+      inputKeyword.match(/로$/) ||
+      inputKeyword.match(/길$/) ||
+      inputKeyword.match(/도$/) ||
+      inputKeyword.match(/번길$/) ||
+      inputKeyword.match(/길$/) ||
+      inputKeyword.match(/[0-9]$/)
+    ) {
+      searchAddrToCoord(inputKeyword)
+    } else {
+      alert('지하철역 혹은 주소를 입력해주세요')
     }
+  }
+
+  const handleEnter = async (e?: KeyboardEvent<HTMLInputElement>) => {
+    if (e?.key === 'Enter') {
+      await handleSearch(e.currentTarget.value)
+    }
+  }
+
+  const handleSearchButton = () => {
+    handleSearch(keyword)
   }
 
   return (
@@ -131,7 +137,7 @@ export default function SearchBox() {
           onChange={handleKeyword}
           onKeyDown={(e) => handleEnter(e)}
         />
-        <Search right="25" top="25" />
+        <Search right="25" top="25" handleSearchButton={handleSearchButton} />
       </Flex>
       <Spacing size={10} />
       <MainFilter formData={formData} setFormData={setFormData} />

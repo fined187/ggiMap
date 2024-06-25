@@ -63,6 +63,7 @@ export interface MapItems {
   type: number
   id: string
   idCode: string
+  goodsId?: string
   caseNo: string
   appraisalAmt: number
   minAmt: number

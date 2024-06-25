@@ -20,10 +20,11 @@ import { listOverItemAtom } from '@/store/atom/map'
 interface ItemProps {
   item: MapItems
   index: number
+  isDetailed: boolean
   isSelected?: boolean
 }
 
-function Form({ item, index, isSelected }: ItemProps) {
+function Form({ item, index, isDetailed, isSelected }: ItemProps) {
   const url = usePathUrl(item?.type ?? 1)
   const [openModal, setOpenModal] = useState(false)
   const { open } = useInterestContext()
@@ -31,13 +32,21 @@ function Form({ item, index, isSelected }: ItemProps) {
   const onButtonClick = () => {
     setOpenModal(false)
   }
-
-  const handleDetailPage = (idCode: string) => {
-    if (item?.type === 1) {
+  const handleDetailPage = (idCode: string, type: number) => {
+    if (isDetailed) {
+      if (type === 1) {
+        return `https://www.ggi.co.kr/kyungmae/mulgun_detail_popup_h.asp?idcode=${item.idCode}`
+      } else if (type === 2 || type === 3) {
+        return `https://www.ggi.co.kr/gongmae/GongMae_popup.asp?goodsid=${item.goodsId}&new=new`
+      } else if (type === 4) {
+        return `https://www.ggi.co.kr/wait/mulgun_detail_popup_w.asp?idcode=${item.idCode}&new=new&viewchk=P`
+      }
+    }
+    if (type === 1) {
       return `https://www.ggi.co.kr/kyungmae/mulgun_detail_popup_h.asp?idcode=${idCode}`
-    } else if (item?.type === 2 || item?.type === 3) {
+    } else if (type === 2 || type === 3) {
       return `https://www.ggi.co.kr/gongmae/GongMae_popup.asp?goodsid=${idCode}&new=new`
-    } else if (item?.type === 4) {
+    } else if (type === 4) {
       return `https://www.ggi.co.kr/wait/mulgun_detail_popup_w.asp?idcode=${idCode}&new=new&viewchk=P`
     }
   }
@@ -151,7 +160,7 @@ function Form({ item, index, isSelected }: ItemProps) {
             onClick={() => {
               if (window) {
                 window.open(
-                  handleDetailPage(item?.idCode ?? ''),
+                  handleDetailPage(item.idCode, item.type),
                   '_blank',
                   'width=1600, height=1000',
                 )
@@ -170,6 +179,9 @@ function Form({ item, index, isSelected }: ItemProps) {
                 width: '180px',
                 height: '135px',
               }}
+              handleDetailPage={handleDetailPage}
+              type={item?.type ?? 1}
+              idCode={item?.idCode ?? ''}
             />
             <Flex
               direction="column"

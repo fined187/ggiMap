@@ -51,7 +51,7 @@ export default function Markers({
   }, [isOnlySelected, mapItems, selectedItem, auth.type])
   return (
     <>
-      {handleOnlySelected().map((item, index) => {
+      {handleOnlySelected()?.map((item, index) => {
         return (
           <Marker
             key={index}

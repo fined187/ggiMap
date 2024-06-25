@@ -1,4 +1,12 @@
-export default function Search({ right, top }: { right: string; top: string }) {
+export default function Search({
+  right,
+  top,
+  handleSearchButton,
+}: {
+  right: string
+  top: string
+  handleSearchButton: () => void
+}) {
   return (
     <div
       style={{
@@ -6,6 +14,9 @@ export default function Search({ right, top }: { right: string; top: string }) {
         right: `${right}px`,
         top: `${top}px`,
         cursor: 'pointer',
+      }}
+      onClick={() => {
+        handleSearchButton()
       }}
     >
       <svg

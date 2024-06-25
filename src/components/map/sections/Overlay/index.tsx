@@ -1,14 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import Top from './Top'
 import Bottom from './Bottom'
 import { ItemDetail } from '@/models/ItemDetail'

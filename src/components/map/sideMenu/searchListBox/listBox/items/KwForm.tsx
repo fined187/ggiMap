@@ -5,12 +5,10 @@ import Spacing from '@/components/shared/Spacing'
 import Text from '@/components/shared/Text'
 import { useInterestContext } from '@/contexts/useModalContext'
 import { MapItems } from '@/models/MapItem'
-import { authInfo } from '@/store/atom/auth'
 import useNum2Han from '@/utils/useNum2Han'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Dispatch, SetStateAction } from 'react'
-import { useRecoilState } from 'recoil'
 
 function KwForm({
   item,
@@ -23,7 +21,7 @@ function KwForm({
   index: number
   openModal: boolean
   setOpenModal: Dispatch<SetStateAction<boolean>>
-  handleDetailPage: (id: string) => string | undefined
+  handleDetailPage: (idCode: string, type: number) => string | undefined
 }) {
   const { open } = useInterestContext()
   const onButtonClick = () => {
@@ -75,7 +73,7 @@ function KwForm({
           onClick={() => {
             if (window) {
               window.open(
-                handleDetailPage(item?.idCode ?? ''),
+                handleDetailPage(item?.idCode ?? '', item?.type ?? 0),
                 '_blank',
                 'width=1600, height=1000',
               )
