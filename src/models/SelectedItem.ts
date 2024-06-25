@@ -49,5 +49,4 @@ export interface SelectedItem {
     y: number
     checkInfo: string
   }
-  mapItem: MapItem
 }

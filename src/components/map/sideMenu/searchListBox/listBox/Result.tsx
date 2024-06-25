@@ -19,7 +19,7 @@ import {
   mapListAtom,
   selectedItemAtom,
 } from '@/store/atom/map'
-import { ListData, MapItems } from '@/models/MapItem'
+import { ListData, MapItem, MapItems } from '@/models/MapItem'
 import useSearchListQuery from './hooks/useSearchListQuery'
 import { useReverseGeoCode } from '@/components/map/sections/hooks/useReverseGeoCode'
 import { authInfo } from '@/store/atom/auth'
@@ -166,6 +166,16 @@ function Result({
     }
     handleUpdateMapList()
   }, [data, setMapListItems])
+
+  const handleReturnSelectedItems = useCallback(() => {
+    if (auth.type === '1') {
+      return selectedItem?.kmItem
+    } else if (auth.type === '2' || auth.type === '3') {
+      return selectedItem?.gmItem
+    } else if (auth.type === '4') {
+      return selectedItem?.kwItem
+    }
+  }, [auth.type, selectedItem])
   return (
     <Flex
       direction="column"
@@ -182,9 +192,21 @@ function Result({
               isOpen={isOpen}
               setIsOpen={setIsOpen}
               isLoading={isLoading}
-              pageInfo={mapListItems?.paging?.totalElements ?? 0}
+              pageInfo={
+                auth.idCode !== ''
+                  ? handleReturnSelectedItems()?.status === '진행'
+                    ? mapListItems?.paging?.totalElements
+                    : mapListItems?.paging?.totalElements + 1
+                  : mapListItems?.paging?.totalElements
+              }
             />
-            {auth.idCode !== '' && <Forms index={0} isSelected={true} />}
+            {auth.idCode !== '' && (
+              <Forms
+                item={handleReturnSelectedItems() as MapItems}
+                index={0}
+                isSelected={true}
+              />
+            )}
             <Container isOpen={isOpen} id="scrollbarDiv" ref={scrollbarsRef}>
               {isLoading ? (
                 <Loader />

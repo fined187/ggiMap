@@ -93,13 +93,26 @@ function MapComponent({ token, type, idCode }: Props) {
     }
   }, [setAuth, handleGetPosition])
 
+  const handleItemType = useCallback((type: string) => {
+    switch (type) {
+      case '1':
+        return 'kmItem'
+      case '2':
+        return 'gmItem'
+      case '3':
+        return 'gmItem'
+      case '4':
+        return 'kwItem'
+    }
+  }, [])
+
   const handleDataFetching = async (type: string, idCode: string) => {
     try {
       let response: GetItemResponse | null = null
+
       switch (type) {
         case '1':
           response = (await getKmItem(idCode)) || null
-          console.log(response)
           setFormData((prev) => ({
             ...prev,
             km: true,
@@ -107,7 +120,6 @@ function MapComponent({ token, type, idCode }: Props) {
           break
         case '2':
           response = (await getGmItem(idCode)) || null
-          console.log(response)
           setFormData((prev) => ({
             ...prev,
             gm: true,
@@ -117,7 +129,6 @@ function MapComponent({ token, type, idCode }: Props) {
           break
         case '3':
           response = (await getGgItem(idCode)) || null
-          console.log(response)
           setFormData((prev) => ({
             ...prev,
             gm: true,
@@ -132,46 +143,21 @@ function MapComponent({ token, type, idCode }: Props) {
           }))
           break
       }
-      if (response?.success) {
-        if (type === '1') {
-          setSelectedData((prev: any) => {
-            return {
-              ...prev,
-              kmItem: response.data.kmItem,
-              mapItems: response.data.mapItem,
-            }
-          })
-        } else if (type === '2') {
-          setSelectedData((prev: any) => {
-            return {
-              ...prev,
-              gmItem: response.data.gmItem,
-              mapItems: response.data.mapItem,
-            }
-          })
-        } else if (type === '3') {
-          setSelectedData((prev: any) => {
-            return {
-              ...prev,
-              ggItem: response.data.gmItem,
-              mapItems: response.data.mapItem,
-            }
-          })
-        } else if (type === '4') {
-          setSelectedData((prev: any) => {
-            return {
-              ...prev,
-              kwItem: response.data.kwItem,
-              mapItems: response.data.mapItem,
-            }
-          })
-        }
+
+      if (response && response.success) {
+        const { data } = response
+
+        setSelectedData((prev: any) => ({
+          ...prev,
+          [`${handleItemType(type)}`]: data,
+        }))
+
         setAuth((prev) => ({
           ...prev,
-          lat: response.data.mapItem.y,
-          lng: response.data.mapItem.x,
-          detailLat: response.data.mapItem.y,
-          detailLng: response.data.mapItem.x,
+          lat: data.y,
+          lng: data.x,
+          detailLat: data.y,
+          detailLng: data.x,
           idCode: idCode,
           type: type,
         }))
@@ -180,6 +166,7 @@ function MapComponent({ token, type, idCode }: Props) {
       console.error(error)
     }
   }
+  console.log(selectedData)
   let ok = false
   const handleParameters = useCallback(
     async (token: string, type: string, idCode?: string, map?: NaverMap) => {

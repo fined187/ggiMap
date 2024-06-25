@@ -53,6 +53,7 @@ export const UsageTopIcon = (
   count: number,
   type: number,
   winExist: boolean,
+  isOnlySelected?: boolean,
 ) => {
   return `
       <div style="flex-direction: row; display: flex; width: 100px; height: 27px; padding: 2px 4px; justify-content: center; align-items: center; gap: 2px; border-radius: 11px 11px 0px 0px; border-top: ${handleGetBorderColor(

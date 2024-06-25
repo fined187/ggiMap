@@ -22,4 +22,6 @@ export interface Form {
   egm: boolean
   egg: boolean
   keyword: string
+  selectedType: number | null
+  selectedId: string | null
 }

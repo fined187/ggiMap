@@ -7,6 +7,8 @@ import { useMutation } from 'react-query'
 import { useRecoilState } from 'recoil'
 
 export default function usePostMapItems(formData: Form, dragState: boolean) {
+  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
+  const [auth, setAuth] = useRecoilState(authInfo)
   const param = {
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -27,9 +29,9 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
     ekm: formData.ekm,
     egm: formData.egm,
     egg: formData.egg,
+    selectedId: auth.idCode !== '' ? auth.idCode : null,
+    selectedType: auth.type !== '' ? parseInt(auth.type) : null,
   }
-  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
-  const [auth, setAuth] = useRecoilState(authInfo)
 
   const { mutate } = useMutation(async () => await postMapItems(param), {
     onSuccess: (data) => {

@@ -106,6 +106,8 @@ export const formDataAtom = atom<Form>({
     keyword: '',
     isSubFilterBoxOpen: false,
     lastFilter: 1,
+    selectedType: null,
+    selectedId: null,
   },
 })
 

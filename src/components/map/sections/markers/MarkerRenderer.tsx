@@ -6,7 +6,6 @@ import {
   useCallback,
   useEffect,
   useRef,
-  useState,
 } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
@@ -34,13 +33,10 @@ const MarkerRenderer = ({
   markerClickedRef,
 }: MarkerRendererProps) => {
   const { data: map } = useSWR(MAP_KEY)
-  const [isSame, setIsSame] = useState<boolean>(false)
-  const [includeYn, setIncludeYn] = useState<boolean>(false)
   const markerRef = useRef<naver.maps.Marker | null>(null)
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
   const [listOver, setListOver] = useRecoilState(listOverItemAtom)
-  // const [markers, setMarkers] = useState<naver.maps.Marker[]>([])
   let markers: naver.maps.Marker[] = []
 
   const handleItemUsage = useCallback(() => {
@@ -146,8 +142,6 @@ const MarkerRenderer = ({
     map,
     item,
     index,
-    isSame,
-    includeYn,
     handleItemUsage,
     openOverlay,
     clickedItem,
