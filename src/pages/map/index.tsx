@@ -120,6 +120,10 @@ function MapComponent({ token, type, idCode }: Props) {
             awardedMonths:
               response?.data?.winAmt && response?.data.winAmt > 0 ? 60 : 0,
           }))
+          setAuth((prev) => ({
+            ...prev,
+            idCode: response?.data?.id ? response?.data.id : '',
+          }))
           break
         case '2':
           response = (await getGmItem(idCode)) || null
@@ -131,6 +135,10 @@ function MapComponent({ token, type, idCode }: Props) {
             egm: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
             awardedMonths:
               response?.data?.winAmt && response?.data.winAmt > 0 ? 60 : 0,
+          }))
+          setAuth((prev) => ({
+            ...prev,
+            idCode: response?.data?.goodsId ? response?.data.goodsId : '',
           }))
           break
         case '3':
@@ -144,12 +152,20 @@ function MapComponent({ token, type, idCode }: Props) {
             awardedMonths:
               response?.data?.winAmt && response?.data.winAmt > 0 ? 60 : 0,
           }))
+          setAuth((prev) => ({
+            ...prev,
+            idCode: response?.data?.goodsId ? response?.data.goodsId : '',
+          }))
           break
         case '4':
           response = (await getKwItem(idCode)) || null
           setFormData((prev) => ({
             ...prev,
             kw: true,
+          }))
+          setAuth((prev) => ({
+            ...prev,
+            idCode: response?.data?.id ? response?.data.id : '',
           }))
           break
       }
@@ -168,7 +184,6 @@ function MapComponent({ token, type, idCode }: Props) {
           lng: data.x,
           detailLat: data.y,
           detailLng: data.x,
-          idCode: idCode,
           type: type,
         }))
       }

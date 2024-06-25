@@ -16,12 +16,14 @@ function KwForm({
   openModal,
   setOpenModal,
   handleDetailPage,
+  handleTitle,
 }: {
   item: MapItems
   index: number
   openModal: boolean
   setOpenModal: Dispatch<SetStateAction<boolean>>
   handleDetailPage: (idCode: string, type: number) => string | undefined
+  handleTitle: (type: number) => string | undefined
 }) {
   const { open } = useInterestContext()
   const onButtonClick = () => {
@@ -37,8 +39,23 @@ function KwForm({
         }}
       >
         <ListRow
-          left={<LeftTextStyle color={'#00926F'}>{'예정'}</LeftTextStyle>}
-          contents={<LeftTextStyle color="#000">{item?.caseNo}</LeftTextStyle>}
+          left={
+            <LeftTextStyle color={'#00926F'}>
+              {handleTitle(item?.type ?? 4)}
+            </LeftTextStyle>
+          }
+          contents={
+            <LeftTextStyle
+              color="#000"
+              style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {item?.caseNo}
+            </LeftTextStyle>
+          }
           right={
             <Flex
               onClick={() => {

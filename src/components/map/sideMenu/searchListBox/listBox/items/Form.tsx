@@ -59,6 +59,8 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
           return `[본건 : ${item.status}] 캠코 `
         case 3:
           return `[본건 : ${item.status}] 기관매각 `
+        case 4:
+          return `[본건 : ${item.status}] 예정 `
         default:
           break
       }
@@ -70,6 +72,8 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
           return '캠코 '
         case 3:
           return '기관매각 '
+        case 4:
+          return '예정 '
         default:
           break
       }
@@ -295,6 +299,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
           openModal={openModal}
           setOpenModal={setOpenModal}
           handleDetailPage={handleDetailPage}
+          handleTitle={handleTitle}
         />
       )}
     </div>
