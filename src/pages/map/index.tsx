@@ -23,8 +23,7 @@ import { getPosition } from '@/remote/map/auth/getPosition'
 import { NaverMap } from '@/models/Map'
 import handleToken from '@/remote/map/auth/token'
 import { getSampleItems } from '@/remote/map/auth/getSampleItems'
-import { GetItemResponse, MapItem, MapItems } from '@/models/MapItem'
-import { SelectedItems } from '@/models/DetailItems'
+import { GetItemResponse } from '@/models/MapItem'
 interface Props {
   data?: {
     userId: string | null
