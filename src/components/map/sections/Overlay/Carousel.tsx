@@ -118,6 +118,7 @@ export default function Carousel({
                         borderRadius: '8px 8px 0px 0px',
                         width: '300px',
                         height: '180px',
+                        cursor: 'pointer',
                       }}
                       handleDetailPage={handleDetailPage}
                       type={clickedInfo && clickedInfo[index]?.type!}

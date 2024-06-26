@@ -44,6 +44,7 @@ const RAW_RUNTIME_STATE =
           ["@types/react-infinite-scroller", "npm:1.2.5"],\
           ["@types/react-lazy-load-image-component", "npm:1.6.4"],\
           ["@types/react-slick", "npm:0.23.13"],\
+          ["@types/regenerator-runtime", "npm:0.13.6"],\
           ["@types/slick-carousel", "npm:1.6.40"],\
           ["@types/uuid", "npm:9.0.8"],\
           ["autoprefixer", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:10.4.19"],\
@@ -51,6 +52,7 @@ const RAW_RUNTIME_STATE =
           ["babel-loader", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:9.1.3"],\
           ["babel-plugin-macros", "npm:3.1.0"],\
           ["body-parser", "npm:1.20.2"],\
+          ["core-js", "npm:3.37.1"],\
           ["date-fns", "npm:3.6.0"],\
           ["eslint", "npm:8.52.0"],\
           ["eslint-config-next", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:14.0.0"],\
@@ -79,6 +81,7 @@ const RAW_RUNTIME_STATE =
           ["react-query", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:3.39.3"],\
           ["react-slick", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:0.30.2"],\
           ["recoil", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:0.7.7"],\
+          ["regenerator-runtime", "npm:0.14.1"],\
           ["slick-carousel", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:1.8.1"],\
           ["swiper", "npm:11.1.3"],\
           ["swr", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:2.2.5"],\
@@ -4793,6 +4796,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@types/regenerator-runtime", [\
+      ["npm:0.13.6", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@types-regenerator-runtime-npm-0.13.6-d1c06a3b87-10c0.zip/node_modules/@types/regenerator-runtime/",\
+        "packageDependencies": [\
+          ["@types/regenerator-runtime", "npm:0.13.6"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@types/scheduler", [\
       ["npm:0.16.5", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@types-scheduler-npm-0.16.5-59f95de675-10c0.zip/node_modules/@types/scheduler/",\
@@ -6042,6 +6054,13 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/unplugged/core-js-npm-3.37.0-98818d5691/node_modules/core-js/",\
         "packageDependencies": [\
           ["core-js", "npm:3.37.0"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["npm:3.37.1", {\
+        "packageLocation": "./.yarn/unplugged/core-js-npm-3.37.1-b1db5e7c23/node_modules/core-js/",\
+        "packageDependencies": [\
+          ["core-js", "npm:3.37.1"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -9874,6 +9893,7 @@ const RAW_RUNTIME_STATE =
           ["@types/react-infinite-scroller", "npm:1.2.5"],\
           ["@types/react-lazy-load-image-component", "npm:1.6.4"],\
           ["@types/react-slick", "npm:0.23.13"],\
+          ["@types/regenerator-runtime", "npm:0.13.6"],\
           ["@types/slick-carousel", "npm:1.6.40"],\
           ["@types/uuid", "npm:9.0.8"],\
           ["autoprefixer", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:10.4.19"],\
@@ -9881,6 +9901,7 @@ const RAW_RUNTIME_STATE =
           ["babel-loader", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:9.1.3"],\
           ["babel-plugin-macros", "npm:3.1.0"],\
           ["body-parser", "npm:1.20.2"],\
+          ["core-js", "npm:3.37.1"],\
           ["date-fns", "npm:3.6.0"],\
           ["eslint", "npm:8.52.0"],\
           ["eslint-config-next", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:14.0.0"],\
@@ -9909,6 +9930,7 @@ const RAW_RUNTIME_STATE =
           ["react-query", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:3.39.3"],\
           ["react-slick", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:0.30.2"],\
           ["recoil", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:0.7.7"],\
+          ["regenerator-runtime", "npm:0.14.1"],\
           ["slick-carousel", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:1.8.1"],\
           ["swiper", "npm:11.1.3"],\
           ["swr", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:2.2.5"],\
@@ -11005,6 +11027,13 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/regenerator-runtime-npm-0.14.0-e060897cf7-10c0.zip/node_modules/regenerator-runtime/",\
         "packageDependencies": [\
           ["regenerator-runtime", "npm:0.14.0"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["npm:0.14.1", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/regenerator-runtime-npm-0.14.1-a6c97c609a-10c0.zip/node_modules/regenerator-runtime/",\
+        "packageDependencies": [\
+          ["regenerator-runtime", "npm:0.14.1"]\
         ],\
         "linkType": "HARD"\
       }]\

@@ -52,6 +52,7 @@ export default function InterestProps({
     mulSeq: '',
     oldInfoId: '',
     infoNo: '',
+    caseNoString: '',
     isNewCategory: false,
     interestInfo: {
       category: '',
@@ -74,6 +75,7 @@ export default function InterestProps({
     mulSeq: '',
     oldInfoId: '',
     infoNo: '',
+    caseNoString: '',
     interestInfo: {
       category: '',
       memo: '',
@@ -102,6 +104,7 @@ export default function InterestProps({
                 manageNo: responseKm.data?.manageNo ?? '',
                 mulSeq: responseKm.data?.mulSeq,
                 infoNo: responseKm.data?.infoNo ?? '',
+                caseNoString: responseKm.data?.caseNoString ?? '',
                 oldInfoId: responseKm.data?.oldInfoId,
                 interestInfo: {
                   category: responseKm.data?.interestInfo?.category ?? '미분류',
@@ -127,6 +130,7 @@ export default function InterestProps({
               return {
                 ...prev,
                 goodsId: responseGm.data?.goodsId,
+                caseNoString: responseGm.data?.caseNoString,
                 manageNo: responseGm.data?.manageNo,
                 interestInfo: {
                   category: responseGm.data?.interestInfo?.category ?? '미분류',
@@ -147,6 +151,7 @@ export default function InterestProps({
                 ...prev,
                 goodsId: responseGG.data?.goodsId,
                 manageNo: responseGG.data?.manageNo,
+                caseNoString: responseGG.data?.caseNoString,
                 interestInfo: {
                   category: responseGG.data?.interestInfo?.category ?? '미분류',
                   memo: responseGG.data?.interestInfo?.memo ?? '',
@@ -166,6 +171,7 @@ export default function InterestProps({
                 infoId: responseKw.data?.infoId,
                 caseNo: responseKw.data?.caseNo,
                 mulSeq: responseKw.data?.mulSeq,
+                caseNoString: responseKw.data?.caseNoString,
                 oldInfoId: responseKw.data?.oldInfoId,
                 infoNo: responseKw.data?.infoNo,
                 interestInfo: {
@@ -314,14 +320,7 @@ export default function InterestProps({
                     interestData?.caseNo !== undefined ? '사건번호' : '관리번호'
                   }
                   contents={
-                    interestData?.caseNo !== undefined
-                      ? interestData?.caseNo?.slice(0, 4) +
-                        '-' +
-                        interestData?.caseNo?.slice(
-                          5,
-                          interestData?.caseNo?.length,
-                        )
-                      : interestData?.manageNo
+                    interestData?.caseNoString ?? interestData?.manageNo
                   }
                 />
                 <TableFrame

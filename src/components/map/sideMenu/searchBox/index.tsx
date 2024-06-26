@@ -183,7 +183,7 @@ const animation = css`
 const ContainerStyle = css`
   position: relative;
   padding: 5px 10px 5px 10px;
-  z-index: 100;
+  z-index: 10;
   background-color: white;
   width: 370px;
   border-radius: 16px;

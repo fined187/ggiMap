@@ -62,8 +62,10 @@
     "@types/react-infinite-scroller": "^1.2.5",
     "@types/react-lazy-load-image-component": "^1",
     "@types/react-slick": "^0",
+    "@types/regenerator-runtime": "^0",
     "@types/slick-carousel": "^1",
     "@types/uuid": "^9",
+    "core-js": "^3.37.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.0",
     "eslint-config-prettier": "^9.0.0",
@@ -71,6 +73,7 @@
     "lodash": "^4.17.21",
     "postcss": "^8",
     "prettier": "^3.0.3",
+    "regenerator-runtime": "^0.14.1",
     "tailwindcss": "^3.3.0",
     "typescript": "^5.0.0"
   },

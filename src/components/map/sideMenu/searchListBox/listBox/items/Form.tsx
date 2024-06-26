@@ -182,6 +182,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
                 objectFit: 'cover',
                 width: '180px',
                 height: '135px',
+                cursor: 'pointer',
               }}
               handleDetailPage={handleDetailPage}
               type={item?.type ?? 1}

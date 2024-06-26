@@ -91,7 +91,7 @@ export default function MiniMap({
           width: '300px',
           height: '300px',
           position: 'absolute',
-          zIndex: 100,
+          zIndex: 1100,
           bottom: '0',
           right: '0',
           display: isPanoVisible ? 'block' : 'none',

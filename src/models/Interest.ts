@@ -11,6 +11,7 @@ export interface interest {
   oldInfoId: string
   infoNo: string
   interestInfo: InterestInfo
+  caseNoString: string
   count: number
   categories: string[]
   smsNotificationYn: string
@@ -27,6 +28,7 @@ export interface InterestFormData {
   mulSeq: string
   oldInfoId: string
   infoNo?: string
+  caseNoString: string
   isNewCategory: boolean
   interestInfo: {
     category: string
@@ -56,6 +58,7 @@ export interface UpdatedInterest {
   categories: string[]
   smsNotificationYn: string
   isWait: boolean
+  caseNoString: string
   manageNo?: string
   goodsId?: string
   address: string
