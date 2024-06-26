@@ -67,7 +67,7 @@ export default function MiniMap({
         new window.naver.maps.Panorama('pano', {
           position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
           pov: {
-            pan: -135,
+            pan: 0,
             tilt: 0,
             fov: 100,
           },

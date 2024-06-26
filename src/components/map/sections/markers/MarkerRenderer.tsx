@@ -84,6 +84,13 @@ const MarkerRenderer = ({
     ],
   )
 
+  const handleAnchor = useCallback(() => {
+    if (map) {
+      if (map.getZoom() >= 16) return new window.naver.maps.Point(0, 0)
+      if (map.getZoom() >= 15) return new window.naver.maps.Point(1, 1)
+    }
+  }, [map])
+
   useEffect(() => {
     if (!map || !item || map.getZoom() < 15) return
 
@@ -94,7 +101,6 @@ const MarkerRenderer = ({
       })
       markers = []
     }
-    removeAllMarkers()
     const zoomLevel = map.getZoom()
     const marker = new window.naver.maps.Marker({
       map: map,
@@ -107,7 +113,7 @@ const MarkerRenderer = ({
           zoomLevel: zoomLevel || 0,
           winExist: item.winExist,
         }),
-        anchor: new window.naver.maps.Point(12, 12),
+        anchor: handleAnchor(),
       },
       animation:
         listOver.isOver && item.x === listOver.x && item.y === listOver.y

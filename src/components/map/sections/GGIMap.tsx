@@ -319,7 +319,7 @@ export default function GGIMap({
           width: '100vw',
           height: '100vh',
           position: 'absolute',
-          zIndex: 10,
+          zIndex: 1,
           top: '0',
           display: isPanoVisible ? 'block' : 'none',
         }}

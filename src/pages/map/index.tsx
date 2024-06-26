@@ -288,6 +288,10 @@ function MapComponent({ token, type, idCode }: Props) {
     }
   }, [token, map, idCode, type])
 
+  window.addEventListener('beforeunload', (e) => {
+    e.preventDefault()
+  })
+
   return (
     <MapSection
       token={token as string}
