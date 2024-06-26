@@ -136,6 +136,9 @@ export default function SearchBox() {
           css={InputStyle}
           onChange={handleKeyword}
           onKeyDown={(e) => handleEnter(e)}
+          style={{
+            zIndex: 100,
+          }}
         />
         <Search right="25" top="25" handleSearchButton={handleSearchButton} />
       </Flex>
@@ -180,7 +183,7 @@ const animation = css`
 const ContainerStyle = css`
   position: relative;
   padding: 5px 10px 5px 10px;
-  z-index: 10;
+  z-index: 100;
   background-color: white;
   width: 370px;
   border-radius: 16px;

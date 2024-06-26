@@ -1,5 +1,4 @@
 import Flex from '@/components/shared/Flex'
-import MiniMap from './MiniMap'
 import styled from '@emotion/styled'
 import Interest from '../../icons/Interest'
 import { ItemDetail } from '@/models/ItemDetail'
@@ -15,12 +14,13 @@ import 'swiper/css/scrollbar'
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules'
 import NextBtn from './icon/NextBtn'
 import PrevBtn from './icon/PrevBtn'
+import { useRecoilValue } from 'recoil'
+import { isOnlySelectedAtom } from '@/store/atom/map'
 
 interface KwCarouselProps {
   clickedInfo: ItemDetail[] | null
   clickedItem: MapItem | null
   nowIndex: number
-  setClickedItem: Dispatch<SetStateAction<MapItem | null>>
   setNowIndex: Dispatch<SetStateAction<number>>
 }
 
@@ -28,9 +28,10 @@ export default function KwCarousel({
   clickedInfo,
   clickedItem,
   nowIndex,
-  setClickedItem,
   setNowIndex,
 }: KwCarouselProps) {
+  const isOnlySelected = useRecoilValue(isOnlySelectedAtom)
+
   const [kwInfo, setKwInfo] = useState<ItemDetail[]>([])
   useEffect(() => {
     const handleGetKwClickedInfo = () => {
@@ -40,7 +41,6 @@ export default function KwCarousel({
     }
     handleGetKwClickedInfo()
   }, [clickedInfo])
-  console.log(nowIndex)
   return (
     <div>
       <Flex
@@ -55,7 +55,6 @@ export default function KwCarousel({
           spaceBetween={0}
           slidesPerView={1}
           onSlideChange={(swiper) => {
-            console.log(swiper.activeIndex)
             setNowIndex(swiper.activeIndex)
           }}
           style={{
@@ -98,7 +97,7 @@ export default function KwCarousel({
               </BottomBox>
             </SwiperSlide>
           ))}
-          {kwInfo.length > 1 && (
+          {kwInfo.length > 1 && !isOnlySelected && (
             <>
               <NextBtn />
               <PrevBtn />

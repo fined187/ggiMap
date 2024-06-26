@@ -7,61 +7,54 @@
 @import url('https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic.css');
 
 @font-face {
-  font-family: 'NanumGothic';
-  font-style: normal;
-  font-weight: 400;
-  src: url('/public/fonts/GGAuction.ttf') format('truetype');
-}
-
-@font-face {
   font-family: 'Batang';
-  src: url('/public/fonts/Batang.ttf') format('truetype');
+  src: url('/fonts/Batang.ttf') format('truetype');
 }
 
 @font-face {
 	font-family: 'SUIT';
 	font-weight: 100;
-	src: url('/public/fonts/SUIT-Thin.woff2') format('woff2');
+	src: url('/fonts/SUIT-Thin.ttf') format('ttf');
 }
 @font-face {
 	font-family: 'SUIT';
 	font-weight: 200;
-	src: url('/public/fonts/SUIT-ExtraLight.woff2') format('woff2');
+	src: url('/fonts/SUIT-ExtraLight.ttf') format('ttf');
 }
 @font-face {
 	font-family: 'SUIT';
 	font-weight: 300;
-	src: url('/public/fonts/SUIT-Light.woff2') format('woff2');
+	src: url('/fonts/SUIT-Light.ttf') format('ttf');
 }
 @font-face {
 	font-family: 'SUIT';
 	font-weight: 400;
-	src: url('/public/fonts/SUIT-Regular.woff2') format('woff2');
+	src: url('/fonts/SUIT-Regular.ttf') format('ttf');
 }
 @font-face {
 	font-family: 'SUIT';
 	font-weight: 500;
-	src: url('/public/fonts/SUIT-Medium.woff2') format('woff2');
+	src: url('/fonts/SUIT-Medium.ttf') format('ttf');
 }
 @font-face {
 	font-family: 'SUIT';
 	font-weight: 600;
-	src: url('/public/fonts/SUIT-SemiBold.woff2') format('woff2');
+	src: url('/fonts/SUIT-SemiBold.ttf') format('ttf');
 }
 @font-face {
 	font-family: 'SUIT';
 	font-weight: 700;
-	src: url('/public/fonts/SUIT-Bold.woff2') format('woff2');
+	src: url('/fonts/SUIT-Bold.ttf') format('ttf');
 }
 @font-face {
 	font-family: 'SUIT';
 	font-weight: 800;
-	src: url('/public/fonts/SUIT-ExtraBold.woff2') format('woff2');
+	src: url('/fonts/SUIT-ExtraBold.ttf') format('ttf');
 }
 @font-face {
 	font-family: 'SUIT';
 	font-weight: 900;
-	src: url('/public/fonts/SUIT-Heavy.woff2') format('woff2');
+	src: url('/fonts/SUIT-Heavy.ttf') format('ttf');
 }
 
 @keyframes blink {
@@ -76,4 +69,8 @@
   background-color: red;
   border-radius: 50%;
   animation: blink 1s infinite;
+}
+
+body {
+	font-family: 'SUIT', sans-serif;
 }

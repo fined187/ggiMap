@@ -8,16 +8,15 @@ import { useRecoilState } from 'recoil'
 
 export default function UsageBox() {
   const [formData, setFormData] = useRecoilState(formDataAtom)
-  const handleAddUsage = (ids: number) => {
-    if (formData.ids.includes(ids.toString())) {
-      const index = formData.ids.indexOf(ids.toString())
-      formData.ids.splice(index, 1)
-    } else {
-      formData.ids.push(ids.toString())
-    }
-    setFormData({ ...formData, ids: formData.ids })
+  const handleAddUsage = (id: number) => {
+    const idStr = id.toString()
+    setFormData((prev) => {
+      const updatedIds = prev.ids.includes(idStr)
+        ? prev.ids.filter((existingId) => existingId !== idStr)
+        : [...prev.ids, idStr]
+      return { ...prev, ids: updatedIds }
+    })
   }
-
   return (
     <Flex justify="start" direction="column" align="center">
       <Flex direction="row" justify="center" css={ContainerStyle}>

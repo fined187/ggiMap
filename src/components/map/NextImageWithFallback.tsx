@@ -46,9 +46,6 @@ export default function NextImageWithFallback({
             'width=1600, height=1000',
           )
         }}
-        style={{
-          cursor: 'pointer',
-        }}
       />
     )
   }

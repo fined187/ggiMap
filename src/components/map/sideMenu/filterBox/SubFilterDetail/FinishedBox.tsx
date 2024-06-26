@@ -1,14 +1,17 @@
+import Reset from '@/components/map/icons/Reset'
 import Flex from '@/components/shared/Flex'
 import Spacing from '@/components/shared/Spacing'
 import Text from '@/components/shared/Text'
 import { MULGUN, MULGUN_SUB } from '@/constants/SubFilter'
-import { Form } from '@/models/Form'
 import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
-import { Dispatch, SetStateAction } from 'react'
 import { useRecoilState } from 'recoil'
 
-export default function FinishedBox() {
+interface FinishedBoxProps {
+  handleReset: () => void
+}
+
+export default function FinishedBox({ handleReset }: FinishedBoxProps) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const handleGubunBoxClick = (index: number) => {
     if (index === 0) {
@@ -43,18 +46,35 @@ export default function FinishedBox() {
     <Flex justify="start" direction="column" css={ContainerStyle}>
       <Flex direction="column">
         <Flex justify="space-between">
-          <Text typography="t4" fontWeight="700" color="black" textAlign="left">
-            구분
-          </Text>
-          <Text
-            typography="t6"
-            fontWeight="500"
-            color="textGray"
-            textAlign="right"
+          <Flex
+            justify="row"
+            style={{
+              gap: '10px',
+              marginTop: '5px',
+            }}
           >
-            낙찰 정보를 함께 표시합니다
-          </Text>
+            <Text
+              typography="t4"
+              fontWeight="700"
+              color="black"
+              textAlign="left"
+            >
+              구분
+            </Text>
+            <Text
+              typography="t6"
+              fontWeight="500"
+              color="textGray"
+              textAlign="right"
+            >
+              낙찰 정보를 함께 표시합니다
+            </Text>
+          </Flex>
+          <Flex onClick={handleReset}>
+            <Reset />
+          </Flex>
         </Flex>
+        <Spacing direction="vertical" size={10} />
         <Flex>
           {Object.values(MULGUN_SUB).map((value, index) => {
             return (
@@ -67,18 +87,6 @@ export default function FinishedBox() {
                   handleGubunBoxClick(index)
                 }}
                 style={{
-                  // border:
-                  //   index === 0
-                  //     ? formData.ekm
-                  //       ? '1px solid #332EFC'
-                  //       : '1px solid #E5E5E5'
-                  //     : index === 1
-                  //     ? formData.egm
-                  //       ? '1px solid #332EFC'
-                  //       : '1px solid #E5E5E5'
-                  //     : formData.egg
-                  //     ? '1px solid #332EFC'
-                  //     : '1px solid #E5E5E5',
                   borderLeft:
                     index === 0
                       ? formData.ekm
@@ -181,6 +189,7 @@ export default function FinishedBox() {
             기간
           </Text>
         </Flex>
+        <Spacing direction="vertical" size={10} />
         <Flex direction="row" justify="center">
           {Object.values(MULGUN)
             .slice(0, 3)

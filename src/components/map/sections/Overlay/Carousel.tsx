@@ -234,13 +234,15 @@ export default function Carousel({
                     >
                       <Text css={TextStyle}>예정</Text>
                     </TypeStyle>
-                    {clickedInfo && clickedInfo.length > 1 && (
-                      <PageCount>
-                        <Text css={PageCountTextStyle}>
-                          {nowIndex + 1}/{clickedInfo.length}
-                        </Text>
-                      </PageCount>
-                    )}
+                    {clickedInfo &&
+                      clickedInfo.length > 1 &&
+                      !isOnlySelected && (
+                        <PageCount>
+                          <Text css={PageCountTextStyle}>
+                            {nowIndex + 1}/{clickedInfo.length}
+                          </Text>
+                        </PageCount>
+                      )}
                     <Flex
                       style={{
                         position: 'absolute',

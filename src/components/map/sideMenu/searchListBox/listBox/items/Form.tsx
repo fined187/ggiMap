@@ -111,7 +111,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
                   item?.type === 2
                     ? '#0087B1'
                     : item?.type === 3
-                    ? '#5200FF'
+                    ? '#8F00FF'
                     : '#0038FF'
                 }
               >

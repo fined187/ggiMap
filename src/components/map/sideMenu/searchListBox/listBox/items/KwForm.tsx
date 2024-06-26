@@ -5,10 +5,12 @@ import Spacing from '@/components/shared/Spacing'
 import Text from '@/components/shared/Text'
 import { useInterestContext } from '@/contexts/useModalContext'
 import { MapItems } from '@/models/MapItem'
+import { isOnlySelectedAtom } from '@/store/atom/map'
 import useNum2Han from '@/utils/useNum2Han'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Dispatch, SetStateAction } from 'react'
+import { useRecoilValue } from 'recoil'
 
 function KwForm({
   item,

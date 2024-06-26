@@ -77,4 +77,5 @@ const ContainerStyle = css`
   top: 1%;
   transition: all 0.3s ease-in-out;
   overflow: hidden;
+  z-index: 100;
 `

@@ -158,4 +158,5 @@ const ContainerStyle = css`
   height: 40px;
   gap: 5px;
   transition: all 0.3s ease-in-out;
+  z-index: 100;
 `

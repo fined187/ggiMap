@@ -5,9 +5,6 @@ import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
 import { Dispatch, SetStateAction } from 'react'
 import FilterProps from './FilterProps'
-import { MAP_KEY } from '../../sections/hooks/useMap'
-import useSWR from 'swr'
-import { NaverMap } from '@/models/Map'
 
 interface SearchBoxProps {
   formData: Form
@@ -15,7 +12,6 @@ interface SearchBoxProps {
 }
 
 export default function MainFilter({ formData, setFormData }: SearchBoxProps) {
-  const { data: map } = useSWR<NaverMap>(MAP_KEY)
   return (
     <Flex justify="center" direction="row" css={ContainerStyle}>
       <FilterProps
@@ -56,4 +52,5 @@ const ContainerStyle = css`
   background-color: white;
   gap: 10px;
   border: none;
+  z-index: 100;
 `

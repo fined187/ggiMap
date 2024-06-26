@@ -33,7 +33,12 @@ export default function SelectAll({ type }: SelectAllProps) {
       return null
     } else if (type === 2) {
       if (formData.ids.length === 12) {
-        setFormData({ ...formData, ids: [] })
+        setFormData((prev) => {
+          return {
+            ...prev,
+            ids: [],
+          }
+        })
       } else {
         setFormData({
           ...formData,

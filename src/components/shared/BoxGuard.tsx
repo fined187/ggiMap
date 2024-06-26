@@ -27,7 +27,7 @@ export default function BoxGuard({
 const ContainerStyle = css`
   top: 1%;
   left: 1%;
-  z-index: 10;
+  z-index: 100;
   background-color: none;
   position: absolute;
 `
