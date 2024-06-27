@@ -17,6 +17,8 @@ import { usePostListItems } from '@/hooks/items/usePostListItems'
 import usePostMapItems from '@/hooks/items/usePostMapItems'
 import { useGetDetail } from '../map/sections/Overlay/hooks/useGetDetail'
 import { useMutateDetail } from '../map/sections/Overlay/hooks/useMutateDetail'
+import useHandleSelectedData from './hooks/useSelectedData'
+import { authInfo } from '@/store/atom/auth'
 
 interface UpdateResultProps {
   onButtonClick?: () => void
@@ -33,6 +35,8 @@ export default function UpdateResult({
   const { mutate: postListItems } = usePostListItems(oldFormData, 1, 10)
   const { mutate: postMapItems } = usePostMapItems(oldFormData, false)
   const { mutate: postDetail } = useMutateDetail()
+  const { handleSelectedData } = useHandleSelectedData()
+  const auth = useRecoilValue(authInfo)
   const changeParentUrl = () => {
     if (window.opener) {
       const newUrl = `https://www.ggi.co.kr/member/scrap_list_kyung.asp?group=${updatedData?.interestInfo.category}`
@@ -116,6 +120,7 @@ export default function UpdateResult({
             postListItems()
             postMapItems()
             postDetail()
+            auth.idCode === '' ? null : handleSelectedData()
           }}
         >
           <Text css={TextStyle}>닫기</Text>

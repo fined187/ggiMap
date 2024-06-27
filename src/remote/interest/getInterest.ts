@@ -25,7 +25,6 @@ export const getKwInterest = async (id: string) => {
 export const getGmInterest = async (id: string) => {
   try {
     const response = await axios.get(`/ggi/api/interest/map/gm/${id}`)
-    console.log(response)
     if (response.data.success) {
       return response.data
     }

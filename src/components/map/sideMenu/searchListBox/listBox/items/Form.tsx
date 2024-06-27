@@ -79,6 +79,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
       }
     }
   }
+
   return (
     <div
       onMouseOver={() => {
@@ -137,8 +138,8 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
                     close()
                   } else {
                     open({
-                      type: item?.type.toString() ?? '',
-                      id: item?.id ?? '',
+                      type: item.type.toString() ?? '',
+                      id: isSelected ? item.id ?? item.goodsId : item.id,
                       openModal: openModal,
                       setOpenModal: setOpenModal,
                       onButtonClick: () => {
