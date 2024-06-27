@@ -1,4 +1,5 @@
 import { NaverMap } from '@/models/Map'
+import { isPanoramaVisibleAtom } from '@/store/atom/map'
 import {
   Dispatch,
   SetStateAction,
@@ -6,6 +7,7 @@ import {
   useEffect,
   useState,
 } from 'react'
+import { useRecoilValue } from 'recoil'
 
 interface MiniMapProps {
   map: NaverMap
@@ -15,17 +17,16 @@ interface MiniMapProps {
   }
   setClickedMarker: Dispatch<SetStateAction<naver.maps.Marker | null>>
   setIsPanoVisible: Dispatch<SetStateAction<boolean>>
-  isPanoVisible: boolean
 }
 
 export default function MiniMap({
   clickedLatLng,
   setClickedMarker,
   setIsPanoVisible,
-  isPanoVisible,
   map,
 }: MiniMapProps) {
   const [miniMap, setMiniMap] = useState<NaverMap | null>(null)
+  const isPanoramaVisible = useRecoilValue(isPanoramaVisibleAtom)
   const initializeMiniMap = useCallback(
     (map: NaverMap) => {
       if (!map) return
@@ -78,25 +79,32 @@ export default function MiniMap({
   )
 
   useEffect(() => {
-    if (map && isPanoVisible) {
+    if (map && isPanoramaVisible) {
       initializeMiniMap(map)
     }
-  }, [map, initializeMiniMap, isPanoVisible])
+  }, [map, initializeMiniMap, isPanoramaVisible])
 
   return (
-    <>
+    <div
+      style={{
+        position: 'fixed',
+        bottom: '0',
+        right: '0',
+        zIndex: 1100,
+      }}
+    >
       <div
         id="minimap"
         style={{
           width: '300px',
           height: '300px',
-          position: 'absolute',
+          position: 'fixed',
           zIndex: 1100,
           bottom: '0',
           right: '0',
-          display: isPanoVisible ? 'block' : 'none',
+          display: isPanoramaVisible ? 'block' : 'none',
         }}
       />
-    </>
+    </div>
   )
 }

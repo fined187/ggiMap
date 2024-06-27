@@ -7117,7 +7117,7 @@ __metadata:
     jspdf: "npm:^2.5.1"
     lodash: "npm:^4.17.21"
     next: "npm:^13.0.0"
-    postcss: "npm:^8"
+    postcss: "npm:^8.4.38"
     prettier: "npm:^3.0.3"
     puppeteer: "npm:^22.6.5"
     react: "npm:^18"
@@ -7336,7 +7336,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8, postcss@npm:^8.4.23":
+"postcss@npm:^8.4.23, postcss@npm:^8.4.38":
   version: 8.4.38
   resolution: "postcss@npm:8.4.38"
   dependencies:

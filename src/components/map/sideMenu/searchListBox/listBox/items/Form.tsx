@@ -166,7 +166,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
                 window.open(
                   handleDetailPage(item.idCode, item.type),
                   '_blank',
-                  'width=1600, height=1000',
+                  'width=1220, height=1000',
                 )
               }
             }}

@@ -146,3 +146,8 @@ export const isOnlySelectedAtom = atom<boolean>({
   key: `isOnlySelected/${v4()}`,
   default: false,
 })
+
+export const isPanoramaVisibleAtom = atom<boolean>({
+  key: `isPanoramaVisible/${v4()}`,
+  default: false,
+})

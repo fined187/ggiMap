@@ -14,7 +14,12 @@ import Script from 'next/script'
 import { INITIAL_CENTER } from './hooks/useMap'
 import { MapCountsResponse } from '@/models/MapItem'
 import useMapCounts from '../sideMenu/searchListBox/listBox/hooks/useMapCounts'
-import { clickedItemAtom, formDataAtom, mapItemsAtom } from '@/store/atom/map'
+import {
+  clickedItemAtom,
+  formDataAtom,
+  isPanoramaVisibleAtom,
+  mapItemsAtom,
+} from '@/store/atom/map'
 import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
 import { authInfo } from '@/store/atom/auth'
@@ -90,7 +95,9 @@ export default function GGIMap({
   )
   const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
   const mapRef = useRef<NaverMap | null>(null)
-  const [isPanoVisible, setIsPanoVisible] = useState(false)
+  const [isPanoVisible, setIsPanoVisible] = useRecoilState(
+    isPanoramaVisibleAtom,
+  )
   const [clickedMarker, setClickedMarker] = useState<naver.maps.Marker | null>(
     null,
   )
@@ -328,7 +335,7 @@ export default function GGIMap({
         <button
           onClick={closePanorama}
           style={{
-            position: 'absolute',
+            position: 'fixed',
             zIndex: 100,
             top: '50px',
             right: '50px',
@@ -343,7 +350,6 @@ export default function GGIMap({
         </button>
       )}
       <MiniMap
-        isPanoVisible={isPanoVisible}
         setIsPanoVisible={setIsPanoVisible}
         setClickedMarker={setClickedMarker}
         clickedLatLng={clickedLatLng}
