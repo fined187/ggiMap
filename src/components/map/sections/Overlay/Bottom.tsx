@@ -3,7 +3,7 @@ import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
 import { ItemDetail } from '@/models/ItemDetail'
 import { MapItem } from '@/models/MapItem'
-import { clickedItemAtom } from '@/store/atom/map'
+import { clickedInfoAtom, clickedItemAtom } from '@/store/atom/map'
 import useNum2Han from '@/utils/useNum2Han'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
@@ -11,12 +11,12 @@ import { useRecoilValue } from 'recoil'
 import NewPageIcon from './icon/NewPageIcon'
 
 interface BottomProps {
-  clickedInfo: ItemDetail[] | null
   nowIndex: number
 }
 
-export default function Bottom({ clickedInfo, nowIndex }: BottomProps) {
+export default function Bottom({ nowIndex }: BottomProps) {
   const clickedItem = useRecoilValue(clickedItemAtom)
+  const clickedInfo = useRecoilValue(clickedInfoAtom)
   const handleDetailPage = (type: number, idCode: string) => {
     if (type === 1) {
       return `https://www.ggi.co.kr/kyungmae/mulgun_detail_popup_h.asp?idcode=${idCode}`

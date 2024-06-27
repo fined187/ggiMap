@@ -26,6 +26,11 @@ import Image from 'next/image'
 import UpdateResult from './InterestResult'
 import { usePutInterest } from './hooks/usePutInterest'
 import { useDeleteInterest } from './hooks/useDeleteInterest'
+import { useRecoilValue } from 'recoil'
+import { formDataAtom } from '@/store/atom/map'
+import { usePostListItems } from '@/hooks/items/usePostListItems'
+import usePostMapItems from '@/hooks/items/usePostMapItems'
+import { useMutateDetail } from '../map/sections/Overlay/hooks/useMutateDetail'
 
 export default function InterestProps({
   type,
@@ -42,6 +47,10 @@ export default function InterestProps({
   const [step, setStep] = useState(1)
   const [interestData, setInterestData] = useState<interest | null>(null)
   const 처음등록하는가 = interestData?.interestInfo === null
+  const oldFormData = useRecoilValue(formDataAtom)
+  const { mutate: postListItems } = usePostListItems(oldFormData, 1, 10)
+  const { mutate: postMapItems } = usePostMapItems(oldFormData, false)
+  const { mutate: postDetail } = useMutateDetail()
   const [formData, setFormData] = useState<InterestFormData>({
     goodsId: '',
     infoId: '',
@@ -63,7 +72,7 @@ export default function InterestProps({
     smsNotificationYn: 'N',
     isWait: false,
   })
-
+  console.log(formData)
   const [updatedData, setUpdatedData] = useState<UpdatedInterest>({
     infoId: '',
     caseNo: '',
@@ -242,6 +251,9 @@ export default function InterestProps({
     } else {
       if (window.confirm('관심물건을 삭제하시겠습니까?')) {
         deleteInterest()
+        postListItems()
+        postMapItems()
+        postDetail()
         onButtonClick()
       }
     }
@@ -453,8 +465,6 @@ export default function InterestProps({
           ) : (
             <UpdateResult
               onButtonClick={onButtonClick}
-              type={type}
-              id={id}
               updatedData={updatedData}
               처음등록하는가={처음등록하는가}
             />

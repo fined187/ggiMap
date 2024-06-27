@@ -11,22 +11,28 @@ import Text from '../shared/Text'
 import { css } from '@emotion/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
+import { formDataAtom } from '@/store/atom/map'
+import { usePostListItems } from '@/hooks/items/usePostListItems'
+import usePostMapItems from '@/hooks/items/usePostMapItems'
+import { useGetDetail } from '../map/sections/Overlay/hooks/useGetDetail'
+import { useMutateDetail } from '../map/sections/Overlay/hooks/useMutateDetail'
 
 interface UpdateResultProps {
-  type: string
-  id: string
   onButtonClick?: () => void
   updatedData: UpdatedInterest
   처음등록하는가: boolean
 }
 
 export default function UpdateResult({
-  type,
-  id,
   onButtonClick,
   updatedData,
   처음등록하는가,
 }: UpdateResultProps) {
+  const oldFormData = useRecoilValue(formDataAtom)
+  const { mutate: postListItems } = usePostListItems(oldFormData, 1, 10)
+  const { mutate: postMapItems } = usePostMapItems(oldFormData, false)
+  const { mutate: postDetail } = useMutateDetail()
   const changeParentUrl = () => {
     if (window.opener) {
       const newUrl = `https://www.ggi.co.kr/member/scrap_list_kyung.asp?group=${updatedData?.interestInfo.category}`
@@ -104,7 +110,14 @@ export default function UpdateResult({
         >
           <Text css={ListTextStyle}>관심물건 목록 보기</Text>
         </ListButtonStyle>
-        <CloseButtonStyle onClick={() => onButtonClick && onButtonClick()}>
+        <CloseButtonStyle
+          onClick={() => {
+            onButtonClick && onButtonClick()
+            postListItems()
+            postMapItems()
+            postDetail()
+          }}
+        >
           <Text css={TextStyle}>닫기</Text>
         </CloseButtonStyle>
       </Flex>

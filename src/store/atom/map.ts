@@ -1,5 +1,6 @@
 import { SelectedItems } from '@/models/DetailItems'
 import { Form } from '@/models/Form'
+import { ItemDetail } from '@/models/ItemDetail'
 import { jusoProps } from '@/models/Juso'
 import { MapItem, MapListResponse } from '@/models/MapItem'
 import { SelectedItem } from '@/models/SelectedItem'
@@ -150,4 +151,9 @@ export const isOnlySelectedAtom = atom<boolean>({
 export const isPanoramaVisibleAtom = atom<boolean>({
   key: `isPanoramaVisible/${v4()}`,
   default: false,
+})
+
+export const clickedInfoAtom = atom<ItemDetail[] | null>({
+  key: `clickedInfo/${v4()}`,
+  default: null,
 })

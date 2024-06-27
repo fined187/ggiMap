@@ -7,26 +7,14 @@ import { MapItem } from '@/models/MapItem'
 import Carousel from './Carousel'
 
 interface TopProps {
-  clickedInfo: ItemDetail[] | null
-  setClickedInfo: Dispatch<SetStateAction<ItemDetail[] | null>>
   nowIndex: number
   setNowIndex: Dispatch<SetStateAction<number>>
 }
 
-export default function Top({
-  clickedInfo,
-  setClickedInfo,
-  nowIndex,
-  setNowIndex,
-}: TopProps) {
+export default function Top({ nowIndex, setNowIndex }: TopProps) {
   return (
     <Flex css={ContainerStyle}>
-      <Carousel
-        clickedInfo={clickedInfo}
-        nowIndex={nowIndex}
-        setNowIndex={setNowIndex}
-        setClickedInfo={setClickedInfo}
-      />
+      <Carousel nowIndex={nowIndex} setNowIndex={setNowIndex} />
     </Flex>
   )
 }

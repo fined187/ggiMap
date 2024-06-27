@@ -47,7 +47,9 @@ export default function AutoKeyword({ keyword, setKeyword }: AutoKeywordProps) {
       }
 
       const subwayLists: KakaoSubwayProps[] | undefined =
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         await useSubwayStation(inputKeyword)
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { searchAddr } = useSearchAddr(inputKeyword)
       const filteredKeyword = inputKeyword.replace('역', '')
       const addrLists: KakaoAddrProps[] | undefined = await searchAddr()
@@ -100,8 +102,10 @@ export default function AutoKeyword({ keyword, setKeyword }: AutoKeywordProps) {
             >
               <TextStyle>
                 {'place_name' in keys
-                  ? useHighlightText(keys.place_name, keyword)
-                  : useHighlightText(keys.address_name, keyword)}
+                  ? // eslint-disable-next-line react-hooks/rules-of-hooks
+                    useHighlightText(keys.place_name, keyword)
+                  : // eslint-disable-next-line react-hooks/rules-of-hooks
+                    useHighlightText(keys.address_name, keyword)}
               </TextStyle>
             </Flex>
             <Spacing size={10} />

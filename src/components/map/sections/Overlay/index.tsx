@@ -4,9 +4,8 @@ import { css } from '@emotion/react'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import Top from './Top'
 import Bottom from './Bottom'
-import { ItemDetail } from '@/models/ItemDetail'
 import { useRecoilState } from 'recoil'
-import { clickedItemAtom, markerPositionAtom } from '@/store/atom/map'
+import { markerPositionAtom } from '@/store/atom/map'
 import { useGetDetail } from './hooks/useGetDetail'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
@@ -16,12 +15,10 @@ interface OverlayProps {
 }
 
 export default function Overlay({ halfDimensions }: OverlayProps) {
-  const [clickedInfo, setClickedInfo] = useState<ItemDetail[] | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
   const { data: map } = useSWR(MAP_KEY)
-  const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
   const calculateScreenNum = useMemo(() => {
     let position = {
       first: false,
@@ -283,12 +280,7 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
     }
   }, [markerPosition, calculateScreenNum])
 
-  useGetDetail(
-    clickedItem?.ids!,
-    clickedItem?.types!,
-    setClickedInfo,
-    clickedItem,
-  )
+  useGetDetail()
   return (
     <Flex
       css={Overlaytop}
@@ -308,13 +300,8 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
             : '',
       }}
     >
-      <Top
-        clickedInfo={clickedInfo}
-        setClickedInfo={setClickedInfo}
-        nowIndex={nowIndex}
-        setNowIndex={setNowIndex}
-      />
-      <Bottom clickedInfo={clickedInfo} nowIndex={nowIndex} />
+      <Top nowIndex={nowIndex} setNowIndex={setNowIndex} />
+      <Bottom nowIndex={nowIndex} />
     </Flex>
   )
 }

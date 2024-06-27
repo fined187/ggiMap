@@ -1,22 +1,21 @@
 import { ItemDetail } from '@/models/ItemDetail'
-import { MapItem } from '@/models/MapItem'
 import {
   getGgDetail,
   getGmDetail,
   getKmDetail,
   getKwDetail,
 } from '@/remote/map/info/getDetail'
-import { Dispatch, SetStateAction } from 'react'
+import { clickedInfoAtom, clickedItemAtom } from '@/store/atom/map'
 import { useQuery } from 'react-query'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
-export const useGetDetail = (
-  ids: string[],
-  type: number[],
-  setClickedInfo: Dispatch<SetStateAction<ItemDetail[] | null>>,
-  clickedItem: MapItem | null,
-) => {
+export const useGetDetail = () => {
+  const clickedItem = useRecoilValue(clickedItemAtom)
+  const setClickedInfo = useSetRecoilState(clickedInfoAtom)
+  const ids = clickedItem?.ids ?? []
+  const type = clickedItem?.types ?? []
   return useQuery<ItemDetail[]>(
-    ['dtail', { type, ids }],
+    ['dtail', { ids, type }],
     async () => {
       const data = await Promise.all(
         ids.map(async (id, index) => {
@@ -36,7 +35,6 @@ export const useGetDetail = (
     },
     {
       onSuccess: (data) => {
-        console.log(data)
         const SortedData = data.sort((a, b) => {
           if (a?.winAmt !== undefined && b?.winAmt !== undefined) {
             if (a.winAmt > 0 && b.winAmt === 0) {
