@@ -28,8 +28,6 @@ import { usePutInterest } from './hooks/usePutInterest'
 import { useDeleteInterest } from './hooks/useDeleteInterest'
 
 export default function InterestProps({
-  openModal,
-  setOpenModal,
   type,
   id,
   onButtonClick,
@@ -65,8 +63,6 @@ export default function InterestProps({
     smsNotificationYn: 'N',
     isWait: false,
   })
-
-  console.log(interestData)
 
   const [updatedData, setUpdatedData] = useState<UpdatedInterest>({
     infoId: '',
@@ -362,6 +358,7 @@ export default function InterestProps({
                         padding: '10px',
                         resize: 'none',
                       }}
+                      value={formData.interestInfo.memo ?? ''}
                       onChange={(e) => {
                         setFormData((prev) => {
                           return {

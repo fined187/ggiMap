@@ -108,7 +108,6 @@ export default function GGIMap({
   })
   const zoomLevel = mapRef.current?.getZoom() ?? null
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
-
   const handleGetBounds = useCallback(() => {
     if (!mapRef.current) return
     const bounds = mapRef.current.getBounds() as any

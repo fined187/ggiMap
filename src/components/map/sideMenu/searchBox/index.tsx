@@ -4,7 +4,7 @@ import Input from '@/components/shared/Input'
 import Spacing from '@/components/shared/Spacing'
 import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
-import { ChangeEvent, KeyboardEvent, useCallback, useState } from 'react'
+import { ChangeEvent, KeyboardEvent, useState } from 'react'
 import MainFilter from '../filterBox/MainFilter'
 import SubFilter from '../filterBox/SubFilter'
 import DetailBox from '../filterBox/SubFilterDetail/DetailBox'
@@ -15,6 +15,7 @@ import useSWR from 'swr'
 import { MAP_KEY } from '../../sections/hooks/useMap'
 import { useRecoilState } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
+import AutoKeyword from './AutoKeyword'
 
 declare global {
   interface Window {
@@ -24,6 +25,7 @@ declare global {
 
 export default function SearchBox() {
   const { data: map } = useSWR(MAP_KEY)
+  const [isFocus, setIsFocus] = useState(false)
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [keyword, setKeyword] = useState('')
   const [isBoxOpen, setIsBoxOpen] = useState({
@@ -139,9 +141,13 @@ export default function SearchBox() {
           style={{
             zIndex: 100,
           }}
+          autoComplete="off"
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setTimeout(() => setIsFocus(false), 200)}
         />
         <Search right="25" top="25" handleSearchButton={handleSearchButton} />
       </Flex>
+      {isFocus && <AutoKeyword keyword={keyword} setKeyword={setKeyword} />}
       <Spacing size={10} />
       <MainFilter formData={formData} setFormData={setFormData} />
       <Spacing size={10} />

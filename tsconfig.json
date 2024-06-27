@@ -40,7 +40,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "withTwin.js", "src/components/map/sections/MapFunc/test.js"  ],
+, "withTwin.js", "src/components/map/sections/MapFunc/test.js", "src/components/map/sideMenu/searchBox/hooks/useHighlightText.txs"  ],
   "exclude": [
     "node_modules"
   ]
