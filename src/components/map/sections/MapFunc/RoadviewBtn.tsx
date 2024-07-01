@@ -95,7 +95,7 @@ export default function RoadviewBtn({
       )}
 
       <RoadviewBtnStyle roadview={clickedMapType.roadView}>
-        로드뷰
+        거리뷰
       </RoadviewBtnStyle>
     </ContainerStyle>
   )

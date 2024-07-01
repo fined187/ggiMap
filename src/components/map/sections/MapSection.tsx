@@ -83,6 +83,8 @@ export default function MapSection({
         setHalfDimensions={setHalfDimensions}
         page={page}
         dragStateRef={dragStateRef}
+        openCursor={openCursor}
+        setOpenCursor={setOpenCursor}
       />
       <BoxGuard isOpen={isOpen}>
         <SearchBox />

@@ -1,6 +1,12 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { ItemDetail } from '@/models/ItemDetail'
 import { MapItem } from '@/models/MapItem'
@@ -67,6 +73,19 @@ export default function Carousel({
     setOpenModal(false)
   }
 
+  const handleDuplicatedOpen = useCallback(() => {
+    if (window) {
+      const url = handleDetailPage(
+        clickedInfo![nowIndex]?.idCode!,
+        clickedInfo![nowIndex]?.type!,
+      )
+      const win = window.open(url, 'popup', 'width=1220,height=1000')
+      if (win) {
+        win.focus()
+      }
+    }
+  }, [clickedInfo, nowIndex, handleDetailPage])
+
   return (
     <div
       style={{
@@ -122,7 +141,7 @@ export default function Carousel({
                         height: '180px',
                         cursor: 'pointer',
                       }}
-                      handleDetailPage={handleDetailPage}
+                      handleDuplicatedOpen={handleDuplicatedOpen}
                       type={clickedInfo && clickedInfo[index]?.type!}
                       idCode={
                         clickedInfo && clickedInfo[index]?.type === 1

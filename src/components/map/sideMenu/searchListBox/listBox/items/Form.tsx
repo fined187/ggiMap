@@ -10,7 +10,7 @@ import useNum2Han from '@/utils/useNum2Han'
 import Interest from '@/components/map/icons/Interest'
 import { MapItems } from '@/models/MapItem'
 import KwForm from './KwForm'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import NextImageWithFallback from '@/components/map/NextImageWithFallback'
 import NoImage from '../icon/NoImage'
 import { useInterestContext } from '@/contexts/useModalContext'
@@ -79,6 +79,16 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
       }
     }
   }
+
+  const handleDuplicatedOpen = useCallback(() => {
+    if (window) {
+      const url = handleDetailPage(item.idCode, item.type)
+      const win = window.open(url, 'popup', 'width=1220,height=1000')
+      if (win) {
+        win.focus()
+      }
+    }
+  }, [item.idCode, item.type, handleDetailPage])
 
   return (
     <div
@@ -164,11 +174,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
             }}
             onClick={() => {
               if (window) {
-                window.open(
-                  handleDetailPage(item.idCode, item.type),
-                  '_blank',
-                  'width=1220, height=1000',
-                )
+                handleDuplicatedOpen()
               }
             }}
           >
@@ -185,7 +191,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
                 height: '135px',
                 cursor: 'pointer',
               }}
-              handleDetailPage={handleDetailPage}
+              handleDuplicatedOpen={handleDuplicatedOpen}
               type={item?.type ?? 1}
               idCode={item?.idCode ?? ''}
             />
@@ -300,7 +306,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
           index={index}
           openModal={openModal}
           setOpenModal={setOpenModal}
-          handleDetailPage={handleDetailPage}
+          handleDuplicatedOpen={handleDuplicatedOpen}
           handleTitle={handleTitle}
         />
       )}

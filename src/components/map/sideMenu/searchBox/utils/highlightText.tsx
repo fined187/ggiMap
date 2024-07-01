@@ -1,6 +1,7 @@
+import { colors } from '@/styles/colorPalette'
 import styled from '@emotion/styled'
 
-const useHighlightText = (text: string, highlight: string) => {
+const highlightText = (text: string, highlight: string) => {
   if (!highlight) return text
 
   const parts = text.split(new RegExp(`(${highlight})`, 'gi'))
@@ -17,9 +18,9 @@ const useHighlightText = (text: string, highlight: string) => {
   )
 }
 
-export default useHighlightText
+export default highlightText
 
 const Highlight = styled.span`
-  color: orange;
+  color: ${colors.winOrange};
   font-weight: bold;
 `

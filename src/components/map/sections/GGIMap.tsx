@@ -27,6 +27,8 @@ import getPolypath from '@/remote/map/selected/getPolypath'
 import { useGeoCode } from './hooks/useGeoCode'
 import MiniMap from './MiniMap'
 import useDebounce from '@/components/shared/hooks/useDebounce'
+import { css } from '@emotion/react'
+import CloseButton from '../icons/CloseButton'
 declare global {
   interface Window {
     naver: any
@@ -67,6 +69,8 @@ interface Props {
   >
   setHalfDimensions: Dispatch<SetStateAction<{ width: number; height: number }>>
   dragStateRef: MutableRefObject<boolean>
+  openCursor: boolean
+  setOpenCursor: Dispatch<SetStateAction<boolean>>
 }
 
 export default function GGIMap({
@@ -81,6 +85,8 @@ export default function GGIMap({
   setHalfDimensions,
   zoom,
   dragStateRef,
+  openCursor,
+  setOpenCursor,
 }: Props) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
@@ -317,6 +323,7 @@ export default function GGIMap({
             setOpenOverlay(true)
             markerClickedRef.current = true
           }
+          openCursor ? setOpenCursor(false) : null
         }}
       />
       <div
@@ -331,22 +338,19 @@ export default function GGIMap({
         }}
       />
       {isPanoVisible && (
-        <button
-          onClick={closePanorama}
+        <div
           style={{
             position: 'fixed',
             zIndex: 100,
             top: '50px',
             right: '50px',
-            display: 'block',
-            backgroundColor: 'black',
-            color: 'white',
-            width: '50px',
-            height: '30px',
+            display: 'flex',
+            cursor: 'pointer',
           }}
+          onClick={closePanorama}
         >
-          X
-        </button>
+          <CloseButton />
+        </div>
       )}
       <MiniMap
         setIsPanoVisible={setIsPanoVisible}
@@ -365,3 +369,14 @@ export default function GGIMap({
     </>
   )
 }
+
+const ButtonStyle = css`
+  position: 'fixed',
+  zIndex: 100,
+  top: '50px',
+  right: '50px',
+  display: 'flex',
+  cursor: 'pointer',
+  width: '50px',
+  height: '50px',
+`

@@ -14,7 +14,7 @@ import { KakaoAddrProps, KakaoSubwayProps } from '@/models/Juso'
 import useSearchAddr from './hooks/useSearchAddr'
 import useSubwayStation from './hooks/useSubwayStation'
 import { MAP_KEY } from '../../sections/hooks/useMap'
-import useHighlightText from './hooks/useHighlightText'
+import highlightText from './utils/highlightText'
 
 interface AutoKeywordProps {
   keyword: string
@@ -60,7 +60,7 @@ export default function AutoKeyword({ keyword, setKeyword }: AutoKeywordProps) {
             subway.place_name.includes(filteredKeyword),
         )
         .map((subway) => ({
-          place_name: subway.place_name,
+          place_name: subway.address_name + '(' + subway.place_name + ')',
           x: subway.x,
           y: subway.y,
         }))
@@ -102,10 +102,8 @@ export default function AutoKeyword({ keyword, setKeyword }: AutoKeywordProps) {
             >
               <TextStyle>
                 {'place_name' in keys
-                  ? // eslint-disable-next-line react-hooks/rules-of-hooks
-                    useHighlightText(keys.place_name, keyword)
-                  : // eslint-disable-next-line react-hooks/rules-of-hooks
-                    useHighlightText(keys.address_name, keyword)}
+                  ? highlightText(keys.place_name, keyword)
+                  : highlightText(keys.address_name, keyword)}
               </TextStyle>
             </Flex>
             <Spacing size={10} />
@@ -119,7 +117,11 @@ export default function AutoKeyword({ keyword, setKeyword }: AutoKeywordProps) {
             alignItems: 'center',
           }}
         >
-          <TextStyle>검색 결과가 없습니다.</TextStyle>
+          {keyword !== '' && autoKeyword.length === 0 ? (
+            <TextStyle>검색 결과가 없습니다.</TextStyle>
+          ) : (
+            <TextStyle>키워드를 입력해주세요.</TextStyle>
+          )}
         </Flex>
       )}
     </ContainerStyle>
@@ -130,7 +132,7 @@ const ContainerStyle = styled.div`
   display: flex;
   flex-direction: column;
   width: 320px;
-  padding: 10px;
+  padding: 5px;
   min-height: 50px;
   max-height: 100px;
   background-color: white;
@@ -143,22 +145,36 @@ const ContainerStyle = styled.div`
   margin: 0 auto;
   overflow-y: auto;
   overflow-x: hidden;
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 100px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #dfdfdf;
+    border-radius: 6px;
+  }
 `
 
 const TextStyle = styled.span`
-  font-family: 'SUIT';
+  overflow: hidden;
+  color: #000001;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: SUIT;
   font-size: 16px;
-  font-weight: 500;
-  color: #333;
-  cursor: pointer;
-  &:hover {
-    color: #00a0e9;
-  }
+  font-style: normal;
+  font-weight: 400;
+  line-height: 135%;
+  letter-spacing: -0.16px;
 `
 
 const AutoKeywordStyle = css`
   display: flex;
   width: 320px;
-  height: 30px;
+  height: 50px;
   padding: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f5f5f5;
+  }
 `

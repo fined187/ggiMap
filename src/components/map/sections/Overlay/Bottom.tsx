@@ -9,6 +9,7 @@ import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { useRecoilValue } from 'recoil'
 import NewPageIcon from './icon/NewPageIcon'
+import { useCallback } from 'react'
 
 interface BottomProps {
   nowIndex: number
@@ -26,6 +27,19 @@ export default function Bottom({ nowIndex }: BottomProps) {
       return `https://www.ggi.co.kr/wait/mulgun_detail_popup_w.asp?idcode=${idCode}&new=new&viewchk=P`
     }
   }
+
+  const handleDuplicatedOpen = useCallback(() => {
+    if (window) {
+      const url = handleDetailPage(
+        clickedInfo![nowIndex]?.type!,
+        clickedInfo![nowIndex]?.idCode!,
+      )
+      const win = window.open(url, 'popup', 'width=1220,height=1000')
+      if (win) {
+        win.focus()
+      }
+    }
+  }, [clickedInfo, nowIndex, handleDetailPage])
   return (
     <div
       style={{
@@ -89,8 +103,9 @@ export default function Bottom({ nowIndex }: BottomProps) {
                 clickedInfo[nowIndex]?.type === 3)
                 ? clickedInfo[nowIndex]?.goodsID
                 : clickedInfo && clickedInfo[nowIndex]?.idCode
-            const url = handleDetailPage(type ?? 1, goodsID ?? '')
-            window.open(url, '_blank', 'width=1600, height=1000')
+            if (type && goodsID) {
+              handleDuplicatedOpen()
+            }
           }}
         >
           <NewPageIcon />

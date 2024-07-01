@@ -6,7 +6,7 @@ interface NextImageWithFallbackProps extends ImageProps {
   src: string
   alt: string
   fallbackComponent: React.ReactNode
-  handleDetailPage: (idCode: string, type: number) => string | undefined
+  handleDuplicatedOpen: () => void
   type: number
   idCode: string
 }
@@ -15,7 +15,7 @@ export default function NextImageWithFallback({
   src,
   alt,
   fallbackComponent,
-  handleDetailPage,
+  handleDuplicatedOpen,
   type,
   idCode,
   ...rest
@@ -39,13 +39,7 @@ export default function NextImageWithFallback({
           setImgError(true)
           setImagSrc('')
         }}
-        onClick={() => {
-          window.open(
-            handleDetailPage(idCode, type),
-            '_blank',
-            'width=1220, height=1000',
-          )
-        }}
+        onClick={handleDuplicatedOpen}
       />
     )
   }

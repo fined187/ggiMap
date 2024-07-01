@@ -15,14 +15,14 @@ function KwForm({
   index,
   openModal,
   setOpenModal,
-  handleDetailPage,
+  handleDuplicatedOpen,
   handleTitle,
 }: {
   item: MapItems
   index: number
   openModal: boolean
   setOpenModal: Dispatch<SetStateAction<boolean>>
-  handleDetailPage: (idCode: string, type: number) => string | undefined
+  handleDuplicatedOpen: () => void
   handleTitle: (type: number) => string | undefined
 }) {
   const { open } = useInterestContext()
@@ -87,15 +87,7 @@ function KwForm({
             top: 60,
             cursor: 'pointer',
           }}
-          onClick={() => {
-            if (window) {
-              window.open(
-                handleDetailPage(item?.idCode ?? '', item?.type ?? 0),
-                '_blank',
-                'width=1600, height=1000',
-              )
-            }
-          }}
+          onClick={handleDuplicatedOpen}
         >
           <Text css={TextStyle}>청구액</Text>
           <Text css={ClaimStyle}>{`${useNum2Han(item?.claim)}`}</Text>
