@@ -6,13 +6,6 @@ import { formDataAtom } from '@/store/atom/map'
 import { useCallback, useEffect, useState } from 'react'
 import { MapCountsResponse } from '@/models/MapItem'
 
-type PnuCount = {
-  pnu: string
-  type: number
-  count: number
-  includeYn: boolean
-}
-
 const useMapUtils = (
   token: string,
   type: string,

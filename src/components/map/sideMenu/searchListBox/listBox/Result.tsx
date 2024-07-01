@@ -95,7 +95,6 @@ function Result({
 
   useEffect(() => {
     if (map && map.getZoom()! >= 15) {
-      console.log('실행')
       setShowingList(true)
       setPage(1)
     } else if (map && map.getZoom()! < 15) {

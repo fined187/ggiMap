@@ -1,10 +1,8 @@
 import getAddress from '@/remote/map/auth/getAddress'
 import { GetServerSidePropsContext } from 'next'
 import { useCallback, useEffect } from 'react'
-import { useRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import MapSection from '@/components/map/sections/MapSection'
-import useSWR from 'swr'
-import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { authInfo } from '@/store/atom/auth'
 import {
   getGgItem,
@@ -24,6 +22,9 @@ import { NaverMap } from '@/models/Map'
 import handleToken from '@/remote/map/auth/token'
 import { getSampleItems } from '@/remote/map/auth/getSampleItems'
 import { GetItemResponse } from '@/models/MapItem'
+import useSessionStorage from '@/hooks/useSessionStorage'
+import { useRouter } from 'next/router'
+
 interface Props {
   data?: {
     userId: string | null
@@ -40,13 +41,25 @@ declare global {
 }
 
 function MapComponent({ token, type, idCode }: Props) {
-  const { data: map } = useSWR(MAP_KEY)
-  const [auth, setAuth] = useRecoilState(authInfo)
-  const [mapList, setMapList] = useRecoilState(mapListAtom)
-  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
-  const [juso, setJuso] = useRecoilState(jusoAtom)
-  const [selectedData, setSelectedData] = useRecoilState(selectedItemAtom)
-  const [formData, setFormData] = useRecoilState(formDataAtom)
+  const setAuth = useSetRecoilState(authInfo)
+  const setMapList = useSetRecoilState(mapListAtom)
+  const setMapItems = useSetRecoilState(mapItemsAtom)
+  const setJuso = useSetRecoilState(jusoAtom)
+  const setSelectedData = useSetRecoilState(selectedItemAtom)
+  const setFormData = useSetRecoilState(formDataAtom)
+  const router = useRouter()
+  const [tokenValue, setTokenValue] = useSessionStorage({
+    key: 'token',
+    initialValue: token as string,
+  })
+  const [typeCode, setTypeCode] = useSessionStorage({
+    key: 'type',
+    initialValue: type as string,
+  })
+  const [idCodeValue, setIdCodeValue] = useSessionStorage({
+    key: 'idCode',
+    initialValue: idCode as string,
+  })
 
   const setMapOptions = useCallback((map: NaverMap) => {
     if (!map) return
@@ -108,7 +121,6 @@ function MapComponent({ token, type, idCode }: Props) {
   const handleDataFetching = async (type: string, idCode: string) => {
     try {
       let response: GetItemResponse | null = null
-
       switch (type) {
         case '1':
           response = (await getKmItem(idCode)) || null
@@ -190,6 +202,7 @@ function MapComponent({ token, type, idCode }: Props) {
       console.error(error)
     }
   }
+
   let ok = false
   const handleParameters = useCallback(
     async (token: string, type: string, idCode?: string, map?: NaverMap) => {
@@ -210,61 +223,66 @@ function MapComponent({ token, type, idCode }: Props) {
       }
 
       try {
-        const response = await handleToken(token)
-        if (response?.data.success) {
-          const handleAuthenticated = async () => {
-            setAuth((prev) => ({
-              ...prev,
-              isLogin: true,
-              isAuth: true,
-              role: response.data.data.authorities,
-            }))
-            setFormData((prev) => ({
-              ...prev,
-              km: type === '1',
-              kw: type === '4',
-              gm: type === '2' || type === '3',
-              gg: type === '3' || type === '2',
-            }))
+        if (token) {
+          const response = await handleToken(token)
+          if (response?.data.success) {
+            const handleAuthenticated = async () => {
+              setAuth((prev) => ({
+                ...prev,
+                isLogin: true,
+                isAuth: true,
+                role: response.data.data.authorities,
+              }))
+              setFormData((prev) => ({
+                ...prev,
+                km: type === '1',
+                kw: type === '4',
+                gm: type === '2' || type === '3',
+                gg: type === '3' || type === '2',
+              }))
 
-            if (!idCode) {
-              handleGetAddress()
-            } else {
-              await handleDataFetching(type, idCode)
+              if (!idCode) {
+                handleGetAddress()
+              } else {
+                await handleDataFetching(type, idCode)
+              }
+            }
+
+            const handleAnonymous = () => {
+              setMapOptions(map as NaverMap)
+              setAuth((prev) => ({
+                ...prev,
+                isLogin: false,
+                isAuth: true,
+                role: response.data.data.authorities,
+              }))
+              setJuso((prev) => ({
+                ...prev,
+                topSido: '서울특별시',
+                topGungu: '서초구',
+                topDong: '서초동',
+              }))
+              setFormData((prev) => ({
+                ...prev,
+                km: type === '1',
+                kw: type === '4',
+                gm: type === '2' || type === '3',
+                gg: type === '3' || type === '2',
+              }))
+              runDelayedConfirm()
+            }
+
+            if (response.data.data.authorities.includes('ROLE_USER')) {
+              await handleAuthenticated()
+            } else if (
+              response.data.data.authorities.includes('ROLE_ANONYMOUS')
+            ) {
+              handleAnonymous()
             }
           }
-
-          const handleAnonymous = () => {
-            setMapOptions(map as NaverMap)
-            setAuth((prev) => ({
-              ...prev,
-              isLogin: false,
-              isAuth: true,
-              role: response.data.data.authorities,
-            }))
-            setJuso((prev) => ({
-              ...prev,
-              topSido: '서울특별시',
-              topGungu: '서초구',
-              topDong: '서초동',
-            }))
-            setFormData((prev) => ({
-              ...prev,
-              km: type === '1',
-              kw: type === '4',
-              gm: type === '2' || type === '3',
-              gg: type === '3' || type === '2',
-            }))
-            runDelayedConfirm()
-          }
-
-          if (response.data.data.authorities.includes('ROLE_USER')) {
-            await handleAuthenticated()
-          } else if (
-            response.data.data.authorities.includes('ROLE_ANONYMOUS')
-          ) {
-            handleAnonymous()
-          }
+          setTimeout(() => {
+            window.history.replaceState({}, '', '/map')
+          }, 500)
         }
       } catch (error) {
         console.error(error)
@@ -282,15 +300,20 @@ function MapComponent({ token, type, idCode }: Props) {
   )
 
   useEffect(() => {
-    if (window) {
-      window.history.pushState({}, '', '/map')
+    const handleRefresh = async () => {
+      if (typeCode && idCodeValue) {
+        const url = `/map?token=${tokenValue}&type=${typeCode}&idCode=${idCodeValue}`
+        router.push(url)
+      } else if (typeCode && !idCodeValue) {
+        const url = `/map?token=${tokenValue}&type=${typeCode}`
+        router.push(url)
+      }
+      setTimeout(() => {
+        window.history.replaceState({}, '', '/map')
+      }, 1000)
     }
-  }, [token, map, idCode, type])
-
-  window.addEventListener('beforeunload', (e) => {
-    e.preventDefault()
-  })
-
+    handleRefresh()
+  }, [typeCode, idCodeValue])
   return (
     <MapSection
       token={token as string}

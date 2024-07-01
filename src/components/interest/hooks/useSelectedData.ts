@@ -1,8 +1,13 @@
-import { GetItemResponse } from "@/models/MapItem"
-import { getGgItem, getGmItem, getKmItem, getKwItem } from "@/remote/map/selectedItem/getItem"
-import { authInfo } from "@/store/atom/auth"
-import { selectedItemAtom } from "@/store/atom/map"
-import { useRecoilValue, useSetRecoilState } from "recoil"
+import { GetItemResponse } from '@/models/MapItem'
+import {
+  getGgItem,
+  getGmItem,
+  getKmItem,
+  getKwItem,
+} from '@/remote/map/selectedItem/getItem'
+import { authInfo } from '@/store/atom/auth'
+import { selectedItemAtom } from '@/store/atom/map'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 const useHandleSelectedData = () => {
   const setSelectedData = useSetRecoilState(selectedItemAtom)
@@ -21,8 +26,8 @@ const useHandleSelectedData = () => {
         return 'kwItem'
     }
   }
-  const handleSelectedData =  () => {
-    setTimeout(async() => {
+  const handleSelectedData = () => {
+    setTimeout(async () => {
       try {
         let response: GetItemResponse | null = null
         switch (type) {
@@ -39,7 +44,7 @@ const useHandleSelectedData = () => {
             response = (await getKwItem(idCode)) || null
             break
         }
-    
+
         if (response && response.success) {
           const { data } = response
           console.log(data)
