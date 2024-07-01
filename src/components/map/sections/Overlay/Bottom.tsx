@@ -28,18 +28,18 @@ export default function Bottom({ nowIndex }: BottomProps) {
     }
   }
 
-  const handleDuplicatedOpen = useCallback(() => {
-    if (window) {
-      const url = handleDetailPage(
-        clickedInfo![nowIndex]?.type!,
-        clickedInfo![nowIndex]?.idCode!,
-      )
-      const win = window.open(url, 'popup', 'width=1220,height=1000')
-      if (win) {
-        win.focus()
+  const handleDuplicatedOpen = useCallback(
+    (idCode: string, type: number) => {
+      if (window) {
+        const url = handleDetailPage(type, idCode)
+        const win = window.open(url, 'popup', 'width=1220,height=1000')
+        if (win) {
+          win.focus()
+        }
       }
-    }
-  }, [clickedInfo, nowIndex, handleDetailPage])
+    },
+    [clickedInfo, nowIndex, handleDetailPage],
+  )
   return (
     <div
       style={{
@@ -104,7 +104,7 @@ export default function Bottom({ nowIndex }: BottomProps) {
                 ? clickedInfo[nowIndex]?.goodsID
                 : clickedInfo && clickedInfo[nowIndex]?.idCode
             if (type && goodsID) {
-              handleDuplicatedOpen()
+              handleDuplicatedOpen(goodsID, type)
             }
           }}
         >

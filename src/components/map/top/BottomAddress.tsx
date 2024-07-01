@@ -39,7 +39,7 @@ function BottomAddress({ range, setRange }: BottomAddressProps) {
     },
     [map],
   )
-
+  console.log(juso)
   return (
     <Flex direction="column" css={ContainerStyle}>
       <Flex
@@ -92,7 +92,7 @@ function BottomAddress({ range, setRange }: BottomAddressProps) {
             cursor: 'pointer',
           }}
           onClick={() => {
-            if (juso.bottomGungu === '' || selectedGunguIndex === null) {
+            if (juso.bottomGungu === '') {
               alert('시 / 군 / 구를 먼저 선택해주세요.')
               return
             }

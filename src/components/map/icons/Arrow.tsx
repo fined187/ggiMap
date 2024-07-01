@@ -1,5 +1,7 @@
 import { Form } from '@/models/Form'
 import { useEffect } from 'react'
+import useSWR from 'swr'
+import { MAP_KEY } from '../sections/hooks/useMap'
 
 interface ArrowProps {
   isBoxOpen: {
@@ -28,6 +30,7 @@ export default function Arrow({
   setIsOpenArrow,
   formData,
 }: ArrowProps) {
+  const { data: map } = useSWR(MAP_KEY)
   useEffect(() => {
     if (formData.lastFilter === 1) {
       if (isOpenArrow) {
@@ -98,9 +101,10 @@ export default function Arrow({
   return (
     <div
       style={{
-        cursor: 'pointer',
+        cursor: map.getZoom() < 15 ? 'not-allowed' : 'pointer',
       }}
       onClick={() => {
+        if (map && map.getZoom() < 15) return
         setIsOpenArrow((prev) => {
           return {
             ...prev,

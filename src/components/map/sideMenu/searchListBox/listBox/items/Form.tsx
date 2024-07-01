@@ -80,15 +80,18 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
     }
   }
 
-  const handleDuplicatedOpen = useCallback(() => {
-    if (window) {
-      const url = handleDetailPage(item.idCode, item.type)
-      const win = window.open(url, 'popup', 'width=1220,height=1000')
-      if (win) {
-        win.focus()
+  const handleDuplicatedOpen = useCallback(
+    (idCode: string, type: number) => {
+      if (window) {
+        const url = handleDetailPage(idCode, type)
+        const win = window.open(url, 'popup', 'width=1220,height=1000')
+        if (win) {
+          win.focus()
+        }
       }
-    }
-  }, [item.idCode, item.type, handleDetailPage])
+    },
+    [item.idCode, item.type, handleDetailPage],
+  )
 
   return (
     <div
@@ -174,7 +177,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
             }}
             onClick={() => {
               if (window) {
-                handleDuplicatedOpen()
+                handleDuplicatedOpen(item?.idCode ?? '', item?.type ?? 1)
               }
             }}
           >

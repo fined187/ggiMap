@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Flex from '../shared/Flex'
 import TitlePage from './Title'
-import { useInterestContext } from '@/contexts/useModalContext'
 import { UpdatedInterest } from '@/models/Interest'
 import Spacing from '../shared/Spacing'
 import TopLine from './TopLine'
@@ -9,13 +8,10 @@ import TableFrame from './TableFrame'
 import styled from '@emotion/styled'
 import Text from '../shared/Text'
 import { css } from '@emotion/react'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
 import { usePostListItems } from '@/hooks/items/usePostListItems'
 import usePostMapItems from '@/hooks/items/usePostMapItems'
-import { useGetDetail } from '../map/sections/Overlay/hooks/useGetDetail'
 import { useMutateDetail } from '../map/sections/Overlay/hooks/useMutateDetail'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
@@ -37,16 +33,24 @@ export default function UpdateResult({
   const { mutate: postDetail } = useMutateDetail()
   const { handleSelectedData } = useHandleSelectedData()
   const auth = useRecoilValue(authInfo)
+
   const changeParentUrl = () => {
-    if (window.opener) {
+    if (window.opener && !window.opener.closed) {
       const newUrl = `https://www.ggi.co.kr/member/scrap_list_kyung.asp?group=${updatedData?.interestInfo.category}`
       window.opener.location.href = newUrl
       window.opener.onload = () => {
-        window.opener.history.pushState(null, '', 'https://www.ggi.co.kr')
+        try {
+          if (window.opener.history && window.opener.history.pushState) {
+            setTimeout(() => {
+              window.opener.history.pushState(null, '', 'https://www.ggi.co.kr')
+            }, 1000)
+          }
+        } catch (error) {
+          console.error('부모 창의 history.pushState 실패:', error)
+        }
       }
-      window.close()
     } else {
-      console.log('부모 창이 없습니다.')
+      console.error('부모 창이 없거나 닫혔습니다.')
     }
   }
   return (

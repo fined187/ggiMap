@@ -90,7 +90,7 @@ export default function GGIMap({
 }: Props) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
-
+  const panoRef = useRef<naver.maps.Panorama | null>(null)
   const { mutate: getMapItems } = usePostMapItems(
     formData,
     dragStateRef.current,
@@ -104,6 +104,7 @@ export default function GGIMap({
   const [isPanoVisible, setIsPanoVisible] = useRecoilState(
     isPanoramaVisibleAtom,
   )
+
   const [clickedMarker, setClickedMarker] = useState<naver.maps.Marker | null>(
     null,
   )
@@ -114,6 +115,7 @@ export default function GGIMap({
   })
   const zoomLevel = mapRef.current?.getZoom() ?? null
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
+
   const handleGetBounds = useCallback(() => {
     if (!mapRef.current) return
     const bounds = mapRef.current.getBounds() as any
@@ -140,8 +142,11 @@ export default function GGIMap({
 
     window.naver.maps.Event.addListener(map, 'zoom_changed', handleGetBounds)
     window.naver.maps.Event.addListener(map, 'init', handleGetBounds)
-    window.naver.maps.Event.addListener(map, 'idle', handleGetBounds)
+    window.naver.maps.Event.addListener(map, 'idle', () => {
+      handleGetBounds()
+    })
     window.naver.maps.Event.addListener(map, 'dragstart', () => {
+      setOpenOverlay(false)
       dragStateRef.current = true
     })
     window.naver.maps.Event.addListener(map, 'dragend', () => {
@@ -159,14 +164,15 @@ export default function GGIMap({
           clickedMarker.setMap(null)
         }
         setIsPanoVisible(true)
-        new window.naver.maps.Panorama('pano', {
+        panoRef.current = new window.naver.maps.Panorama('pano', {
           position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
           pov: {
-            pan: -135,
-            tilt: 29,
+            pan: 0,
+            tilt: 0,
             fov: 100,
           },
         })
+
         if (miniMap) {
           new naver.maps.Marker({
             position: latlng,
@@ -357,6 +363,7 @@ export default function GGIMap({
         setClickedMarker={setClickedMarker}
         clickedLatLng={clickedLatLng}
         map={mapRef.current as NaverMap}
+        pano={panoRef.current}
       />
       <MapType
         clickedMapType={clickedMapType}
@@ -369,14 +376,3 @@ export default function GGIMap({
     </>
   )
 }
-
-const ButtonStyle = css`
-  position: 'fixed',
-  zIndex: 100,
-  top: '50px',
-  right: '50px',
-  display: 'flex',
-  cursor: 'pointer',
-  width: '50px',
-  height: '50px',
-`

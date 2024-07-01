@@ -22,7 +22,7 @@ function KwForm({
   index: number
   openModal: boolean
   setOpenModal: Dispatch<SetStateAction<boolean>>
-  handleDuplicatedOpen: () => void
+  handleDuplicatedOpen: (idCode: string, type: number) => void
   handleTitle: (type: number) => string | undefined
 }) {
   const { open } = useInterestContext()
@@ -87,7 +87,9 @@ function KwForm({
             top: 60,
             cursor: 'pointer',
           }}
-          onClick={handleDuplicatedOpen}
+          onClick={() => {
+            handleDuplicatedOpen(item?.id ?? '', item?.type ?? 4)
+          }}
         >
           <Text css={TextStyle}>청구액</Text>
           <Text css={ClaimStyle}>{`${useNum2Han(item?.claim)}`}</Text>

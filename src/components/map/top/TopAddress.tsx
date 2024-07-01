@@ -26,6 +26,8 @@ interface AddressProps {
   setOpenCursor: Dispatch<SetStateAction<boolean>>
   range: number
   setRange: Dispatch<SetStateAction<number>>
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
+  openOverlay: boolean
 }
 
 function TopAddress({
@@ -36,6 +38,8 @@ function TopAddress({
   openCursor,
   setOpenCursor,
   setRange,
+  setOpenOverlay,
+  openOverlay,
 }: AddressProps) {
   const { data: map } = useSWR(MAP_KEY)
   const [juso, setJuso] = useRecoilState<jusoProps>(jusoAtom)
@@ -128,6 +132,7 @@ function TopAddress({
             marginLeft: '5px',
           }}
           onClick={() => {
+            setOpenOverlay(false)
             handleControlTopBar()
           }}
         >
@@ -143,6 +148,9 @@ function TopAddress({
               justifyContent: 'center',
               alignItems: 'center',
               gap: '10px',
+            }}
+            onClick={() => {
+              setOpenOverlay(false)
             }}
           >
             <Text

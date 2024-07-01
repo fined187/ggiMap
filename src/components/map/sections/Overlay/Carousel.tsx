@@ -73,18 +73,18 @@ export default function Carousel({
     setOpenModal(false)
   }
 
-  const handleDuplicatedOpen = useCallback(() => {
-    if (window) {
-      const url = handleDetailPage(
-        clickedInfo![nowIndex]?.idCode!,
-        clickedInfo![nowIndex]?.type!,
-      )
-      const win = window.open(url, 'popup', 'width=1220,height=1000')
-      if (win) {
-        win.focus()
+  const handleDuplicatedOpen = useCallback(
+    (idCode: string, type: number) => {
+      if (window) {
+        const url = handleDetailPage(idCode, type)
+        const win = window.open(url, 'popup', 'width=1220,height=1000')
+        if (win) {
+          win.focus()
+        }
       }
-    }
-  }, [clickedInfo, nowIndex, handleDetailPage])
+    },
+    [clickedInfo, nowIndex, handleDetailPage],
+  )
 
   return (
     <div

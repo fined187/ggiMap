@@ -1,5 +1,6 @@
 import { NaverMap } from '@/models/Map'
 import { isPanoramaVisibleAtom } from '@/store/atom/map'
+import { url } from 'inspector'
 import {
   Dispatch,
   SetStateAction,
@@ -17,6 +18,7 @@ interface MiniMapProps {
   }
   setClickedMarker: Dispatch<SetStateAction<naver.maps.Marker | null>>
   setIsPanoVisible: Dispatch<SetStateAction<boolean>>
+  pano: naver.maps.Panorama | null
 }
 
 export default function MiniMap({
@@ -24,9 +26,25 @@ export default function MiniMap({
   setClickedMarker,
   setIsPanoVisible,
   map,
+  pano,
 }: MiniMapProps) {
   const [miniMap, setMiniMap] = useState<NaverMap | null>(null)
   const isPanoramaVisible = useRecoilValue(isPanoramaVisibleAtom)
+  let pano_changed = false
+  let nowMarker: naver.maps.Marker | null = null
+
+  const calculatePanoPan = (argAngle: number) => {
+    var panoAngle = (360 + argAngle) % 360
+    panoAngle = panoAngle < 0 ? (panoAngle += 360) : panoAngle
+    return panoAngle
+  }
+
+  const getMakerIconNumber = (argRadius: number, argDivider: number) => {
+    argDivider = argDivider = 0 ? 360 : argDivider
+    var delta = 360 / argDivider
+    return (Math.round(argRadius / delta) % argDivider) + 1
+  }
+
   const initializeMiniMap = useCallback(
     (map: NaverMap) => {
       if (!map) return
@@ -53,6 +71,40 @@ export default function MiniMap({
           lng: clickedLatLng?.lng ?? 0,
         },
         map: minimap,
+        icon: {
+          url: '/images/roadView/rvicon1.png',
+          size: new naver.maps.Size(50, 50),
+          origin: new naver.maps.Point(0, 0),
+          anchor: new naver.maps.Point(25, 35),
+        },
+      })
+
+      window.naver.maps.Event.addListener(pano, 'position_changed', () => {
+        let center = map?.getCenter()
+        let proj = pano?.getProjection()
+        let lookAtPov = proj?.fromCoordToPov(center as naver.maps.LatLng)
+
+        if (pano_changed == false) {
+          if (lookAtPov) {
+            lookAtPov.tilt = 0
+            lookAtPov.fov = 100
+            pano?.setPov(lookAtPov)
+          }
+        }
+      })
+
+      window.naver.maps.Event.addListener(pano, 'pov_changed', () => {
+        let getPanValue = calculatePanoPan(pano?.getPov().pan as number)
+        console.log(getPanValue)
+        marker?.setIcon({
+          url:
+            '/images/roadView/rvicon' +
+            getMakerIconNumber(getPanValue, 16) +
+            '.png',
+          size: new naver.maps.Size(50, 50),
+          origin: new naver.maps.Point(0, 0),
+          anchor: new naver.maps.Point(25, 35),
+        })
       })
 
       window.naver.maps.Event.addListener(map, 'bounds_changed', () => {
@@ -62,7 +114,7 @@ export default function MiniMap({
 
       window.naver.maps.Event.addListener(minimap, 'click', (e: any) => {
         const latlng = e.coord
-        marker.setPosition(latlng)
+        marker?.setPosition(latlng)
         setClickedMarker(marker)
         setIsPanoVisible(true)
         new window.naver.maps.Panorama('pano', {

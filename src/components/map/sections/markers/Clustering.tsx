@@ -30,6 +30,10 @@ export default function Clustering({ item }: ClusteringProps) {
     return item.sd
   }, [map, item])
 
+  const addCommas = useCallback((num: number) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }, [])
+
   const markerContent = useMemo(() => {
     return `
       <div style="display: flex; width: 80px; height: 50px; justify-content: center; align-items: center; flex-direction: column;">
@@ -40,7 +44,7 @@ export default function Clustering({ item }: ClusteringProps) {
         </div>
         <div style="display: flex; width: 100%; height: 50%; background: #fff; justify-content: center; align-items: center; border-radius: 0px 0px 12px 12px; border-left: 1px solid #332EFC; border-bottom: 1px solid #332EFC; border-right: 1px solid #332EFC;">
           <span style="font-size: 16px; color: black; text-align: center; font-family: SUIT; font-style: normal; font-weight: 600; line-height: 100%; letter-spacing: -0.24px;">
-            ${item.count}
+            ${addCommas(item.count || 0)}
           </span>
         </div>
       </div>
@@ -67,8 +71,6 @@ export default function Clustering({ item }: ClusteringProps) {
     })
 
     naver.maps.Event.addListener(marker, 'click', handleMarkerClick)
-
-    // Clean up the marker on component unmount or zoom level change to >= 15
     return () => {
       marker.setMap(null)
     }

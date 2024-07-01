@@ -6,10 +6,19 @@ interface AddressContainerProps {
   setOpenCursor: Dispatch<SetStateAction<boolean>>
   range: number
   setRange: Dispatch<SetStateAction<number>>
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
+  openOverlay: boolean
 }
 
 const AddressContainer = (props: AddressContainerProps) => {
-  const { openCursor, setOpenCursor, range, setRange } = props
+  const {
+    openCursor,
+    setOpenCursor,
+    range,
+    setRange,
+    openOverlay,
+    setOpenOverlay,
+  } = props
 
   const addressConfigs = [
     { SidoAddr: true, GunguAddr: false, DongAddr: false, isEnd: false },
@@ -27,6 +36,8 @@ const AddressContainer = (props: AddressContainerProps) => {
           setOpenCursor={setOpenCursor}
           range={range}
           setRange={setRange}
+          openOverlay={openOverlay}
+          setOpenOverlay={setOpenOverlay}
         />
       ))}
     </>

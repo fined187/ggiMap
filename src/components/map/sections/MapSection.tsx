@@ -65,6 +65,7 @@ export default function MapSection({
   const onLoadMap = (map: NaverMap) => {
     initializeMap(map)
   }
+  const isHalfWindow = window.innerWidth < 768
   return (
     <>
       <Map
@@ -96,13 +97,20 @@ export default function MapSection({
           dragStateRef={dragStateRef}
         />
       </BoxGuard>
-      <Flex direction="column">
+      <Flex
+        direction="column"
+        style={{
+          display: isHalfWindow ? 'none' : 'flex',
+        }}
+      >
         <TopBar openCursor={openCursor}>
           <AddressContainer
             openCursor={openCursor}
             setOpenCursor={setOpenCursor}
             range={range}
             setRange={setRange}
+            setOpenOverlay={setOpenOverlay}
+            openOverlay={openOverlay}
           />
         </TopBar>
         {openCursor ? (
