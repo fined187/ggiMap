@@ -1,13 +1,33 @@
-import Flex from '@/components/shared/Flex'
-import Text from '@/components/shared/Text'
-import { css } from '@emotion/react'
 import styled from '@emotion/styled'
+import Info from './Info'
+import Flex from '@/components/shared/Flex'
+import { useState } from 'react'
 
 export default function Reset() {
+  const [isHover, setIsHover] = useState(false)
   return (
-    <ContainerStyle>
-      <TextStyle>전체 초기화</TextStyle>
-    </ContainerStyle>
+    <Flex
+      style={{
+        position: 'relative',
+      }}
+    >
+      <ContainerStyle
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+      >
+        <TextStyle>전체 초기화</TextStyle>
+      </ContainerStyle>
+      <Flex
+        style={{
+          position: 'absolute',
+          top: '-30px',
+          right: '-150px',
+          zIndex: 1000,
+        }}
+      >
+        {isHover && <Info />}
+      </Flex>
+    </Flex>
   )
 }
 

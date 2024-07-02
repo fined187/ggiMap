@@ -102,6 +102,13 @@ export default function Carousel({
           zIndex: 1,
           width: '299px',
           height: '180px',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          handleDetailPage(
+            (clickedInfo && clickedInfo[nowIndex]?.idCode!) || '',
+            (clickedInfo && clickedInfo[nowIndex]?.type!) || 1,
+          )
         }}
       >
         <MiniMap clickedItem={clickedItem} clickedInfo={clickedInfo} />

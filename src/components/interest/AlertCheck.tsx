@@ -30,6 +30,12 @@ export default function AlertCheck({ formData, setFormData }: AlertCheckProps) {
           }}
         />
         <Text css={TextStyle}>알림을 받겠습니다</Text>
+        <Spacing direction="horizontal" size={50} />
+        {formData?.smsNotificationYn === 'Y' && (
+          <Text css={TextStyle2}>
+            본 물건의 상태변경, 경매결과가 SMS 또는 푸시알림으로 발송됩니다
+          </Text>
+        )}
       </Flex>
       <Spacing size={10} />
       <Flex direction="row" align="center">
@@ -49,7 +55,9 @@ export default function AlertCheck({ formData, setFormData }: AlertCheckProps) {
         />
         <Text css={TextStyle}>수신거부</Text>
         <Spacing direction="horizontal" size={100} />
-        <Text css={TextStyle2}>본 물건에 대한 알림이 발송되지 않습니다</Text>
+        {formData?.smsNotificationYn === 'N' && (
+          <Text css={TextStyle2}>본 물건에 대한 알림이 발송되지 않습니다</Text>
+        )}
       </Flex>
     </Container>
   )

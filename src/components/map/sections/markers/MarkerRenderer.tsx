@@ -120,7 +120,11 @@ const MarkerRenderer = ({
           ? naver.maps.Animation.BOUNCE
           : null,
     })
-    marker.setZIndex(handleZIndex(item.types[0], item.winYn))
+    marker.setZIndex(
+      listOver.isOver && item.x === listOver.x && item.y === listOver.y
+        ? 110
+        : handleZIndex(item.types[0], item.winYn),
+    )
     markers.push(marker)
 
     markerRef.current = marker

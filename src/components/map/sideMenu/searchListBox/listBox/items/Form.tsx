@@ -32,6 +32,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
   const onButtonClick = () => {
     setOpenModal(false)
   }
+  console.log(item)
   const handleDetailPage = (idCode: string, type: number) => {
     if (isDetailed) {
       if (type === 1) {
@@ -58,9 +59,9 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
         case 2:
           return `[본건 : ${item.status}] 캠코 `
         case 3:
-          return `[본건 : ${item.status}] 기관매각 `
+          return `[본건 : ${item.status}] 기관매각 ` + `${item?.caseNo ?? ''}`
         case 4:
-          return `[본건 : ${item.status}] 예정 `
+          return `[본건 : ${item.status}] 예정 ` + `${item?.caseNo ?? ''}`
         default:
           break
       }
@@ -141,7 +142,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
                   whiteSpace: 'nowrap',
                 }}
               >
-                {item?.caseNo}
+                {item?.caseNo ?? item?.manageNo ?? ''}
               </LeftTextStyle>
             }
             right={

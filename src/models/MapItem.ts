@@ -82,6 +82,7 @@ export interface MapItems {
   x: number
   y: number
   checkInfo?: string
+  manageNo?: string
 }
 
 export interface PageInfo {

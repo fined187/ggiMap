@@ -88,7 +88,7 @@ function KwForm({
             cursor: 'pointer',
           }}
           onClick={() => {
-            handleDuplicatedOpen(item?.id ?? '', item?.type ?? 4)
+            handleDuplicatedOpen(item?.idCode ?? '', item?.type ?? 4)
           }}
         >
           <Text css={TextStyle}>청구액</Text>
