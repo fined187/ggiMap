@@ -34,27 +34,24 @@ import { useMutateDetail } from '../map/sections/Overlay/hooks/useMutateDetail'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
 
+interface InterestProps {
+  type: string
+  id: string
+  openModal: boolean
+  setOpenModal: (open: boolean) => void
+  onButtonClick: () => void
+}
+
 export default function InterestProps({
+  openModal,
+  setOpenModal,
   type,
   id,
   onButtonClick,
-}: {
-  openModal: boolean
-  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
-  type: string
-  id: string
-  onButtonClick: () => void
-}) {
+}: InterestProps) {
   const [openGroup, setOpenGroup] = useState(false)
   const [step, setStep] = useState(1)
   const [interestData, setInterestData] = useState<interest | null>(null)
-  const 처음등록하는가 = interestData?.interestInfo === null
-  const oldFormData = useRecoilValue(formDataAtom)
-  const auth = useRecoilValue(authInfo)
-  const { mutate: postListItems } = usePostListItems(oldFormData, 1, 10)
-  const { mutate: postMapItems } = usePostMapItems(oldFormData, false)
-  const { mutate: postDetail } = useMutateDetail()
-  const { handleSelectedData } = useHandleSelectedData()
   const [formData, setFormData] = useState<InterestFormData>({
     goodsId: '',
     infoId: '',
@@ -68,7 +65,7 @@ export default function InterestProps({
     interestInfo: {
       category: '',
       memo: '',
-      starRating: '0',
+      starRating: '',
     },
     title: '',
     importance: '',
@@ -97,112 +94,13 @@ export default function InterestProps({
     address: '',
   })
 
-  const handleGetData = async (type: string, id: string) => {
-    try {
-      switch (type) {
-        case '1':
-          const responseKm = await getKmInterest(id)
-          if (responseKm.success) {
-            setInterestData(responseKm.data)
-            setFormData((prev) => {
-              return {
-                ...prev,
-                infoId: responseKm.data?.infoId,
-                caseNo: responseKm.data?.caseNo ?? '',
-                manageNo: responseKm.data?.manageNo ?? '',
-                mulSeq: responseKm.data?.mulSeq,
-                infoNo: responseKm.data?.infoNo ?? '',
-                caseNoString: responseKm.data?.caseNoString ?? '',
-                oldInfoId: responseKm.data?.oldInfoId,
-                interestInfo: {
-                  category: responseKm.data?.interestInfo?.category ?? '미분류',
-                  memo: responseKm.data?.interestInfo?.memo ?? '',
-                  starRating: responseKm.data?.interestInfo?.starRating ?? '',
-                },
-                title:
-                  responseKm.data?.caseNo !== undefined
-                    ? '사건번호'
-                    : '관리번호',
-                categories: responseKm.data?.categories,
-                smsNotificationYn: responseKm.data?.smsNotificationYn,
-                isWait: responseKm.data?.isWait,
-              }
-            })
-          }
-          break
-        case '2':
-          const responseGm = await getGmInterest(id)
-          if (responseGm.success) {
-            setInterestData(responseGm.data)
-            setFormData((prev) => {
-              return {
-                ...prev,
-                goodsId: responseGm.data?.goodsId,
-                caseNoString: responseGm.data?.caseNoString,
-                manageNo: responseGm.data?.manageNo,
-                interestInfo: {
-                  category: responseGm.data?.interestInfo?.category ?? '미분류',
-                  memo: responseGm.data?.interestInfo?.memo ?? '',
-                  starRating: responseGm.data?.interestInfo?.starRating ?? '',
-                },
-                categories: responseGm.data?.categories,
-              }
-            })
-          }
-          break
-        case '3':
-          const responseGG = await getGmInterest(id)
-          if (responseGG.success) {
-            setInterestData(responseGG.data)
-            setFormData((prev) => {
-              return {
-                ...prev,
-                goodsId: responseGG.data?.goodsId,
-                manageNo: responseGG.data?.manageNo,
-                caseNoString: responseGG.data?.caseNoString,
-                interestInfo: {
-                  category: responseGG.data?.interestInfo?.category ?? '미분류',
-                  memo: responseGG.data?.interestInfo?.memo ?? '',
-                  starRating: responseGG.data?.interestInfo?.starRating ?? '',
-                },
-                categories: responseGG.data?.categories,
-              }
-            })
-          }
-        case '4':
-          const responseKw = await getKwInterest(id)
-          if (responseKw.success) {
-            setInterestData(responseKw.data)
-            setFormData((prev) => {
-              return {
-                ...prev,
-                infoId: responseKw.data?.infoId,
-                caseNo: responseKw.data?.caseNo,
-                mulSeq: responseKw.data?.mulSeq,
-                caseNoString: responseKw.data?.caseNoString,
-                oldInfoId: responseKw.data?.oldInfoId,
-                infoNo: responseKw.data?.infoNo,
-                interestInfo: {
-                  category: responseKw.data?.interestInfo?.category ?? '미분류',
-                  memo: responseKw.data?.interestInfo?.memo ?? '',
-                  starRating: responseKw.data?.interestInfo?.starRating ?? '',
-                },
-                categories: responseKw.data?.categories,
-              }
-            })
-          }
-          break
-        default:
-          return { notFound: true }
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    }
-  }
-  useEffect(() => {
-    handleGetData(type, id)
-  }, [type, id])
-
+  const 처음등록하는가 = interestData?.interestInfo === null
+  const oldFormData = useRecoilValue(formDataAtom)
+  const auth = useRecoilValue(authInfo)
+  const { mutate: postListItems } = usePostListItems(oldFormData, 1, 10)
+  const { mutate: postMapItems } = usePostMapItems(oldFormData, false)
+  const { mutate: postDetail } = useMutateDetail()
+  const { handleSelectedData } = useHandleSelectedData()
   const { mutate: postInterest } = usePostInterest(
     type,
     formData,
@@ -210,6 +108,52 @@ export default function InterestProps({
   )
   const { mutate: putInterest } = usePutInterest(type, formData, setUpdatedData)
   const { mutate: deleteInterest } = useDeleteInterest(type, formData)
+
+  const handleGetData = async (type: string, id: string) => {
+    const fetchData: { [key: string]: Function } = {
+      '1': getKmInterest,
+      '2': getGmInterest,
+      '3': getGmInterest,
+      '4': getKwInterest,
+    }
+    const fetchFunction = fetchData[type]
+
+    try {
+      const response = await fetchFunction(id)
+      if (response.success) {
+        const data = response.data
+        setInterestData(data)
+        setFormData((prev) => ({
+          ...prev,
+          ...{
+            infoId: data?.infoId,
+            caseNo: data?.caseNo ?? '',
+            manageNo: data?.manageNo ?? '',
+            mulSeq: data?.mulSeq,
+            infoNo: data?.infoNo ?? '',
+            caseNoString: data?.caseNoString ?? '',
+            oldInfoId: data?.oldInfoId,
+            interestInfo: {
+              category: data?.interestInfo?.category ?? '미분류',
+              memo: data?.interestInfo?.memo ?? '',
+              starRating: data?.interestInfo?.starRating ?? '',
+            },
+            title: data?.caseNo !== undefined ? '사건번호' : '관리번호',
+            categories: data?.categories,
+            smsNotificationYn: data?.smsNotificationYn,
+            isWait: data?.isWait,
+          },
+        }))
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+
+  useEffect(() => {
+    handleGetData(type, id)
+  }, [type, id])
+
   const handleDuplicatedGroupName = useCallback(
     (name: string) => {
       if (formData.categories.includes(name) && formData.isNewCategory) {
@@ -218,18 +162,11 @@ export default function InterestProps({
       }
       return false
     },
-    [formData.categories],
+    [formData.categories, formData.isNewCategory],
   )
+
   const handleForm = () => {
-    if (
-      formData.interestInfo.starRating === undefined ||
-      formData.interestInfo.starRating === ''
-    ) {
-      alert('중요도를 선택해주세요')
-    } else if (
-      (formData.isNewCategory && formData.interestInfo.category === '') ||
-      (formData.isNewCategory && formData.interestInfo.category === undefined)
-    ) {
+    if (formData.isNewCategory && !formData.interestInfo.category) {
       alert('새 그룹명을 입력해주세요')
     } else if (handleDuplicatedGroupName(formData.interestInfo.category)) {
       return
@@ -258,12 +195,181 @@ export default function InterestProps({
           postListItems()
           postMapItems()
           postDetail()
-          auth.idCode === '' ? null : handleSelectedData()
+          if (auth.idCode) handleSelectedData()
           onButtonClick()
         }, 500)
       }
     }
   }
+
+  const renderInterestForm = () => (
+    <>
+      {interestData?.interestInfo !== null ? (
+        <>
+          <Flex justify="space-between">
+            <TitlePage title="관심물건 수정/삭제" />
+            <Image
+              src={
+                'https://cdn3.iconfinder.com/data/icons/user-interface-169/32/cross-512.png'
+              }
+              alt="close"
+              width={30}
+              height={30}
+              onClick={onButtonClick}
+              style={{ cursor: 'pointer' }}
+            />
+          </Flex>
+          <Spacing size={10} />
+          <InfoTextPage />
+        </>
+      ) : (
+        <>
+          <Flex justify="space-between">
+            <TitlePage title="관심물건 등록" />
+            <Image
+              src={
+                'https://cdn3.iconfinder.com/data/icons/user-interface-169/32/cross-512.png'
+              }
+              alt="close"
+              width={30}
+              height={30}
+              onClick={onButtonClick}
+              style={{ cursor: 'pointer' }}
+            />
+          </Flex>
+        </>
+      )}
+      <Spacing size={10} />
+      <TopLine />
+      <TableFrame
+        title={interestData?.caseNo !== undefined ? '사건번호' : '관리번호'}
+        contents={interestData?.caseNoString ?? interestData?.manageNo}
+      />
+      <TableFrame
+        title="중요도"
+        contents={
+          <GroupElements formData={formData} setFormData={setFormData} />
+        }
+        background="#F9F9F9"
+      />
+      <TableFrame
+        title="등록그룹"
+        contents={
+          <NoGroupBtn
+            openGroup={openGroup}
+            setOpenGroup={setOpenGroup}
+            formData={formData}
+            setFormData={setFormData}
+            handleDuplicatedGroupName={handleDuplicatedGroupName}
+          />
+        }
+        background="#F9F9F9"
+        height="107"
+        openGroup={openGroup}
+        setOpenGroup={setOpenGroup}
+      />
+      <TableFrame
+        title="메모"
+        contents={
+          <textarea
+            maxLength={1500}
+            style={{
+              width: '600px',
+              height: '100px',
+              border: '1px solid #BDBDBD',
+              borderRadius: '5px',
+              padding: '10px',
+              resize: 'none',
+            }}
+            value={formData.interestInfo.memo ?? ''}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                interestInfo: {
+                  ...prev.interestInfo,
+                  memo: e.target.value,
+                },
+              }))
+            }}
+          />
+        }
+        height="107"
+        background="#F9F9F9"
+      />
+      {type === '1' && (
+        <>
+          <Spacing size={45} />
+          <TitlePage title="SNS 알림 서비스" />
+          <Spacing size={20} />
+          <AlertCheck formData={formData} setFormData={setFormData} />
+          <Spacing size={10} />
+          <Flex justify="flex-end">
+            <Text css={InfoText} style={{ color: '#FF0000' }}>
+              {'고객라운지 > 환경설정 > 알림설정'}
+            </Text>
+            &nbsp;
+            <Text css={InfoText}>{' 에서 더욱 자세한 설정이 가능합니다'}</Text>
+          </Flex>
+        </>
+      )}
+      <Flex
+        style={{
+          position: 'absolute',
+          bottom: '10px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          gap: '10px',
+        }}
+      >
+        <Button css={RegisterBtn} onClick={handleForm}>
+          <Text
+            style={{
+              color: '#FFF',
+              fontFamily: 'SUIT',
+              fontSize: '18px',
+              fontStyle: 'normal',
+              fontWeight: 700,
+              lineHeight: '135%',
+              letterSpacing: '-0.36px',
+            }}
+          >
+            {처음등록하는가 ? '관심물건 등록' : '관심물건 수정'}
+          </Text>
+        </Button>
+        <CloseBtn isUpdate={!처음등록하는가} onClick={handleCloseBtn}>
+          <Text
+            style={{
+              color: !처음등록하는가 ? '#F00' : '#6D6E70',
+              fontFamily: 'SUIT',
+              fontSize: '18px',
+              fontStyle: 'normal',
+              fontWeight: 700,
+              lineHeight: '135%',
+              letterSpacing: '-0.36px',
+            }}
+          >
+            {!처음등록하는가 ? '삭제' : '닫기'}
+          </Text>
+        </CloseBtn>
+      </Flex>
+    </>
+  )
+
+  const renderContent = () => {
+    if (step === 1) {
+      return interestData === null ? <Loader /> : renderInterestForm()
+    } else {
+      return (
+        <UpdateResult
+          onButtonClick={onButtonClick}
+          updatedData={updatedData}
+          처음등록하는가={처음등록하는가}
+          formData={formData}
+        />
+      )
+    }
+  }
+
   return (
     <Dimmed>
       <ModalContainer
@@ -278,204 +384,7 @@ export default function InterestProps({
               : '400px',
         }}
       >
-        <Container>
-          {step === 1 ? (
-            interestData && interestData === null ? (
-              <Loader />
-            ) : (
-              <>
-                {interestData?.interestInfo !== null ? (
-                  <>
-                    <Flex justify="space-between">
-                      <TitlePage title="관심물건 수정/삭제" />
-                      <Image
-                        src={
-                          'https://cdn3.iconfinder.com/data/icons/user-interface-169/32/cross-512.png'
-                        }
-                        alt="close"
-                        width={30}
-                        height={30}
-                        onClick={() => {
-                          onButtonClick()
-                        }}
-                        style={{
-                          cursor: 'pointer',
-                        }}
-                      />
-                    </Flex>
-                    <Spacing size={10} />
-                    <InfoTextPage />
-                  </>
-                ) : (
-                  <>
-                    <Flex justify="space-between">
-                      <TitlePage title="관심물건 등록" />
-                      <Image
-                        src={
-                          'https://cdn3.iconfinder.com/data/icons/user-interface-169/32/cross-512.png'
-                        }
-                        alt="close"
-                        width={30}
-                        height={30}
-                        onClick={() => {
-                          onButtonClick()
-                        }}
-                        style={{
-                          cursor: 'pointer',
-                        }}
-                      />
-                    </Flex>
-                  </>
-                )}
-                <Spacing size={10} />
-                <TopLine />
-                <TableFrame
-                  title={
-                    interestData?.caseNo !== undefined ? '사건번호' : '관리번호'
-                  }
-                  contents={
-                    interestData?.caseNoString ?? interestData?.manageNo
-                  }
-                />
-                <TableFrame
-                  title="중요도"
-                  contents={
-                    <GroupElements
-                      formData={formData}
-                      setFormData={setFormData}
-                    />
-                  }
-                  background="#F9F9F9"
-                />
-                <TableFrame
-                  title="등록그룹"
-                  contents={
-                    <NoGroupBtn
-                      openGroup={openGroup}
-                      setOpenGroup={setOpenGroup}
-                      formData={formData}
-                      setFormData={setFormData}
-                      handleDuplicatedGroupName={handleDuplicatedGroupName}
-                    />
-                  }
-                  background="#F9F9F9"
-                  height="107"
-                  openGroup={openGroup}
-                  setOpenGroup={setOpenGroup}
-                />
-                <TableFrame
-                  title="메모"
-                  contents={
-                    <textarea
-                      maxLength={1500}
-                      style={{
-                        width: '600px',
-                        height: '100px',
-                        border: '1px solid #BDBDBD',
-                        borderRadius: '5px',
-                        padding: '10px',
-                        resize: 'none',
-                      }}
-                      value={formData.interestInfo.memo ?? ''}
-                      onChange={(e) => {
-                        setFormData((prev) => {
-                          return {
-                            ...prev,
-                            interestInfo: {
-                              ...prev.interestInfo,
-                              memo: e.target.value,
-                            },
-                          }
-                        })
-                      }}
-                    />
-                  }
-                  height="107"
-                  background="#F9F9F9"
-                />
-                {type === '1' && (
-                  <>
-                    <Spacing size={45} />
-                    <TitlePage title="SNS 알림 서비스" />
-                    <Spacing size={20} />
-                    <AlertCheck formData={formData} setFormData={setFormData} />
-                    <Spacing size={10} />
-                    <Flex justify="flex-end">
-                      <Text
-                        css={InfoText}
-                        style={{
-                          color: '#FF0000',
-                        }}
-                      >
-                        {'고객라운지 > 환경설정 > 알림설정'}
-                      </Text>
-                      &nbsp;
-                      <Text css={InfoText}>
-                        {' 에서 더욱 자세한 설정이 가능합니다'}
-                      </Text>
-                    </Flex>
-                  </>
-                )}
-                <Flex
-                  style={{
-                    position: 'absolute',
-                    bottom: '10px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    gap: '10px',
-                  }}
-                >
-                  <Button
-                    css={RegisterBtn}
-                    onClick={() => {
-                      handleForm()
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: '#FFF',
-                        fontFamily: 'SUIT',
-                        fontSize: '18px',
-                        fontStyle: 'normal',
-                        fontWeight: 700,
-                        lineHeight: '135%',
-                        letterSpacing: '-0.36px',
-                      }}
-                    >
-                      {처음등록하는가 ? '관심물건 등록' : '관심물건 수정'}
-                    </Text>
-                  </Button>
-                  <CloseBtn
-                    isUpdate={!처음등록하는가 || false}
-                    onClick={() => {
-                      handleCloseBtn()
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: !처음등록하는가 ? '#F00' : '#6D6E70',
-                        fontFamily: 'SUIT',
-                        fontSize: '18px',
-                        fontStyle: 'normal',
-                        fontWeight: 700,
-                        lineHeight: '135%',
-                        letterSpacing: '-0.36px',
-                      }}
-                    >
-                      {!처음등록하는가 ? '삭제' : '닫기'}
-                    </Text>
-                  </CloseBtn>
-                </Flex>
-              </>
-            )
-          ) : (
-            <UpdateResult
-              onButtonClick={onButtonClick}
-              updatedData={updatedData}
-              처음등록하는가={처음등록하는가}
-            />
-          )}
-        </Container>
+        <Container>{renderContent()}</Container>
       </ModalContainer>
     </Dimmed>
   )
@@ -499,6 +408,7 @@ const InfoText = css`
   line-height: 125%;
   letter-spacing: -0.32px;
 `
+
 const RegisterBtn = css`
   display: flex;
   width: 190px;

@@ -13,7 +13,7 @@ interface TableFrameProps {
   contents: string[] | string | React.ReactNode
   background?: string
   height?: string
-  starRating?: number
+  starRating?: number | null
   openGroup?: boolean
   setOpenGroup?: React.Dispatch<React.SetStateAction<boolean>>
 }

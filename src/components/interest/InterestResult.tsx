@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Flex from '../shared/Flex'
 import TitlePage from './Title'
-import { UpdatedInterest } from '@/models/Interest'
+import { InterestFormData, UpdatedInterest } from '@/models/Interest'
 import Spacing from '../shared/Spacing'
 import TopLine from './TopLine'
 import TableFrame from './TableFrame'
@@ -20,12 +20,14 @@ interface UpdateResultProps {
   onButtonClick?: () => void
   updatedData: UpdatedInterest
   처음등록하는가: boolean
+  formData: InterestFormData
 }
 
 export default function UpdateResult({
   onButtonClick,
   updatedData,
   처음등록하는가,
+  formData,
 }: UpdateResultProps) {
   const oldFormData = useRecoilValue(formDataAtom)
   const { mutate: postListItems } = usePostListItems(oldFormData, 1, 10)
@@ -89,7 +91,11 @@ export default function UpdateResult({
               updatedData?.caseNo?.slice(5, updatedData?.caseNo?.length)
             : updatedData?.manageNo
         }
-        starRating={parseInt(updatedData?.interestInfo.starRating)}
+        starRating={
+          formData.interestInfo.starRating !== ''
+            ? parseInt(updatedData?.interestInfo.starRating)
+            : null
+        }
       />
       <TableFrame
         title="소재지"

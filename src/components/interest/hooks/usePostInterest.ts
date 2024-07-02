@@ -23,7 +23,10 @@ export const usePostInterest = (
             infoNo: formData.infoNo!,
             oldInfoId: formData.oldInfoId,
             isNewCategory: formData.isNewCategory,
-            interestInfo: formData.interestInfo,
+            interestInfo: {
+              ...formData.interestInfo,
+              starRating: formData.importance === '' ? '0' : formData.importance,
+            },
             smsNotificationYn: formData.smsNotificationYn,
             isWait: formData.isWait,
           })
@@ -32,14 +35,20 @@ export const usePostInterest = (
             goodsId: formData.goodsId!,
             manageNo: formData.manageNo!,
             isNewCategory: formData.isNewCategory,
-            interestInfo: formData.interestInfo,
+            interestInfo: {
+              ...formData.interestInfo,
+              starRating: formData.importance === '' ? '0' : formData.importance,
+            }
           })
         case '3':
           return postGmInterest({
             goodsId: formData.goodsId!,
             manageNo: formData.manageNo!,
             isNewCategory: formData.isNewCategory,
-            interestInfo: formData.interestInfo,
+            interestInfo: {
+              ...formData.interestInfo,
+              starRating: formData.importance === '' ? '0' : formData.importance,
+            }
           })
         case '4':
           return postKwInterest({
@@ -47,7 +56,10 @@ export const usePostInterest = (
             caseNo: formData.caseNo!,
             oldInfoId: formData.oldInfoId,
             isNewCategory: formData.isNewCategory,
-            interestInfo: formData.interestInfo,
+            interestInfo: {
+              ...formData.interestInfo,
+              starRating: formData.importance === '' ? '0' : formData.importance,
+            },
           })
         default:
           return Promise.reject(new Error('Not Found'))
