@@ -1,5 +1,5 @@
 import { jusoProps } from '@/models/Juso'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 export const useReverseGeoCode = async (
   lat: number,
@@ -7,6 +7,7 @@ export const useReverseGeoCode = async (
   // setGetGungu: Dispatch<SetStateAction<string>>,
   setJuso: Dispatch<SetStateAction<jusoProps>>,
 ) => {
+  let getGungu = ''
   if (window.naver.maps?.Service?.reverseGeocode) {
     try {
       const result: any = await new Promise((resolve, reject) => {
@@ -34,17 +35,23 @@ export const useReverseGeoCode = async (
           topDong: result.dongmyun,
         }
       })
-      // if (
-      //   result.sigugun.split(' ')[0].match(/시$/) &&
-      //   !result.sigugun.split(' ')[1]
-      // ) {
-      //   setGetGungu(result.sigugun.split(' ')[0])
-      // } else if (
-      //   result.sigugun.split(' ')[1] &&
-      //   result.sigugun.split(' ')[1].match(/구$/)
-      // ) {
-      //   setGetGungu(result.sigugun.split(' ')[1])
-      // }
+      if (
+        result.sigugun.split(' ')[0].match(/시$/) &&
+        !result.sigugun.split(' ')[1]
+      ) {
+        getGungu = (result.sigugun.split(' ')[0])
+      } else if (
+        result.sigugun.split(' ')[1] &&
+        result.sigugun.split(' ')[1].match(/구$/)
+      ) {
+        getGungu = (result.sigugun.split(' ')[1])
+        setJuso((prev) => {
+          return {
+            ...prev,
+            topGungu: result.sigugun,
+          }
+        })
+      }
       return result
     } catch (error) {
       alert(error)

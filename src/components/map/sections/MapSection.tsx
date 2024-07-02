@@ -28,6 +28,8 @@ interface MapProps {
   type?: string
 }
 
+const isHalfWindow = () => window.innerWidth < 768
+
 export default function MapSection({
   token,
   idCode,
@@ -54,6 +56,7 @@ export default function MapSection({
     clickedMapType,
     setClickedMapType,
   } = useMapUtils(token, type ?? '', idCode ?? '', handleParameters)
+
   const initialCenter = useMemo(() => {
     return auth.lat && auth.lng
       ? { lat: auth.lat, lng: auth.lng }
@@ -65,7 +68,7 @@ export default function MapSection({
   const onLoadMap = (map: NaverMap) => {
     initializeMap(map)
   }
-  const isHalfWindow = window.innerWidth < 768
+
   return (
     <>
       <Map
@@ -100,7 +103,7 @@ export default function MapSection({
       <Flex
         direction="column"
         style={{
-          display: isHalfWindow ? 'none' : 'flex',
+          display: isHalfWindow() ? 'none' : 'flex',
         }}
       >
         <TopBar openCursor={openCursor}>
@@ -113,9 +116,7 @@ export default function MapSection({
             openOverlay={openOverlay}
           />
         </TopBar>
-        {openCursor ? (
-          <BottomAddress range={range} setRange={setRange} />
-        ) : null}
+        {openCursor && <BottomAddress range={range} setRange={setRange} />}
       </Flex>
       <Markers
         openOverlay={openOverlay}

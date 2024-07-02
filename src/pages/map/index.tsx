@@ -326,6 +326,7 @@ function MapComponent({ token, type, idCode }: Props) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { token, type, idCode } = context.query
+
   return {
     props: {
       token: token ?? null,
