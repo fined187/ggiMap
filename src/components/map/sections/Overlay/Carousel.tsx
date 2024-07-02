@@ -100,13 +100,7 @@ export default function Carousel({
           zIndex: 1,
           width: '299px',
           height: '180px',
-          cursor: 'pointer',
-        }}
-        onClick={() => {
-          handleDetailPage(
-            (clickedInfo && clickedInfo[nowIndex]?.idCode!) || '',
-            (clickedInfo && clickedInfo[nowIndex]?.type!) || 1,
-          )
+          borderRadius: '8px 8px 0px 0px',
         }}
       >
         <MiniMap clickedItem={clickedItem} clickedInfo={clickedInfo} />
@@ -121,6 +115,15 @@ export default function Carousel({
           height: '180px',
           borderRadius: '8px 8px 0px 0px',
           position: 'relative',
+          cursor: 'pointer',
+        }}
+        onClick={() => {
+          clickedInfo && clickedInfo[nowIndex]?.type === 4
+            ? handleDuplicatedOpen(
+                clickedInfo[nowIndex]?.idCode!,
+                clickedInfo[nowIndex]?.type!,
+              )
+            : null
         }}
         onSlideChange={(swiper) => {
           setNowIndex(swiper.activeIndex)
@@ -128,7 +131,13 @@ export default function Carousel({
       >
         {clickedInfo &&
           clickedInfo?.map((info, index) => (
-            <div key={info?.id ? info?.id + index : info?.goodsID! + index}>
+            <div
+              key={
+                info?.id
+                  ? info?.id + index + Math.random()
+                  : info?.goodsID! + index + Math.random()
+              }
+            >
               <SwiperSlide>
                 {(clickedInfo && clickedInfo[index]?.type === 1) ||
                 clickedInfo[index]?.type === 2 ||

@@ -132,6 +132,9 @@ export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
           zIndex: 1,
           cursor: 'pointer',
         }}
+        onClick={() => {
+          console.log('roadview clicked')
+        }}
       />
       <div
         id="miniMap"
