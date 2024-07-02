@@ -32,7 +32,6 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
   const onButtonClick = () => {
     setOpenModal(false)
   }
-  console.log(item)
   const handleDetailPage = (idCode: string, type: number) => {
     if (isDetailed) {
       if (type === 1) {

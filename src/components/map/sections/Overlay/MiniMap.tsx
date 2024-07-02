@@ -130,6 +130,7 @@ export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
           top: '0',
           left: '0',
           zIndex: 1,
+          cursor: 'pointer',
         }}
       />
       <div

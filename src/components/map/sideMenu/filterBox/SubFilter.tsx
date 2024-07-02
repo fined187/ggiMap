@@ -5,6 +5,8 @@ import { css } from '@emotion/react'
 import { useEffect, useState } from 'react'
 import SubFilterProps from './SubFilterProps'
 import Arrow from '../../icons/Arrow'
+import useSWR from 'swr'
+import { MAP_KEY } from '../../sections/hooks/useMap'
 
 interface SearchBoxProps {
   formData: Form
@@ -32,6 +34,7 @@ export default function SubFilter({
   setIsBoxOpen,
 }: SearchBoxProps) {
   const [nowChecked, setNowChecked] = useState(1)
+  const { data: map } = useSWR(MAP_KEY)
   useEffect(() => {
     if (
       !isBoxOpen.usage &&
@@ -45,13 +48,24 @@ export default function SubFilter({
           isSubFilterBoxOpen: false,
         }
       })
+    } else if (map?.getZoom() < 15) {
+      setFormData({
+        ...formData,
+        isSubFilterBoxOpen: false,
+      })
     } else {
       setFormData({
         ...formData,
         isSubFilterBoxOpen: true,
       })
     }
-  }, [isBoxOpen.usage, isBoxOpen.price, isBoxOpen.lowPrice, isBoxOpen.finished])
+  }, [
+    isBoxOpen.usage,
+    isBoxOpen.price,
+    isBoxOpen.lowPrice,
+    isBoxOpen.finished,
+    map?.getZoom(),
+  ])
   return (
     <Flex direction="row" align="center" justify="center" css={ContainerStyle}>
       <SubFilterProps

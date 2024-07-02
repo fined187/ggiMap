@@ -254,11 +254,13 @@ export default function InterestProps({
     } else {
       if (window.confirm('관심물건을 삭제하시겠습니까?')) {
         deleteInterest()
-        postListItems()
-        postMapItems()
-        postDetail()
-        auth.idCode === '' ? null : handleSelectedData()
-        onButtonClick()
+        setTimeout(() => {
+          postListItems()
+          postMapItems()
+          postDetail()
+          auth.idCode === '' ? null : handleSelectedData()
+          onButtonClick()
+        }, 500)
       }
     }
   }
