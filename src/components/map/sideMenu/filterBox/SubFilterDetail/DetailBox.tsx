@@ -22,7 +22,6 @@ interface SearchBoxProps {
 
 export default function DetailBox({ isBoxOpen }: SearchBoxProps) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
-  const [isReset, setIsReset] = useState(false)
   const [fromToAppraisalPrice, setFromToAppraisalPrice] = useState([0, 0])
   const [fromToMinPrice, setFromToMinPrice] = useState([0, 0])
 

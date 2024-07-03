@@ -27,9 +27,12 @@ export default function SubFilterProps({
       css={FilterStyle}
       style={{
         position: 'relative',
-        cursor: map?.getZoom() < 15 ? 'not-allowed' : 'pointer',
+        cursor:
+          textType !== '용도' && map?.getZoom() < 15
+            ? 'not-allowed'
+            : 'pointer',
       }}
-      disabled={map?.getZoom() < 15}
+      disabled={textType !== '용도' && map?.getZoom() < 15 ? true : false}
       onClick={onButtonClick}
     >
       <div

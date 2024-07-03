@@ -50,7 +50,7 @@ export default function SubFilter({
           isSubFilterBoxOpen: false,
         }
       })
-    } else if (map?.getZoom() < 15) {
+    } else if (nowChecked !== 2 && map?.getZoom() < 15) {
       setFormData({
         ...formData,
         isSubFilterBoxOpen: false,

@@ -236,6 +236,7 @@ export default function GGIMap({
     formData.fromAppraisalAmount,
     formData.toMinimumAmount,
     formData.toAppraisalAmount,
+    formData.ids,
   ])
 
   useEffect(() => {

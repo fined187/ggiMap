@@ -61,7 +61,6 @@ export const useReverseGeoCode = async ({
   setJuso,
 }: ReverseGeoCodeOptions) => {
   if (!window.naver.maps?.Service?.reverseGeocode) {
-    alert('Reverse geocode service is not available.')
     return
   }
 

@@ -6,6 +6,7 @@ import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { formDataAtom, mapListAtom } from '@/store/atom/map'
 import { authInfo } from '@/store/atom/auth'
+import { useCallback } from 'react'
 
 interface ListBoxProps {
   isOpen: boolean
@@ -24,34 +25,59 @@ export default function ListBox({
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
   const { data: map } = useSWR(MAP_KEY)
   const auth = useRecoilValue(authInfo)
+
+  const handleCalcHeight = useCallback(() => {
+    if (isOpen) {
+      if (formData.lastFilter === 1 && formData.isSubFilterBoxOpen) {
+        return 'calc(100vh - 390px)'
+      }
+
+      if (formData.lastFilter === 2 && formData.isSubFilterBoxOpen) {
+        if (map && map.zoom >= 15) {
+          return 'calc(100vh - 440px)'
+        }
+        if (map?.zoom < 15) {
+          return '150px'
+        }
+      }
+
+      if (formData.lastFilter === 3 && formData.isSubFilterBoxOpen) {
+        return 'calc(100vh - 380px)'
+      }
+
+      if (formData.lastFilter === 4 && formData.isSubFilterBoxOpen) {
+        return 'calc(100vh - 380px)'
+      }
+
+      if (map && map.zoom! >= 15 && mapListItems?.contents?.length! > 0) {
+        return 'calc(100vh - 150px)'
+      }
+
+      if (auth?.idCode !== '' && map && map.zoom! >= 15) {
+        if (mapListItems?.contents?.length! > 0) {
+          return 'calc(100vh - 150px)'
+        }
+        return 'calc(100vh - 150px)'
+      }
+
+      return '150px'
+    }
+
+    return '59px'
+  }, [
+    auth.idCode,
+    formData.isSubFilterBoxOpen,
+    formData.lastFilter,
+    isOpen,
+    map,
+    mapListItems,
+  ])
   return (
     <Flex
       css={ContainerStyle}
       direction="column"
       style={{
-        height: isOpen
-          ? formData.lastFilter === 1 && formData.isSubFilterBoxOpen
-            ? 'calc(100vh - 390px)'
-            : formData.lastFilter === 2 && formData.isSubFilterBoxOpen
-            ? 'calc(100vh - 440px)'
-            : formData.lastFilter === 3 && formData.isSubFilterBoxOpen
-            ? 'calc(100vh - 380px)'
-            : formData.lastFilter === 4 && formData.isSubFilterBoxOpen
-            ? 'calc(100vh - 380px)'
-            : map && map.zoom! >= 15 && mapListItems?.contents?.length! > 0
-            ? 'calc(100vh - 150px)'
-            : auth.idCode !== '' &&
-              map &&
-              map.zoom >= 15 &&
-              mapListItems?.contents?.length! > 0
-            ? 'calc(100vh - 150px)'
-            : auth.idCode !== '' &&
-              map &&
-              map.zoom >= 15 &&
-              mapListItems?.contents?.length! === 0
-            ? 'calc(100vh - 150px)'
-            : '150px'
-          : '59px',
+        height: handleCalcHeight(),
       }}
       onClick={() => {
         setOpenOverlay(false)
