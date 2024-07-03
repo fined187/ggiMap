@@ -89,11 +89,12 @@ export default function MapSection({
         setOpenCursor={setOpenCursor}
       />
       <BoxGuard isOpen={isOpen}>
-        <SearchBox />
+        <SearchBox setOpenOverlay={setOpenOverlay} />
         <ListBox
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           dragStateRef={dragStateRef}
+          setOpenOverlay={setOpenOverlay}
         />
       </BoxGuard>
       <Flex

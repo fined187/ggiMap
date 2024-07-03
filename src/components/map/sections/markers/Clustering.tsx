@@ -71,6 +71,12 @@ export default function Clustering({ item }: ClusteringProps) {
     })
 
     naver.maps.Event.addListener(marker, 'click', handleMarkerClick)
+    naver.maps.Event?.addListener(marker, 'mouseover', () => {
+      marker.setZIndex(110)
+    })
+    naver.maps.Event?.addListener(marker, 'mouseout', () => {
+      marker.setZIndex(0)
+    })
     return () => {
       marker.setMap(null)
     }

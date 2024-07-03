@@ -9,11 +9,23 @@ import FilterProps from './FilterProps'
 interface SearchBoxProps {
   formData: Form
   setFormData: Dispatch<SetStateAction<Form>>
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
 }
 
-export default function MainFilter({ formData, setFormData }: SearchBoxProps) {
+export default function MainFilter({
+  formData,
+  setFormData,
+  setOpenOverlay,
+}: SearchBoxProps) {
   return (
-    <Flex justify="center" direction="row" css={ContainerStyle}>
+    <Flex
+      justify="center"
+      direction="row"
+      css={ContainerStyle}
+      onClick={() => {
+        setOpenOverlay(false)
+      }}
+    >
       <FilterProps
         dataType={formData.km}
         colorType={colors.white}

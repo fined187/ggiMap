@@ -1,11 +1,15 @@
+import { Dispatch, SetStateAction } from 'react'
+
 export default function Search({
   right,
   top,
   handleSearchButton,
+  setOpenOverlay,
 }: {
   right: string
   top: string
   handleSearchButton: () => void
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
 }) {
   return (
     <div
@@ -14,9 +18,11 @@ export default function Search({
         right: `${right}px`,
         top: `${top}px`,
         cursor: 'pointer',
+        zIndex: 100,
       }}
       onClick={() => {
         handleSearchButton()
+        setOpenOverlay(false)
       }}
     >
       <svg

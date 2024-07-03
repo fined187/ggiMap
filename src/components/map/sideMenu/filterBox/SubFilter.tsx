@@ -2,7 +2,7 @@ import Flex from '@/components/shared/Flex'
 import { SUBFILTERS } from '@/constants'
 import { Form } from '@/models/Form'
 import { css } from '@emotion/react'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import SubFilterProps from './SubFilterProps'
 import Arrow from '../../icons/Arrow'
 import useSWR from 'swr'
@@ -25,6 +25,7 @@ interface SearchBoxProps {
       price: boolean
     }>
   >
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
 }
 
 export default function SubFilter({
@@ -32,6 +33,7 @@ export default function SubFilter({
   setFormData,
   isBoxOpen,
   setIsBoxOpen,
+  setOpenOverlay,
 }: SearchBoxProps) {
   const [nowChecked, setNowChecked] = useState(1)
   const { data: map } = useSWR(MAP_KEY)
@@ -67,7 +69,15 @@ export default function SubFilter({
     map?.getZoom(),
   ])
   return (
-    <Flex direction="row" align="center" justify="center" css={ContainerStyle}>
+    <Flex
+      direction="row"
+      align="center"
+      justify="center"
+      css={ContainerStyle}
+      onClick={() => {
+        setOpenOverlay(false)
+      }}
+    >
       <SubFilterProps
         isSelected={
           formData.awardedMonths > 0 ||

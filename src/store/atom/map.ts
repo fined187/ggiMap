@@ -162,8 +162,3 @@ export const pageAtom = atom<number>({
   key: `page/${v4()}`,
   default: 1,
 })
-
-export const scrollPositionAtom = atom<HTMLDivElement | null>({
-  key: `scrollPosition/${v4()}`,
-  default: null,
-})

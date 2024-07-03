@@ -30,11 +30,13 @@ interface MapTypeProps {
       area: boolean
     }>
   >
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
 }
 
 export default function MapType({
   clickedMapType,
   setClickedMapType,
+  setOpenOverlay,
 }: MapTypeProps) {
   const { data: map } = useSWR(MAP_KEY)
   const [indexNum, setIndexNum] = useState(0)
@@ -80,7 +82,12 @@ export default function MapType({
     [map, setClickedMapType],
   )
   return (
-    <Flex css={ContainerStyle}>
+    <Flex
+      css={ContainerStyle}
+      onClick={() => {
+        setOpenOverlay(false)
+      }}
+    >
       <NormalType
         index={indexNum}
         clicked={clickedMapType.basic}

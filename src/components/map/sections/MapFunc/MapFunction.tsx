@@ -32,14 +32,21 @@ interface MapTypeProps {
       area: boolean
     }>
   >
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
 }
 
 export default function MapFunction({
   clickedMapType,
   setClickedMapType,
+  setOpenOverlay,
 }: MapTypeProps) {
   return (
-    <Flex css={ContainerStyle}>
+    <Flex
+      css={ContainerStyle}
+      onClick={() => {
+        setOpenOverlay(false)
+      }}
+    >
       <InterestBtn
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}

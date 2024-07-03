@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState, useCallback, ChangeEvent } from 'react'
+import {
+  useState,
+  useCallback,
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+} from 'react'
 import Flex from '@/components/shared/Flex'
 import Input from '@/components/shared/Input'
 import Spacing from '@/components/shared/Spacing'
@@ -23,7 +29,11 @@ declare global {
   }
 }
 
-const SearchBox = () => {
+interface SearchBoxProps {
+  setOpenOverlay: Dispatch<SetStateAction<boolean>>
+}
+
+const SearchBox = ({ setOpenOverlay }: SearchBoxProps) => {
   const { data: map } = useSWR(MAP_KEY)
   const [isFocus, setIsFocus] = useState(false)
   const [formData, setFormData] = useRecoilState(formDataAtom)
@@ -139,23 +149,41 @@ const SearchBox = () => {
             zIndex: 100,
           }}
           autoComplete="off"
-          onFocus={() => setIsFocus(true)}
+          onFocus={() => {
+            setIsFocus(true)
+            setOpenOverlay(false)
+          }}
           onBlur={() => setTimeout(() => setIsFocus(false), 200)}
         />
-        <Search right="25" top="25" handleSearchButton={handleSearchButton} />
+        <Search
+          right="25"
+          top="25"
+          handleSearchButton={handleSearchButton}
+          setOpenOverlay={setOpenOverlay}
+        />
       </Flex>
       {isFocus && <AutoKeyword keyword={keyword} setKeyword={setKeyword} />}
       <Spacing size={10} />
-      <MainFilter formData={formData} setFormData={setFormData} />
+      <MainFilter
+        formData={formData}
+        setFormData={setFormData}
+        setOpenOverlay={setOpenOverlay}
+      />
       <Spacing size={10} />
       <SubFilter
         formData={formData}
         setFormData={setFormData}
         isBoxOpen={isBoxOpen}
         setIsBoxOpen={setIsBoxOpen}
+        setOpenOverlay={setOpenOverlay}
       />
       {formData.isSubFilterBoxOpen ? (
-        <Flex css={animation}>
+        <Flex
+          css={animation}
+          onClick={() => {
+            setOpenOverlay(false)
+          }}
+        >
           <DetailBox isBoxOpen={isBoxOpen} />
         </Flex>
       ) : null}

@@ -11,12 +11,14 @@ interface ListBoxProps {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   dragStateRef: React.MutableRefObject<boolean>
+  setOpenOverlay: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function ListBox({
   isOpen,
   setIsOpen,
   dragStateRef,
+  setOpenOverlay,
 }: ListBoxProps) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
@@ -50,6 +52,9 @@ export default function ListBox({
             ? 'calc(100vh - 150px)'
             : '150px'
           : '59px',
+      }}
+      onClick={() => {
+        setOpenOverlay(false)
       }}
     >
       <Result

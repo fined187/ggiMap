@@ -27,12 +27,7 @@ import UpdateResult from './InterestResult'
 import { usePutInterest } from './hooks/usePutInterest'
 import { useDeleteInterest } from './hooks/useDeleteInterest'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import {
-  clickedInfoAtom,
-  mapItemsAtom,
-  mapListAtom,
-  pageAtom,
-} from '@/store/atom/map'
+import { mapItemsAtom, mapListAtom } from '@/store/atom/map'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
 import { useMutateDetail } from '../map/sections/Overlay/hooks/useMutateDetail'
@@ -52,13 +47,11 @@ export default function InterestProps({
   id,
   onButtonClick,
 }: InterestProps) {
-  const page = useRecoilValue(pageAtom)
   const [openGroup, setOpenGroup] = useState(false)
   const [step, setStep] = useState(1)
   const [interestData, setInterestData] = useState<interest | null>(null)
   const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
-  const [clickedInfo, setClickedInfo] = useRecoilState(clickedInfoAtom)
   const { mutate: postClickedInfo } = useMutateDetail()
   const [formData, setFormData] = useState<InterestFormData>({
     goodsId: '',

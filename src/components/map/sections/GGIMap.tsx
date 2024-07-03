@@ -369,10 +369,12 @@ export default function GGIMap({
       <MapType
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}
+        setOpenOverlay={setOpenOverlay}
       />
       <MapFunction
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}
+        setOpenOverlay={setOpenOverlay}
       />
     </>
   )
