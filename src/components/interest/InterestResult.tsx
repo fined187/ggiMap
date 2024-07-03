@@ -9,10 +9,6 @@ import styled from '@emotion/styled'
 import Text from '../shared/Text'
 import { css } from '@emotion/react'
 import { useRecoilValue } from 'recoil'
-import { formDataAtom } from '@/store/atom/map'
-import { usePostListItems } from '@/hooks/items/usePostListItems'
-import usePostMapItems from '@/hooks/items/usePostMapItems'
-import { useMutateDetail } from '../map/sections/Overlay/hooks/useMutateDetail'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
 
@@ -29,10 +25,6 @@ export default function UpdateResult({
   처음등록하는가,
   formData,
 }: UpdateResultProps) {
-  const oldFormData = useRecoilValue(formDataAtom)
-  const { mutate: postListItems } = usePostListItems(oldFormData, 1, 10)
-  const { mutate: postMapItems } = usePostMapItems(oldFormData, false)
-  const { mutate: postDetail } = useMutateDetail()
   const { handleSelectedData } = useHandleSelectedData()
   const auth = useRecoilValue(authInfo)
 
@@ -93,7 +85,7 @@ export default function UpdateResult({
         }
         starRating={
           formData.interestInfo.starRating !== ''
-            ? parseInt(updatedData?.interestInfo.starRating)
+            ? parseInt(updatedData?.interestInfo?.starRating)
             : null
         }
       />
@@ -104,7 +96,7 @@ export default function UpdateResult({
       />
       <TableFrame
         title="등록그룹"
-        contents={updatedData?.interestInfo.category}
+        contents={updatedData?.interestInfo?.category}
         background="#F9F9F9"
       />
       <Spacing size={20} />
@@ -127,9 +119,6 @@ export default function UpdateResult({
         <CloseButtonStyle
           onClick={() => {
             onButtonClick && onButtonClick()
-            postListItems()
-            postMapItems()
-            postDetail()
             auth.idCode === '' ? null : handleSelectedData()
           }}
         >

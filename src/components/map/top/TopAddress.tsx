@@ -27,7 +27,6 @@ interface AddressProps {
   range: number
   setRange: Dispatch<SetStateAction<number>>
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
-  openOverlay: boolean
 }
 
 function TopAddress({
@@ -39,7 +38,6 @@ function TopAddress({
   setOpenCursor,
   setRange,
   setOpenOverlay,
-  openOverlay,
 }: AddressProps) {
   const { data: map } = useSWR(MAP_KEY)
   const [juso, setJuso] = useRecoilState<jusoProps>(jusoAtom)

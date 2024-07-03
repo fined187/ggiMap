@@ -10,16 +10,12 @@ import { authInfo } from '@/store/atom/auth'
 interface ListBoxProps {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  page: number
-  setPage: React.Dispatch<React.SetStateAction<number>>
   dragStateRef: React.MutableRefObject<boolean>
 }
 
 export default function ListBox({
   isOpen,
   setIsOpen,
-  page,
-  setPage,
   dragStateRef,
 }: ListBoxProps) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
@@ -59,8 +55,6 @@ export default function ListBox({
       <Result
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        page={page}
-        setPage={setPage}
         dragStateRef={dragStateRef}
       />
     </Flex>

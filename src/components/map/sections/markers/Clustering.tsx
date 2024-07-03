@@ -19,7 +19,7 @@ export default function Clustering({ item }: ClusteringProps) {
   const placeName = useMemo(() => {
     if (!map) return ''
 
-    const zoomLevel = map.getZoom()
+    const zoomLevel = map?.getZoom()
     if (zoomLevel >= 13) return item.umd
     if (zoomLevel > 10 && zoomLevel < 13) {
       return item.sgg.replace(
@@ -54,7 +54,7 @@ export default function Clustering({ item }: ClusteringProps) {
   const handleMarkerClick = useCallback(() => {
     if (map) {
       map.setCenter(new naver.maps.LatLng(item.y, item.x))
-      map.setZoom(map.getZoom() + 1, true)
+      map.setZoom(map?.getZoom() + 1, true)
     }
   }, [map, item.x, item.y])
 

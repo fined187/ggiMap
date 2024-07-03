@@ -1,77 +1,80 @@
 import { Form } from '@/models/Form'
-import { MapListResponse } from '@/models/MapItem'
+import { MapItems, MapListResponse, PageInfo } from '@/models/MapItem'
 import postListItems from '@/remote/map/items/postListItems'
 import { authInfo } from '@/store/atom/auth'
 import { mapListAtom } from '@/store/atom/map'
 import { useMutation } from 'react-query'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 
-export const usePostListItems = (
-  formData: Form,
-  pageNum: number,
-  pageSize: number,
-) => {
+interface PostListItemsProps {
+  oldFormData: Form
+  pageNum: number
+  pageSize: number
+}
+
+export default function usePostListItems({
+  oldFormData,
+  pageNum,
+  pageSize,
+}: PostListItemsProps) {
   const auth = useRecoilValue(authInfo)
+  const setMapListItems = useSetRecoilState(mapListAtom)
   const param = {
     ids:
-      formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
-    fromAppraisalAmount: formData.fromAppraisalAmount,
-    toAppraisalAmount: formData.toAppraisalAmount,
-    fromMinimumAmount: formData.fromMinimumAmount,
-    toMinimumAmount: formData.toMinimumAmount,
-    interests: formData.interests,
-    x1: formData.x1,
-    y1: formData.y1,
-    x2: formData.x2,
-    y2: formData.y2,
-    awardedMonths: formData.awardedMonths,
-    km: formData.km,
-    kw: formData.kw,
-    gg: formData.gg,
-    gm: formData.gm,
-    ekm: formData.ekm,
-    egm: formData.egm,
-    egg: formData.egg,
+      oldFormData.ids.length === 12
+        ? '0'
+        : oldFormData.ids.map((id) => id).join(','),
+    fromAppraisalAmount: oldFormData.fromAppraisalAmount,
+    toAppraisalAmount: oldFormData.toAppraisalAmount,
+    fromMinimumAmount: oldFormData.fromMinimumAmount,
+    toMinimumAmount: oldFormData.toMinimumAmount,
+    interests: oldFormData.interests,
+    x1: oldFormData.x1,
+    y1: oldFormData.y1,
+    x2: oldFormData.x2,
+    y2: oldFormData.y2,
+    awardedMonths: oldFormData.awardedMonths,
+    km: oldFormData.km,
+    kw: oldFormData.kw,
+    gg: oldFormData.gg,
+    gm: oldFormData.gm,
+    ekm: oldFormData.ekm,
+    egm: oldFormData.egm,
+    egg: oldFormData.egg,
     selectedId: auth.idCode !== '' ? auth.idCode : null,
     selectedType: auth.type !== '' ? parseInt(auth.type) : null,
   }
-  const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
-  const { mutate } = useMutation(
-    async () => await postListItems(param, pageNum, pageSize),
-    {
-      onSuccess: (data) => {
-        console.log(data)
-        if (
-          pageNum > 1 &&
-          mapListItems.contents.length > 0 &&
-          mapListItems.paging.isFirst === false
-        ) {
-          setMapListItems((prev) => {
-            return {
-              contents: [...prev.contents, ...data?.contents],
-              paging: data?.paging,
-            }
-          })
-        } else {
-          setMapListItems({
-            contents: [],
-            paging: {
-              isFirst: false,
-              isLast: false,
-              pageNumber: 0,
-              totalPages: 0,
-              isEmpty: false,
-              pageSize: 0,
-              totalElements: 0,
-            },
-          })
-          setMapListItems(data as MapListResponse)
+  return async (pageCount: number) => {
+    let allContents: MapItems[] = []
+    let paging: PageInfo = {
+      isFirst: false,
+      isLast: false,
+      pageNumber: 0,
+      totalPages: 0,
+      isEmpty: false,
+      pageSize: 0,
+      totalElements: 0,
+    }
+
+    for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
+      const response = await postListItems(param, pageNum, pageSize)
+      if (
+        response?.contents.some((item: MapItems) => item.idCode === auth.idCode)
+      ) {
+        response.contents = response.contents.filter(
+          (item: MapItems) => item.idCode !== auth.idCode,
+        )
+        allContents = [...allContents, ...response.contents]
+        paging = response.paging
+        setMapListItems({ contents: allContents, paging })
+        if (response.contents.length < pageSize) {
+          break
         }
-      },
-      onError: () => {
-        console.log('error')
-      },
-    },
-  )
-  return { mutate }
+      }
+      return {
+        contents: allContents,
+        paging,
+      } as MapListResponse
+    }
+  }
 }

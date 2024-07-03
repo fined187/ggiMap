@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useState, useCallback, ChangeEvent } from 'react'
 import Flex from '@/components/shared/Flex'
 import Input from '@/components/shared/Input'
 import Spacing from '@/components/shared/Spacing'
 import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
-import { ChangeEvent, KeyboardEvent, useState } from 'react'
 import MainFilter from '../filterBox/MainFilter'
 import SubFilter from '../filterBox/SubFilter'
 import DetailBox from '../filterBox/SubFilterDetail/DetailBox'
@@ -23,7 +23,7 @@ declare global {
   }
 }
 
-export default function SearchBox() {
+const SearchBox = () => {
   const { data: map } = useSWR(MAP_KEY)
   const [isFocus, setIsFocus] = useState(false)
   const [formData, setFormData] = useRecoilState(formDataAtom)
@@ -34,87 +34,84 @@ export default function SearchBox() {
     lowPrice: false,
     price: false,
   })
-  if (!map) return null
 
-  const searchAddrToCoord = (address: string) => {
-    if (window.naver.maps?.Service?.geocode !== undefined) {
-      window.naver.maps?.Service?.geocode(
-        {
-          query: address,
-        },
-        (status: any, response: any) => {
-          if (status === window.naver.maps?.Service?.Status?.ERROR) {
-            alert('주소를 다시 확인해주세요.')
-            return
-          } else if (response.v2.meta.totalCount === 0) {
-            alert('검색 결과가 없습니다. 주소를 다시 입력해주세요.')
-            return
-          } else if (!response.v2.addresses[0].roadAddress.includes(keyword)) {
-            alert('검색 결과가 없습니다. 주소를 다시 입력해주세요.')
+  const searchAddrToCoord = useCallback(
+    (address: string) => {
+      if (window.naver?.maps?.Service?.geocode) {
+        window.naver.maps.Service.geocode(
+          {
+            query: address,
+          },
+          (status: any, response: any) => {
+            if (status === window.naver.maps.Service.Status.ERROR) {
+              alert('주소를 다시 확인해주세요.')
+              return
+            } else if (
+              response.v2.meta.totalCount === 0 ||
+              !response.v2.addresses[0].roadAddress.includes(keyword)
+            ) {
+              alert('검색 결과가 없거나 주소를 다시 입력해주세요.')
+              return
+            }
+            const result = response.v2.addresses[0]
+            const { x, y } = result?.point ?? { x: 0, y: 0 }
+            map.setCenter({
+              lat: Number(y),
+              lng: Number(x),
+            })
+          },
+        )
+      }
+    },
+    [keyword, map],
+  )
+
+  const handleKeyword = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value)
+  }, [])
+
+  const handleSearch = useCallback(
+    async (inputKeyword: string) => {
+      if (inputKeyword.match(/역$/)) {
+        try {
+          const response = await getSubway(inputKeyword)
+          if (response.documents.length === 0) {
+            alert('검색 결과가 없습니다.')
             return
           }
-          const result = response.v2.addresses[0]
-          const { x, y } = result ?? { point: { x: 0, y: 0 } }
-          map.setCenter({
-            lat: Number(y),
-            lng: Number(x),
-          })
-        },
-      )
-    }
-  }
-
-  const handleKeyword = (e: ChangeEvent<HTMLInputElement>) => {
-    setKeyword(e.target.value)
-  }
-
-  const handleSearch = async (inputKeyword: string) => {
-    if (inputKeyword.match(/역$/)) {
-      try {
-        const response = await getSubway(inputKeyword)
-        if (response.documents.length === 0) {
-          alert('검색 결과가 없습니다.')
-          return
-        } else {
           const { x, y } = response.documents[0]
           map.setCenter({
             lat: Number(y),
             lng: Number(x),
           })
+        } catch (error) {
+          console.error(error)
         }
-      } catch (error) {
-        console.error(error)
+      } else if (
+        inputKeyword.match(
+          /시$|구$|동$|읍$|면$|리$|가$|로$|길$|도$|번길$|[0-9]$/,
+        )
+      ) {
+        searchAddrToCoord(inputKeyword)
+      } else {
+        alert('지하철역 혹은 주소를 입력해주세요')
       }
-    } else if (
-      inputKeyword.match(/시$/) ||
-      inputKeyword.match(/구$/) ||
-      inputKeyword.match(/동$/) ||
-      inputKeyword.match(/읍$/) ||
-      inputKeyword.match(/면$/) ||
-      inputKeyword.match(/리$/) ||
-      inputKeyword.match(/가$/) ||
-      inputKeyword.match(/로$/) ||
-      inputKeyword.match(/길$/) ||
-      inputKeyword.match(/도$/) ||
-      inputKeyword.match(/번길$/) ||
-      inputKeyword.match(/길$/) ||
-      inputKeyword.match(/[0-9]$/)
-    ) {
-      searchAddrToCoord(inputKeyword)
-    } else {
-      alert('지하철역 혹은 주소를 입력해주세요')
-    }
-  }
+    },
+    [searchAddrToCoord, map],
+  )
 
-  const handleEnter = async (e?: KeyboardEvent<HTMLInputElement>) => {
-    if (e?.key === 'Enter') {
-      await handleSearch(e.currentTarget.value)
-    }
-  }
+  const handleEnter = useCallback(
+    async (e: any) => {
+      if (e.key === 'Enter') {
+        await handleSearch(e.target.value)
+      }
+    },
+    [handleSearch],
+  )
 
-  const handleSearchButton = () => {
+  const handleSearchButton = useCallback(() => {
     handleSearch(keyword)
-  }
+  }, [handleSearch, keyword])
 
   return (
     <Flex id="searchBox" direction="column" align="center" css={ContainerStyle}>
@@ -196,6 +193,7 @@ const ContainerStyle = css`
   border: 1px solid #e0e0e0;
   transition: all 0.3s ease-in-out;
 `
+
 const InputStyle = css`
   width: 100%;
   height: 44px;
@@ -205,3 +203,5 @@ const InputStyle = css`
   font-weight: 500;
   color: ${colors.black};
 `
+
+export default SearchBox

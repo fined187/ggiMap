@@ -153,7 +153,17 @@ export const isPanoramaVisibleAtom = atom<boolean>({
   default: false,
 })
 
-export const clickedInfoAtom = atom<ItemDetail[] | null>({
+export const clickedInfoAtom = atom<ItemDetail[]>({
   key: `clickedInfo/${v4()}`,
+  default: [],
+})
+
+export const pageAtom = atom<number>({
+  key: `page/${v4()}`,
+  default: 1,
+})
+
+export const scrollPositionAtom = atom<HTMLDivElement | null>({
+  key: `scrollPosition/${v4()}`,
   default: null,
 })

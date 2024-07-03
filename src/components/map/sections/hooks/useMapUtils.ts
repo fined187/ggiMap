@@ -1,10 +1,10 @@
-import { NaverMap } from '@/models/Map';
-import useSWR from 'swr';
-import { MAP_KEY } from './useMap';
-import { useRecoilState } from 'recoil';
-import { formDataAtom } from '@/store/atom/map';
-import { useCallback, useEffect, useState } from 'react';
-import { MapCountsResponse } from '@/models/MapItem';
+import { NaverMap } from '@/models/Map'
+import useSWR from 'swr'
+import { MAP_KEY } from './useMap'
+import { useRecoilState } from 'recoil'
+import { formDataAtom } from '@/store/atom/map'
+import { useCallback, useEffect, useState } from 'react'
+import { MapCountsResponse } from '@/models/MapItem'
 
 const useMapUtils = (
   token: string,
@@ -14,15 +14,15 @@ const useMapUtils = (
     params1: string,
     params2: string,
     params3?: string,
-    map?: NaverMap
-  ) => void
+    map?: NaverMap,
+  ) => void,
 ) => {
-  const { data: map } = useSWR(MAP_KEY);
-  const [formData, setFormData] = useRecoilState(formDataAtom);
-  const [mapCount, setMapCount] = useState<MapCountsResponse[]>([]);
-  const [openOverlay, setOpenOverlay] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
-  
+  const { data: map } = useSWR(MAP_KEY)
+  const [formData, setFormData] = useRecoilState(formDataAtom)
+  const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
+  const [openOverlay, setOpenOverlay] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
+
   // 초기 맵 타입 설정
   const initialMapType = {
     basic: true,
@@ -34,26 +34,26 @@ const useMapUtils = (
     current: false,
     distance: false,
     area: false,
-  };
+  }
 
-  const [clickedMapType, setClickedMapType] = useState(initialMapType);
+  const [clickedMapType, setClickedMapType] = useState(initialMapType)
 
   const syncMapTypeToForm = useCallback(() => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       interests: clickedMapType.interest,
-    }));
-  }, [clickedMapType.interest, setFormData]);
+    }))
+  }, [clickedMapType.interest, setFormData])
 
   useEffect(() => {
     if (map) {
-      handleParameters(token, type, idCode, map as NaverMap);
+      handleParameters(token, type, idCode, map as NaverMap)
     }
-  }, [map, idCode, type, token, handleParameters]);
+  }, [map, idCode, type, token, handleParameters])
 
   useEffect(() => {
-    syncMapTypeToForm();
-  }, [clickedMapType, syncMapTypeToForm]);
+    syncMapTypeToForm()
+  }, [clickedMapType, syncMapTypeToForm])
 
   return {
     mapCount,
@@ -64,7 +64,7 @@ const useMapUtils = (
     setIsOpen,
     clickedMapType,
     setClickedMapType,
-  };
-};
+  }
+}
 
-export default useMapUtils;
+export default useMapUtils

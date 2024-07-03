@@ -27,15 +27,25 @@ import getPolypath from '@/remote/map/selected/getPolypath'
 import { useGeoCode } from './hooks/useGeoCode'
 import MiniMap from './MiniMap'
 import useDebounce from '@/components/shared/hooks/useDebounce'
-import { css } from '@emotion/react'
 import CloseButton from '../icons/CloseButton'
 declare global {
   interface Window {
     naver: any
   }
 }
+
+type MapType = {
+  basic: boolean
+  terrain: boolean
+  satellite: boolean
+  cadastral: boolean
+  interest: boolean
+  roadView: boolean
+  current: boolean
+  distance: boolean
+  area: boolean
+}
 interface Props {
-  page: number
   clickedMapType: {
     basic: boolean
     terrain: boolean
@@ -54,19 +64,7 @@ interface Props {
   setMapCount?: Dispatch<SetStateAction<MapCountsResponse[]>>
   markerClickedRef: MutableRefObject<boolean>
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
-  setClickedMapType: Dispatch<
-    SetStateAction<{
-      basic: boolean
-      terrain: boolean
-      satellite: boolean
-      cadastral: boolean
-      interest: boolean
-      roadView: boolean
-      current: boolean
-      distance: boolean
-      area: boolean
-    }>
-  >
+  setClickedMapType: Dispatch<SetStateAction<MapType>>
   setHalfDimensions: Dispatch<SetStateAction<{ width: number; height: number }>>
   dragStateRef: MutableRefObject<boolean>
   openCursor: boolean
@@ -91,10 +89,6 @@ export default function GGIMap({
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [auth, setAuth] = useRecoilState(authInfo)
   const panoRef = useRef<naver.maps.Panorama | null>(null)
-  const { mutate: getMapItems } = usePostMapItems(
-    formData,
-    dragStateRef.current,
-  )
   const { mutate: getMapCounts } = useMapCounts(
     formData,
     setMapCount as Dispatch<SetStateAction<MapCountsResponse[]>>,
@@ -116,7 +110,7 @@ export default function GGIMap({
   const zoomLevel = mapRef.current?.getZoom() ?? null
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
 
-  const handleGetBounds = useCallback(() => {
+  const updateFormDataBounds = useCallback(() => {
     if (!mapRef.current) return
     const bounds = mapRef.current.getBounds() as any
     const sw = bounds.getSW()
@@ -130,7 +124,8 @@ export default function GGIMap({
     }))
   }, [setFormData])
 
-  const initializeMap = useCallback(() => {
+  const initializeMap: () => void = useCallback(() => {
+    if (!window.naver?.maps) return
     const mapOptions = {
       center: new window.naver.maps.LatLng(37.497013, 127.0114263),
       zoom: zoom ?? 17,
@@ -140,65 +135,79 @@ export default function GGIMap({
     const map = new window.naver.maps.Map(mapId, mapOptions)
     mapRef.current = map
 
-    window.naver.maps.Event.addListener(map, 'zoom_changed', handleGetBounds)
-    window.naver.maps.Event.addListener(map, 'init', handleGetBounds)
-    window.naver.maps.Event.addListener(map, 'idle', () => {
-      handleGetBounds()
-    })
-    window.naver.maps.Event.addListener(map, 'dragstart', () => {
-      setOpenOverlay(false)
-      dragStateRef.current = true
-    })
-    window.naver.maps.Event.addListener(map, 'dragend', () => {
-      dragStateRef.current = false
-      handleGetBounds()
-    })
-    window.naver.maps.Event.addListener(map, 'click', (e: any) => {
-      if (map.streetLayer) {
-        let latlng = e.coord
-        setClickedLatLng({
-          lat: latlng._lat,
-          lng: latlng._lng,
-        })
-        if (clickedMarker) {
-          clickedMarker.setMap(null)
-        }
-        setIsPanoVisible(true)
-        panoRef.current = new window.naver.maps.Panorama('pano', {
-          position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
-          pov: {
-            pan: 0,
-            tilt: 0,
-            fov: 100,
-          },
-        })
-
-        if (miniMap) {
-          new naver.maps.Marker({
-            position: latlng,
-            map: miniMap,
+    const listeners = [
+      window.naver.maps.Event.addListener(
+        map,
+        'zoom_changed',
+        updateFormDataBounds,
+      ),
+      window.naver.maps.Event.addListener(map, 'init', updateFormDataBounds),
+      window.naver.maps.Event.addListener(map, 'idle', () => {
+        updateFormDataBounds()
+      }),
+      window.naver.maps.Event.addListener(map, 'dragstart', () => {
+        setOpenOverlay(false)
+        dragStateRef.current = true
+      }),
+      window.naver.maps.Event.addListener(map, 'dragend', () => {
+        dragStateRef.current = false
+        updateFormDataBounds()
+      }),
+      window.naver.maps.Event.addListener(map, 'click', (e: any) => {
+        if (map.streetLayer) {
+          let latlng = e.coord
+          setClickedLatLng({
+            lat: latlng._lat,
+            lng: latlng._lng,
           })
+          if (clickedMarker) {
+            clickedMarker.setMap(null)
+          }
+          setIsPanoVisible(true)
+          panoRef.current = new window.naver.maps.Panorama('pano', {
+            position: new window.naver.maps.LatLng(latlng._lat, latlng._lng),
+            pov: {
+              pan: 0,
+              tilt: 0,
+              fov: 100,
+            },
+          })
+          if (miniMap) {
+            new naver.maps.Marker({
+              position: latlng,
+              map: miniMap,
+            })
+          }
         }
-      }
-    })
+      }),
+    ]
 
-    if (onLoad) {
-      onLoad(map)
+    if (onLoad) onLoad(map)
+    return () => {
+      listeners.forEach((listener) =>
+        window.naver.maps.Event.removeListener(listener),
+      )
     }
-  }, [initialCenter, zoom, onLoad])
+  }, [
+    zoom,
+    mapId,
+    onLoad,
+    updateFormDataBounds,
+    dragStateRef,
+    clickedMarker,
+    miniMap,
+    setIsPanoVisible,
+    setOpenOverlay,
+  ])
 
-  const closePanorama = () => {
-    setIsPanoVisible(false)
-  }
+  const closePanorama = () => setIsPanoVisible(false)
 
   useEffect(() => {
     const updateHalfDimensions = () => {
       const exceptFilterBox = window.innerWidth - 370
-      const halfHeight = window.innerHeight / 2
-      const halfWidth = exceptFilterBox / 2 + 370
       setHalfDimensions({
-        width: halfWidth,
-        height: halfHeight,
+        width: exceptFilterBox / 2 + 370,
+        height: window.innerHeight / 2,
       })
     }
     if (typeof window !== 'undefined') {
@@ -210,9 +219,7 @@ export default function GGIMap({
 
   useEffect(() => {
     if (!mapRef.current) return
-    if (mapRef?.current.getZoom() >= 15) {
-      getMapItems()
-    } else {
+    if (mapRef.current.getZoom() < 15) {
       getMapCounts()
     }
   }, [
@@ -293,9 +300,6 @@ export default function GGIMap({
             lng: auth.detailLng,
           })
           mapRef.current.setZoom(19)
-          return () => {
-            polyline.setMap(null)
-          }
         }
       } catch (error) {
         console.error(error)
@@ -318,18 +322,15 @@ export default function GGIMap({
           height: '100vh',
         }}
         onClick={() => {
-          if (markerClickedRef.current === true) {
+          if (markerClickedRef.current) {
             setOpenOverlay(false)
             markerClickedRef.current = false
             setClickedItem(null)
-          } else if (
-            markerClickedRef.current === false &&
-            clickedItem != null
-          ) {
+          } else if (clickedItem) {
             setOpenOverlay(true)
             markerClickedRef.current = true
           }
-          openCursor ? setOpenCursor(false) : null
+          if (openCursor) setOpenCursor(false)
         }}
       />
       <div

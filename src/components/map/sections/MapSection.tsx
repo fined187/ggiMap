@@ -39,7 +39,6 @@ export default function MapSection({
   const auth = useRecoilValue(authInfo)
   const [openCursor, setOpenCursor] = useState<boolean>(false)
   const markerClickedRef = useRef<boolean>(false)
-  const [page, setPage] = useState<number>(1)
   const [halfDimensions, setHalfDimensions] = useState({
     width: 0,
     height: 0,
@@ -85,7 +84,6 @@ export default function MapSection({
         setOpenOverlay={setOpenOverlay}
         setClickedMapType={setClickedMapType}
         setHalfDimensions={setHalfDimensions}
-        page={page}
         dragStateRef={dragStateRef}
         openCursor={openCursor}
         setOpenCursor={setOpenCursor}
@@ -95,8 +93,6 @@ export default function MapSection({
         <ListBox
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          page={page}
-          setPage={setPage}
           dragStateRef={dragStateRef}
         />
       </BoxGuard>
@@ -113,10 +109,15 @@ export default function MapSection({
             range={range}
             setRange={setRange}
             setOpenOverlay={setOpenOverlay}
-            openOverlay={openOverlay}
           />
         </TopBar>
-        {openCursor && <BottomAddress range={range} setRange={setRange} />}
+        {openCursor && (
+          <BottomAddress
+            range={range}
+            setRange={setRange}
+            setOpenCursor={setOpenCursor}
+          />
+        )}
       </Flex>
       <Markers
         openOverlay={openOverlay}

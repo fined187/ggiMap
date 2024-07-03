@@ -26,13 +26,16 @@ import Image from 'next/image'
 import UpdateResult from './InterestResult'
 import { usePutInterest } from './hooks/usePutInterest'
 import { useDeleteInterest } from './hooks/useDeleteInterest'
-import { useRecoilValue } from 'recoil'
-import { formDataAtom } from '@/store/atom/map'
-import { usePostListItems } from '@/hooks/items/usePostListItems'
-import usePostMapItems from '@/hooks/items/usePostMapItems'
-import { useMutateDetail } from '../map/sections/Overlay/hooks/useMutateDetail'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import {
+  clickedInfoAtom,
+  mapItemsAtom,
+  mapListAtom,
+  pageAtom,
+} from '@/store/atom/map'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
+import { useMutateDetail } from '../map/sections/Overlay/hooks/useMutateDetail'
 
 interface InterestProps {
   type: string
@@ -49,9 +52,14 @@ export default function InterestProps({
   id,
   onButtonClick,
 }: InterestProps) {
+  const page = useRecoilValue(pageAtom)
   const [openGroup, setOpenGroup] = useState(false)
   const [step, setStep] = useState(1)
   const [interestData, setInterestData] = useState<interest | null>(null)
+  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
+  const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
+  const [clickedInfo, setClickedInfo] = useRecoilState(clickedInfoAtom)
+  const { mutate: postClickedInfo } = useMutateDetail()
   const [formData, setFormData] = useState<InterestFormData>({
     goodsId: '',
     infoId: '',
@@ -72,6 +80,7 @@ export default function InterestProps({
     categories: [''],
     smsNotificationYn: 'N',
     isWait: false,
+    type: 1,
   })
   const [updatedData, setUpdatedData] = useState<UpdatedInterest>({
     infoId: '',
@@ -92,20 +101,17 @@ export default function InterestProps({
     isWait: false,
     goodsId: '',
     address: '',
+    type: 1,
   })
-
   const 처음등록하는가 = interestData?.interestInfo === null
-  const oldFormData = useRecoilValue(formDataAtom)
   const auth = useRecoilValue(authInfo)
-  const { mutate: postListItems } = usePostListItems(oldFormData, 1, 10)
-  const { mutate: postMapItems } = usePostMapItems(oldFormData, false)
-  const { mutate: postDetail } = useMutateDetail()
   const { handleSelectedData } = useHandleSelectedData()
   const { mutate: postInterest } = usePostInterest(
     type,
     formData,
     setUpdatedData,
   )
+
   const { mutate: putInterest } = usePutInterest(type, formData, setUpdatedData)
   const { mutate: deleteInterest } = useDeleteInterest(type, formData)
 
@@ -129,7 +135,7 @@ export default function InterestProps({
             infoId: data?.infoId,
             caseNo: data?.caseNo ?? '',
             manageNo: data?.manageNo ?? '',
-            mulSeq: data?.mulSeq,
+            mulSeq: data?.mulSeq ?? '0000',
             infoNo: data?.infoNo ?? '',
             caseNoString: data?.caseNoString ?? '',
             oldInfoId: data?.oldInfoId,
@@ -142,6 +148,15 @@ export default function InterestProps({
             categories: data?.categories,
             smsNotificationYn: data?.smsNotificationYn,
             isWait: data?.isWait,
+            goodsId: data?.goodsId ?? '',
+            type:
+              data?.goodsId === '' || data?.goodsId === undefined
+                ? 1
+                : data?.infoId === undefined
+                ? 2
+                : data?.mulSeq === undefined
+                ? 4
+                : 3,
           },
         }))
       }
@@ -174,11 +189,31 @@ export default function InterestProps({
       if (처음등록하는가) {
         if (window.confirm('관심물건을 등록하시겠습니까?')) {
           postInterest()
+          toggleInterest(
+            formData.type === 1
+              ? ((formData.infoId +
+                  formData.caseNo +
+                  formData.mulSeq) as string)
+              : formData.type === 2 || formData.type === 3
+              ? (formData.goodsId as string)
+              : (((((formData.infoId as string) + formData.caseNo) as string) +
+                  formData.mulSeq) as string as string),
+          )
           setStep(2)
         }
       } else {
         if (window.confirm('관심물건을 수정하시겠습니까?')) {
           putInterest()
+          toggleInterest(
+            formData.type === 1
+              ? ((formData.infoId +
+                  formData.caseNo +
+                  formData.mulSeq) as string)
+              : formData.type === 2 || formData.type === 3
+              ? (formData.goodsId as string)
+              : (((((formData.infoId as string) + formData.caseNo) as string) +
+                  formData.mulSeq) as string as string),
+          )
           setStep(2)
         }
       }
@@ -192,14 +227,49 @@ export default function InterestProps({
       if (window.confirm('관심물건을 삭제하시겠습니까?')) {
         deleteInterest()
         setTimeout(() => {
-          postListItems()
-          postMapItems()
-          postDetail()
+          toggleInterest(
+            formData.type === 1
+              ? ((formData.infoId +
+                  formData.caseNo +
+                  formData.mulSeq) as string)
+              : formData.type === 2 || formData.type === 3
+              ? (formData.goodsId as string)
+              : ((formData.infoId + formData.caseNo + '0000') as string),
+          )
           if (auth.idCode) handleSelectedData()
           onButtonClick()
         }, 500)
       }
     }
+  }
+
+  const toggleInterest = (id: string) => {
+    console.log(id)
+    setMapListItems((prev) => {
+      const updatedContents = prev.contents.map((content) => {
+        if (content.id === id) {
+          return { ...content, interest: content.interest === '' ? 'Y' : '' }
+        }
+        return content
+      })
+      return {
+        ...prev,
+        contents: updatedContents,
+      }
+    })
+    setMapItems((prev) => {
+      const updatedMarkers = prev.map((marker) => {
+        if (marker.ids.includes(id)) {
+          return {
+            ...marker,
+            interest: marker.interest === '' ? 'Y' : '',
+          }
+        }
+        return marker
+      })
+      return updatedMarkers
+    })
+    postClickedInfo()
   }
 
   const renderInterestForm = () => (

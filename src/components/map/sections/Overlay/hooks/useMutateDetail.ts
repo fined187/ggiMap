@@ -37,12 +37,12 @@ export const useMutateDetail = () => {
   // Mutation 훅 생성
   const mutateDetails = useMutation(fetchDetails, {
     onSuccess: (data) => {
-      const SortedData = data.sort((a, b) => {
+      const sortedData = data.sort((a, b) => {
         if (a?.winAmt !== undefined && b?.winAmt !== undefined) {
           if (a.winAmt > 0 && b.winAmt === 0) {
             return 1
           } else if (a.winAmt === 0 && b.winAmt > 0) {
-            return 1
+            return -1
           } else if (a.winAmt > 0 && b.type === 4) {
             return -1
           } else if (a.type !== 4 && b.type === 4) {
@@ -51,20 +51,7 @@ export const useMutateDetail = () => {
         }
         return 0
       })
-      setClickedInfo(null)
-      setClickedInfo(() => {
-        return SortedData.map((item, index) => {
-          if (item) {
-            return {
-              ...item,
-              number: index,
-              x: clickedItem?.x,
-              y: clickedItem?.y,
-            }
-          }
-          return item
-        })
-      })
+      setClickedInfo(sortedData)
     },
     onError: (error) => {
       console.error(error)

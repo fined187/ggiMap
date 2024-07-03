@@ -17,6 +17,7 @@ import {
   isOnlySelectedAtom,
   jusoAtom,
   mapListAtom,
+  pageAtom,
   selectedItemAtom,
 } from '@/store/atom/map'
 import { ListData, MapItems } from '@/models/MapItem'
@@ -25,20 +26,12 @@ import { useReverseGeoCode } from '@/components/map/sections/hooks/useReverseGeo
 import { authInfo } from '@/store/atom/auth'
 
 interface ResultProps {
-  page: number
-  setPage: React.Dispatch<React.SetStateAction<number>>
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   dragStateRef: React.MutableRefObject<boolean>
 }
 
-function Result({
-  isOpen,
-  setIsOpen,
-  page,
-  setPage,
-  dragStateRef,
-}: ResultProps) {
+const Result = ({ isOpen, setIsOpen, dragStateRef }: ResultProps) => {
   const { data: map } = useSWR(MAP_KEY)
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
@@ -48,6 +41,7 @@ function Result({
   const [auth, setAuth] = useRecoilState(authInfo)
   const [selectedItem, setSelectedItem] = useRecoilState(selectedItemAtom)
   const [isOnlySelected, setIsOnlySelected] = useRecoilState(isOnlySelectedAtom)
+  const [page, setPage] = useRecoilState(pageAtom)
   const [mapData, setMapData] = useState<ListData>({
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -71,21 +65,18 @@ function Result({
     selectedId: auth.idCode !== '' ? auth.idCode : null,
     selectedType: auth.type !== '' ? parseInt(auth.type) : null,
   })
-
   const handleCenterChanged = useCallback(() => {
-    if (map) {
-      const mapCenter: naver.maps.Point = map.getCenter()
-      const centerCoords = { lat: mapCenter.y, lng: mapCenter.x }
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useReverseGeoCode(centerCoords.lat, centerCoords.lng, setJuso)
-    }
+    if (!map) return
+    const mapCenter: naver.maps.Point = map.getCenter()
+    const centerCoords = { lat: mapCenter.y, lng: mapCenter.x }
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useReverseGeoCode({ lat: centerCoords.lat, lng: centerCoords.lng, setJuso })
   }, [map, setJuso, useReverseGeoCode])
 
   const { data, fetchNextPage, hasNextPage, isLoading } = useSearchListQuery({
     mapData,
     handleCenterChanged,
     dragStateRef,
-    page,
   })
 
   const scrollToTop = useCallback(() => {

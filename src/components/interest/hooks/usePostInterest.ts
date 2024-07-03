@@ -25,7 +25,8 @@ export const usePostInterest = (
             isNewCategory: formData.isNewCategory,
             interestInfo: {
               ...formData.interestInfo,
-              starRating: formData.importance === '' ? '0' : formData.importance,
+              starRating:
+                formData.importance === '' ? '0' : formData.importance,
             },
             smsNotificationYn: formData.smsNotificationYn,
             isWait: formData.isWait,
@@ -37,8 +38,9 @@ export const usePostInterest = (
             isNewCategory: formData.isNewCategory,
             interestInfo: {
               ...formData.interestInfo,
-              starRating: formData.importance === '' ? '0' : formData.importance,
-            }
+              starRating:
+                formData.importance === '' ? '0' : formData.importance,
+            },
           })
         case '3':
           return postGmInterest({
@@ -47,8 +49,9 @@ export const usePostInterest = (
             isNewCategory: formData.isNewCategory,
             interestInfo: {
               ...formData.interestInfo,
-              starRating: formData.importance === '' ? '0' : formData.importance,
-            }
+              starRating:
+                formData.importance === '' ? '0' : formData.importance,
+            },
           })
         case '4':
           return postKwInterest({
@@ -58,7 +61,8 @@ export const usePostInterest = (
             isNewCategory: formData.isNewCategory,
             interestInfo: {
               ...formData.interestInfo,
-              starRating: formData.importance === '' ? '0' : formData.importance,
+              starRating:
+                formData.importance === '' ? '0' : formData.importance,
             },
           })
         default:

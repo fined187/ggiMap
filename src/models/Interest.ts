@@ -40,6 +40,7 @@ export interface InterestFormData {
   categories: string[]
   smsNotificationYn: string
   isWait: boolean
+  type: number
 }
 
 export interface InterestPostResponse {
@@ -62,4 +63,5 @@ export interface UpdatedInterest {
   manageNo?: string
   goodsId?: string
   address: string
+  type: number
 }

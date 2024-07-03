@@ -11,12 +11,14 @@ interface DongListProps {
   selectedDongIndex: number | null
   setSelectedDongIndex: Dispatch<SetStateAction<number | null>>
   addrToCenter: (x: number, y: number) => void
+  setOpenCursor: Dispatch<SetStateAction<boolean>>
 }
 
 function DongList({
   selectedDongIndex,
   setSelectedDongIndex,
   addrToCenter,
+  setOpenCursor,
 }: DongListProps) {
   const [juso, setJuso] = useRecoilState(jusoAtom)
   const [dongList, setDongList] = useState<DongProps[]>([
@@ -55,6 +57,7 @@ function DongList({
         bottomDong: dong,
       }
     })
+    setOpenCursor(false)
   }
 
   useEffect(() => {

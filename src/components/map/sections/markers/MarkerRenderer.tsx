@@ -101,7 +101,7 @@ const MarkerRenderer = ({
       })
       markers = []
     }
-    const zoomLevel = map.getZoom()
+    const zoomLevel = map?.getZoom()
     const marker = new window.naver.maps.Marker({
       map: map,
       position: new window.naver.maps.LatLng(item.y, item.x),

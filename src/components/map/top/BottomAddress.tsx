@@ -15,9 +15,10 @@ import { jusoAtom } from '@/store/atom/map'
 interface BottomAddressProps {
   range: number
   setRange: Dispatch<SetStateAction<number>>
+  setOpenCursor: Dispatch<SetStateAction<boolean>>
 }
 
-function BottomAddress({ range, setRange }: BottomAddressProps) {
+function BottomAddress({ range, setRange, setOpenCursor }: BottomAddressProps) {
   const { data: map } = useSWR(MAP_KEY)
   const [juso, setJuso] = useRecoilState(jusoAtom)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
@@ -39,7 +40,7 @@ function BottomAddress({ range, setRange }: BottomAddressProps) {
     },
     [map],
   )
-  console.log(juso)
+
   return (
     <Flex direction="column" css={ContainerStyle}>
       <Flex
@@ -124,6 +125,7 @@ function BottomAddress({ range, setRange }: BottomAddressProps) {
           selectedDongIndex={selectedDongIndex}
           setSelectedDongIndex={setSelectedDongIndex}
           addrToCenter={addrToCenter}
+          setOpenCursor={setOpenCursor}
         />
       )}
     </Flex>

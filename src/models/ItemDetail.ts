@@ -20,7 +20,4 @@ export interface ItemDetail {
   share?: string
   claimAmt?: number
   startDate?: string
-  x?: number
-  y?: number
-  number?: number
 }

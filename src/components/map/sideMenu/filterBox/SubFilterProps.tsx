@@ -27,7 +27,7 @@ export default function SubFilterProps({
       css={FilterStyle}
       style={{
         position: 'relative',
-        cursor: map.getZoom() < 15 ? 'not-allowed' : 'pointer',
+        cursor: map?.getZoom() < 15 ? 'not-allowed' : 'pointer',
       }}
       disabled={map?.getZoom() < 15}
       onClick={onButtonClick}

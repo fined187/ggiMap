@@ -101,10 +101,10 @@ export default function Arrow({
   return (
     <div
       style={{
-        cursor: map.getZoom() < 15 ? 'not-allowed' : 'pointer',
+        cursor: map?.getZoom() < 15 ? 'not-allowed' : 'pointer',
       }}
       onClick={() => {
-        if (map && map.getZoom() < 15) return
+        if (map && map?.getZoom() < 15) return
         setIsOpenArrow((prev) => {
           return {
             ...prev,

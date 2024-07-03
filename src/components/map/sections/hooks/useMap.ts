@@ -21,7 +21,7 @@ const useMap = () => {
   const getMapOptions = useCallback(() => {
     const mapCenter = map.getCenter()
     const center: Coordinates = [mapCenter.lat(), mapCenter.lng()]
-    const zoom = map.getZoom()
+    const zoom = map?.getZoom()
     return { center, zoom }
   }, [map])
   return {
