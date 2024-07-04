@@ -72,15 +72,7 @@ function DongList({
   }, [juso.bottomDong, dongList, setSelectedDongIndex])
 
   return (
-    <Flex
-      direction="column"
-      style={{
-        overflowY: 'auto',
-        position: 'relative',
-        minHeight: '100px',
-        maxHeight: '200px',
-      }}
-    >
+    <Flex direction="column" css={containerStyle}>
       {Array.from(dongList).map(
         (_, index) =>
           index % 3 === 0 && (
@@ -98,8 +90,9 @@ function DongList({
                       <Flex
                         direction="row"
                         key={actualIndex}
-                        css={BoxStyle}
+                        css={boxStyle}
                         style={{
+                          marginRight: subIndex === 2 ? '2.5px' : '',
                           backgroundColor:
                             juso.bottomDong === item.umd ? '#F0F0FF' : 'white',
                           borderTop: shouldHighlightTop
@@ -176,7 +169,30 @@ function DongList({
   )
 }
 
-const BoxStyle = css`
+const containerStyle = css`
+  overflow-y: auto;
+  position: relative;
+  min-height: 100px;
+  max-height: 200px;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #dfdfdf;
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+`
+
+const boxStyle = css`
   display: flex;
   width: 110px;
   height: 36px;

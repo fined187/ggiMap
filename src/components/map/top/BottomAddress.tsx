@@ -41,20 +41,19 @@ function BottomAddress({ range, setRange, setOpenCursor }: BottomAddressProps) {
     [map],
   )
 
+  const handleClick = (level: number, condition: boolean, message: string) => {
+    if (condition) {
+      alert(message)
+      return
+    }
+    setRange(level)
+  }
+
   return (
-    <Flex direction="column" css={ContainerStyle}>
-      <Flex
-        direction="row"
-        style={{
-          height: '20px',
-          width: '100%',
-          justifyContent: 'start',
-          alignItems: 'start',
-          display: 'flex',
-        }}
-      >
+    <Flex direction="column" css={containerStyle}>
+      <Flex direction="row" css={flexRowStyle}>
         <Text
-          css={TextStyle}
+          css={textStyle}
           style={{
             color:
               range === 0 || juso.bottomSido !== '' || juso.topSido !== ''
@@ -63,44 +62,38 @@ function BottomAddress({ range, setRange, setOpenCursor }: BottomAddressProps) {
             cursor: 'pointer',
           }}
           onClick={() => {
-            setRange(0)
+            handleClick(0, false, '')
           }}
         >
-          {juso.bottomSido === '' ? '시 / 도' : juso.bottomSido}
+          {juso.bottomSido || '시 / 도'}
         </Text>
         <NextArrow />
         <Text
-          css={TextStyle}
+          css={textStyle}
           style={{
             color: juso.bottomGungu !== '' ? '#000001' : '#9d9999',
-            cursor: 'pointer',
           }}
           onClick={() => {
-            if (juso.bottomSido === '') {
-              alert('시 / 도를 먼저 선택해주세요.')
-              return
-            }
-            setRange(1)
+            handleClick(1, !juso.bottomSido, '시 / 도를 먼저 선택해주세요.')
           }}
         >
-          {juso.bottomGungu === '' ? '시 / 군 / 구' : juso.bottomGungu}
+          {juso.bottomGungu || '시 / 군 / 구'}
         </Text>
         <NextArrow />
         <Text
-          css={TextStyle}
+          css={textStyle}
           style={{
             color: juso.bottomDong !== '' ? '#000001' : '#9d9999',
-            cursor: 'pointer',
           }}
           onClick={() => {
-            if (juso.bottomGungu === '') {
-              alert('시 / 군 / 구를 먼저 선택해주세요.')
-              return
-            }
-            setRange(2)
+            handleClick(
+              2,
+              !juso.bottomGungu,
+              '시 / 군 / 구를 먼저 선택해주세요.',
+            )
           }}
         >
-          {juso.bottomDong === '' ? '읍 / 면 / 동' : juso.bottomDong}
+          {juso.bottomDong || '읍 / 면 / 동'}
         </Text>
       </Flex>
       <Spacing size={20} />
@@ -132,22 +125,31 @@ function BottomAddress({ range, setRange, setOpenCursor }: BottomAddressProps) {
   )
 }
 
-const ContainerStyle = css`
+const containerStyle = css`
   background-color: #fff;
   width: 360px;
   max-height: 400px;
   display: flex;
   left: calc(50% + 100px);
   transform: translateX(-50%);
+  justify-content: center;
+  align-items: center;
   top: 75px;
   position: absolute;
   border-radius: 10px;
-  padding: 10px;
-  align-items: start;
+  padding: 10px 5px 10px 5px;
   z-index: 100;
 `
 
-const TextStyle = css`
+const flexRowStyle = css`
+  height: 20px;
+  width: 100%;
+  justify-content: start;
+  align-items: start;
+  display: flex;
+`
+
+const textStyle = css`
   text-align: center;
   min-width: 100px;
   max-width: 120px;
@@ -157,6 +159,7 @@ const TextStyle = css`
   font-weight: 600;
   line-height: 135%;
   letter-spacing: -0.15px;
+  cursor: pointer;
 `
 
 export default BottomAddress

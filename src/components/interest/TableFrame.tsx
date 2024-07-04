@@ -101,6 +101,22 @@ const ContentsFrame = styled.div<{ height?: string }>`
   gap: 10px;
   flex-shrink: 0;
   border-bottom: 1px solid #bcbcbc;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #dfdfdf;
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `
 
 const CategoryTextStyle = css`

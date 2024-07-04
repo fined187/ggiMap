@@ -20,7 +20,7 @@ export default function AlertCheck({ formData, setFormData }: AlertCheckProps) {
           name="alert"
           css={RadioStyle}
           checked={formData?.smsNotificationYn === 'Y'}
-          onChange={(e) => {
+          onClick={() => {
             setFormData((prev) => {
               return {
                 ...prev,
@@ -29,7 +29,19 @@ export default function AlertCheck({ formData, setFormData }: AlertCheckProps) {
             })
           }}
         />
-        <Text css={TextStyle}>알림을 받겠습니다</Text>
+        <Text
+          css={TextStyle}
+          onClick={() => {
+            setFormData((prev) => {
+              return {
+                ...prev,
+                smsNotificationYn: 'Y',
+              }
+            })
+          }}
+        >
+          알림을 받겠습니다
+        </Text>
         <Spacing direction="horizontal" size={50} />
         {formData?.smsNotificationYn === 'Y' && (
           <Text css={TextStyle2}>
@@ -44,7 +56,7 @@ export default function AlertCheck({ formData, setFormData }: AlertCheckProps) {
           name="alert"
           css={RadioStyle}
           checked={formData?.smsNotificationYn === 'N'}
-          onChange={(e) => {
+          onClick={() => {
             setFormData((prev) => {
               return {
                 ...prev,
@@ -53,8 +65,20 @@ export default function AlertCheck({ formData, setFormData }: AlertCheckProps) {
             })
           }}
         />
-        <Text css={TextStyle}>수신거부</Text>
-        <Spacing direction="horizontal" size={100} />
+        <Text
+          css={TextStyle}
+          onClick={() => {
+            setFormData((prev) => {
+              return {
+                ...prev,
+                smsNotificationYn: 'N',
+              }
+            })
+          }}
+        >
+          수신거부
+        </Text>
+        <Spacing direction="horizontal" size={105} />
         {formData?.smsNotificationYn === 'N' && (
           <Text css={TextStyle2}>본 물건에 대한 알림이 발송되지 않습니다</Text>
         )}
@@ -80,6 +104,7 @@ const RadioStyle = css`
   border: 1px solid #bcbcbc;
   background: #fff;
   margin-right: 10px;
+  cursor: pointer;
 `
 
 const TextStyle = css`
@@ -90,6 +115,7 @@ const TextStyle = css`
   font-weight: 500;
   line-height: 125%;
   letter-spacing: -0.32px;
+  cursor: pointer;
 `
 
 const TextStyle2 = css`

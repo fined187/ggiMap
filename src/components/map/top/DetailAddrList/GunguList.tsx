@@ -93,7 +93,7 @@ export default function GunguList({
   }, [juso.bottomGungu, gunguList, setSelectedGunguIndex])
   return (
     <>
-      <Flex direction="column" css={ContainerStyle}>
+      <Flex direction="column" css={containerStyle}>
         {Array.from(gunguList).map(
           (_, index) =>
             index % 3 === 0 && (
@@ -113,8 +113,9 @@ export default function GunguList({
                         <Flex
                           direction="row"
                           key={actualIndex}
-                          css={BoxStyle}
+                          css={boxStyle}
                           style={{
+                            marginRight: subIndex === 2 ? '2.5px' : '',
                             backgroundColor: isSelected ? '#F0F0FF' : 'white',
                             borderTop: shouldHighlightTop
                               ? `1px solid #332EFC`
@@ -198,14 +199,30 @@ export default function GunguList({
   )
 }
 
-const ContainerStyle = css`
+const containerStyle = css`
   overflow-y: auto;
   position: relative;
   min-height: 100px;
   max-height: 200px;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #dfdfdf;
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `
 
-const BoxStyle = css`
+const boxStyle = css`
   display: flex;
   width: 110px;
   height: 36px;

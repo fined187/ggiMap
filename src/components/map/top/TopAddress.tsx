@@ -41,94 +41,86 @@ function TopAddress({
 }: AddressProps) {
   const { data: map } = useSWR(MAP_KEY)
   const [juso, setJuso] = useRecoilState<jusoProps>(jusoAtom)
+
   const handleTopBottomSyncSido = useCallback(() => {
+    const specialSido = [
+      '경기도',
+      '강원특별자치도',
+      '제주도',
+      '제주특별자치도',
+      '전북특별자치도',
+      '세종특별자치시',
+    ]
     let newSido = ''
-    if (
-      juso.topSido.match(/시$/) ||
-      [
-        '경기도',
-        '강원특별자치도',
-        '제주도',
-        '제주특별자치도',
-        '전북특별자치도',
-      ].includes(juso.topSido)
-    ) {
+
+    if (juso.topSido.match(/시$/) || specialSido.includes(juso.topSido)) {
       newSido = juso.topSido.slice(0, 2)
     } else if (juso.topSido.endsWith('도')) {
-      newSido = juso.topSido.slice(0, 1) + juso.topSido.slice(2, 3)
+      newSido = juso.topSido[0] + juso.topSido[2]
     } else if (juso.topSido === '세종특별자치시') {
       newSido = '세종'
-      setJuso((prev) => {
-        return {
-          ...prev,
-          sido: '세종시',
-        }
-      })
+      setJuso((prev) => ({
+        ...prev,
+        sido: '세종시',
+      }))
     }
     return newSido
   }, [juso.topSido, setJuso])
 
   const handleTopBottomSyncGungu = useCallback(() => {
-    let newGungu = ''
-    if (!juso.topGungu) return []
-    if (juso.topGungu.endsWith('시') && juso.topGungu.endsWith('구')) {
-      newGungu = juso.topGungu + ' ' + juso.topGungu
-    } else {
-      newGungu = juso.topGungu
-    }
-    return newGungu
-  }, [juso.topGungu, juso.topGungu])
+    if (!juso.topGungu) return ''
+    return juso.topGungu.endsWith('시') && juso.topGungu.endsWith('구')
+      ? `${juso.topGungu} ${juso.topGungu}`
+      : juso.topGungu
+  }, [juso.topGungu])
 
-  const handleControlTopBar = () => {
-    if (SidoAddr) {
-      setRange(0)
-      setOpenCursor(!openCursor)
-      setJuso((prev) => {
-        return {
+  const handleControlTopBar = useCallback(() => {
+    const newJuso = { bottomSido: '', bottomGungu: '', bottomDong: '' }
+    switch (true) {
+      case SidoAddr:
+        setRange(0)
+        setOpenCursor(!openCursor)
+        setJuso((prev) => ({
           ...prev,
-          bottomSido: '',
-          bottomGungu: '',
-          bottomDong: '',
-        }
-      })
-    } else if (GunguAddr) {
-      setRange(1)
-      setOpenCursor(!openCursor)
-      setJuso((prev) => {
-        return {
+          ...newJuso,
+        }))
+        break
+      case GunguAddr:
+        setRange(1)
+        setOpenCursor(!openCursor)
+        setJuso((prev) => ({
           ...prev,
-          bottomSido: handleTopBottomSyncSido() as string,
-          bottomGungu: '',
-          bottomDong: '',
-        }
-      })
-    } else {
-      setRange(2)
-      setOpenCursor(!openCursor)
-      setJuso((prev) => {
-        return {
+          ...newJuso,
+          bottomSido: handleTopBottomSyncSido(),
+        }))
+        break
+      case DongAddr:
+        setRange(2)
+        setOpenCursor(!openCursor)
+        setJuso((prev) => ({
           ...prev,
-          bottomSido: handleTopBottomSyncSido() as string,
-          bottomGungu: handleTopBottomSyncGungu() as string,
-          bottomDong: '',
-        }
-      })
+          bottomSido: handleTopBottomSyncSido(),
+          bottomGungu: handleTopBottomSyncGungu(),
+        }))
+        break
     }
-  }
+  }, [
+    SidoAddr,
+    GunguAddr,
+    openCursor,
+    setRange,
+    setOpenCursor,
+    setJuso,
+    handleTopBottomSyncSido,
+    handleTopBottomSyncGungu,
+  ])
 
   if (!map) return null
   return (
     <>
       <Flex css={ContainerStyle}>
         <Flex
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            display: 'flex',
-            width: '100%',
-            padding: '0 5px',
-            marginLeft: '5px',
-          }}
+          css={innerContainerStyle}
           onClick={() => {
             setOpenOverlay(false)
             handleControlTopBar()
@@ -142,10 +134,7 @@ function TopAddress({
           <Flex
             css={ContainerStyle}
             style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '10px',
+              gap: '5px',
             }}
             onClick={() => {
               setOpenOverlay(false)
@@ -184,6 +173,15 @@ const ContainerStyle = css`
   cursor: pointer;
   min-width: 80px;
   max-width: 160px;
+`
+
+const innerContainerStyle = css`
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  padding: 0 5px;
+  margin-left: 5px;
 `
 
 const TextStyle = css`

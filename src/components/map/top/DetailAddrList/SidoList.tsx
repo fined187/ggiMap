@@ -20,6 +20,8 @@ interface Props {
   addrToCenter: (x: number, y: number) => void
 }
 
+const COUNT_PER_ROW = 3
+
 export default function SidoList({
   setRange,
   selectedIndex,
@@ -38,109 +40,138 @@ export default function SidoList({
   const handleClick = useCallback(
     (sido: string, actualIndex: number) => {
       setSelectedIndex(actualIndex)
-      if (juso.bottomSido === sido) {
-        setRange(1)
-        setJuso((prev) => {
-          return {
-            ...prev,
-            bottomSido: sido,
-          }
-        })
-      } else {
-        setRange(1)
-        setJuso((prev) => {
-          return {
-            ...prev,
-            bottomSido: sido,
-            bottomGungu: '',
-            bottomDong: '',
-          }
-        })
-      }
+      setJuso((prev) => ({
+        ...prev,
+        bottomSido: sido,
+        bottomGungu: sido === juso.bottomSido ? prev.bottomGungu : '',
+        bottomDong: sido === juso.bottomSido ? prev.bottomDong : '',
+      }))
+      setRange(1)
     },
     [setRange, setSelectedIndex, setJuso, juso.bottomSido],
   )
 
-  const handleGetSidoList = useCallback(async () => {
+  const fetchSidoList = useCallback(async () => {
     try {
       const response = await axios.get(`/ggi/api/location/sds`)
-      if (response.data.success === true) {
-        setSidoList(response.data.data.sds)
-        setSidoList((prev) => {
-          return [...prev, { sd: ' ', x: 0, y: 0 }]
-        })
-        if (juso.bottomSido === '') {
-          setSelectedIndex(null)
-        } else if (
-          sidoList.map((item) => item.sd).indexOf(juso.bottomSido) > 0
-        ) {
-          setSelectedIndex(
-            sidoList.map((item) => item.sd).indexOf(juso.bottomSido),
-          )
-        }
+      if (response.data.success) {
+        const fetchedList = [...response.data.data.sds, { sd: ' ', x: 0, y: 0 }]
+        setSidoList(fetchedList)
+        const index = fetchedList.findIndex(
+          (item) => item.sd === juso.bottomSido,
+        )
+        setSelectedIndex(index !== -1 ? index : null)
       }
     } catch (error) {
       console.error(error)
     }
-  }, [juso.bottomSido, setSelectedIndex, setSidoList])
-  useEffect(() => {
-    handleGetSidoList()
-  }, [])
+  }, [juso.bottomSido, setSelectedIndex])
 
   useEffect(() => {
-    if (sidoList.length > 0) {
-      const index = sidoList.map((item) => item.sd).indexOf(juso.bottomSido)
-      setSelectedIndex(index !== -1 ? index : null)
+    fetchSidoList()
+  }, [fetchSidoList])
+
+  const getBorderColor = (
+    actualIndex: number,
+    subIndex: number,
+    item: SidoProps,
+    sidoList: SidoProps[],
+  ) => {
+    const isSelected = juso.bottomSido === item.sd
+    const isLastColumn = actualIndex % COUNT_PER_ROW === COUNT_PER_ROW - 1
+    const isEmpty = item.sd === ' '
+    const isBottomRow =
+      item ===
+      sidoList[
+        Math.ceil(sidoList.length / COUNT_PER_ROW) * COUNT_PER_ROW -
+          COUNT_PER_ROW +
+          subIndex
+      ]
+
+    return {
+      borderTop:
+        isSelected || actualIndex === selectedIndex
+          ? '1px solid #332EFC'
+          : '1px solid #E5E5E5',
+      borderRight:
+        isLastColumn && isEmpty
+          ? ''
+          : isSelected
+          ? '1px solid #332EFC'
+          : '1px solid #E5E5E5',
+      borderLeft:
+        subIndex === 0 || isSelected
+          ? '1px solid #332EFC'
+          : '1px solid #E5E5E5',
+      borderBottom:
+        isBottomRow && isEmpty
+          ? ''
+          : isSelected
+          ? '1px solid #332EFC'
+          : '1px solid #E5E5E5',
     }
-  }, [juso.bottomSido, setSelectedIndex, sidoList])
+  }
+
   return (
     <Flex direction="column">
-      {Array.from(sidoList).map(
+      {sidoList.map(
         (_, index) =>
-          index % 3 === 0 && (
+          index % COUNT_PER_ROW === 0 && (
             <Flex direction="row" key={index}>
-              {Array.from(sidoList)
-                .slice(index, index + 3)
+              {sidoList
+                .slice(index, index + COUNT_PER_ROW)
                 .map((item, subIndex) => {
                   const actualIndex = index + subIndex
                   const isSelected = juso.bottomSido === item.sd
                   const shouldHighlightTop =
                     selectedIndex != null
                       ? actualIndex === selectedIndex ||
-                        actualIndex === selectedIndex + 3
+                        actualIndex === selectedIndex + COUNT_PER_ROW
                       : false
                   return (
                     <Flex
                       direction="row"
                       key={actualIndex}
-                      css={BoxStyle}
+                      css={boxStyle}
                       style={{
                         backgroundColor: isSelected ? '#F0F0FF' : 'white',
+                        // ...getBorderColor(
+                        //   actualIndex,
+                        //   subIndex,
+                        //   item,
+                        //   sidoList,
+                        // ),
                         borderTop: shouldHighlightTop
                           ? '1px solid #332EFC'
                           : '1px solid #E5E5E5',
                         borderRight:
-                          sidoList[Math.ceil(sidoList.length / 3) * 3 - 1]
-                            ?.sd === ' ' &&
-                          actualIndex === Math.ceil(sidoList.length / 3) * 3 - 1
+                          sidoList[
+                            Math.ceil(sidoList.length / COUNT_PER_ROW) *
+                              COUNT_PER_ROW -
+                              1
+                          ]?.sd === ' ' &&
+                          actualIndex ===
+                            Math.ceil(sidoList.length / COUNT_PER_ROW) *
+                              COUNT_PER_ROW -
+                              1
                             ? ''
                             : juso.bottomSido === item.sd
                             ? '1px solid #332EFC'
-                            : actualIndex % 3 === 2
+                            : actualIndex % COUNT_PER_ROW === 2
                             ? '1px solid #E5E5E5'
-                            : actualIndex % 3 === 1
+                            : actualIndex % COUNT_PER_ROW === 1
                             ? '1px solid #E5E5E5'
                             : '',
                         borderLeft:
-                          subIndex % 3 === 0
+                          subIndex % COUNT_PER_ROW === 0
                             ? juso.bottomSido === item.sd
                               ? '1px solid #332EFC'
                               : '1px solid #E5E5E5'
-                            : subIndex % 3 === 1
+                            : subIndex % COUNT_PER_ROW === 1
                             ? juso.bottomSido === item.sd
                               ? '1px solid #332EFC'
                               : '1px solid #E5E5E5'
-                            : subIndex % 3 === 2
+                            : subIndex % COUNT_PER_ROW === 2
                             ? juso.bottomSido === item.sd
                               ? '1px solid #332EFC'
                               : ''
@@ -148,11 +179,15 @@ export default function SidoList({
                         borderBottom:
                           item ===
                           sidoList[
-                            Math.ceil(sidoList.length / 3) * 3 - 3 + subIndex
+                            Math.ceil(sidoList.length / COUNT_PER_ROW) *
+                              COUNT_PER_ROW -
+                              COUNT_PER_ROW +
+                              subIndex
                           ]
                             ? sidoList[
-                                Math.ceil(sidoList.length / 3) * 3 -
-                                  3 +
+                                Math.ceil(sidoList.length / COUNT_PER_ROW) *
+                                  COUNT_PER_ROW -
+                                  COUNT_PER_ROW +
                                   subIndex
                               ]?.sd === ' '
                               ? ''
@@ -188,7 +223,7 @@ export default function SidoList({
   )
 }
 
-const BoxStyle = css`
+const boxStyle = css`
   display: flex;
   width: 110px;
   height: 36px;

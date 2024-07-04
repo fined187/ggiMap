@@ -237,7 +237,6 @@ export default function InterestProps({
   }
 
   const toggleInterest = (id: string) => {
-    console.log(id)
     setMapListItems((prev) => {
       const updatedContents = prev.contents.map((content) => {
         if (content.id === id) {
@@ -336,6 +335,7 @@ export default function InterestProps({
         contents={
           <textarea
             maxLength={1500}
+            placeholder="글자수는 1500자까지 입력 가능합니다."
             style={{
               width: '600px',
               height: '100px',
