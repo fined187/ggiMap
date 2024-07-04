@@ -70,7 +70,6 @@ export default function AutoKeyword({ keyword, setKeyword }: AutoKeywordProps) {
         x: addr.x,
         y: addr.y,
       }))
-      console.log(addrData)
       setAutoKeyword([...subwayData, ...addrData])
     }
 

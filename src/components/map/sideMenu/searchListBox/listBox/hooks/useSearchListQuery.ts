@@ -37,7 +37,13 @@ export default function useSearchListQuery({
     PAGE_SIZE: number,
   ) => {
     try {
-      if (!mapData || auth.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE') || !map || typeof map.getZoom !== 'function') return
+      if (
+        !mapData ||
+        auth.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE') ||
+        !map ||
+        typeof map.getZoom !== 'function'
+      )
+        return
       if (map?.getZoom() < 15) {
         await handleCenterChanged()
         return

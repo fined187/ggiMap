@@ -64,7 +64,7 @@ const SearchBox = ({ setOpenOverlay }: SearchBoxProps) => {
               return
             }
             const result = response.v2.addresses[0]
-            const { x, y } = result?.point ?? { x: 0, y: 0 }
+            const { x, y } = result ?? { x: 0, y: 0 }
             map.setCenter({
               lat: Number(y),
               lng: Number(x),
@@ -73,7 +73,7 @@ const SearchBox = ({ setOpenOverlay }: SearchBoxProps) => {
         )
       }
     },
-    [keyword, map],
+    [setKeyword, keyword, map],
   )
 
   const handleKeyword = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -111,9 +111,9 @@ const SearchBox = ({ setOpenOverlay }: SearchBoxProps) => {
   )
 
   const handleEnter = useCallback(
-    async (e: any) => {
+    (e: any) => {
       if (e.key === 'Enter') {
-        await handleSearch(e.target.value)
+        handleSearch(e.target.value)
       }
     },
     [handleSearch],
