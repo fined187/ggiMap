@@ -209,17 +209,17 @@ function MapComponent({ token, type, idCode }: Props) {
       const delayExecution = (callback: () => void, delay: number) => {
         setTimeout(callback, delay)
       }
-      const runDelayedConfirm = () => {
-        delayExecution(async () => {
+      const runDelayedConfirm = async () => {
+        await getSampleItems(parseInt(type!), setMapItems, setMapList)
+        delayExecution(() => {
           if (!ok && window) {
-            await getSampleItems(parseInt(type!), setMapItems, setMapList)
             ok = true
             delayExecution(() => {
               alert('지도 검색은 유료서비스 입니다.')
               window.close()
             }, 500)
           }
-        }, 1000)
+        }, 500)
       }
 
       try {
@@ -271,18 +271,20 @@ function MapComponent({ token, type, idCode }: Props) {
               }))
               runDelayedConfirm()
             }
-
-            if (response.data.data.authorities.includes('ROLE_USER')) {
-              await handleAuthenticated()
-            } else if (
-              response.data.data.authorities.includes('ROLE_ANONYMOUS')
+            if (
+              response.data.data.authorities.includes(
+                'ROLE_ANONYMOUS' || 'ROLE_FREE',
+              )
             ) {
               handleAnonymous()
+            } else {
+              handleAuthenticated()
             }
           }
           setTimeout(() => {
             window.history.replaceState({}, '', '/map')
           }, 500)
+        } else if (!token) {
         }
       } catch (error) {
         console.error(error)

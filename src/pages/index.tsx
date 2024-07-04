@@ -61,7 +61,6 @@ export const getServerSideProps = (context: GetServerSidePropsContext) => {
   const { req } = context
   const pathParts = req.url?.split('/') || []
   const lastPathPart = pathParts[pathParts.length - 1]
-  console.log('lastPathPart', lastPathPart)
   return {
     props: {
       lastPathPart,

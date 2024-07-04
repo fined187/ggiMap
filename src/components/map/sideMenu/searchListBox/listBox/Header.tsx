@@ -65,7 +65,6 @@ export default function Header({
                 지도를 확대해주세요
               </Text>
             }
-            onClick={() => setIsOpen((prev) => !prev)}
           />
         ) : null}
       </Flex>

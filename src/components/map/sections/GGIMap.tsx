@@ -111,7 +111,8 @@ export default function GGIMap({
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
 
   const updateFormDataBounds = useCallback(() => {
-    if (!mapRef.current) return
+    if (!mapRef.current || auth.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE'))
+      return
     const bounds = mapRef.current.getBounds() as any
     const sw = bounds.getSW()
     const ne = bounds.getNE()

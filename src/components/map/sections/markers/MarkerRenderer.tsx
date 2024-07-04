@@ -41,12 +41,20 @@ const MarkerRenderer = ({
 
   const handleItemUsage = useCallback(() => {
     switch (item.usage) {
-      case '단독,다가구':
+      case '단독':
+        return '단독'
+      case '다가구':
         return '다가구'
-      case '연립.다세대':
+      case '연립':
+        return '연립'
+      case '다세대':
         return '다세대'
-      case '전,답,과수':
-        return '전답과'
+      case '전':
+        return '전'
+      case '답':
+        return '답'
+      case '과수':
+        return '과수'
       case '기타토지':
         return '기타'
       case '상업시설':
