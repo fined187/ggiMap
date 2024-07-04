@@ -3,7 +3,7 @@ import Flex from '@/components/shared/Flex'
 import ListRow from '@/components/shared/ListRow'
 import Spacing from '@/components/shared/Spacing'
 import Text from '@/components/shared/Text'
-import { css, keyframes } from '@emotion/react'
+import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import usePathUrl from '../hooks/usePathUrl'
 import useNum2Han from '@/utils/useNum2Han'
@@ -16,6 +16,7 @@ import NoImage from '../icon/NoImage'
 import { useInterestContext } from '@/contexts/useModalContext'
 import { useRecoilState } from 'recoil'
 import { listOverItemAtom } from '@/store/atom/map'
+import { EmotionJSX } from '@emotion/react/types/jsx-namespace'
 
 interface ItemProps {
   item: MapItems
@@ -50,20 +51,26 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
       return `https://www.ggi.co.kr/wait/mulgun_detail_popup_w.asp?idcode=${idCode}&new=new&viewchk=P`
     }
   }
-  const handleTitle = (type: number) => {
+
+  const renderSelectedItem = (type: number) => {
+    return (
+      <SelectedTitle type={type}>
+        <Text css={SelectedTitleText}>본건 : {item.status}</Text>
+      </SelectedTitle>
+    )
+  }
+
+  const handleTitle = (
+    type: number,
+  ):
+    | EmotionJSX.Element
+    | '경매 '
+    | '캠코 '
+    | '기관매각 '
+    | '예정 '
+    | undefined => {
     if (isSelected) {
-      switch (type) {
-        case 1:
-          return `[본건 : ${item.status}] 경매 `
-        case 2:
-          return `[본건 : ${item.status}] 캠코 `
-        case 3:
-          return `[본건 : ${item.status}] 기관매각 ` + `${item?.caseNo ?? ''}`
-        case 4:
-          return `[본건 : ${item.status}] 예정 ` + `${item?.caseNo ?? ''}`
-        default:
-          break
-      }
+      return renderSelectedItem(type)
     } else {
       switch (type) {
         case 1:
@@ -410,18 +417,31 @@ const SpecialTextStyle = css`
   line-height: 13px;
   letter-spacing: -0.26px;
 `
-const opacity = keyframes`
-  0% {
-    opacity: 1;
-  }
 
-  50% {
-    opacity: 0.4;
-  }
+const SelectedTitle = styled.div<{ type: number }>`
+  display: flex;
+  padding: 6px 8px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+  background: ${({ type }) =>
+    type === 1
+      ? '#0038FF'
+      : type === 2
+      ? '#007194'
+      : type === 3
+      ? '#8F00FF'
+      : '#007300'};
+`
 
-  100% {
-    opacity: 1;
-  }
+const SelectedTitleText = css`
+  color: #fff;
+  font-family: SUIT;
+  font-size: 16.5px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%;
+  letter-spacing: -0.33px;
 `
 
 export default Form

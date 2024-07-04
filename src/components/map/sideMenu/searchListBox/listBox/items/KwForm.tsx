@@ -7,6 +7,7 @@ import { useInterestContext } from '@/contexts/useModalContext'
 import { MapItems } from '@/models/MapItem'
 import useNum2Han from '@/utils/useNum2Han'
 import { css } from '@emotion/react'
+import { EmotionJSX } from '@emotion/react/types/jsx-namespace'
 import styled from '@emotion/styled'
 import { Dispatch, SetStateAction } from 'react'
 
@@ -23,7 +24,15 @@ function KwForm({
   openModal: boolean
   setOpenModal: Dispatch<SetStateAction<boolean>>
   handleDuplicatedOpen: (idCode: string, type: number) => void
-  handleTitle: (type: number) => string | undefined
+  handleTitle: (
+    type: number,
+  ) =>
+    | EmotionJSX.Element
+    | '경매 '
+    | '캠코 '
+    | '기관매각 '
+    | '예정 '
+    | undefined
 }) {
   const { open } = useInterestContext()
   const onButtonClick = () => {

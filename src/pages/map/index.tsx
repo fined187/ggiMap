@@ -127,9 +127,6 @@ function MapComponent({ token, type, idCode }: Props) {
           setFormData((prev) => ({
             ...prev,
             km: true,
-            ekm: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
-            awardedMonths:
-              response?.data?.winAmt && response?.data.winAmt > 0 ? 60 : 0,
           }))
           setAuth((prev) => ({
             ...prev,
@@ -142,10 +139,6 @@ function MapComponent({ token, type, idCode }: Props) {
             ...prev,
             gm: true,
             gg: true,
-            egg: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
-            egm: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
-            awardedMonths:
-              response?.data?.winAmt && response?.data.winAmt > 0 ? 60 : 0,
           }))
           setAuth((prev) => ({
             ...prev,
@@ -158,10 +151,6 @@ function MapComponent({ token, type, idCode }: Props) {
             ...prev,
             gm: true,
             gg: true,
-            egg: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
-            egm: response?.data?.winAmt ? response?.data.winAmt > 0 : false,
-            awardedMonths:
-              response?.data?.winAmt && response?.data.winAmt > 0 ? 60 : 0,
           }))
           setAuth((prev) => ({
             ...prev,

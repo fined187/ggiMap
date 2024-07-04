@@ -40,10 +40,11 @@ export const WinIcon = () => {
 
 export const InterestIcon = () => {
   return `
-    <div style="display: flex; width: 15px; height: 16px; flex-direction: column; justify-content: center; flex-shrink: 0; background: #00A980;">
-      <span style="color: #FFF; text-align: center; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.1px;">
-        관
-      </span>
+    <div style="display: flex; width: 15px; height: 16px; flex-direction: column; justify-content: center; flex-shrink: 0; background: #00A980; margin-right: 2.5px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M0 2C0 0.895431 0.895431 0 2 0H14C15.1046 0 16 0.895431 16 2V14C16 15.1046 15.1046 16 14 16H2C0.895431 16 0 15.1046 0 14V2Z" fill="#00A980"/>
+        <path d="M8.00251 11L4.60755 7.60143C2.76246 5.75635 5.47474 2.6341 8.00251 5.50014C10.5303 2.6341 13.2303 5.76865 11.3975 7.60143L8.00251 11Z" fill="white" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
   `
 }

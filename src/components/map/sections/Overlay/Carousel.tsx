@@ -92,19 +92,25 @@ export default function Carousel({
         position: 'relative',
       }}
     >
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 1,
-          width: '299px',
-          height: '180px',
-          borderRadius: '8px 8px 0px 0px',
-        }}
-      >
-        <MiniMap clickedItem={clickedItem} clickedInfo={clickedInfo} />
-      </div>
+      {clickedInfo &&
+        clickedInfo.map((info, index) =>
+          info?.type === 4 ? (
+            <div
+              key={index}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                zIndex: 1,
+                width: '299px',
+                height: '180px',
+                borderRadius: '8px 8px 0px 0px',
+              }}
+            >
+              <MiniMap clickedItem={clickedItem} clickedInfo={clickedInfo} />
+            </div>
+          ) : null,
+        )}
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, A11y]}
         spaceBetween={0}

@@ -8,8 +8,18 @@ import { GetServerSidePropsContext } from 'next'
 
 export default function Home({ lastPathPart }: { lastPathPart: string }) {
   const [isCheck, setIsCheck] = useState(false)
-
-  function handleErrorResponse() {
+  const errorCode400Regex = /^400\d{2}$/
+  const errorCode200Regex = /^200\d{2}$/
+  function handleErrorResponse(code: string) {
+    if (errorCode400Regex.test(code)) {
+      // 사용자에게 알리고 창을 닫음
+      const confirmed = window.confirm(
+        '허용접속시간이 초과하여 종료합니다. 메뉴의 고객라운지 - 물건관리 - 입찰표관리에서 저장된 내용을 확인하세요.',
+      )
+      if (confirmed) {
+        window.close()
+      }
+    }
     // 사용자에게 알리고 창을 닫음
     const confirmed = window.confirm(
       '허용접속시간이 초과하여 종료합니다. 메뉴의 고객라운지 - 물건관리 - 입찰표관리에서 저장된 내용을 확인하세요.',
@@ -17,30 +27,23 @@ export default function Home({ lastPathPart }: { lastPathPart: string }) {
     if (confirmed) {
       window.close()
     }
-  }
-
-  function handleIpchalMsg() {
-    const ipchalMsg = window.confirm(
-      '해당 물건은 입찰진행중이 아니므로 시작 화면으로 이동합니다.',
-    )
-    if (ipchalMsg) {
-      window.close()
+    if (errorCode200Regex.test(code)) {
+      const ipchalMsg = window.confirm(
+        '해당 물건은 입찰진행중이 아니므로 시작 화면으로 이동합니다.',
+      )
+      if (ipchalMsg) {
+        window.close()
+      }
     }
   }
+
   axios.interceptors.response.use(
     function (response) {
-      if (!isCheck && response.data.code === 40005) {
-        setIsCheck(true)
-        handleErrorResponse()
-      }
-      if (!isCheck && response.data.code === 20100) {
-        setIsCheck(true)
-        handleIpchalMsg()
-      }
+      setIsCheck(true)
+      handleErrorResponse(response.data.code.toString())
       return response
     },
     function (error) {
-      handleErrorResponse()
       console.log(error)
       return null
     },
