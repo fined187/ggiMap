@@ -1,37 +1,37 @@
 import { Auth } from '@/models/Auth'
 import { NaverMap } from '@/models/Map'
+import { authInfo } from '@/store/atom/auth'
 import { Dispatch, SetStateAction, useCallback } from 'react'
+import { useSetRecoilState } from 'recoil'
 
-export const useGeoCode = (
+function useGeoCode(
   address: string,
   map: NaverMap | null,
-  setAuth: Dispatch<SetStateAction<Auth>>,
-) => {
-  if (map) {
-    if (window.naver?.maps.Service?.geocode !== undefined) {
-      window.naver.maps.Service?.geocode(
-        {
-          query: address,
-        },
-        (status: any, response: any) => {
-          if (status === window.naver.maps?.Service?.Status?.ERROR) {
-            return
-          }
-          const result = response.v2.addresses[0]
-          const { x, y } = result ?? { point: { x: 0, y: 0 } }
-          setAuth((prev: any) => {
-            return {
-              ...prev,
-              lat: Number(y),
-              lng: Number(x),
-            }
-          })
-          map.setCenter({
-            lat: Number(y),
-            lng: Number(x),
-          })
-        },
-      )
+) {
+  const setAuth = useSetRecoilState<Auth>(authInfo)
+  const handleGeoCode = useCallback(() => {
+    if (!map || !window.naver?.maps.Service?.geocode) {
+      return
     }
-  }
+
+    window.naver.maps.Service.geocode(
+      {
+        query: address,
+      },
+      (status: any, response: any) => {
+        if (status !== window.naver.maps.Service.Status.OK) {
+          return
+        }
+
+        const result = response.v2.addresses[0]
+        const { x, y } = result || { point: { x: 0, y: 0 } }
+        setAuth((prev: Auth) => ({ ...prev, lat: Number(y), lng: Number(x) }))
+        map.setCenter({ lat: Number(y), lng: Number(x) })
+      }
+    )
+  }, [address, map, setAuth])
+
+  return { handleGeoCode }
 }
+
+export default useGeoCode

@@ -197,16 +197,6 @@ export default function InterestProps({
       } else {
         if (window.confirm('관심물건을 수정하시겠습니까?')) {
           putInterest()
-          toggleInterest(
-            formData.type === 1
-              ? ((formData.infoId +
-                  formData.caseNo +
-                  formData.mulSeq) as string)
-              : formData.type === 2 || formData.type === 3
-              ? (formData.goodsId as string)
-              : (((((formData.infoId as string) + formData.caseNo) as string) +
-                  formData.mulSeq) as string as string),
-          )
           setStep(2)
         }
       }

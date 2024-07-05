@@ -1,4 +1,3 @@
-import usePostMapItems from '@/hooks/items/usePostMapItems'
 import {
   Dispatch,
   MutableRefObject,
@@ -24,10 +23,10 @@ import MapType from './mapType/MapType'
 import MapFunction from './MapFunc/MapFunction'
 import { authInfo } from '@/store/atom/auth'
 import getPolypath from '@/remote/map/selected/getPolypath'
-import { useGeoCode } from './hooks/useGeoCode'
 import MiniMap from './MiniMap'
 import useDebounce from '@/components/shared/hooks/useDebounce'
 import CloseButton from '../icons/CloseButton'
+import useGeoCode from './hooks/useGeoCode'
 declare global {
   interface Window {
     naver: any
@@ -109,6 +108,7 @@ export default function GGIMap({
   })
   const zoomLevel = mapRef.current?.getZoom() ?? null
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
+  const { handleGeoCode } = useGeoCode(auth.address, mapRef.current)
 
   const updateFormDataBounds = useCallback(() => {
     if (!mapRef.current || auth.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE'))
@@ -248,8 +248,7 @@ export default function GGIMap({
 
   useEffect(() => {
     if (auth.address && !auth.idCode) {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useGeoCode(auth.address, mapRef.current, setAuth)
+      handleGeoCode()
     } else if (!auth.address && auth.idCode) {
       mapRef.current?.setCenter({ lat: auth.lat, lng: auth.lng })
     }

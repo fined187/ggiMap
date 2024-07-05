@@ -1,6 +1,6 @@
 import getAddress from '@/remote/map/auth/getAddress'
 import { GetServerSidePropsContext } from 'next'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSetRecoilState } from 'recoil'
 import MapSection from '@/components/map/sections/MapSection'
 import { authInfo } from '@/store/atom/auth'
@@ -60,6 +60,8 @@ function MapComponent({ token, type, idCode }: Props) {
     key: 'idCode',
     initialValue: idCode as string,
   })
+
+  const [refreshing, setRefreshing] = useState(false)
 
   const setMapOptions = useCallback((map: NaverMap) => {
     if (!map) return
@@ -305,6 +307,7 @@ function MapComponent({ token, type, idCode }: Props) {
     }
     handleRefresh()
   }, [typeCode, idCodeValue])
+
   return (
     <MapSection
       token={token as string}
@@ -317,7 +320,6 @@ function MapComponent({ token, type, idCode }: Props) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { token, type, idCode } = context.query
-
   return {
     props: {
       token: token ?? null,

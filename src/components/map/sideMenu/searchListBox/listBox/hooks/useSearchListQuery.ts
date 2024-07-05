@@ -1,6 +1,6 @@
 import { ListData, MapItems, MapListResponse } from '@/models/MapItem'
 import postListItems from '@/remote/map/items/postListItems'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import { useRecoilValue } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
@@ -31,12 +31,15 @@ export default function useSearchListQuery({
     dragStateRef.current,
   )
 
-  const fetchSearchList = async (
+  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+  const fetchSearchList = useCallback(async (
     mapData: ListData,
     page: number,
     PAGE_SIZE: number,
   ) => {
     try {
+      await delay(250)
       if (
         !mapData ||
         auth.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE') ||
@@ -44,6 +47,7 @@ export default function useSearchListQuery({
         typeof map.getZoom !== 'function'
       )
         return
+      
       if (map?.getZoom() < 15) {
         await handleCenterChanged()
         return
@@ -68,7 +72,7 @@ export default function useSearchListQuery({
       console.error('fetchSearchList error:', error)
       throw error
     }
-  }
+  }, [auth, getMapItems, handleCenterChanged, map])
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery(

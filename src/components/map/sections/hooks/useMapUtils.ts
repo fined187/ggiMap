@@ -46,9 +46,8 @@ const useMapUtils = (
   }, [clickedMapType.interest, setFormData])
 
   useEffect(() => {
-    if (map) {
-      handleParameters(token, type, idCode, map as NaverMap)
-    }
+    if (!map) return
+    handleParameters(token, type, idCode, map as NaverMap)
   }, [map, idCode, type, token, handleParameters])
 
   useEffect(() => {

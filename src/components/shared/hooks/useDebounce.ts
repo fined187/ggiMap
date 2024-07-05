@@ -1,13 +1,15 @@
-const useDebounce = (func: any, wait: number) => {
-  let timeout: NodeJS.Timeout | null
-  return (...args: any) => {
-    const context = this
+
+function useDebounce(func: any, wait: number) {
+  let timeout: NodeJS.Timeout | null = null;
+
+  return () => {
     if (timeout) clearTimeout(timeout)
-    timeout = setTimeout(() => {
+
+    return setTimeout(() => {
       timeout = null
-      func.apply(context, args)
+      func()
     }, wait)
   }
 }
 
-export default useDebounce
+export default useDebounce;
