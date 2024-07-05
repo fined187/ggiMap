@@ -135,12 +135,6 @@ export default function SidoList({
                       css={boxStyle}
                       style={{
                         backgroundColor: isSelected ? '#F0F0FF' : 'white',
-                        // ...getBorderColor(
-                        //   actualIndex,
-                        //   subIndex,
-                        //   item,
-                        //   sidoList,
-                        // ),
                         borderTop: shouldHighlightTop
                           ? '1px solid #332EFC'
                           : '1px solid #E5E5E5',

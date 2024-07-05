@@ -1,6 +1,5 @@
-
 function useDebounce(func: any, wait: number) {
-  let timeout: NodeJS.Timeout | null = null;
+  let timeout: NodeJS.Timeout | null = null
 
   return () => {
     if (timeout) clearTimeout(timeout)
@@ -12,4 +11,4 @@ function useDebounce(func: any, wait: number) {
   }
 }
 
-export default useDebounce;
+export default useDebounce

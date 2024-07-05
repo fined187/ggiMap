@@ -11,7 +11,7 @@ import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Loader from './icon/loader/Loader'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import {
   formDataAtom,
   isOnlySelectedAtom,
@@ -24,6 +24,7 @@ import { ListData, MapItems } from '@/models/MapItem'
 import useSearchListQuery from './hooks/useSearchListQuery'
 import { useReverseGeoCode } from '@/components/map/sections/hooks/useReverseGeoCode'
 import { authInfo } from '@/store/atom/auth'
+import { ROLE } from '@/pages/map'
 
 interface ResultProps {
   isOpen: boolean
@@ -38,10 +39,11 @@ const Result = ({ isOpen, setIsOpen, dragStateRef }: ResultProps) => {
   const [showingList, setShowingList] = useState(false)
   const scrollbarsRef = useRef<HTMLDivElement | null>(null)
   const [juso, setJuso] = useRecoilState(jusoAtom)
-  const [auth, setAuth] = useRecoilState(authInfo)
+  const auth = useRecoilValue(authInfo)
   const [selectedItem, setSelectedItem] = useRecoilState(selectedItemAtom)
   const [isOnlySelected, setIsOnlySelected] = useRecoilState(isOnlySelectedAtom)
   const [page, setPage] = useRecoilState(pageAtom)
+  const [authStste, setAuthState] = useState([''])
   const [mapData, setMapData] = useState<ListData>({
     ids:
       formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
@@ -135,28 +137,27 @@ const Result = ({ isOpen, setIsOpen, dragStateRef }: ResultProps) => {
 
   useEffect(() => {
     const handleUpdateMapList = () => {
-      if (data) {
-        if (data.pageParams.length === 1) {
-          scrollToTop()
-          setMapListItems((prev: any) => {
-            return {
-              ...prev,
-              contents: data.pages[0]?.contents,
-              paging: data.pages[0]?.paging,
-            }
-          })
-        } else if (data.pageParams.length > 1) {
-          setMapListItems((prev) => {
-            return {
-              ...prev,
-              contents: [
-                ...(prev?.contents ?? []),
-                ...((data && data?.pages[data.pages.length - 1]?.contents) ??
-                  []),
-              ],
-            }
-          })
-        }
+      if (data?.pageParams[0] === undefined && data?.pages[0] === undefined)
+        return
+      if (data.pageParams.length === 1) {
+        scrollToTop()
+        setMapListItems((prev: any) => {
+          return {
+            ...prev,
+            contents: data.pages[0]?.contents,
+            paging: data.pages[0]?.paging,
+          }
+        })
+      } else if (data.pageParams.length > 1) {
+        setMapListItems((prev) => {
+          return {
+            ...prev,
+            contents: [
+              ...(prev?.contents ?? []),
+              ...((data && data?.pages[data.pages.length - 1]?.contents) ?? []),
+            ],
+          }
+        })
       }
     }
     handleUpdateMapList()

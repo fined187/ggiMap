@@ -35,8 +35,12 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
 
   const { mutate } = useMutation(async () => await postMapItems(param), {
     onSuccess: (data) => {
-      setMapItems([])
-      setMapItems(data?.mapItems as MapItem[])
+      if (data) {
+        setMapItems([])
+        setMapItems(data?.mapItems as MapItem[])
+      } else {
+        return
+      }
       dragState = false
     },
     onError: () => {

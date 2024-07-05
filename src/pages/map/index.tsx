@@ -1,7 +1,7 @@
 import getAddress from '@/remote/map/auth/getAddress'
 import { GetServerSidePropsContext } from 'next'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import MapSection from '@/components/map/sections/MapSection'
 import { authInfo } from '@/store/atom/auth'
 import {
@@ -20,10 +20,12 @@ import {
 import { getPosition } from '@/remote/map/auth/getPosition'
 import { NaverMap } from '@/models/Map'
 import handleToken from '@/remote/map/auth/token'
-import { getSampleItems } from '@/remote/map/auth/getSampleItems'
 import { GetItemResponse } from '@/models/MapItem'
 import useSessionStorage from '@/hooks/useSessionStorage'
 import { useRouter } from 'next/router'
+import useGetSamples from '@/remote/map/hooks/useGetSamples'
+import axios from 'axios'
+import useSWR, { mutate } from 'swr'
 
 interface Props {
   data?: {
@@ -40,6 +42,8 @@ declare global {
   }
 }
 
+export const ROLE = '/ROLE'
+
 function MapComponent({ token, type, idCode }: Props) {
   const setAuth = useSetRecoilState(authInfo)
   const setMapList = useSetRecoilState(mapListAtom)
@@ -47,7 +51,9 @@ function MapComponent({ token, type, idCode }: Props) {
   const setJuso = useSetRecoilState(jusoAtom)
   const setSelectedData = useSetRecoilState(selectedItemAtom)
   const setFormData = useSetRecoilState(formDataAtom)
+  const auth = useRecoilValue(authInfo)
   const router = useRouter()
+
   const [tokenValue, setTokenValue] = useSessionStorage({
     key: 'token',
     initialValue: token as string,
@@ -60,9 +66,7 @@ function MapComponent({ token, type, idCode }: Props) {
     key: 'idCode',
     initialValue: idCode as string,
   })
-
-  const [refreshing, setRefreshing] = useState(false)
-
+  const { mutate: getSampleItems } = useGetSamples(parseInt(typeCode as string))
   const setMapOptions = useCallback((map: NaverMap) => {
     if (!map) return
     map.setOptions({
@@ -201,7 +205,7 @@ function MapComponent({ token, type, idCode }: Props) {
         setTimeout(callback, delay)
       }
       const runDelayedConfirm = async () => {
-        await getSampleItems(parseInt(type!), setMapItems, setMapList)
+        getSampleItems()
         delayExecution(() => {
           if (!ok && window) {
             ok = true
@@ -210,7 +214,7 @@ function MapComponent({ token, type, idCode }: Props) {
               window.close()
             }, 500)
           }
-        }, 500)
+        }, 800)
       }
 
       try {
@@ -320,6 +324,7 @@ function MapComponent({ token, type, idCode }: Props) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { token, type, idCode } = context.query
+
   return {
     props: {
       token: token ?? null,

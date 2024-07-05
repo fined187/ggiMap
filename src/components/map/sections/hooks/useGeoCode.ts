@@ -4,10 +4,7 @@ import { authInfo } from '@/store/atom/auth'
 import { Dispatch, SetStateAction, useCallback } from 'react'
 import { useSetRecoilState } from 'recoil'
 
-function useGeoCode(
-  address: string,
-  map: NaverMap | null,
-) {
+function useGeoCode(address: string, map: NaverMap | null) {
   const setAuth = useSetRecoilState<Auth>(authInfo)
   const handleGeoCode = useCallback(() => {
     if (!map || !window.naver?.maps.Service?.geocode) {
@@ -27,7 +24,7 @@ function useGeoCode(
         const { x, y } = result || { point: { x: 0, y: 0 } }
         setAuth((prev: Auth) => ({ ...prev, lat: Number(y), lng: Number(x) }))
         map.setCenter({ lat: Number(y), lng: Number(x) })
-      }
+      },
     )
   }, [address, map, setAuth])
 

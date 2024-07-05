@@ -12,7 +12,7 @@ export default async function handleToken(token: string) {
         },
       },
     )
-    if (response.data.success === true) {
+    if (response.data.success) {
       return response
     }
   } catch (error) {
