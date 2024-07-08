@@ -10,7 +10,6 @@ import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Loader from './icon/loader/Loader'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import {
   formDataAtom,
@@ -24,7 +23,7 @@ import { ListData, MapItems } from '@/models/MapItem'
 import useSearchListQuery from './hooks/useSearchListQuery'
 import { useReverseGeoCode } from '@/components/map/sections/hooks/useReverseGeoCode'
 import { authInfo } from '@/store/atom/auth'
-import { ROLE } from '@/pages/map'
+import Loader from './icons/loading/loader/Loader'
 
 interface ResultProps {
   isOpen: boolean
@@ -110,7 +109,7 @@ const Result = ({ isOpen, setIsOpen, dragStateRef }: ResultProps) => {
   useEffect(() => {
     setMapData({
       ids:
-        formData.ids.length === 12
+        formData.ids.length === 12 || formData.ids.length === 0
           ? '0'
           : formData.ids.map((id) => id).join(','),
       fromAppraisalAmount: formData.fromAppraisalAmount,

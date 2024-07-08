@@ -5,7 +5,7 @@ import Spacing from '../shared/Spacing'
 import TopLine from './TopLine'
 import { useCallback, useEffect, useState } from 'react'
 import GroupElements from './Group'
-import NoGroupBtn from './Register/NoGroup'
+import NoGroupBtn from './register/NoGroup'
 import AlertCheck from './AlertCheck'
 import Text from '../shared/Text'
 import Flex from '../shared/Flex'
@@ -21,7 +21,6 @@ import {
   getKmInterest,
   getKwInterest,
 } from '@/remote/interest/getInterest'
-import Loader from '../map/sideMenu/searchListBox/listBox/icon/loader/Loader'
 import Image from 'next/image'
 import UpdateResult from './InterestResult'
 import { usePutInterest } from './hooks/usePutInterest'
@@ -30,19 +29,18 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import { mapItemsAtom, mapListAtom } from '@/store/atom/map'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
-import { useMutateDetail } from '../map/sections/Overlay/hooks/useMutateDetail'
+import { useMutateDetail } from '../map/sections/overlay/hooks/useMutateDetail'
+import Loader from '../map/sideMenu/searchListBox/listBox/icons/loading/loader/Loader'
 
 interface InterestProps {
   type: string
   id: string
-  openModal: boolean
-  setOpenModal: (open: boolean) => void
+  open?: boolean
   onButtonClick: () => void
 }
 
 export default function InterestProps({
-  openModal,
-  setOpenModal,
+  open,
   type,
   id,
   onButtonClick,

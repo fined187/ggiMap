@@ -24,8 +24,6 @@ import { GetItemResponse } from '@/models/MapItem'
 import useSessionStorage from '@/hooks/useSessionStorage'
 import { useRouter } from 'next/router'
 import useGetSamples from '@/remote/map/hooks/useGetSamples'
-import axios from 'axios'
-import useSWR, { mutate } from 'swr'
 
 interface Props {
   data?: {
@@ -53,7 +51,6 @@ function MapComponent({ token, type, idCode }: Props) {
   const setFormData = useSetRecoilState(formDataAtom)
   const auth = useRecoilValue(authInfo)
   const router = useRouter()
-
   const [tokenValue, setTokenValue] = useSessionStorage({
     key: 'token',
     initialValue: token as string,
@@ -295,7 +292,6 @@ function MapComponent({ token, type, idCode }: Props) {
       setMapOptions,
     ],
   )
-
   useEffect(() => {
     const handleRefresh = async () => {
       if (typeCode && idCodeValue) {
@@ -311,7 +307,6 @@ function MapComponent({ token, type, idCode }: Props) {
     }
     handleRefresh()
   }, [typeCode, idCodeValue])
-
   return (
     <MapSection
       token={token as string}

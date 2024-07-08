@@ -12,11 +12,11 @@ import { MapItems } from '@/models/MapItem'
 import KwForm from './KwForm'
 import { useCallback, useState } from 'react'
 import NextImageWithFallback from '@/components/map/NextImageWithFallback'
-import NoImage from '../icon/NoImage'
 import { useInterestContext } from '@/contexts/useModalContext'
 import { useRecoilState } from 'recoil'
 import { listOverItemAtom } from '@/store/atom/map'
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace'
+import NoImage from '../icons/loading/NoImage'
 
 interface ItemProps {
   item: MapItems
@@ -160,8 +160,6 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
                     open({
                       type: item.type.toString() ?? '',
                       id: isSelected ? item.id ?? item.goodsId : item.id,
-                      openModal: openModal,
-                      setOpenModal: setOpenModal,
                       onButtonClick: () => {
                         onButtonClick()
                       },

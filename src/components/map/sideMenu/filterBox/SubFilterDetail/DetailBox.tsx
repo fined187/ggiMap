@@ -1,15 +1,14 @@
 import Flex from '@/components/shared/Flex'
-import Text from '@/components/shared/Text'
 import { css } from '@emotion/react'
-import FinishedBox from './FinishedBox'
-import LowPriceBox from './LowPriceBox'
-import PriceBox from './PriceBox'
-import UsageBox from './UsageBox'
 import SelectAll from '@/components/map/icons/SelectAll'
 import Reset from '@/components/map/icons/Reset'
 import { useRecoilState } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
 import { useState } from 'react'
+import FinishedBox from './FinishedBox'
+import LowPriceBox from './LowPriceBox'
+import PriceBox from './PriceBox'
+import UsageBox from './UsageBox'
 
 interface SearchBoxProps {
   isBoxOpen: {
@@ -24,7 +23,6 @@ export default function DetailBox({ isBoxOpen }: SearchBoxProps) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [fromToAppraisalPrice, setFromToAppraisalPrice] = useState([0, 0])
   const [fromToMinPrice, setFromToMinPrice] = useState([0, 0])
-
   const handleReset = () => {
     setFormData((prev) => {
       return {
@@ -33,7 +31,7 @@ export default function DetailBox({ isBoxOpen }: SearchBoxProps) {
         egm: false,
         egg: false,
         awardedMonths: 0,
-        ids: ['2', '3', '4', '5', '6', '7', '9', '10', '11', '12', '13', '14'],
+        ids: [],
         fromAppraisalAmount: 0,
         toAppraisalAmount: 0,
         fromMinimumAmount: 0,

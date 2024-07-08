@@ -21,7 +21,7 @@ export const mapItemsAtom = atom<MapItem[]>({
       x: 0,
       y: 0,
       types: [1],
-      ids: [''],
+      ids: [],
       winYn: '',
       usage: '',
       buildingArea: '',
@@ -86,7 +86,7 @@ export const markerPositionAtom = atom<Props>({
 export const formDataAtom = atom<Form>({
   key: `formData/${v4()}`,
   default: {
-    ids: ['2', '3', '4', '5', '6', '7', '9', '10', '11', '12', '13', '14'],
+    ids: [],
     fromAppraisalAmount: 0,
     toAppraisalAmount: 0,
     fromMinimumAmount: 0,

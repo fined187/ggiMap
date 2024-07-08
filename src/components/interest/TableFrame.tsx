@@ -1,12 +1,12 @@
 import styled from '@emotion/styled'
 import Text from '../shared/Text'
 import { css } from '@emotion/react'
-import Star0 from './icon/star0'
-import Star1 from './icon/star1'
-import Star2 from './icon/star2'
-import Star3 from './icon/star3'
-import Star4 from './icon/star4'
-import Star5 from './icon/star5'
+import Star0 from './icons/star0'
+import Star1 from './icons/star1'
+import Star2 from './icons/star2'
+import Star3 from './icons/star3'
+import Star4 from './icons/star4'
+import Star5 from './icons/star5'
 
 interface TableFrameProps {
   title: string

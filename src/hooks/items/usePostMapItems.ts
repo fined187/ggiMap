@@ -11,7 +11,9 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
   const [auth, setAuth] = useRecoilState(authInfo)
   const param = {
     ids:
-      formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
+      formData.ids.length === 12 || formData.ids.length === 0
+        ? '0'
+        : formData.ids.map((id) => id).join(','),
     fromAppraisalAmount: formData.fromAppraisalAmount,
     toAppraisalAmount: formData.toAppraisalAmount,
     fromMinimumAmount: formData.fromMinimumAmount,

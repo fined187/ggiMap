@@ -20,7 +20,7 @@ import {
   mapItemsAtom,
 } from '@/store/atom/map'
 import MapType from './mapType/MapType'
-import MapFunction from './MapFunc/MapFunction'
+import MapFunction from './mapFunc/MapFunction'
 import { authInfo } from '@/store/atom/auth'
 import getPolypath from '@/remote/map/selected/getPolypath'
 import MiniMap from './MiniMap'

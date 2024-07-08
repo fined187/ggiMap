@@ -74,8 +74,6 @@ function KwForm({
                   open({
                     type: item?.type.toString() ?? '',
                     id: item?.id ?? '',
-                    openModal: openModal,
-                    setOpenModal: setOpenModal,
                     onButtonClick: () => {
                       onButtonClick()
                     },

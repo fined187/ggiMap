@@ -96,7 +96,7 @@ export default function UsageBox() {
                   ? `1px solid ${colors.selectedFilter}`
                   : formData.ids.includes(
                       Object.keys(USAGE)[index + 3].toString(),
-                    )
+                    ) && Object.keys(USAGE)[index + 3].toString() !== '4'
                   ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
                 borderTop:
@@ -156,7 +156,7 @@ export default function UsageBox() {
                   ? `1px solid ${colors.selectedFilter}`
                   : formData.ids.includes(
                       Object.keys(USAGE)[index + 6].toString(),
-                    )
+                    ) && Object.keys(USAGE)[index + 6].toString() !== '7'
                   ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
                 borderTop:
@@ -213,7 +213,7 @@ export default function UsageBox() {
                   ? `1px solid ${colors.selectedFilter}`
                   : formData.ids.includes(
                       Object.keys(USAGE)[index + 9].toString(),
-                    )
+                    ) && Object.keys(USAGE)[index + 9].toString() !== '11'
                   ? `1px solid ${colors.selectedFilter}`
                   : `1px solid ${colors.borderGray}`,
                 borderTop:

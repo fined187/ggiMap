@@ -14,13 +14,9 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 import Text from '@/components/shared/Text'
-import NextBtn from './icon/NextBtn'
-import PrevBtn from './icon/PrevBtn'
 import Flex from '@/components/shared/Flex'
 import Interest from '../../icons/Interest'
 import { colors } from '@/styles/colorPalette'
-import MiniMap from './MiniMap'
-import NoImage from './icon/NoImage'
 import NextImageWithFallback from '../../NextImageWithFallback'
 import { useInterestContext } from '@/contexts/useModalContext'
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -29,6 +25,10 @@ import {
   clickedItemAtom,
   isOnlySelectedAtom,
 } from '@/store/atom/map'
+import MiniMap from './MiniMap'
+import NoImage from './icon/NoImage'
+import NextBtn from './icon/NextBtn'
+import PrevBtn from './icon/PrevBtn'
 
 export default function Carousel({
   nowIndex,
@@ -242,8 +242,6 @@ export default function Carousel({
                                 : clickedInfo[index]?.type === 2 || 3
                                 ? clickedInfo[index]?.goodsID!
                                 : clickedInfo[index]?.id!,
-                            openModal: openModal,
-                            setOpenModal: setOpenModal,
                             onButtonClick: () => {
                               onButtonClick()
                             },
@@ -301,8 +299,6 @@ export default function Carousel({
                               clickedInfo &&
                               clickedInfo[index]?.type?.toString()!,
                             id: clickedInfo && clickedInfo[index]?.id!,
-                            openModal: openModal,
-                            setOpenModal: setOpenModal,
                             onButtonClick: () => {
                               onButtonClick()
                             },

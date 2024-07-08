@@ -20,8 +20,7 @@ interface ModalContextValue {
 const Context = createContext<ModalContextValue | undefined>(undefined)
 
 const defaultValues: ModalProps = {
-  openModal: false,
-  setOpenModal: () => {},
+  open: false,
   type: '',
   id: '',
   onButtonClick: () => {},
@@ -51,7 +50,7 @@ export default function InterestContextProvider({
           close()
           onButtonClick()
         },
-        openModal: true,
+        open: true,
       })
     },
     [close],
@@ -65,7 +64,7 @@ export default function InterestContextProvider({
   return (
     <Context.Provider value={values}>
       {children}
-      {element != null && interestState.openModal
+      {element != null && interestState.open
         ? createPortal(<InterestProps {...interestState} />, element)
         : null}
     </Context.Provider>

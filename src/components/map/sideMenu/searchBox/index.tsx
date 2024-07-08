@@ -13,7 +13,7 @@ import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
 import MainFilter from '../filterBox/MainFilter'
 import SubFilter from '../filterBox/SubFilter'
-import DetailBox from '../filterBox/SubFilterDetail/DetailBox'
+
 import getSubway from '@/remote/map/subway/getSubway'
 import Logo from '../../icons/Logo'
 import Search from '../../icons/Search'
@@ -22,6 +22,7 @@ import { MAP_KEY } from '../../sections/hooks/useMap'
 import { useRecoilState } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
 import AutoKeyword from './AutoKeyword'
+import DetailBox from '../filterBox/subFilterDetail/DetailBox'
 
 declare global {
   interface Window {

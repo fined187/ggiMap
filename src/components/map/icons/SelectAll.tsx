@@ -19,7 +19,7 @@ export default function SelectAll({ type }: SelectAllProps) {
     price: false,
   })
   const handleIsAllSelected = () => {
-    if (formData.ids.length === 12) {
+    if (formData.ids.length === 12 || formData.ids.length === 0) {
       setIsAllSelected({ ...isAllSelected, finished: true })
     } else if (
       formData.fromAppraisalAmount === 10000000 &&
