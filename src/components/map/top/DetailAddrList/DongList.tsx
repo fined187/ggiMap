@@ -122,11 +122,13 @@ function DongList({
       COUNT_PER_ROW +
       subIndex
     if (item === dongList[lastIndex]) {
-      return dongList[lastIndex]?.umd === ' '
-        ? ''
-        : juso.bottomDong === item.umd
-        ? '1px solid #332EFC'
-        : '1px solid #E5E5E5'
+      if (dongList[lastIndex]?.umd === ' ') {
+        return ''
+      } else if (juso.bottomDong === item.umd) {
+        return '1px solid #332EFC'
+      } else {
+        return '1px solid #E5E5E5'
+      }
     } else {
       return ''
     }
@@ -143,25 +145,22 @@ function DongList({
   return (
     <Flex direction="column" css={containerStyle}>
       {dongList &&
-        dongList?.map(
-          (_, index) =>
-            index % COUNT_PER_ROW === 0 && (
-              <Flex direction="row" key={index}>
-                {dongList
-                  .slice(
-                    index * COUNT_PER_ROW,
-                    index * COUNT_PER_ROW + COUNT_PER_ROW,
-                  )
-                  .map((subItem, subIndex) =>
-                    renderDonItem(
-                      subItem,
-                      index * COUNT_PER_ROW + subIndex,
-                      subIndex,
-                    ),
-                  )}
-              </Flex>
-            ),
-        )}
+        dongList?.map((_, index) => (
+          <Flex direction="row" key={index}>
+            {dongList
+              .slice(
+                index * COUNT_PER_ROW,
+                index * COUNT_PER_ROW + COUNT_PER_ROW,
+              )
+              .map((subItem, subIndex) =>
+                renderDonItem(
+                  subItem,
+                  index * COUNT_PER_ROW + subIndex,
+                  subIndex,
+                ),
+              )}
+          </Flex>
+        ))}
     </Flex>
   )
 }

@@ -46,7 +46,10 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
       dragState = false
     },
     onError: () => {
-      console.log('error')
+      setMapItems((prev) => {
+        return prev
+      
+      })
     },
   })
   return { mutate }

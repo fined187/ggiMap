@@ -20,7 +20,7 @@ import {
 import { getPosition } from '@/remote/map/auth/getPosition'
 import { NaverMap } from '@/models/Map'
 import handleToken from '@/remote/map/auth/token'
-import { GetItemResponse } from '@/models/MapItem'
+import { GetItemResponse, MapItem, MapItems, PageInfo } from '@/models/MapItem'
 import useSessionStorage from '@/hooks/useSessionStorage'
 import { useRouter } from 'next/router'
 import useGetSamples from '@/remote/map/hooks/useGetSamples'
@@ -63,7 +63,6 @@ function MapComponent({ token, type, idCode }: Props) {
     key: 'idCode',
     initialValue: idCode as string,
   })
-  const { mutate: getSampleItems } = useGetSamples(parseInt(typeCode as string))
   const setMapOptions = useCallback((map: NaverMap) => {
     if (!map) return
     map.setOptions({
@@ -185,13 +184,12 @@ function MapComponent({ token, type, idCode }: Props) {
         setTimeout(callback, delay)
       }
       const runDelayedConfirm = async () => {
-        getSampleItems()
         delayExecution(() => {
           if (!ok && window) {
             ok = true
             delayExecution(() => {
-              alert('지도 검색은 유료서비스 입니다.')
-              window.close()
+              // alert('지도 검색은 유료서비스 입니다.')
+              // window.close()
             }, 500)
           }
         }, 800)
@@ -199,14 +197,14 @@ function MapComponent({ token, type, idCode }: Props) {
 
       try {
         if (token) {
-          const response = await handleToken(token)
-          if (response?.data.success) {
+          const response = await handleToken(token, type)
+          if (response?.success) {
             const handleAuthenticated = async () => {
               setAuth((prev) => ({
                 ...prev,
                 isLogin: true,
                 isAuth: true,
-                role: response.data.data.authorities,
+                role: response.data.authorities,
               }))
               setFormData((prev) => ({
                 ...prev,
@@ -221,20 +219,13 @@ function MapComponent({ token, type, idCode }: Props) {
                 await handleDataFetching(type, idCode)
               }
             }
-
             const handleAnonymous = () => {
               setMapOptions(map as NaverMap)
               setAuth((prev) => ({
                 ...prev,
                 isLogin: false,
                 isAuth: true,
-                role: response.data.data.authorities,
-              }))
-              setJuso((prev) => ({
-                ...prev,
-                topSido: '서울특별시',
-                topGungu: '서초구',
-                topDong: '서초동',
+                role: response.data.authorities,
               }))
               setFormData((prev) => ({
                 ...prev,
@@ -246,11 +237,17 @@ function MapComponent({ token, type, idCode }: Props) {
               runDelayedConfirm()
             }
             if (
-              response.data.data.authorities.includes(
+              response.data.authorities.includes(
                 'ROLE_ANONYMOUS' || 'ROLE_FREE',
               )
             ) {
               handleAnonymous()
+              setMapItems(response.data.mapItems as MapItem[])
+              console.log(response.data.contents)
+              setMapList({
+                contents: response.data.contents?.contents as MapItems[],
+                paging: response.data.contents?.paging as PageInfo,
+              })
             } else {
               handleAuthenticated()
             }

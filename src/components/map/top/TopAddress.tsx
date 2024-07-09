@@ -8,8 +8,9 @@ import Text from '@/components/shared/Text'
 import useSWR from 'swr'
 import { MAP_KEY } from '../sections/hooks/useMap'
 import { jusoProps } from '@/models/Juso'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { jusoAtom } from '@/store/atom/map'
+import { authInfo } from '@/store/atom/auth'
 
 declare global {
   interface Window {
@@ -41,7 +42,7 @@ function TopAddress({
 }: AddressProps) {
   const { data: map } = useSWR(MAP_KEY)
   const [juso, setJuso] = useRecoilState<jusoProps>(jusoAtom)
-
+  const auth = useRecoilValue(authInfo)
   const handleTopBottomSyncSido = useCallback(() => {
     const specialSido = [
       '경기도',
@@ -76,6 +77,7 @@ function TopAddress({
 
   const handleControlTopBar = useCallback(() => {
     const newJuso = { bottomSido: '', bottomGungu: '', bottomDong: '' }
+    if (auth.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE')) return
     switch (true) {
       case SidoAddr:
         setRange(0)
@@ -114,7 +116,6 @@ function TopAddress({
     handleTopBottomSyncSido,
     handleTopBottomSyncGungu,
   ])
-
   if (!map) return null
   return (
     <>
@@ -143,7 +144,6 @@ function TopAddress({
             <Text
               css={TextStyle}
               onClick={() => {
-                setOpenCursor(!openCursor)
                 handleControlTopBar()
               }}
             >

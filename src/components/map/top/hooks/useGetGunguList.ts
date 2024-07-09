@@ -23,5 +23,5 @@ const fetchGunguList = async (sido: string): Promise<GunguProps[]> => {
 
 export default function useGetGunguList() {
   const juso = useRecoilValue(jusoAtom)
-  return useQuery<GunguProps[], Error>('gunguList', () => fetchGunguList(juso.bottomSido))
+  return useQuery<GunguProps[], Error>(['gunguList', juso.bottomGungu], () => fetchGunguList(juso.bottomSido))
 }

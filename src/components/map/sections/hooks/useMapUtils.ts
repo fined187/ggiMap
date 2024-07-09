@@ -1,6 +1,6 @@
 import { NaverMap } from '@/models/Map'
 import useSWR from 'swr'
-import { MAP_KEY } from './useMap'
+import useMap, { MAP_KEY } from './useMap'
 import { useRecoilState } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
 import { useCallback, useEffect, useState } from 'react'

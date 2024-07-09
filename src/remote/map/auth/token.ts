@@ -1,8 +1,9 @@
+import { TokenResponse } from '@/models/Auth'
 import axios from 'axios'
-export default async function handleToken(token: string) {
+export default async function handleToken(token: string, type: string) {
   try {
     const response = await axios.post(
-      `ggi/api/auth/asp`,
+      `ggi/api/auth/map?type=${type}`,
       {},
       {
         headers: {
@@ -13,7 +14,7 @@ export default async function handleToken(token: string) {
       },
     )
     if (response.data.success) {
-      return response
+      return response.data as TokenResponse
     }
   } catch (error) {
     console.error(error)

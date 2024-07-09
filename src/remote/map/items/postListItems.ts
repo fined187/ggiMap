@@ -12,7 +12,7 @@ async function postListItems(
       formData,
     )
     if (response.data.success) {
-      return response.data.data
+      return response
     } else {
       return
     }
