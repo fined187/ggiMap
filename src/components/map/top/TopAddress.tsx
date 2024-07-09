@@ -101,6 +101,7 @@ function TopAddress({
         setOpenCursor(!openCursor)
         setJuso((prev) => ({
           ...prev,
+          ...newJuso,
           bottomSido: handleTopBottomSyncSido(),
           bottomGungu: handleTopBottomSyncGungu(),
         }))
