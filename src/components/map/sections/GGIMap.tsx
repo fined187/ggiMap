@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import { Coordinates, NaverMap } from '@/models/Map'
 import Script from 'next/script'
 import { INITIAL_CENTER } from './hooks/useMap'
@@ -17,6 +17,7 @@ import {
   clickedItemAtom,
   formDataAtom,
   isPanoramaVisibleAtom,
+  listOverItemAtom,
   mapItemsAtom,
 } from '@/store/atom/map'
 import MapType from './mapType/MapType'
@@ -97,7 +98,7 @@ export default function GGIMap({
   const [isPanoVisible, setIsPanoVisible] = useRecoilState(
     isPanoramaVisibleAtom,
   )
-
+  const setListOver = useSetRecoilState(listOverItemAtom)
   const [clickedMarker, setClickedMarker] = useState<naver.maps.Marker | null>(
     null,
   )
@@ -148,10 +149,15 @@ export default function GGIMap({
       }),
       window.naver.maps.Event.addListener(map, 'dragstart', () => {
         setOpenOverlay(false)
+
         dragStateRef.current = true
       }),
       window.naver.maps.Event.addListener(map, 'dragend', () => {
         dragStateRef.current = false
+        setListOver((prev) => ({
+          ...prev,
+          isOver: false,
+        }))
         updateFormDataBounds()
       }),
       window.naver.maps.Event.addListener(map, 'click', (e: any) => {

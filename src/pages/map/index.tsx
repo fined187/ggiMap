@@ -74,14 +74,14 @@ function MapComponent({ token, type, idCode }: Props) {
   }, [])
 
   const handleGetPosition = useCallback(
-    async (addr: string) => {
+    async (type: string) => {
       try {
-        const response = await getPosition(addr, setAuth)
-        if (response) {
+        const { x, y } = await getPosition(type)
+        if (x && y) {
           setAuth((prev) => ({
             ...prev,
-            lat: response.data.data.y,
-            lng: response.data.data.x,
+            lat: y,
+            lng: x,
           }))
         }
       } catch (error) {
@@ -90,23 +90,6 @@ function MapComponent({ token, type, idCode }: Props) {
     },
     [setAuth],
   )
-
-  const handleGetAddress = useCallback(async () => {
-    try {
-      const response = await getAddress()
-      if (response) {
-        setAuth((prev) => {
-          return {
-            ...prev,
-            address: response.address,
-          }
-        })
-        handleGetPosition(response.address)
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }, [setAuth, handleGetPosition])
 
   const handleItemType = useCallback((type: string) => {
     switch (type) {
@@ -232,9 +215,8 @@ function MapComponent({ token, type, idCode }: Props) {
                 gm: type === '2' || type === '3',
                 gg: type === '3' || type === '2',
               }))
-
               if (!idCode) {
-                handleGetAddress()
+                handleGetPosition(type as string)
               } else {
                 await handleDataFetching(type, idCode)
               }
@@ -282,15 +264,7 @@ function MapComponent({ token, type, idCode }: Props) {
         console.error(error)
       }
     },
-    [
-      handleGetAddress,
-      setAuth,
-      setFormData,
-      setJuso,
-      setMapItems,
-      setMapList,
-      setMapOptions,
-    ],
+    [setAuth, setFormData, setJuso, setMapItems, setMapList, setMapOptions],
   )
   useEffect(() => {
     const handleRefresh = async () => {

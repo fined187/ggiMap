@@ -1,18 +1,11 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import Text from '@/components/shared/Text'
-import Spacing from '@/components/shared/Spacing'
-import axios from 'axios'
-import { GunguProps } from '@/models/Juso'
 import { useRecoilState } from 'recoil'
 import { jusoAtom } from '@/store/atom/map'
+import useGetGunguList from '../hooks/useGetGunguList'
+import { GunguProps } from '@/models/Juso'
 
 interface Props {
   selectedGunguIndex: number | null
@@ -21,6 +14,8 @@ interface Props {
   setRange: Dispatch<SetStateAction<number>>
 }
 
+const COUNT_PER_ROW = 3
+
 export default function GunguList({
   selectedGunguIndex,
   setSelectedGunguIndex,
@@ -28,43 +23,7 @@ export default function GunguList({
   setRange,
 }: Props) {
   const [juso, setJuso] = useRecoilState(jusoAtom)
-  const [gunguList, setGunguList] = useState<GunguProps[]>([
-    {
-      sgg: '',
-      x: 0,
-      y: 0,
-    },
-  ])
-  const handleGetGungu = async (siName: string) => {
-    try {
-      const response = await axios.get(`/ggi/api/location/${siName}/sggs`)
-      if (response.data.success === true) {
-        setGunguList(response.data.data.sggs)
-        const addArray =
-          response.data.data.sggs.length % 3 === 0
-            ? null
-            : Array(3 - (response.data.data.sggs.length % 3)).fill({
-                sgg: ' ',
-                x: 0,
-                y: 0,
-              })
-        setGunguList((prev) => {
-          return [...prev, ...(addArray === null ? [] : addArray)]
-        })
-        if (juso.bottomGungu === '') {
-          setSelectedGunguIndex(null)
-        } else if (
-          gunguList.map((item) => item.sgg).indexOf(juso.bottomGungu)
-        ) {
-          setSelectedGunguIndex(
-            gunguList.map((item) => item.sgg).indexOf(juso.bottomGungu),
-          )
-        }
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const { data: gunguList } = useGetGunguList()
 
   const handleClick = useCallback(
     (gungu: string, actualIndex: number) => {
@@ -81,121 +40,139 @@ export default function GunguList({
     [setJuso, setSelectedGunguIndex, setRange],
   )
 
-  useEffect(() => {
-    handleGetGungu(juso.bottomSido)
-  }, [juso.bottomSido])
+  const renderGunguItem = (
+    item: GunguProps,
+    actualIndex: number,
+    subIndex: number,
+  ) => {
+    const isSelected = juso.bottomGungu === item.sgg
+    const shouldHighlightTop =
+      selectedGunguIndex != null
+        ? actualIndex === selectedGunguIndex ||
+          actualIndex === selectedGunguIndex + COUNT_PER_ROW
+        : false
+    return (
+      <Flex
+        direction="row"
+        key={actualIndex}
+        css={boxStyle}
+        style={{
+          marginRight: subIndex === 2 ? '2.5px' : '',
+          backgroundColor: isSelected ? '#F0F0FF' : 'white',
+          borderTop: getBorderTop(item, actualIndex, shouldHighlightTop),
+          borderRight: getBorderRight(item, actualIndex),
+          borderLeft: getBorderLeft(item, subIndex),
+          borderBottom: getBorderBottom(item, subIndex),
+          cursor: item.sgg === ' ' ? 'default' : 'pointer',
+        }}
+        onClick={() => {
+          if (item.sgg !== ' ') {
+            handleClick(item.sgg, actualIndex)
+            addrToCenter(item.x, item.y)
+          }
+        }}
+      >
+        <Text
+          style={{
+            color: isSelected ? '#332EFC' : '#000001',
+          }}
+        >
+          {item.sgg}
+        </Text>
+      </Flex>
+    )
+  }
 
+  const getBorderTop = (
+    item: GunguProps,
+    actualIndex: number,
+    shouldHighlightTop: boolean,
+  ) => {
+    if (shouldHighlightTop) {
+      return '1px solid #332EFC'
+    } else if (actualIndex < 3) {
+      return item.sgg === ' ' ? '' : '1px solid #E5E5E5'
+    } else {
+      return '1px solid #E5E5E5'
+    }
+  }
+
+  const getBorderRight = (item: GunguProps, actualIndex: number) => {
+    if (!gunguList) return ''
+    const lastIndex =
+      Math.ceil(gunguList.length / COUNT_PER_ROW) * COUNT_PER_ROW - 1
+    if (gunguList[lastIndex]?.sgg === ' ' && actualIndex === lastIndex) {
+      return ''
+    } else if (juso.bottomGungu === item.sgg) {
+      return '1px solid #332EFC'
+    } else if (actualIndex % COUNT_PER_ROW === 2 && item.sgg !== ' ') {
+      return '1px solid #E5E5E5'
+    } else if (actualIndex % COUNT_PER_ROW === 1 && item.sgg !== ' ') {
+      return '1px solid #E5E5E5'
+    } else {
+      return ''
+    }
+  }
+
+  const getBorderLeft = (item: GunguProps, subIndex: number) => {
+    if (subIndex % COUNT_PER_ROW === 0) {
+      return juso.bottomGungu === item.sgg
+        ? '1px solid #332EFC'
+        : '1px solid #E5E5E5'
+    } else if (subIndex % COUNT_PER_ROW === 1) {
+      return juso.bottomGungu === item.sgg
+        ? '1px solid #332EFC'
+        : '1px solid #E5E5E5'
+    } else if (subIndex % COUNT_PER_ROW === 2) {
+      return juso.bottomGungu === item.sgg ? '1px solid #332EFC' : ''
+    } else {
+      return ''
+    }
+  }
+
+  const getBorderBottom = (item: GunguProps, subIndex: number) => {
+    if (!gunguList) return ''
+    const gijunIndex =
+      Math.ceil(gunguList.length / COUNT_PER_ROW) * COUNT_PER_ROW -
+      COUNT_PER_ROW +
+      subIndex
+    if (item === gunguList[gijunIndex]) {
+      return gunguList[gijunIndex]?.sgg === ' '
+        ? ''
+        : juso.bottomGungu === item.sgg
+        ? '1px solid #332EFC'
+        : '1px solid #E5E5E5'
+    } else {
+      return ''
+    }
+  }
   useEffect(() => {
+    if (!gunguList) return
     if (gunguList.length > 0) {
       const index = gunguList.map((item) => item.sgg).indexOf(juso.bottomGungu)
       setSelectedGunguIndex(index !== -1 ? index : null)
     }
   }, [juso.bottomGungu, gunguList, setSelectedGunguIndex])
   return (
-    <>
-      <Flex direction="column" css={containerStyle}>
-        {Array.from(gunguList).map(
-          (_, index) =>
-            index % 3 === 0 && (
-              <Flex direction="row" key={index}>
-                {Array.from(gunguList)
-                  .slice(index, index + 3)
-                  .map((item, subIndex) => {
-                    const actualIndex = index + subIndex
-                    const isSelected = juso.bottomGungu === item.sgg
-                    const shouldHighlightTop =
-                      selectedGunguIndex != null
-                        ? actualIndex === selectedGunguIndex ||
-                          actualIndex === selectedGunguIndex + 3
-                        : false
-                    return (
-                      item.sgg !== '' && (
-                        <Flex
-                          direction="row"
-                          key={actualIndex}
-                          css={boxStyle}
-                          style={{
-                            marginRight: subIndex === 2 ? '2.5px' : '',
-                            backgroundColor: isSelected ? '#F0F0FF' : 'white',
-                            borderTop: shouldHighlightTop
-                              ? `1px solid #332EFC`
-                              : actualIndex < 3
-                              ? item.sgg === ' '
-                                ? ''
-                                : '1px solid #E5E5E5'
-                              : '1px solid #E5E5E5',
-                            borderRight:
-                              gunguList[Math.ceil(gunguList.length / 3) * 3 - 1]
-                                ?.sgg === ' ' &&
-                              actualIndex ===
-                                Math.ceil(gunguList.length / 3) * 3 - 1
-                                ? ''
-                                : juso.bottomGungu === item.sgg
-                                ? '1px solid #332EFC'
-                                : actualIndex % 3 === 2 && item.sgg !== ' '
-                                ? '1px solid #E5E5E5'
-                                : actualIndex % 3 === 1 && item.sgg !== ' '
-                                ? '1px solid #E5E5E5'
-                                : '',
-                            borderLeft:
-                              subIndex % 3 === 0
-                                ? juso.bottomGungu === item.sgg
-                                  ? '1px solid #332EFC'
-                                  : '1px solid #E5E5E5'
-                                : subIndex % 3 === 1
-                                ? juso.bottomGungu === item.sgg
-                                  ? '1px solid #332EFC'
-                                  : '1px solid #E5E5E5'
-                                : subIndex % 3 === 2
-                                ? juso.bottomGungu === item.sgg
-                                  ? '1px solid #332EFC'
-                                  : ''
-                                : '',
-                            borderBottom:
-                              item ===
-                              gunguList[
-                                Math.ceil(gunguList.length / 3) * 3 -
-                                  3 +
-                                  subIndex
-                              ]
-                                ? gunguList[
-                                    Math.ceil(gunguList.length / 3) * 3 -
-                                      3 +
-                                      subIndex
-                                  ]?.sgg === ' '
-                                  ? ''
-                                  : juso.bottomGungu === item.sgg
-                                  ? '1px solid #332EFC'
-                                  : '1px solid #E5E5E5'
-                                : '',
-                            cursor: item.sgg === ' ' ? 'default' : 'pointer',
-                          }}
-                          onClick={() => {
-                            if (item.sgg === ' ') return
-                            handleClick(item.sgg, actualIndex)
-                            addrToCenter(item.x, item.y)
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color:
-                                juso.bottomGungu === item.sgg
-                                  ? '#332EFC'
-                                  : '#000001',
-                            }}
-                          >
-                            {item.sgg}
-                          </Text>
-                        </Flex>
-                      )
-                    )
-                  })}
-              </Flex>
-            ),
-        )}
-        <Spacing size={10} />
-      </Flex>
-    </>
+    <Flex direction="column" css={containerStyle}>
+      {gunguList &&
+        gunguList.map((_, index) => (
+          <Flex direction="row" key={index}>
+            {gunguList
+              .slice(
+                index * COUNT_PER_ROW,
+                index * COUNT_PER_ROW + COUNT_PER_ROW,
+              )
+              .map((subItem, subIndex) =>
+                renderGunguItem(
+                  subItem,
+                  index * COUNT_PER_ROW + subIndex,
+                  subIndex,
+                ),
+              )}
+          </Flex>
+        ))}
+    </Flex>
   )
 }
 

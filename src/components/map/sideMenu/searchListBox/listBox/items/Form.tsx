@@ -99,7 +99,6 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
     },
     [item.idCode, item.type, handleDetailPage],
   )
-
   return (
     <div
       onMouseOver={() => {

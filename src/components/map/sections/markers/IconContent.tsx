@@ -5,8 +5,8 @@ import {
   PnuCountIcon,
   ShareIcon,
   UsageIcon,
-} from './Icon/Marker1'
-import { AmountBottomIcon, UsageTopIcon } from './Icon/Marker2'
+} from './icon/Marker1'
+import { AmountBottomIcon, UsageTopIcon } from './icon/Marker2'
 
 interface IconContentProps {
   item: MapItem

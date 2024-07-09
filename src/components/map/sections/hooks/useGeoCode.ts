@@ -1,7 +1,7 @@
 import { Auth } from '@/models/Auth'
 import { NaverMap } from '@/models/Map'
 import { authInfo } from '@/store/atom/auth'
-import { Dispatch, SetStateAction, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useSetRecoilState } from 'recoil'
 
 function useGeoCode(address: string, map: NaverMap | null) {

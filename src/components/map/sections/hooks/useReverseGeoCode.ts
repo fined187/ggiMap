@@ -1,5 +1,7 @@
 import { jusoProps } from '@/models/Juso'
-import { Dispatch, SetStateAction } from 'react'
+import { jusoAtom } from '@/store/atom/map'
+import { Dispatch, SetStateAction, useCallback } from 'react'
+import { useSetRecoilState } from 'recoil'
 
 interface ReverseGeoCodeResult {
   sido: string
@@ -10,7 +12,6 @@ interface ReverseGeoCodeResult {
 interface ReverseGeoCodeOptions {
   lat: number
   lng: number
-  setJuso: Dispatch<SetStateAction<jusoProps>>
 }
 
 const reverseGeocode = async (
@@ -55,28 +56,31 @@ const processResult = (result: ReverseGeoCodeResult) => {
   }
 }
 
-export const useReverseGeoCode = async ({
-  lat,
-  lng,
-  setJuso,
-}: ReverseGeoCodeOptions) => {
-  if (!window.naver.maps?.Service?.reverseGeocode) {
-    return
-  }
+export const useReverseGeoCode = () => {
+  const setJuso = useSetRecoilState<jusoProps>(jusoAtom)
 
-  try {
-    const result = await reverseGeocode(lat, lng)
-    const { topSido, topGungu, topDong, getGungu } = processResult(result)
+  const performReverseGeocode = useCallback(
+    async ({ lat, lng }: ReverseGeoCodeOptions) => {
+      if (!window.naver.maps?.Service?.reverseGeocode) {
+        return
+      }
+      try {
+        const result = await reverseGeocode(lat, lng)
+        const processedResult = processResult(result)
 
-    setJuso((prev) => ({
-      ...prev,
-      topSido,
-      topGungu,
-      topDong,
-    }))
+        setJuso((prev) => ({
+          ...prev,
+          topSido: processedResult.topSido,
+          topGungu: processedResult.topGungu,
+          topDong: processedResult.topDong,
+        }))
 
-    return result
-  } catch (error) {
-    alert(error)
-  }
+        return processedResult
+      } catch (error) {
+        alert(error)
+      }
+    },
+    [],
+  )
+  return { performReverseGeocode }
 }

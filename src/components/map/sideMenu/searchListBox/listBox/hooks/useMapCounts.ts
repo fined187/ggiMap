@@ -14,7 +14,9 @@ export default function useMapCounts(
   const { data: map } = useSWR(MAP_KEY)
   const countParam = {
     ids:
-      formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
+      formData.ids.length === 12 || formData.ids.length === 0
+        ? '0'
+        : formData.ids.map((id) => id).join(','),
     km: formData.km,
     kw: formData.kw,
     gm: formData.gm,

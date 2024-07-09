@@ -6,7 +6,6 @@ export default function CurrentBtn() {
   const { data: map } = useSWR(MAP_KEY)
   const handleMoveCurrentLocation = () => {
     navigator?.geolocation?.getCurrentPosition((position) => {
-      console.log(position)
       const { latitude, longitude } = position.coords
       map.setCenter({ lat: latitude, lng: longitude })
     })

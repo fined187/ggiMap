@@ -1,5 +1,4 @@
 import { ListData, MapItems, MapListResponse } from '@/models/MapItem'
-import postListItems from '@/remote/map/items/postListItems'
 import { useCallback, useMemo } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import { useRecoilValue } from 'recoil'
@@ -8,7 +7,6 @@ import usePostMapItems from '@/hooks/items/usePostMapItems'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { authInfo } from '@/store/atom/auth'
-import { ROLE } from '@/pages/map'
 import usePostListItems from '../../hooks/usePostListItems'
 
 interface SearchListQueryProps {
