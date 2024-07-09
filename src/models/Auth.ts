@@ -1,4 +1,4 @@
-import { MapItem, PageInfo } from "./MapItem"
+import { MapItem, PageInfo } from './MapItem'
 
 export interface Auth {
   isLogin: boolean

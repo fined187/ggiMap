@@ -48,7 +48,6 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
     onError: () => {
       setMapItems((prev) => {
         return prev
-      
       })
     },
   })

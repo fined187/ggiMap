@@ -24,6 +24,8 @@ import { GetItemResponse, MapItem, MapItems, PageInfo } from '@/models/MapItem'
 import useSessionStorage from '@/hooks/useSessionStorage'
 import { useRouter } from 'next/router'
 import useGetSamples from '@/remote/map/hooks/useGetSamples'
+import useSWR from 'swr'
+import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 
 interface Props {
   data?: {
@@ -49,6 +51,7 @@ function MapComponent({ token, type, idCode }: Props) {
   const setJuso = useSetRecoilState(jusoAtom)
   const setSelectedData = useSetRecoilState(selectedItemAtom)
   const setFormData = useSetRecoilState(formDataAtom)
+  const { data: map } = useSWR(MAP_KEY)
   const auth = useRecoilValue(authInfo)
   const router = useRouter()
   const [tokenValue, setTokenValue] = useSessionStorage({

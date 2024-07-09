@@ -1,17 +1,40 @@
-import { MAP_KEY } from "@/components/map/sections/hooks/useMap";
-import { useReverseGeoCode } from "@/components/map/sections/hooks/useReverseGeoCode";
-import { authInfo } from "@/store/atom/auth";
-import { formDataAtom, isOnlySelectedAtom, jusoAtom, mapListAtom, pageAtom, selectedItemAtom } from "@/store/atom/map";
-import { Dispatch, MutableRefObject, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
-import { SetterOrUpdater, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import useSWR from "swr";
-import useSearchListQuery from "./useSearchListQuery";
-import { Form } from "@/models/Form";
-import { Auth } from "@/models/Auth";
-import { MapListResponse } from "@/models/MapItem";
-import { InfiniteData } from "react-query";
+import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
+import { useReverseGeoCode } from '@/components/map/sections/hooks/useReverseGeoCode'
+import { authInfo } from '@/store/atom/auth'
+import {
+  formDataAtom,
+  isOnlySelectedAtom,
+  jusoAtom,
+  mapListAtom,
+  pageAtom,
+  selectedItemAtom,
+} from '@/store/atom/map'
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import {
+  SetterOrUpdater,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+} from 'recoil'
+import useSWR from 'swr'
+import useSearchListQuery from './useSearchListQuery'
+import { Form } from '@/models/Form'
+import { Auth } from '@/models/Auth'
+import { MapListResponse } from '@/models/MapItem'
+import { InfiniteData } from 'react-query'
 
-export const useResult = (setIsOpen: Dispatch<SetStateAction<boolean>>, dragStateRef: MutableRefObject<boolean>) => {
+export const useResult = (
+  setIsOpen: Dispatch<SetStateAction<boolean>>,
+  dragStateRef: MutableRefObject<boolean>,
+) => {
   const { data: map } = useSWR(MAP_KEY)
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
@@ -103,7 +126,8 @@ export const useResult = (setIsOpen: Dispatch<SetStateAction<boolean>>, dragStat
 }
 
 const getInitialMapData = (formData: Form, auth: Auth) => ({
-  ids: formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
+  ids:
+    formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
   fromAppraisalAmount: formData.fromAppraisalAmount,
   toAppraisalAmount: formData.toAppraisalAmount,
   fromMinimumAmount: formData.fromMinimumAmount,
@@ -126,7 +150,10 @@ const getInitialMapData = (formData: Form, auth: Auth) => ({
 })
 
 const getMapData = (formData: Form, auth: Auth) => ({
-  ids: formData.ids.length === 12 || formData.ids.length === 0 ? '0' : formData.ids.map((id) => id).join(','),
+  ids:
+    formData.ids.length === 12 || formData.ids.length === 0
+      ? '0'
+      : formData.ids.map((id) => id).join(','),
   fromAppraisalAmount: formData.fromAppraisalAmount,
   toAppraisalAmount: formData.toAppraisalAmount,
   fromMinimumAmount: formData.fromMinimumAmount,
@@ -148,7 +175,11 @@ const getMapData = (formData: Form, auth: Auth) => ({
   selectedType: auth.type !== '' ? parseInt(auth.type) : null,
 })
 
-const handleUpdateMapList = (data: InfiniteData<MapListResponse | undefined> | undefined, setMapListItems: SetterOrUpdater<MapListResponse>, scrollToTop: () => void) => {
+const handleUpdateMapList = (
+  data: InfiniteData<MapListResponse | undefined> | undefined,
+  setMapListItems: SetterOrUpdater<MapListResponse>,
+  scrollToTop: () => void,
+) => {
   if (data?.pageParams[0] === undefined && data?.pages[0] === undefined) return
   if (data.pageParams.length === 1) {
     scrollToTop()

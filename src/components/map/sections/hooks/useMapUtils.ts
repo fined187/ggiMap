@@ -1,10 +1,11 @@
 import { NaverMap } from '@/models/Map'
 import useSWR from 'swr'
-import useMap, { MAP_KEY } from './useMap'
-import { useRecoilState } from 'recoil'
+import { MAP_KEY } from './useMap'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
 import { useCallback, useEffect, useState } from 'react'
 import { MapCountsResponse } from '@/models/MapItem'
+import { authInfo } from '@/store/atom/auth'
 
 const useMapUtils = (
   token: string,
@@ -22,6 +23,7 @@ const useMapUtils = (
   const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
   const [openOverlay, setOpenOverlay] = useState(false)
   const [isOpen, setIsOpen] = useState(true)
+  const auth = useRecoilValue(authInfo)
 
   // 초기 맵 타입 설정
   const initialMapType = {
@@ -48,7 +50,11 @@ const useMapUtils = (
   useEffect(() => {
     if (!map) return
     handleParameters(token, type, idCode, map as NaverMap)
-  }, [map, idCode, type, token, handleParameters])
+    map.setCenter({
+      lat: auth.lat,
+      lng: auth.lng,
+    })
+  }, [map, idCode, type, token, handleParameters, auth.lat, auth.lng])
 
   useEffect(() => {
     syncMapTypeToForm()

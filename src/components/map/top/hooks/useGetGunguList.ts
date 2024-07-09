@@ -1,18 +1,21 @@
-import { GunguProps } from "@/models/Juso"
-import { jusoAtom } from "@/store/atom/map"
-import axios from "axios"
-import { useQuery } from "react-query"
-import { useRecoilValue } from "recoil"
+import { GunguProps } from '@/models/Juso'
+import { jusoAtom } from '@/store/atom/map'
+import axios from 'axios'
+import { useQuery } from 'react-query'
+import { useRecoilValue } from 'recoil'
 
 const fetchGunguList = async (sido: string): Promise<GunguProps[]> => {
   try {
     const { data } = await axios.get(`/ggi/api/location/${sido}/sggs`)
     if (data.success) {
-      const addArray = data.data.sggs.length % 3 === 0 ? null : Array(3 - (data.data.sggs.length % 3)).fill({
-        sgg: ' ',
-        x: 0,
-        y: 0,
-      })
+      const addArray =
+        data.data.sggs.length % 3 === 0
+          ? null
+          : Array(3 - (data.data.sggs.length % 3)).fill({
+              sgg: ' ',
+              x: 0,
+              y: 0,
+            })
       return [...data.data.sggs, ...(addArray === null ? [] : addArray)]
     }
   } catch (error) {
@@ -23,5 +26,7 @@ const fetchGunguList = async (sido: string): Promise<GunguProps[]> => {
 
 export default function useGetGunguList() {
   const juso = useRecoilValue(jusoAtom)
-  return useQuery<GunguProps[], Error>(['gunguList', juso.bottomGungu], () => fetchGunguList(juso.bottomSido))
+  return useQuery<GunguProps[], Error>(['gunguList', juso.bottomGungu], () =>
+    fetchGunguList(juso.bottomSido),
+  )
 }

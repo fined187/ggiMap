@@ -28,6 +28,7 @@ import MiniMap from './MiniMap'
 import useDebounce from '@/components/shared/hooks/useDebounce'
 import CloseButton from '../icons/CloseButton'
 import useGeoCode from './hooks/useGeoCode'
+import putLastXY from '@/remote/map/lastXY/putLastXY'
 declare global {
   interface Window {
     naver: any
@@ -209,6 +210,12 @@ export default function GGIMap({
 
   const closePanorama = () => setIsPanoVisible(false)
 
+  const handleLastXY = async () => {
+    if (!mapRef.current) return
+    const center = mapRef.current.getCenter()
+    await putLastXY(center.x, center.y)
+  }
+
   useEffect(() => {
     const updateHalfDimensions = () => {
       const exceptFilterBox = window.innerWidth - 370
@@ -245,7 +252,30 @@ export default function GGIMap({
     formData.toAppraisalAmount,
     formData.ids,
   ])
+  const useUnload = (func: () => void) => {
+    const cb = useRef(func)
+    useEffect(() => {
+      cb.current = func
+    }, [func])
 
+    useEffect(() => {
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        if (cb.current) {
+          e.preventDefault()
+          cb.current()
+        }
+      }
+
+      window.addEventListener('beforeunload', handleBeforeUnload)
+
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload)
+      }
+    }, [])
+  }
+  useUnload(() => {
+    handleLastXY()
+  })
   useEffect(() => {
     return () => {
       mapRef.current?.destroy()
@@ -314,6 +344,7 @@ export default function GGIMap({
     }
     updatePolyPath()
   }, [auth.detailLat, auth.detailLng, auth.idCode])
+
   return (
     <>
       <Script
