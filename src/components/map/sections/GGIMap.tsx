@@ -29,6 +29,7 @@ import useDebounce from '@/components/shared/hooks/useDebounce'
 import CloseButton from '../icons/CloseButton'
 import useGeoCode from './hooks/useGeoCode'
 import putLastXY from '@/remote/map/lastXY/putLastXY'
+import fetchXY from '@/remote/map/lastXY/fetchXY'
 declare global {
   interface Window {
     naver: any
@@ -115,6 +116,7 @@ export default function GGIMap({
   const updateFormDataBounds = useCallback(() => {
     if (!mapRef.current || auth.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE'))
       return
+
     const bounds = mapRef.current.getBounds() as any
     const sw = bounds.getSW()
     const ne = bounds.getNE()
@@ -213,7 +215,7 @@ export default function GGIMap({
   const handleLastXY = async () => {
     if (!mapRef.current) return
     const center = mapRef.current.getCenter()
-    await putLastXY(center.x, center.y)
+    await fetchXY(center.x, center.y)
   }
 
   useEffect(() => {
@@ -252,21 +254,20 @@ export default function GGIMap({
     formData.toAppraisalAmount,
     formData.ids,
   ])
+
   const useUnload = (func: () => void) => {
     const cb = useRef(func)
     useEffect(() => {
       cb.current = func
     }, [func])
-
     useEffect(() => {
-      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-        if (cb.current) {
-          e.preventDefault()
-          cb.current()
-        }
+      const handleBeforeUnload = () => {
+        cb.current()
       }
 
-      window.addEventListener('beforeunload', handleBeforeUnload)
+      window.addEventListener('beforeunload', () => {
+        handleBeforeUnload()
+      })
 
       return () => {
         window.removeEventListener('beforeunload', handleBeforeUnload)

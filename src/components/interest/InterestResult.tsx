@@ -11,12 +11,14 @@ import { css } from '@emotion/react'
 import { useRecoilValue } from 'recoil'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
+import { useCallback } from 'react'
 
 interface UpdateResultProps {
   onButtonClick?: () => void
   updatedData: UpdatedInterest
   처음등록하는가: boolean
   formData: InterestFormData
+  type: string
 }
 
 export default function UpdateResult({
@@ -24,13 +26,32 @@ export default function UpdateResult({
   updatedData,
   처음등록하는가,
   formData,
+  type,
 }: UpdateResultProps) {
   const { handleSelectedData } = useHandleSelectedData()
   const auth = useRecoilValue(authInfo)
 
+  const handleReturnUrl = useCallback(
+    (type: number) => {
+      switch (type) {
+        case 1:
+          return 'scrap_list_kyung.asp'
+        case 2:
+          return 'scrap_list_kamco.asp'
+        case 3:
+          return 'scrap_list_maegak.asp'
+        case 4:
+          return 'scrap_list_wait.asp'
+      }
+    },
+    [formData.type],
+  )
+
   const changeParentUrl = () => {
     if (window.opener && !window.opener.closed) {
-      const newUrl = `https://www.ggi.co.kr/member/scrap_list_kyung.asp?group=${updatedData?.interestInfo.category}`
+      const newUrl = `https://www.ggi.co.kr/member/${handleReturnUrl(
+        parseInt(type),
+      )}?group=${updatedData?.interestInfo.category}`
       window.opener.location.href = newUrl
       window.opener.onload = () => {
         try {

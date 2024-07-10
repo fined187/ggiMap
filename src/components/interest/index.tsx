@@ -416,6 +416,7 @@ export default function InterestProps({
           updatedData={updatedData}
           처음등록하는가={처음등록하는가}
           formData={formData}
+          type={type}
         />
       )
     }

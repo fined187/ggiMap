@@ -31,7 +31,6 @@ export default function MiniMap({
   const [miniMap, setMiniMap] = useState<NaverMap | null>(null)
   const isPanoramaVisible = useRecoilValue(isPanoramaVisibleAtom)
   let pano_changed = false
-  let nowMarker: naver.maps.Marker | null = null
 
   const calculatePanoPan = (argAngle: number) => {
     var panoAngle = (360 + argAngle) % 360
@@ -54,10 +53,10 @@ export default function MiniMap({
 
       const minimap = new window.naver.maps.Map(miniMapElement, {
         bounds: map.getBounds(),
-        scrollWheel: false,
-        scaleControl: false,
-        mapDataControl: false,
-        logoControl: false,
+        scrollWheel: true,
+        scaleControl: true,
+        mapDataControl: true,
+        logoControl: true,
       })
       setMiniMap(minimap)
       const control: HTMLElement[] = []

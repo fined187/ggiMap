@@ -1,4 +1,3 @@
-import { SelectedItems } from '@/models/DetailItems'
 import { Form } from '@/models/Form'
 import { ItemDetail } from '@/models/ItemDetail'
 import { jusoProps } from '@/models/Juso'
