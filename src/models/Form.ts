@@ -24,4 +24,5 @@ export interface Form {
   keyword: string
   selectedType: number | null
   selectedId: string | null
+  role: string
 }

@@ -1,7 +1,6 @@
-import getAddress from '@/remote/map/auth/getAddress'
 import { GetServerSidePropsContext } from 'next'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useCallback, useEffect } from 'react'
+import { useSetRecoilState } from 'recoil'
 import MapSection from '@/components/map/sections/MapSection'
 import { authInfo } from '@/store/atom/auth'
 import {
@@ -23,9 +22,8 @@ import handleToken from '@/remote/map/auth/token'
 import { GetItemResponse, MapItem, MapItems, PageInfo } from '@/models/MapItem'
 import useSessionStorage from '@/hooks/useSessionStorage'
 import { useRouter } from 'next/router'
-import useGetSamples from '@/remote/map/hooks/useGetSamples'
-import useSWR from 'swr'
-import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
+import axios from 'axios'
+import { TokenResponse } from '@/models/Auth'
 
 interface Props {
   data?: {
@@ -41,8 +39,6 @@ declare global {
     naver: any
   }
 }
-
-export const ROLE = '/ROLE'
 
 function MapComponent({ token, type, idCode }: Props) {
   const setAuth = useSetRecoilState(authInfo)
@@ -185,15 +181,13 @@ function MapComponent({ token, type, idCode }: Props) {
         setTimeout(callback, delay)
       }
       const runDelayedConfirm = async () => {
-        delayExecution(() => {
-          if (!ok && window) {
-            ok = true
-            delayExecution(() => {
-              alert('지도 검색은 유료서비스 입니다.')
-              window.close()
-            }, 500)
-          }
-        }, 800)
+        if (!ok && window) {
+          ok = true
+          delayExecution(() => {
+            alert('지도 검색은 유료서비스 입니다.')
+            window.close()
+          }, 500)
+        }
       }
 
       try {
@@ -213,6 +207,7 @@ function MapComponent({ token, type, idCode }: Props) {
                 kw: type === '4',
                 gm: type === '2' || type === '3',
                 gg: type === '3' || type === '2',
+                role: response.data.authorities[0],
               }))
               if (!idCode) {
                 handleGetPosition(type as string)
@@ -279,6 +274,7 @@ function MapComponent({ token, type, idCode }: Props) {
     }
     handleRefresh()
   }, [typeCode, idCodeValue])
+
   return (
     <MapSection
       token={token as string}
@@ -291,7 +287,6 @@ function MapComponent({ token, type, idCode }: Props) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { token, type, idCode } = context.query
-
   return {
     props: {
       token: token ?? null,

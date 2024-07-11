@@ -13,6 +13,7 @@ import IconContent from './IconContent'
 import { useRecoilState } from 'recoil'
 import {
   clickedItemAtom,
+  isPanoramaVisibleAtom,
   listOverItemAtom,
   markerPositionAtom,
 } from '@/store/atom/map'
@@ -38,7 +39,6 @@ const MarkerRenderer = ({
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
   const [listOver, setListOver] = useRecoilState(listOverItemAtom)
   let markers: naver.maps.Marker[] = []
-
   const handleItemUsage = useCallback(() => {
     switch (item.usage) {
       case '단독':

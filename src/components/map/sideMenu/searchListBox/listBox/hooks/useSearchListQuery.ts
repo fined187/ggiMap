@@ -1,5 +1,5 @@
 import { ListData, MapItems, MapListResponse } from '@/models/MapItem'
-import { useCallback, useMemo } from 'react'
+import { MutableRefObject, useCallback, useMemo } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import { useRecoilValue } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
@@ -12,7 +12,7 @@ import usePostListItems from '../../hooks/usePostListItems'
 interface SearchListQueryProps {
   mapData: ListData
   handleCenterChanged: () => void
-  dragStateRef: React.MutableRefObject<boolean>
+  dragStateRef: MutableRefObject<boolean>
 }
 
 const QUERY_KEY = 'searchList'
@@ -36,9 +36,9 @@ export default function useSearchListQuery({
 
   const fetchSearchList = useCallback(
     async (mapData: ListData, page: number, PAGE_SIZE: number) => {
+      if (!mapData || !map) return
       try {
         await delay(250)
-        if (!mapData || !map) return
         if (map?.getZoom() < 15) {
           await handleCenterChanged()
           return

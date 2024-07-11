@@ -145,6 +145,7 @@ const getInitialMapData = (formData: Form, auth: Auth) => ({
   ekm: formData.ekm,
   egm: formData.egm,
   egg: formData.egg,
+  role: formData.role,
   selectedId: auth.idCode !== '' ? auth.idCode : null,
   selectedType: auth.type !== '' ? parseInt(auth.type) : null,
 })
@@ -171,6 +172,7 @@ const getMapData = (formData: Form, auth: Auth) => ({
   ekm: formData.ekm,
   egm: formData.egm,
   egg: formData.egg,
+  role: formData.role,
   selectedId: auth.idCode !== '' ? auth.idCode : null,
   selectedType: auth.type !== '' ? parseInt(auth.type) : null,
 })

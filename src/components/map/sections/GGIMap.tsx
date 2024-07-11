@@ -28,7 +28,6 @@ import MiniMap from './MiniMap'
 import useDebounce from '@/components/shared/hooks/useDebounce'
 import CloseButton from '../icons/CloseButton'
 import useGeoCode from './hooks/useGeoCode'
-import putLastXY from '@/remote/map/lastXY/putLastXY'
 import fetchXY from '@/remote/map/lastXY/fetchXY'
 declare global {
   interface Window {
@@ -211,9 +210,8 @@ export default function GGIMap({
   ])
 
   const closePanorama = () => setIsPanoVisible(false)
-
   const handleLastXY = async () => {
-    if (!mapRef.current) return
+    if (!mapRef.current || auth.idCode !== '') return
     const center = mapRef.current.getCenter()
     await fetchXY(center.x, center.y)
   }
@@ -320,7 +318,8 @@ export default function GGIMap({
           auth.detailLat as number,
         )
         if (response.length > 0 && auth.idCode) {
-          const polyline = new window.naver.maps.Polyline({
+          console.log(response)
+          new window.naver.maps.Polyline({
             map: mapRef.current,
             path: response.map(
               (item: number[][]) =>

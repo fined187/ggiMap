@@ -108,6 +108,7 @@ export const formDataAtom = atom<Form>({
     lastFilter: 1,
     selectedType: null,
     selectedId: null,
+    role: '',
   },
 })
 

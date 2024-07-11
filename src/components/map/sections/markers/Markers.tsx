@@ -6,13 +6,14 @@ import {
   mapItemsAtom,
   selectedItemAtom,
 } from '@/store/atom/map'
-import { MapItem, MapItems } from '@/models/MapItem'
+import { MapItem } from '@/models/MapItem'
 import { authInfo } from '@/store/atom/auth'
+import { NaverMap } from '@/models/Map'
 
 interface MarkersProps {
   openOverlay: boolean
   setOpenOverlay: Dispatch<SetStateAction<boolean>>
-  markerClickedRef: MutableRefObject<boolean>
+  markerClickedRef: MutableRefObject<boolean> | null
 }
 
 export default function Markers({
@@ -58,7 +59,7 @@ export default function Markers({
             item={item}
             openOverlay={openOverlay}
             setOpenOverlay={setOpenOverlay}
-            markerClickedRef={markerClickedRef}
+            markerClickedRef={markerClickedRef as MutableRefObject<boolean>}
             index={index}
           />
         )

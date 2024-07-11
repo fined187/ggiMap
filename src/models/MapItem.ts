@@ -35,6 +35,7 @@ export interface ListData {
   toMinimumAmount: number
   interests: boolean
   awardedMonths: number
+  role: string
   selectedId: string | null
   selectedType: number | null
 }

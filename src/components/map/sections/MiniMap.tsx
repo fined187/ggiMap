@@ -6,9 +6,11 @@ import {
   SetStateAction,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import { useRecoilValue } from 'recoil'
+import Markers from './markers/Markers'
 
 interface MiniMapProps {
   map: NaverMap
@@ -30,6 +32,7 @@ export default function MiniMap({
 }: MiniMapProps) {
   const [miniMap, setMiniMap] = useState<NaverMap | null>(null)
   const isPanoramaVisible = useRecoilValue(isPanoramaVisibleAtom)
+  const miniMapRef = useRef<NaverMap | null>(null)
   let pano_changed = false
 
   const calculatePanoPan = (argAngle: number) => {
@@ -59,6 +62,7 @@ export default function MiniMap({
         logoControl: true,
       })
       setMiniMap(minimap)
+      miniMapRef.current = miniMap
       const control: HTMLElement[] = []
       control.push(miniMapElement)
       const roadview = new window.naver.maps.StreetLayer()
@@ -94,7 +98,6 @@ export default function MiniMap({
 
       window.naver.maps.Event.addListener(pano, 'pov_changed', () => {
         let getPanValue = calculatePanoPan(pano?.getPov().pan as number)
-        console.log(getPanValue)
         marker?.setIcon({
           url:
             '/images/roadView/rvicon' +
@@ -113,6 +116,7 @@ export default function MiniMap({
 
       window.naver.maps.Event.addListener(minimap, 'click', (e: any) => {
         const latlng = e.coord
+        map?.setCenter(latlng)
         marker?.setPosition(latlng)
         setClickedMarker(marker)
         setIsPanoVisible(true)

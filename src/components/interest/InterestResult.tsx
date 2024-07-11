@@ -14,7 +14,7 @@ import { authInfo } from '@/store/atom/auth'
 import { useCallback } from 'react'
 
 interface UpdateResultProps {
-  onButtonClick?: () => void
+  onButtonClick: () => void
   updatedData: UpdatedInterest
   처음등록하는가: boolean
   formData: InterestFormData
@@ -44,7 +44,7 @@ export default function UpdateResult({
           return 'scrap_list_wait.asp'
       }
     },
-    [formData.type],
+    [type],
   )
 
   const changeParentUrl = () => {
@@ -53,17 +53,10 @@ export default function UpdateResult({
         parseInt(type),
       )}?group=${updatedData?.interestInfo.category}`
       window.opener.location.href = newUrl
-      window.opener.onload = () => {
-        try {
-          if (window.opener.history && window.opener.history.pushState) {
-            setTimeout(() => {
-              window.opener.history.pushState(null, '', 'https://www.ggi.co.kr')
-            }, 1000)
-          }
-        } catch (error) {
-          console.error('부모 창의 history.pushState 실패:', error)
-        }
-      }
+      window.opener.focus()
+      setTimeout(() => {
+        window.opener.focus()
+      }, 500)
     } else {
       console.error('부모 창이 없거나 닫혔습니다.')
     }
@@ -132,6 +125,7 @@ export default function UpdateResult({
       >
         <ListButtonStyle
           onClick={() => {
+            onButtonClick()
             changeParentUrl()
           }}
         >
