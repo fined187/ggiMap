@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface SessionStorageProps<T> {
   key: string
@@ -10,30 +10,40 @@ const useSessionStorage = <T>({
   initialValue,
 }: SessionStorageProps<T>) => {
   const [state, setState] = useState<T>(() => {
-    if (typeof window !== 'undefined') {
-      const sessionStorageValue = window.sessionStorage.getItem(key)
-      if (sessionStorageValue) {
-        return JSON.parse(sessionStorageValue)
-      } else {
-        window.sessionStorage.setItem(key, JSON.stringify(initialValue))
-        return initialValue
-      }
+    if (typeof window === 'undefined') {
+      return initialValue
     }
-    return initialValue
+    try {
+      const sessionStorageValue = window.sessionStorage.getItem(key)
+      return sessionStorageValue ? JSON.parse(sessionStorageValue) : initialValue
+    } catch (error) {
+      console.error(error)
+      return initialValue
+    }
   })
 
-  const setSessionStorage = (value: T) => {
-    if (typeof window !== 'undefined') {
-      window.sessionStorage.setItem(key, JSON.stringify(value))
+  useEffect(() => {
+    if (state === initialValue) {
+      window.sessionStorage.setItem(key, JSON.stringify(initialValue))
     }
-    setState(value)
+  }, [key, initialValue])
+
+  const setSessionStorage = (value: T) => {
+    try {
+      window.sessionStorage.setItem(key, JSON.stringify(value));
+      setState(value);
+    } catch (error) {
+      console.error(`Error setting session storage key "${key}":`, error);
+    }
   }
 
   const removeSessionStorage = () => {
-    if (typeof window !== 'undefined') {
-      window.sessionStorage.removeItem(key)
+    try {
+      window.sessionStorage.removeItem(key);
+      setState(initialValue);
+    } catch (error) {
+      console.error(`Error removing session storage key "${key}":`, error);
     }
-    setState(initialValue)
   }
 
   return [state, setSessionStorage, removeSessionStorage] as const

@@ -62,6 +62,10 @@ function MapComponent({ token, type, idCode }: Props) {
     key: 'idCode',
     initialValue: idCode as string,
   })
+  const [refreshValue, setRefreshValue] = useSessionStorage({
+    key: 'isRefresh',
+    initialValue: 'false',
+  })
   const setMapOptions = useCallback((map: NaverMap) => {
     if (!map) return
     map.setOptions({
@@ -261,18 +265,18 @@ function MapComponent({ token, type, idCode }: Props) {
     },
     [setAuth, setFormData, setJuso, setMapItems, setMapList, setMapOptions],
   )
+
   useEffect(() => {
     const handleRefresh = async () => {
-      const isRefresh = sessionStorage.getItem('isRefresh')
-      if (!isRefresh) {
-        sessionStorage.setItem('isRefresh', 'true')
+      if (refreshValue === 'false') {
+        setRefreshValue('true')
         return
       }
-      if (typeCode && idCodeValue) {
-        const url = `/map?token=${tokenValue}&type=${typeCode}&idCode=${idCodeValue}`
-        router.push(url)
-      } else if (typeCode && !idCodeValue) {
+      if (typeCode && !idCodeValue) {
         const url = `/map?token=${tokenValue}&type=${typeCode}`
+        router.push(url)
+      } else if (typeCode && idCodeValue) {
+        const url = `/map?token=${tokenValue}&type=${typeCode}&idCode=${idCodeValue}`
         router.push(url)
       }
       setTimeout(() => {
@@ -280,12 +284,12 @@ function MapComponent({ token, type, idCode }: Props) {
       }, 1000)
     }
     handleRefresh()
-  }, [typeCode, idCodeValue])
+  }, [typeCode, idCodeValue, refreshValue])
 
   useEffect(() => {
     if (!map) return
     handleParameters(token as string, type as string, idCode as string, map)
-  }, [map])
+  }, [map, token, type, idCode, handleParameters])
 
   return (
     <MapSection

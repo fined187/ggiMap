@@ -39,6 +39,7 @@ const useGetDetail = () => {
     ['dtail', { ids, type }],
     () => fetchDetails(ids, type),
     {
+      refetchOnWindowFocus: false,
       onSuccess: (data) => {
         const sortedData = data?.slice().sort((a, b) => {
           if (a?.winAmt !== undefined && b?.winAmt !== undefined) {
