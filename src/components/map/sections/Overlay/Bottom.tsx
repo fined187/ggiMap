@@ -62,12 +62,12 @@ export default function Bottom({ nowIndex }: BottomProps) {
           <Text css={AmountTitleTextStyle}>
             {(clickedInfo && clickedInfo[nowIndex]?.claimAmt) || 0 > 0
               ? '청구액'
-              : clickedInfo && clickedInfo[nowIndex]?.winAmt! > 0
+              : clickedInfo && (clickedInfo[nowIndex]?.winAmt as number) > 0
               ? '낙찰액'
               : '최저가'}
           </Text>
           <Text css={AmountTextStyle}>
-            {clickedInfo && clickedInfo[nowIndex]?.claimAmt! > 0
+            {clickedInfo && (clickedInfo[nowIndex]?.claimAmt as number) > 0
               ? useNum2Han(
                   (clickedInfo && clickedInfo[nowIndex]?.claimAmt) || 0,
                 )
@@ -77,7 +77,7 @@ export default function Bottom({ nowIndex }: BottomProps) {
                   (clickedInfo && clickedInfo[nowIndex]?.minAmt) || 0,
                 ) +
                 '(' +
-                ((clickedInfo && clickedInfo[nowIndex]?.ratio)! > 0
+                (((clickedInfo && clickedInfo[nowIndex]?.ratio) as number) > 0
                   ? clickedInfo && clickedInfo[nowIndex]?.ratio
                   : 0) +
                 '%)'}
@@ -160,6 +160,8 @@ export default function Bottom({ nowIndex }: BottomProps) {
             style={{
               flexDirection: 'row',
               position: 'relative',
+              width: '100%',
+              height: '20px',
             }}
           >
             <div
@@ -176,10 +178,13 @@ export default function Bottom({ nowIndex }: BottomProps) {
               css={DetailTextStyle}
               style={{
                 color: '#E9413E',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
               }}
             >
-              {'유찰 ' +
-                (clickedInfo && clickedInfo[nowIndex]?.failCount)! +
+              {(('유찰 ' +
+                (clickedInfo && clickedInfo[nowIndex]?.failCount)) as string) +
                 '회'}
             </Text>
             {clickedInfo &&
@@ -226,7 +231,7 @@ export default function Bottom({ nowIndex }: BottomProps) {
             )}
           </Flex>
         )}
-        {clickedInfo && clickedInfo[nowIndex]?.claimAmt! > 0 && (
+        {clickedInfo && (clickedInfo[nowIndex]?.claimAmt as number) > 0 && (
           <Flex
             style={{
               flexDirection: 'row',
@@ -338,6 +343,9 @@ const DetailTextStyle = css`
   font-weight: 600;
   line-height: 140%;
   letter-spacing: -0.14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 const dotStyle = css`
   width: 4px;

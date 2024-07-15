@@ -91,7 +91,11 @@ export const AmountBottomIcon = (item: MapItem, type: number) => {
       )}; border-bottom: ${handleGetBorderColor(item)};">
         <div style="display: flex; width: 95%; margin-top: 5px; flex-direction: row; gap: 5px;">
           <span style="color: #000001; font-family: SUIT; font-size: 13px; font-style: normal; font-weight: 700; line-height: 135%; letter-spacing: -0.26px;">
-            ${NumToHan(parseInt(item.amount))}
+            ${
+              NumToHan(parseInt(item.amount)) === '0만'
+                ? '취재중'
+                : NumToHan(parseInt(item.amount))
+            }
           </span>
           <span style="color: #676767; font-family: SUIT; font-size: 10px; font-style: normal; font-weight: 600; line-height: 135%; letter-spacing: -0.5px; margin-top: 2px;">
               ${item.ratio > 0 ? '(' + String(item.ratio) + '%)' : '(-)'}

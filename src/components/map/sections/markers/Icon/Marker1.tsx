@@ -141,7 +141,13 @@ export const AmountIcon = (item: MapItem, type: number) => {
       : `1px solid ${colors.kwGreen}`
   };">
     <span style="color: #FFF; text-align: right; font-family: SUIT; font-size: 12px; font-style: normal; font-weight: 800; line-height: 110%; letter-spacing: -0.24px;">
-      ${type === 4 ? '예정물건' : NumToHan(parseInt(item.amount))}
+      ${
+        type === 4
+          ? '예정물건'
+          : NumToHan(parseInt(item.amount)) === '0만'
+          ? '취재중'
+          : NumToHan(parseInt(item.amount))
+      }
     </span>
   </div>
   `
