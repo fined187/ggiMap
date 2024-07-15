@@ -13,7 +13,7 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
     ids:
       formData.ids.length === 12 || formData.ids.length === 0
         ? '0'
-        : formData.ids.map((id) => id).join(','),
+        : formData.ids.join(','),
     fromAppraisalAmount: formData.fromAppraisalAmount,
     toAppraisalAmount: formData.toAppraisalAmount,
     fromMinimumAmount: formData.fromMinimumAmount,

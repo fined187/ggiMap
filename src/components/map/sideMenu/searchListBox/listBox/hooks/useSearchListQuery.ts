@@ -1,5 +1,5 @@
 import { MapItems, MapListResponse } from '@/models/MapItem'
-import { MutableRefObject, useCallback, useMemo } from 'react'
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import { useRecoilValue } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
@@ -21,6 +21,8 @@ export default function useSearchListQuery({
   handleCenterChanged,
   dragStateRef,
 }: SearchListQueryProps) {
+  const isFirstMount = useRef(true)
+  const isSecondMount = useRef(true)
   const auth = useRecoilValue(authInfo)
   const formData = useRecoilValue(formDataAtom)
   const { data: map } = useSWR(MAP_KEY)
@@ -35,17 +37,33 @@ export default function useSearchListQuery({
   const fetchSearchList = useCallback(
     async (page: number, PAGE_SIZE: number) => {
       if (!map) return
+      if (isFirstMount.current) {
+        isFirstMount.current = false
+        return
+      }
+      if (isSecondMount.current) {
+        isSecondMount.current = false
+        return
+      }
       try {
         await delay(100)
         if (map?.getZoom() < 15) {
           await handleCenterChanged()
           return
         }
-        const promises = [getMapListItems({ page, pageSize: PAGE_SIZE })]
+  
+        let listItems;
         if (page === 1) {
-          promises.push(getMapItems()!, handleCenterChanged()!)
+          const [mapListItems] = await Promise.all([getMapListItems({ page, pageSize: PAGE_SIZE })]);
+          listItems = mapListItems;
+          const promises = [];
+          promises.push(getMapItems());
+          promises.push(handleCenterChanged());
+          await Promise.all(promises);
+        } else {
+          listItems = await getMapListItems({ page, pageSize: PAGE_SIZE });
         }
-        const [listItems] = await Promise.all(promises)
+  
         if (
           listItems?.contents.some(
             (item: MapItems) => item.idCode === auth.idCode,
@@ -53,22 +71,22 @@ export default function useSearchListQuery({
         ) {
           listItems.contents = listItems.contents.filter(
             (item: MapItems) => item.idCode !== auth.idCode,
-          )
-          return { ...listItems } as MapListResponse
+          );
+          return { ...listItems } as MapListResponse;
         }
-        return listItems as unknown as MapListResponse
+        return listItems as unknown as MapListResponse;
       } catch (error) {
-        console.error('fetchSearchList error:', error)
-        throw error
+        console.error('fetchSearchList error:', error);
+        throw error;
       }
     },
-    [map, getMapItems, getMapListItems, handleCenterChanged],
-  )
+    [map, getMapItems, getMapListItems, handleCenterChanged, auth.idCode],
+  );
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery(
       [QUERY_KEY, formData],
-      ({ pageParam = 1 }) => fetchSearchList(pageParam, PAGE_SIZE),
+      ({ pageParam = 1 }) => fetchSearchList(pageParam, PAGE_SIZE) as Promise<MapListResponse>,
       {
         getNextPageParam: (lastPage) => {
           const nextPage = lastPage?.paging?.isLast

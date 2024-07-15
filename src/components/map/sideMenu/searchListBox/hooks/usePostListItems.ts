@@ -3,7 +3,7 @@ import { ListData, MapListResponse } from '@/models/MapItem'
 import postListItems from '@/remote/map/items/postListItems'
 import { authInfo } from '@/store/atom/auth'
 import { mapListAtom } from '@/store/atom/map'
-import { useMutation } from 'react-query'
+import { useIsMutating, useMutation } from 'react-query'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 interface PostListItemsArgs {
@@ -12,13 +12,14 @@ interface PostListItemsArgs {
 }
 
 function usePostListItems({ formData }: { formData: Form }) {
+  const prevList = useRecoilValue(mapListAtom)
   const setMapList = useSetRecoilState(mapListAtom)
   const auth = useRecoilValue(authInfo)
   const param: ListData = {
     ids:
       formData.ids.length === 12 || formData.ids.length === 0
         ? '0'
-        : formData.ids.map((id) => id).join(','),
+        : formData.ids.join(','),
     fromAppraisalAmount: formData.fromAppraisalAmount,
     toAppraisalAmount: formData.toAppraisalAmount,
     fromMinimumAmount: formData.fromMinimumAmount,
@@ -39,22 +40,32 @@ function usePostListItems({ formData }: { formData: Form }) {
     selectedId: auth.idCode !== '' ? auth.idCode : null,
     selectedType: auth.type !== '' ? parseInt(auth.type) : null,
   }
+
+  const isMutating = useIsMutating({ mutationKey: ['postListItems', param] })
   return useMutation<MapListResponse, unknown, PostListItemsArgs>(
     ['postListItems', param],
     async ({ page, pageSize }) => {
-      const response = formData.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE')
-        ? null
-        : await postListItems(param, page, pageSize)
-      if (!response) {
-        setMapList((prev) => {
-          return {
-            contents: prev.contents,
-            paging: prev.paging,
-          }
-        })
+      const isRoleAnonymousOrFree = ['ROLE_ANONYMOUS', 'ROLE_FREE'].some(role => formData.role.includes(role))
+      if (isRoleAnonymousOrFree) {
+        const prev = prevList
+        setMapList((prev) => ({
+          contents: [],
+          paging: prev.paging,
+        }))
+        return { contents: [], paging: prev.paging } as MapListResponse;
       }
-      return response?.data.data as MapListResponse
+      const response = await postListItems(param, page, pageSize)
+  
+      if (response?.data.data) {
+        return response?.data.data as MapListResponse
+      }
+      throw new Error('Failed to fetch list items')
     },
+    {
+      onError: (error) => {
+        console.error('usePostListItems error:', error)
+      }
+    }
   )
 }
 

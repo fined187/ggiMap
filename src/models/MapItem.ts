@@ -111,3 +111,8 @@ export interface GetItemResponse {
   message: string
   data: MapItems
 }
+
+export interface MapItemsResponse {
+  count: number
+  mapItems: MapItem[]
+}
