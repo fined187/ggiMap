@@ -11,7 +11,7 @@ import { MAP_KEY } from '../hooks/useMap'
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import { Area, AreaTextStyle, Distance, TextStyle } from './styled/MeasureStyle'
-import { useMapListeners } from './hooks/useMapListeners'
+import useMapListeners from './hooks/useMapListeners'
 
 interface ToolsBtnProps {
   clickedMapType: {

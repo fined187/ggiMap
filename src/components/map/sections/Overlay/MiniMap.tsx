@@ -19,9 +19,14 @@ type Props = {
 interface MiniMapProps {
   clickedItem: MapItem | null
   clickedInfo: ItemDetail[] | null
+  handleDuplicatedOpen: (idCode: string, type: number) => void
 }
 
-export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
+export default function MiniMap({
+  clickedItem,
+  clickedInfo,
+  handleDuplicatedOpen,
+}: MiniMapProps) {
   const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&autoload=false`
   const mapRef = useRef<NaverMap | null>(null)
   const [path, setPath] = useState<number[][]>([])
@@ -129,11 +134,8 @@ export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
           position: 'absolute',
           top: '0',
           left: '0',
-          zIndex: 1,
+          zIndex: 100,
           cursor: 'pointer',
-        }}
-        onClick={() => {
-          console.log('roadview clicked')
         }}
       />
       <div

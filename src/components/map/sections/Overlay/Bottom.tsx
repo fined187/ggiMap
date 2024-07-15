@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
-import { ItemDetail } from '@/models/ItemDetail'
-import { MapItem } from '@/models/MapItem'
 import { clickedInfoAtom, clickedItemAtom } from '@/store/atom/map'
 import useNum2Han from '@/utils/useNum2Han'
 import { css } from '@emotion/react'

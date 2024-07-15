@@ -14,8 +14,6 @@ interface TableFrameProps {
   background?: string
   height?: string
   starRating?: number | null
-  openGroup?: boolean
-  setOpenGroup?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function TableFrame({
@@ -24,8 +22,6 @@ export default function TableFrame({
   background,
   height,
   starRating,
-  openGroup,
-  setOpenGroup,
 }: TableFrameProps) {
   return (
     <ContainerFrame height={height}>

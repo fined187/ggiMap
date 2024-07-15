@@ -166,7 +166,6 @@ export default function SubFilter({
       <Arrow
         isOpenArrow={formData.isSubFilterBoxOpen}
         setIsOpenArrow={setFormData}
-        isBoxOpen={isBoxOpen}
         setIsBoxOpen={setIsBoxOpen}
         formData={formData}
       />

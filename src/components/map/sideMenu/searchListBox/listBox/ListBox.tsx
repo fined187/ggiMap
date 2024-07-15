@@ -3,7 +3,7 @@ import { css } from '@emotion/react'
 import Result from './Result'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { formDataAtom, mapListAtom } from '@/store/atom/map'
 import { authInfo } from '@/store/atom/auth'
 import { useCallback } from 'react'
@@ -21,10 +21,10 @@ export default function ListBox({
   dragStateRef,
   setOpenOverlay,
 }: ListBoxProps) {
-  const [formData, setFormData] = useRecoilState(formDataAtom)
-  const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
-  const { data: map } = useSWR(MAP_KEY)
+  const formData = useRecoilValue(formDataAtom)
+  const mapListItems = useRecoilValue(mapListAtom)
   const auth = useRecoilValue(authInfo)
+  const { data: map } = useSWR(MAP_KEY)
 
   const handleCalcHeight = useCallback(() => {
     if (isOpen) {

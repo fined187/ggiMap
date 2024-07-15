@@ -8,7 +8,6 @@ import {
 } from '@/store/atom/map'
 import { MapItem } from '@/models/MapItem'
 import { authInfo } from '@/store/atom/auth'
-import { NaverMap } from '@/models/Map'
 
 interface MarkersProps {
   openOverlay: boolean

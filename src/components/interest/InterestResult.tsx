@@ -11,7 +11,6 @@ import { css } from '@emotion/react'
 import { useRecoilValue } from 'recoil'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
-import { useCallback } from 'react'
 
 interface UpdateResultProps {
   onButtonClick: () => void
@@ -31,36 +30,6 @@ export default function UpdateResult({
   const { handleSelectedData } = useHandleSelectedData()
   const auth = useRecoilValue(authInfo)
 
-  const handleReturnUrl = useCallback(
-    (type: number) => {
-      switch (type) {
-        case 1:
-          return 'scrap_list_kyung.asp'
-        case 2:
-          return 'scrap_list_kamco.asp'
-        case 3:
-          return 'scrap_list_maegak.asp'
-        case 4:
-          return 'scrap_list_wait.asp'
-      }
-    },
-    [type],
-  )
-
-  const changeParentUrl = () => {
-    if (window.opener && !window.opener.closed) {
-      const newUrl = `https://www.ggi.co.kr/member/${handleReturnUrl(
-        parseInt(type),
-      )}?group=${updatedData?.interestInfo.category}`
-      window.opener.location.href = newUrl
-      window.opener.focus()
-      setTimeout(() => {
-        window.opener.focus()
-      }, 500)
-    } else {
-      console.error('부모 창이 없거나 닫혔습니다.')
-    }
-  }
   return (
     <>
       <Flex justify="space-between">
@@ -123,14 +92,6 @@ export default function UpdateResult({
           gap: '5px',
         }}
       >
-        <ListButtonStyle
-          onClick={() => {
-            onButtonClick()
-            changeParentUrl()
-          }}
-        >
-          <Text css={ListTextStyle}>관심물건 목록 보기</Text>
-        </ListButtonStyle>
         <CloseButtonStyle
           onClick={() => {
             onButtonClick && onButtonClick()
@@ -143,29 +104,6 @@ export default function UpdateResult({
     </>
   )
 }
-
-const ListButtonStyle = styled.button`
-  display: flex;
-  width: 190px;
-  height: 50px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background: #6d6e70;
-`
-
-const ListTextStyle = css`
-  color: #fff;
-
-  font-family: SUIT;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 135%;
-  letter-spacing: -0.36px;
-`
 
 const CloseButtonStyle = styled.button`
   display: flex;

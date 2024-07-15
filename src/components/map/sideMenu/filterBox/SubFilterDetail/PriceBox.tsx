@@ -2,12 +2,12 @@ import Flex from '@/components/shared/Flex'
 import PriceRange from '@/components/shared/PriceRange'
 import Text from '@/components/shared/Text'
 import { PRICE } from '@/constants/SubFilter'
-import { Form } from '@/models/Form'
 import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import React, { useState } from 'react'
+import React from 'react'
 import { useRecoilState } from 'recoil'
+import { colors } from '@/styles/colorPalette'
 
 interface PriceBoxProps {
   fromToAppraisalPrice: number[]
@@ -93,14 +93,14 @@ export default function PriceBox({
                   (formData.toAppraisalAmount ===
                     parseInt(Object.keys(PRICE)[index - 1]) &&
                     formData.toAppraisalAmount !== 300000000)
-                    ? '1px solid #007AFF'
+                    ? `1px solid ${colors.borderBoxBlue}`
                     : formData.fromAppraisalAmount !== 0 &&
                       formData.fromAppraisalAmount <
                         parseInt(Object.keys(PRICE)[index]) &&
                       formData.toAppraisalAmount >=
                         parseInt(Object.keys(PRICE)[index])
-                    ? '1px solid #007AFF'
-                    : '1px solid #e5e5e5'
+                    ? `1px solid ${colors.borderBoxBlue}`
+                    : `1px solid ${colors.borderBoxGray}`
                 }`,
                 borderTop: `${
                   index <= 3
@@ -108,31 +108,31 @@ export default function PriceBox({
                         parseInt(Object.keys(PRICE)[index]) ||
                       formData.toAppraisalAmount ===
                         parseInt(Object.keys(PRICE)[index])
-                      ? '1px solid #007AFF'
+                      ? `1px solid ${colors.borderBoxBlue}`
                       : formData.fromAppraisalAmount !== 0 &&
                         formData.fromAppraisalAmount <
                           parseInt(Object.keys(PRICE)[index]) &&
                         formData.toAppraisalAmount >=
                           parseInt(Object.keys(PRICE)[index])
-                      ? '1px solid #007AFF'
-                      : '1px solid #e5e5e5'
+                      ? `1px solid ${colors.borderBoxBlue}`
+                      : `1px solid ${colors.borderBoxGray}`
                     : index >= 4
                     ? formData.fromAppraisalAmount ===
                         parseInt(Object.keys(PRICE)[index]) ||
                       formData.toAppraisalAmount ===
                         parseInt(Object.keys(PRICE)[index])
-                      ? '1px solid #007AFF'
+                      ? `1px solid ${colors.borderBoxBlue}`
                       : formData.fromAppraisalAmount !== 0 &&
                         formData.fromAppraisalAmount <
                           parseInt(Object.keys(PRICE)[index]) &&
                         formData.toAppraisalAmount >=
                           parseInt(Object.keys(PRICE)[index])
-                      ? '1px solid #007AFF'
+                      ? `1px solid ${colors.borderBoxBlue}`
                       : formData.fromAppraisalAmount ===
                           parseInt(Object.keys(PRICE)[index - 4]) ||
                         formData.toAppraisalAmount ===
                           parseInt(Object.keys(PRICE)[index - 4])
-                      ? '1px solid #007AFF'
+                      ? `1px solid ${colors.borderBoxBlue}`
                       : formData.fromAppraisalAmount !== 0 &&
                         formData.fromAppraisalAmount <
                           parseInt(Object.keys(PRICE)[index - 4]) &&
@@ -142,8 +142,8 @@ export default function PriceBox({
                           parseInt(Object.keys(PRICE)[index - 4]) &&
                         formData.toAppraisalAmount !==
                           parseInt(Object.keys(PRICE)[index - 4])
-                      ? '1px solid #007AFF'
-                      : '1px solid #e5e5e5'
+                      ? `1px solid ${colors.borderBoxBlue}`
+                      : `1px solid ${colors.borderBoxGray}`
                     : ''
                 }`,
                 borderRight: `${
@@ -152,27 +152,27 @@ export default function PriceBox({
                         parseInt(Object.keys(PRICE)[index]) ||
                       formData.toAppraisalAmount ===
                         parseInt(Object.keys(PRICE)[index])
-                      ? '1px solid #007AFF'
+                      ? `1px solid ${colors.borderBoxBlue}`
                       : formData.fromAppraisalAmount !== 0 &&
                         formData.fromAppraisalAmount <
                           parseInt(Object.keys(PRICE)[index]) &&
                         formData.toAppraisalAmount >=
                           parseInt(Object.keys(PRICE)[index])
-                      ? '1px solid #007AFF'
-                      : '1px solid #e5e5e5'
+                      ? `1px solid ${colors.borderBoxBlue}`
+                      : `1px solid ${colors.borderBoxGray}`
                     : index === 7
                     ? formData.fromAppraisalAmount ===
                         parseInt(Object.keys(PRICE)[index]) ||
                       formData.toAppraisalAmount ===
                         parseInt(Object.keys(PRICE)[index])
-                      ? '1px solid #007AFF'
+                      ? `1px solid ${colors.borderBoxBlue}`
                       : formData.fromAppraisalAmount !== 0 &&
                         formData.fromAppraisalAmount <
                           parseInt(Object.keys(PRICE)[index]) &&
                         formData.toAppraisalAmount >=
                           parseInt(Object.keys(PRICE)[index])
-                      ? '1px solid #007AFF'
-                      : '1px solid #e5e5e5'
+                      ? `1px solid ${colors.borderBoxBlue}`
+                      : `1px solid ${colors.borderBoxGray}`
                     : ''
                 }`,
                 borderBottom: `${
@@ -182,14 +182,14 @@ export default function PriceBox({
                         parseInt(Object.keys(PRICE)[index]) ||
                       formData.toAppraisalAmount ===
                         parseInt(Object.keys(PRICE)[index])
-                    ? '1px solid #007AFF'
+                    ? `1px solid ${colors.borderBoxBlue}`
                     : formData.fromAppraisalAmount !== 0 &&
                       formData.fromAppraisalAmount <
                         parseInt(Object.keys(PRICE)[index]) &&
                       formData.toAppraisalAmount >=
                         parseInt(Object.keys(PRICE)[index])
-                    ? '1px solid #007AFF'
-                    : '1px solid #e5e5e5'
+                    ? `1px solid ${colors.borderBoxBlue}`
+                    : `1px solid ${colors.borderBoxGray}`
                 }`,
                 backgroundColor: `${
                   formData.fromAppraisalAmount ===
@@ -219,13 +219,13 @@ export default function PriceBox({
                       parseInt(Object.keys(PRICE)[index]) ||
                     formData.toAppraisalAmount ===
                       parseInt(Object.keys(PRICE)[index])
-                      ? '#007AFF'
+                      ? `${colors.borderBoxBlue}`
                       : formData.fromAppraisalAmount !== 0 &&
                         formData.fromAppraisalAmount <
                           parseInt(Object.keys(PRICE)[index]) &&
                         formData.toAppraisalAmount >=
                           parseInt(Object.keys(PRICE)[index])
-                      ? '#007AFF'
+                      ? `${colors.borderBoxBlue}`
                       : 'black'
                   }`,
                 }}

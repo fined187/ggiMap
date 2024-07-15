@@ -9,30 +9,35 @@ import { clickedInfoAtom, clickedItemAtom } from '@/store/atom/map'
 import { useQuery } from 'react-query'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
-export const useGetDetail = () => {
+type detailFetchersType = {
+  [key: number]: (id: string) => Promise<ItemDetail>
+}
+
+const detailFetchers: detailFetchersType = {
+  1: getKmDetail,
+  2: getGmDetail,
+  3: getGgDetail,
+  4: getKwDetail,
+}
+
+const fetchDetails = async (ids: string[], types: number[]) => {
+  const data = await Promise.all(
+    ids.map((id, index) => {
+      const fetcher = detailFetchers[types[index]]
+      return fetcher ? fetcher(id) : null
+    })
+  )
+  return data.filter((item): item is ItemDetail => item !== null)
+}
+
+const useGetDetail = () => {
   const clickedItem = useRecoilValue(clickedItemAtom)
   const setClickedInfo = useSetRecoilState(clickedInfoAtom)
   const ids = clickedItem?.ids ?? []
   const type = clickedItem?.types ?? []
   return useQuery<ItemDetail[]>(
     ['dtail', { ids, type }],
-    async () => {
-      const data = await Promise.all(
-        ids.map(async (id, index) => {
-          if (type[index] === 1) {
-            return await getKmDetail(id)
-          } else if (type[index] === 4) {
-            return await getKwDetail(id)
-          } else if (type[index] === 2) {
-            return await getGmDetail(id)
-          } else if (type[index] === 3) {
-            return await getGgDetail(id)
-          }
-          return null
-        }),
-      )
-      return data.filter((item) => item !== null) as ItemDetail[]
-    },
+    () => fetchDetails(ids, type),
     {
       onSuccess: (data) => {
         const sortedData = data?.slice().sort((a, b) => {
@@ -57,3 +62,5 @@ export const useGetDetail = () => {
     },
   )
 }
+
+export default useGetDetail

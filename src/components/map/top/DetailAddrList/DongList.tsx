@@ -16,12 +16,12 @@ interface DongListProps {
 
 const COUNT_PER_ROW = 3
 
-function DongList({
+const DongList = ({
   selectedDongIndex,
   setSelectedDongIndex,
   addrToCenter,
   setOpenCursor,
-}: DongListProps) {
+}: DongListProps) => {
   const [juso, setJuso] = useRecoilState(jusoAtom)
   const { data: dongList } = useGetDongList()
   const handleClick = (dong: string, actualIndex: number) => {

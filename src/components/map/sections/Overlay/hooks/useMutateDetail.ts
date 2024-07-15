@@ -9,7 +9,7 @@ import { clickedInfoAtom, clickedItemAtom } from '@/store/atom/map'
 import { useMutation } from 'react-query'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 
-export const useMutateDetail = () => {
+const useMutateDetail = () => {
   const clickedItem = useRecoilValue(clickedItemAtom)
   const setClickedInfo = useSetRecoilState(clickedInfoAtom)
   const ids = clickedItem?.ids ?? []
@@ -61,3 +61,5 @@ export const useMutateDetail = () => {
 
   return mutateDetails
 }
+
+export default useMutateDetail

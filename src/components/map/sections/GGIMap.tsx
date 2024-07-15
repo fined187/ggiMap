@@ -94,7 +94,7 @@ export default function GGIMap({
     formData,
     setMapCount as Dispatch<SetStateAction<MapCountsResponse[]>>,
   )
-  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
+  const setMapItems = useSetRecoilState(mapItemsAtom)
   const mapRef = useRef<NaverMap | null>(null)
   const [isPanoVisible, setIsPanoVisible] = useRecoilState(
     isPanoramaVisibleAtom,
@@ -103,7 +103,7 @@ export default function GGIMap({
   const [clickedMarker, setClickedMarker] = useState<naver.maps.Marker | null>(
     null,
   )
-  const [miniMap, setMiniMap] = useState<NaverMap | null>(null)
+  const [miniMap] = useState<NaverMap | null>(null)
   const [clickedLatLng, setClickedLatLng] = useState({
     lat: 0,
     lng: 0,
@@ -111,11 +111,10 @@ export default function GGIMap({
   const zoomLevel = mapRef.current?.getZoom() ?? null
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
   const { handleGeoCode } = useGeoCode(auth.address, mapRef.current)
-
+  const debouncedMapCounts = useDebounce(getMapCounts, 100)
   const updateFormDataBounds = useCallback(() => {
     if (!mapRef.current || auth.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE'))
       return
-
     const bounds = mapRef.current.getBounds() as any
     const sw = bounds.getSW()
     const ne = bounds.getNE()
@@ -131,14 +130,17 @@ export default function GGIMap({
   const initializeMap: () => void = useCallback(() => {
     if (!window.naver?.maps) return
     const mapOptions = {
-      center: new window.naver.maps.LatLng(37.497013, 127.0114263),
+      center: { lat: auth.lat, lng: auth.lng },
       zoom: zoom ?? 17,
       minZoom: 9,
       draggable: true,
     }
     const map = new window.naver.maps.Map(mapId, mapOptions)
     mapRef.current = map
-
+    map.setCenter({
+      lat: auth.lat,
+      lng: auth.lng,
+    })
     const listeners = [
       window.naver.maps.Event.addListener(
         map,
@@ -293,8 +295,7 @@ export default function GGIMap({
     if (zoomLevel && zoomLevel >= 15) {
       setMapCount && setMapCount([])
     } else if (mapRef?.current?.getZoom()! < 15) {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useDebounce(getMapCounts(), 250)
+      debouncedMapCounts()
       setMapItems([])
     }
   }, [

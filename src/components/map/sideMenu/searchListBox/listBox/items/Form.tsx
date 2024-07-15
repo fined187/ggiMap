@@ -11,9 +11,9 @@ import Interest from '@/components/map/icons/Interest'
 import { MapItems } from '@/models/MapItem'
 import KwForm from './KwForm'
 import { useCallback, useState } from 'react'
-import NextImageWithFallback from '@/components/map/NextImageWithFallback'
+import NextImageWithFallback from '@/components/shared/NextImageWithFallback'
 import { useInterestContext } from '@/contexts/useModalContext'
-import { useRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import { listOverItemAtom } from '@/store/atom/map'
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace'
 import NoImage from '../icons/loading/NoImage'
@@ -29,7 +29,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
   const url = usePathUrl(item?.type ?? 1)
   const [openModal, setOpenModal] = useState(false)
   const { open } = useInterestContext()
-  const [overList, setOverList] = useRecoilState(listOverItemAtom)
+  const setOverList = useSetRecoilState(listOverItemAtom)
   const onButtonClick = () => {
     setOpenModal(false)
   }

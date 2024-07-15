@@ -4,12 +4,6 @@ import useSWR from 'swr'
 import { MAP_KEY } from '../sections/hooks/useMap'
 
 interface ArrowProps {
-  isBoxOpen: {
-    finished: boolean
-    usage: boolean
-    lowPrice: boolean
-    price: boolean
-  }
   setIsBoxOpen: React.Dispatch<
     React.SetStateAction<{
       finished: boolean
@@ -24,7 +18,6 @@ interface ArrowProps {
 }
 
 export default function Arrow({
-  isBoxOpen,
   setIsBoxOpen,
   isOpenArrow,
   setIsOpenArrow,

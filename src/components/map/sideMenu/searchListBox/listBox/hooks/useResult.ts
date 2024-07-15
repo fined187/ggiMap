@@ -31,7 +31,7 @@ import { Auth } from '@/models/Auth'
 import { MapListResponse } from '@/models/MapItem'
 import { InfiniteData } from 'react-query'
 
-export const useResult = (
+const useResult = (
   setIsOpen: Dispatch<SetStateAction<boolean>>,
   dragStateRef: MutableRefObject<boolean>,
 ) => {
@@ -200,3 +200,5 @@ const handleUpdateMapList = (
     }))
   }
 }
+
+export default useResult

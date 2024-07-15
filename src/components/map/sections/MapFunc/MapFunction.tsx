@@ -5,7 +5,6 @@ import InterestBtn from './InterestBtn'
 import CadastralBtn from './CadastralBtn'
 import RoadviewBtn from './RoadviewBtn'
 import CurrentBtn from './CurrentBtn'
-import ToolsBtn from './ToolsBtn'
 
 interface MapTypeProps {
   clickedMapType: {

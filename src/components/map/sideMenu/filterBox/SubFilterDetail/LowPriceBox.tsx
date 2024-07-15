@@ -2,11 +2,10 @@ import Flex from '@/components/shared/Flex'
 import PriceRange from '@/components/shared/PriceRange'
 import Text from '@/components/shared/Text'
 import { PRICE } from '@/constants/SubFilter'
-import { Form } from '@/models/Form'
 import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import React, { useState } from 'react'
+import React from 'react'
 import { useRecoilState } from 'recoil'
 
 interface LowPriceBoxProps {

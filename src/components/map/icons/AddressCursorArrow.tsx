@@ -8,7 +8,7 @@ interface AddressCursorArrowProps {
   setJuso: Dispatch<SetStateAction<jusoProps>>
 }
 
-function AddressCursorArrow({
+export default function AddressCursorArrow({
   openCursor,
   setOpenCursor,
   setRange,
@@ -76,5 +76,3 @@ function AddressCursorArrow({
     </>
   )
 }
-
-export default AddressCursorArrow

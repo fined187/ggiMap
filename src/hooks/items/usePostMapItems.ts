@@ -4,11 +4,11 @@ import postMapItems from '@/remote/map/items/postMapItems'
 import { authInfo } from '@/store/atom/auth'
 import { mapItemsAtom } from '@/store/atom/map'
 import { useMutation } from 'react-query'
-import { useRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
 export default function usePostMapItems(formData: Form, dragState: boolean) {
-  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
-  const [auth, setAuth] = useRecoilState(authInfo)
+  const setMapItems = useSetRecoilState(mapItemsAtom)
+  const auth = useRecoilValue(authInfo)
   const param = {
     ids:
       formData.ids.length === 12 || formData.ids.length === 0
@@ -35,7 +35,7 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
     selectedType: auth.type !== '' ? parseInt(auth.type) : null,
   }
 
-  const { mutate } = useMutation(async () => await postMapItems(param), {
+  const { mutate } = useMutation(['mapItems', param], async () => formData.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE') ? null : await postMapItems(param), {
     onSuccess: (data) => {
       if (data) {
         setMapItems([])

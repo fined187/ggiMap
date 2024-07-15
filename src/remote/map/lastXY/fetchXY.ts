@@ -1,5 +1,5 @@
 export default async function fetchXY(x: number, y: number) {
-  const response = await fetch('ggi/api/map/position', {
+  const response = await fetch('/ggi/api/map/position', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

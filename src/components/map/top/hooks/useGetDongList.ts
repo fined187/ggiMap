@@ -26,7 +26,7 @@ const fetchDongList = async (si: string, gu: string) => {
 
 export default function useGetDongList() {
   const juso = useRecoilValue(jusoAtom)
-  return useQuery<DongProps[], Error>('dongList', () =>
+  return useQuery<DongProps[], Error>(['dongList', juso.bottomSido, juso.bottomGungu, juso.bottomDong], () =>
     fetchDongList(juso.bottomSido, juso.bottomGungu),
   )
 }

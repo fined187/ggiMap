@@ -7,7 +7,7 @@ import {
 import { Dispatch, SetStateAction } from 'react'
 import { useMutation } from 'react-query'
 
-export const usePutInterest = (
+const usePutInterest = (
   type: string,
   formData: InterestFormData,
   setUpdatedInterest: Dispatch<SetStateAction<UpdatedInterest>>,
@@ -60,3 +60,5 @@ export const usePutInterest = (
     },
   )
 }
+
+export default usePutInterest

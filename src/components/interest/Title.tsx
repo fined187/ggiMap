@@ -4,13 +4,12 @@ import Text from '../shared/Text'
 
 export default function TitlePage({ title }: { title: string }) {
   return (
-    <Flex css={containerStyles}>
+    <Flex>
       <Text css={TitleStyle}>{title}</Text>
     </Flex>
   )
 }
 
-const containerStyles = css``
 const TitleStyle = css`
   color: #000001;
   font-family: SUIT;

@@ -110,6 +110,8 @@ export default function NoGroupBtn({
                   }
                 })
                 setGroupName(e.target.value)
+              }}
+              onBlur={(e) => {
                 handleDuplicatedGroupName(e.target.value)
               }}
             />

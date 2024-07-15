@@ -22,8 +22,9 @@ import handleToken from '@/remote/map/auth/token'
 import { GetItemResponse, MapItem, MapItems, PageInfo } from '@/models/MapItem'
 import useSessionStorage from '@/hooks/useSessionStorage'
 import { useRouter } from 'next/router'
+import useSWR from 'swr'
+import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import axios from 'axios'
-import { TokenResponse } from '@/models/Auth'
 
 interface Props {
   data?: {
@@ -48,6 +49,7 @@ function MapComponent({ token, type, idCode }: Props) {
   const setSelectedData = useSetRecoilState(selectedItemAtom)
   const setFormData = useSetRecoilState(formDataAtom)
   const router = useRouter()
+  const { data: map } = useSWR(MAP_KEY)
   const [tokenValue, setTokenValue] = useSessionStorage({
     key: 'token',
     initialValue: token as string,
@@ -185,7 +187,7 @@ function MapComponent({ token, type, idCode }: Props) {
           ok = true
           delayExecution(() => {
             alert('지도 검색은 유료서비스 입니다.')
-            window.close()
+            // window.close()
           }, 500)
         }
       }
@@ -261,6 +263,11 @@ function MapComponent({ token, type, idCode }: Props) {
   )
   useEffect(() => {
     const handleRefresh = async () => {
+      const isRefresh = sessionStorage.getItem('isRefresh')
+      if (!isRefresh) {
+        sessionStorage.setItem('isRefresh', 'true')
+        return
+      }
       if (typeCode && idCodeValue) {
         const url = `/map?token=${tokenValue}&type=${typeCode}&idCode=${idCodeValue}`
         router.push(url)
@@ -275,6 +282,11 @@ function MapComponent({ token, type, idCode }: Props) {
     handleRefresh()
   }, [typeCode, idCodeValue])
 
+  useEffect(() => {
+    if (!map) return
+    handleParameters(token as string, type as string, idCode as string, map)
+  }, [map])
+
   return (
     <MapSection
       token={token as string}
@@ -287,6 +299,7 @@ function MapComponent({ token, type, idCode }: Props) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { token, type, idCode } = context.query
+
   return {
     props: {
       token: token ?? null,

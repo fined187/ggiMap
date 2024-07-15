@@ -29,5 +29,5 @@ const ContainerStyle = css`
   left: 1%;
   z-index: 10;
   background-color: none;
-  position: absolute;
+  position: fixed;
 `

@@ -1,6 +1,8 @@
 import { SidoProps } from '@/models/Juso'
+import { jusoAtom } from '@/store/atom/map'
 import axios from 'axios'
 import { useQuery } from 'react-query'
+import { useRecoilValue } from 'recoil'
 
 const fetchSidoList = async (): Promise<SidoProps[]> => {
   try {
@@ -15,5 +17,6 @@ const fetchSidoList = async (): Promise<SidoProps[]> => {
 }
 
 export default function useGetSidoList() {
-  return useQuery<SidoProps[], Error>('sidoList', fetchSidoList)
+  const juso = useRecoilValue(jusoAtom)
+  return useQuery<SidoProps[], Error>(['sidoList', juso.bottomSido], fetchSidoList)
 }

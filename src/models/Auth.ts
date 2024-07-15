@@ -1,4 +1,4 @@
-import { MapItem, PageInfo } from './MapItem'
+import { MapItem, MapItems, PageInfo } from './MapItem'
 
 export interface Auth {
   isLogin: boolean
@@ -13,24 +13,6 @@ export interface Auth {
   lat: number
   detailLng: number
   detailLat: number
-}
-
-interface MapItems {
-  pnu: string
-  x: number
-  y: number
-  count: number
-  winExist: boolean
-  types: number[]
-  ids: string[]
-  interest: string
-  usage: string
-  winYn: string
-  amount?: number
-  ratio: number
-  buildingArea: string
-  landArea: string
-  share: string
 }
 
 interface Contents {
@@ -79,4 +61,25 @@ export interface TokenResponse {
       paging: Paging
     }
   }
+}
+
+export interface InitialDataResponse {
+  userId: string
+  authorities: string[]
+  mapItemCount: number
+  mapItems: MapItem[]
+  contents: {
+    contents: MapItems[]
+    paging: PageInfo
+  },
+  isLogin: boolean
+  isAuth: boolean
+  token: string
+  Api_Key: string
+  idCode: string
+  type: string
+  lng: number
+  lat: number
+  detailLng: number
+  detailLat: number
 }

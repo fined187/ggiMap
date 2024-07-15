@@ -30,21 +30,21 @@ export default function useSearchListQuery({
     formData,
     dragStateRef.current,
   )
-  const { mutateAsync: getMapListItems } = usePostListItems()
+  const { mutateAsync: getMapListItems } = usePostListItems({formData})
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms))
 
   const fetchSearchList = useCallback(
-    async (mapData: ListData, page: number, PAGE_SIZE: number) => {
-      if (!mapData || !map) return
+    async (page: number, PAGE_SIZE: number) => {
+      if (!map) return
       try {
-        await delay(250)
+        await delay(100)
         if (map?.getZoom() < 15) {
           await handleCenterChanged()
           return
         }
         const promises = [
-          getMapListItems({ mapData, page, pageSize: PAGE_SIZE }),
+          getMapListItems({ page, pageSize: PAGE_SIZE }),
         ]
         if (page === 1) {
           promises.push(getMapItems()!, handleCenterChanged()!)
@@ -66,13 +66,13 @@ export default function useSearchListQuery({
         throw error
       }
     },
-    [auth.role, getMapItems, handleCenterChanged, map],
+    [map, getMapItems, getMapListItems, handleCenterChanged],
   )
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery(
       [QUERY_KEY, mapData],
-      ({ pageParam = 1 }) => fetchSearchList(mapData, pageParam, PAGE_SIZE),
+      ({ pageParam = 1 }) => fetchSearchList(pageParam, PAGE_SIZE),
       {
         getNextPageParam: (lastPage) => {
           const nextPage = lastPage?.paging?.isLast

@@ -1,14 +1,21 @@
-function useDebounce(func: any, wait: number) {
-  let timeout: NodeJS.Timeout | null = null
+import { useCallback, useEffect, useRef } from "react"
 
-  return () => {
-    if (timeout) clearTimeout(timeout)
+function useDebounce<T extends (...args: any[]) => void>(func: T, wait: number) {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-    return setTimeout(() => {
-      timeout = null
-      func()
-    }, wait)
-  }
+  const debouncedFunction = useCallback((...args: Parameters<T>) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      timeoutRef.current = setTimeout(() => {
+        func(...args)
+      }, wait)
+  }, [func, wait])
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [])
+  return debouncedFunction
 }
 
 export default useDebounce

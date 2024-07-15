@@ -1,4 +1,4 @@
-function AddressArrow() {
+export default function AddressArrow() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -22,5 +22,3 @@ function AddressArrow() {
     </svg>
   )
 }
-
-export default AddressArrow

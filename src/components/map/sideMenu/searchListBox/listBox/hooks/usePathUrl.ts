@@ -1,4 +1,4 @@
-function usePathUrl(type?: number) {
+const usePathUrl = (type?: number) => {
   if (type === 1) {
     return 'https://www.ggi.co.kr'
   } else if (type === 2 || type === 3) {

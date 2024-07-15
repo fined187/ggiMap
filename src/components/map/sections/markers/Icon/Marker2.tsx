@@ -7,16 +7,12 @@ const handleGetColor = (type: number) => {
   switch (type) {
     case 1:
       return colors.kmBlue
-      break
     case 2:
       return colors.gmBlue
-      break
     case 3:
       return colors.ggPurple
-      break
     case 4:
       return colors.kwGreen
-      break
   }
 }
 
@@ -54,7 +50,6 @@ export const UsageTopIcon = (
   count: number,
   type: number,
   winExist: boolean,
-  isOnlySelected?: boolean,
 ) => {
   return `
       <div style="flex-direction: row; display: flex; width: 100px; height: 27px; padding: 2px 4px; justify-content: center; align-items: center; gap: 2px; border-radius: 11px 11px 0px 0px; border-top: ${handleGetBorderColor(

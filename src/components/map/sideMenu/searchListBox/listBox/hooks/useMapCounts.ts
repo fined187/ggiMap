@@ -1,7 +1,6 @@
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { Form } from '@/models/Form'
 import { MapCountsResponse } from '@/models/MapItem'
-import { mapCounts } from '@/models/api/mapItem'
 import postMapCounts from '@/remote/map/items/postMapCounts'
 import { Dispatch, SetStateAction } from 'react'
 import { useMutation } from 'react-query'
@@ -14,7 +13,7 @@ export default function useMapCounts(
   const { data: map } = useSWR(MAP_KEY)
   const countParam = {
     ids:
-      formData.ids.length === 12 || formData.ids.length === 0
+      formData.ids?.length === 12 || formData.ids?.length === 0
         ? '0'
         : formData.ids.map((id) => id).join(','),
     km: formData.km,

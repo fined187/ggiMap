@@ -6,9 +6,9 @@ import Top from './Top'
 import Bottom from './Bottom'
 import { useRecoilState } from 'recoil'
 import { markerPositionAtom } from '@/store/atom/map'
-import { useGetDetail } from './hooks/useGetDetail'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
+import useGetDetail from './hooks/useGetDetail'
 
 interface OverlayProps {
   halfDimensions: { width: number; height: number }

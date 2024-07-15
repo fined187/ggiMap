@@ -6,7 +6,7 @@ import {
 } from '@/remote/interest/deleteInterest'
 import { useMutation } from 'react-query'
 
-export const useDeleteInterest = (type: string, formData: InterestFormData) => {
+const useDeleteInterest = (type: string, formData: InterestFormData) => {
   return useMutation(
     () => {
       switch (type) {
@@ -31,3 +31,5 @@ export const useDeleteInterest = (type: string, formData: InterestFormData) => {
     },
   )
 }
+
+export default useDeleteInterest

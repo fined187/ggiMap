@@ -16,12 +16,12 @@ interface Props {
 
 const COUNT_PER_ROW = 3
 
-export default function SidoList({
+const SidoList = ({
   setRange,
   selectedIndex,
   setSelectedIndex,
   addrToCenter,
-}: Props) {
+}: Props) => {
   const [juso, setJuso] = useRecoilState<jusoProps>(jusoAtom)
   const { data: sidoList } = useGetSidoList()
 
@@ -175,6 +175,8 @@ export default function SidoList({
     </Flex>
   )
 }
+
+export default SidoList
 
 const boxStyle = css`
   display: flex;

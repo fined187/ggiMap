@@ -17,7 +17,7 @@ import Text from '@/components/shared/Text'
 import Flex from '@/components/shared/Flex'
 import Interest from '../../icons/Interest'
 import { colors } from '@/styles/colorPalette'
-import NextImageWithFallback from '../../NextImageWithFallback'
+import NextImageWithFallback from '../../../shared/NextImageWithFallback'
 import { useInterestContext } from '@/contexts/useModalContext'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import {
@@ -106,8 +106,20 @@ export default function Carousel({
                 height: '180px',
                 borderRadius: '8px 8px 0px 0px',
               }}
+              onClick={() => {
+                clickedInfo && clickedInfo[nowIndex]?.type === 4
+                  ? handleDuplicatedOpen(
+                      clickedInfo[nowIndex]?.idCode as string,
+                      clickedInfo[nowIndex]?.type!,
+                    )
+                  : null
+              }}
             >
-              <MiniMap clickedItem={clickedItem} clickedInfo={clickedInfo} />
+              <MiniMap
+                clickedItem={clickedItem}
+                clickedInfo={clickedInfo}
+                handleDuplicatedOpen={handleDuplicatedOpen}
+              />
             </div>
           ) : null,
         )}
@@ -122,17 +134,18 @@ export default function Carousel({
           borderRadius: '8px 8px 0px 0px',
           position: 'relative',
           cursor: 'pointer',
+          zIndex: 10,
+        }}
+        onSlideChange={(swiper) => {
+          setNowIndex(swiper.activeIndex)
         }}
         onClick={() => {
           clickedInfo && clickedInfo[nowIndex]?.type === 4
             ? handleDuplicatedOpen(
-                clickedInfo[nowIndex]?.idCode!,
+                clickedInfo[nowIndex]?.idCode as string,
                 clickedInfo[nowIndex]?.type!,
               )
             : null
-        }}
-        onSlideChange={(swiper) => {
-          setNowIndex(swiper.activeIndex)
         }}
       >
         {clickedInfo &&
@@ -226,6 +239,7 @@ export default function Carousel({
                         position: 'absolute',
                         top: 14,
                         right: 14,
+                        zIndex: 1000,
                       }}
                       onClick={() => {
                         if (openModal) {
@@ -283,35 +297,6 @@ export default function Carousel({
                           </Text>
                         </PageCount>
                       )}
-                    <Flex
-                      style={{
-                        position: 'absolute',
-                        top: 14,
-                        right: 14,
-                        zIndex: 1,
-                      }}
-                      onClick={() => {
-                        if (openModal) {
-                          close()
-                        } else {
-                          open({
-                            type:
-                              clickedInfo &&
-                              clickedInfo[index]?.type?.toString()!,
-                            id: clickedInfo && clickedInfo[index]?.id!,
-                            onButtonClick: () => {
-                              onButtonClick()
-                            },
-                          })
-                        }
-                      }}
-                    >
-                      <Interest
-                        interest={
-                          (clickedInfo && clickedInfo[index]?.interest) || ''
-                        }
-                      />
-                    </Flex>
                     <BottomBox
                       style={{
                         flexDirection: 'row',
@@ -334,6 +319,31 @@ export default function Carousel({
           </>
         ) : null}
       </Swiper>
+      <Flex
+        style={{
+          position: 'absolute',
+          top: 14,
+          right: 14,
+          zIndex: 1000,
+        }}
+        onClick={() => {
+          if (openModal) {
+            close()
+          } else {
+            open({
+              type: clickedInfo && clickedInfo[nowIndex]?.type?.toString()!,
+              id: clickedInfo && (clickedInfo[nowIndex]?.id as string),
+              onButtonClick: () => {
+                onButtonClick()
+              },
+            })
+          }
+        }}
+      >
+        <Interest
+          interest={(clickedInfo && clickedInfo[nowIndex]?.interest) || ''}
+        />
+      </Flex>
     </div>
   )
 }
@@ -356,12 +366,6 @@ const BottomTextStyle = css`
   font-weight: 700;
   line-height: 140%;
   letter-spacing: -0.14px;
-`
-const imageStyles = css`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 4px;
 `
 
 const TextStyle = css`

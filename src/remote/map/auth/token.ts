@@ -3,7 +3,7 @@ import axios from 'axios'
 export default async function handleToken(token: string, type: string) {
   try {
     const response = await axios.post(
-      `ggi/api/auth/map?type=${type}`,
+      `/ggi/api/auth/map?type=${type}`,
       {},
       {
         headers: {

@@ -1,6 +1,5 @@
 import Flex from '@/components/shared/Flex'
 import Text from '@/components/shared/Text'
-import { Form } from '@/models/Form'
 import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
 import { useEffect, useState } from 'react'

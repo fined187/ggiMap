@@ -49,12 +49,11 @@ const useMapUtils = (
 
   useEffect(() => {
     if (!map) return
-    handleParameters(token, type, idCode, map as NaverMap)
     map.setCenter({
       lat: auth.lat,
       lng: auth.lng,
     })
-  }, [map, idCode, type, token, handleParameters, auth.lat, auth.lng])
+  }, [map, auth.lat, auth.lng])
 
   useEffect(() => {
     syncMapTypeToForm()

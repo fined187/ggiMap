@@ -21,7 +21,7 @@ export default function NextImageWithFallback({
   ...rest
 }: NextImageWithFallbackProps) {
   const [imgError, setImgError] = useState(false)
-  const [imgSrc, setImagSrc] = useState(src)
+  const [, setImagSrc] = useState(src)
   useEffect(() => {
     setImagSrc(src)
   }, [src])

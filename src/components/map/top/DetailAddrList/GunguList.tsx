@@ -16,12 +16,12 @@ interface Props {
 
 const COUNT_PER_ROW = 3
 
-export default function GunguList({
+const GunguList = ({
   selectedGunguIndex,
   setSelectedGunguIndex,
   addrToCenter,
   setRange,
-}: Props) {
+}: Props) => {
   const [juso, setJuso] = useRecoilState(jusoAtom)
   const { data: gunguList } = useGetGunguList()
 
@@ -175,6 +175,8 @@ export default function GunguList({
     </Flex>
   )
 }
+
+export default GunguList
 
 const containerStyle = css`
   overflow-y: auto;

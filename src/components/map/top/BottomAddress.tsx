@@ -9,7 +9,7 @@ import Text from '@/components/shared/Text'
 import Spacing from '@/components/shared/Spacing'
 import useSWR from 'swr'
 import { MAP_KEY } from '../sections/hooks/useMap'
-import { useRecoilState } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import { jusoAtom } from '@/store/atom/map'
 
 interface BottomAddressProps {
@@ -18,9 +18,13 @@ interface BottomAddressProps {
   setOpenCursor: Dispatch<SetStateAction<boolean>>
 }
 
-function BottomAddress({ range, setRange, setOpenCursor }: BottomAddressProps) {
+export default function BottomAddress({
+  range,
+  setRange,
+  setOpenCursor,
+}: BottomAddressProps) {
   const { data: map } = useSWR(MAP_KEY)
-  const [juso, setJuso] = useRecoilState(jusoAtom)
+  const juso = useRecoilValue(jusoAtom)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [selectedGunguIndex, setSelectedGunguIndex] = useState<number | null>(
     null,
@@ -161,5 +165,3 @@ const textStyle = css`
   letter-spacing: -0.15px;
   cursor: pointer;
 `
-
-export default BottomAddress

@@ -13,7 +13,6 @@ import { css } from '@emotion/react'
 import { InterestFormData, UpdatedInterest, interest } from '@/models/Interest'
 import Button from '../shared/Button'
 import InfoTextPage from './InfoText'
-import { usePostInterest } from './hooks/usePostInterest'
 import Dimmed from '../shared/Dimmed'
 import { colors } from '@/styles/colorPalette'
 import {
@@ -23,14 +22,15 @@ import {
 } from '@/remote/interest/getInterest'
 import Image from 'next/image'
 import UpdateResult from './InterestResult'
-import { usePutInterest } from './hooks/usePutInterest'
-import { useDeleteInterest } from './hooks/useDeleteInterest'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { mapItemsAtom, mapListAtom } from '@/store/atom/map'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
-import { useMutateDetail } from '../map/sections/overlay/hooks/useMutateDetail'
 import Loader from '../map/sideMenu/searchListBox/listBox/icons/loading/loader/Loader'
+import usePostInterest from './hooks/usePostInterest'
+import usePutInterest from './hooks/usePutInterest'
+import useDeleteInterest from './hooks/useDeleteInterest'
+import useMutateDetail from '../map/sections/overlay/hooks/useMutateDetail'
 
 interface InterestProps {
   type: string
@@ -48,8 +48,8 @@ export default function InterestProps({
   const [openGroup, setOpenGroup] = useState(false)
   const [step, setStep] = useState(1)
   const [interestData, setInterestData] = useState<interest | null>(null)
-  const [mapItems, setMapItems] = useRecoilState(mapItemsAtom)
-  const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
+  const setMapItems = useSetRecoilState(mapItemsAtom)
+  const setMapListItems = useSetRecoilState(mapListAtom)
   const { mutate: postClickedInfo } = useMutateDetail()
   const [formData, setFormData] = useState<InterestFormData>({
     goodsId: '',
@@ -170,10 +170,12 @@ export default function InterestProps({
     },
     [formData.categories, formData.isNewCategory],
   )
-
+  console.log(formData.interestInfo.category)
   const handleForm = () => {
     if (formData.isNewCategory && !formData.interestInfo.category) {
       alert('새 그룹명을 입력해주세요')
+    } else if (formData.interestInfo.category.trim() === '') {
+      alert('그룹명을 1글자 이상 입력해주세요')
     } else if (handleDuplicatedGroupName(formData.interestInfo.category)) {
       return
     } else {
@@ -315,8 +317,6 @@ export default function InterestProps({
         }
         background="#F9F9F9"
         height="107"
-        openGroup={openGroup}
-        setOpenGroup={setOpenGroup}
       />
       <TableFrame
         title="메모"

@@ -10,7 +10,7 @@ import Forms from './items/Form'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { MapItems } from '@/models/MapItem'
 import Loader from './icons/loading/loader/Loader'
-import { useResult } from './hooks/useResult'
+import useResult from './hooks/useResult'
 
 interface ResultProps {
   isOpen: boolean

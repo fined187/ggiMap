@@ -1,6 +1,5 @@
 import { NaverMap } from '@/models/Map'
 import { isPanoramaVisibleAtom } from '@/store/atom/map'
-import { url } from 'inspector'
 import {
   Dispatch,
   SetStateAction,
@@ -10,7 +9,6 @@ import {
   useState,
 } from 'react'
 import { useRecoilValue } from 'recoil'
-import Markers from './markers/Markers'
 
 interface MiniMapProps {
   map: NaverMap
@@ -33,24 +31,18 @@ export default function MiniMap({
   const [miniMap, setMiniMap] = useState<NaverMap | null>(null)
   const isPanoramaVisible = useRecoilValue(isPanoramaVisibleAtom)
   const miniMapRef = useRef<NaverMap | null>(null)
-  let pano_changed = false
+  const panoChanged = useRef(false)
 
-  const calculatePanoPan = (argAngle: number) => {
-    var panoAngle = (360 + argAngle) % 360
-    panoAngle = panoAngle < 0 ? (panoAngle += 360) : panoAngle
-    return panoAngle
-  }
+  const calculatePanoPan = (angle: number) => ((angle % 360) + 360) % 360
 
-  const getMakerIconNumber = (argRadius: number, argDivider: number) => {
-    argDivider = argDivider = 0 ? 360 : argDivider
-    var delta = 360 / argDivider
-    return (Math.round(argRadius / delta) % argDivider) + 1
+  const getMarkerIconNumber = (radius: number, divider: number) => {
+    const delta = 360 / (divider || 1)
+    return (Math.round(radius / delta) % divider) + 1
   }
 
   const initializeMiniMap = useCallback(
     (map: NaverMap) => {
       if (!map) return
-      let semaphore = false
       const miniMapElement = document.getElementById('minimap')
       if (!miniMapElement) return
 
@@ -63,16 +55,14 @@ export default function MiniMap({
       })
       setMiniMap(minimap)
       miniMapRef.current = miniMap
+
       const control: HTMLElement[] = []
       control.push(miniMapElement)
       const roadview = new window.naver.maps.StreetLayer()
       roadview.setMap(minimap)
 
-      let marker = new window.naver.maps.Marker({
-        position: {
-          lat: clickedLatLng?.lat ?? 0,
-          lng: clickedLatLng?.lng ?? 0,
-        },
+      const marker = new window.naver.maps.Marker({
+        position: clickedLatLng,
         map: minimap,
         icon: {
           url: '/images/roadView/rvicon1.png',
@@ -82,33 +72,39 @@ export default function MiniMap({
         },
       })
 
-      window.naver.maps.Event.addListener(pano, 'position_changed', () => {
-        let center = map?.getCenter()
-        let proj = pano?.getProjection()
-        let lookAtPov = proj?.fromCoordToPov(center as naver.maps.LatLng)
-
-        if (pano_changed == false) {
-          if (lookAtPov) {
-            lookAtPov.tilt = 0
-            lookAtPov.fov = 100
-            pano?.setPov(lookAtPov)
-          }
+      const updatePanoPosition = () => {
+        if (panoChanged.current) return
+        const center = map.getCenter()
+        const proj = pano?.getProjection()
+        const lookAtPov = proj?.fromCoordToPov(center as naver.maps.LatLng)
+        if (lookAtPov) {
+          lookAtPov.tilt = 0
+          lookAtPov.fov = 100
+          pano?.setPov(lookAtPov)
         }
-      })
+      }
 
-      window.naver.maps.Event.addListener(pano, 'pov_changed', () => {
-        let getPanValue = calculatePanoPan(pano?.getPov().pan as number)
-        marker?.setIcon({
-          url:
-            '/images/roadView/rvicon' +
-            getMakerIconNumber(getPanValue, 16) +
-            '.png',
+      const updateMarkerIcon = () => {
+        const panValue = calculatePanoPan(pano?.getPov().pan as number)
+        marker.setIcon({
+          url: `/images/roadView/rvicon${getMarkerIconNumber(
+            panValue,
+            16,
+          )}.png`,
           size: new naver.maps.Size(50, 50),
           origin: new naver.maps.Point(0, 0),
           anchor: new naver.maps.Point(25, 35),
         })
-      })
+      }
 
+      window.naver.maps.Event.addListener(
+        pano,
+        'position_changed',
+        updatePanoPosition,
+      )
+      window.naver.maps.Event.addListener(pano, 'pov_changed', updateMarkerIcon)
+
+      let semaphore = false
       window.naver.maps.Event.addListener(map, 'bounds_changed', () => {
         if (semaphore) return
         minimap.fitBounds(map.getBounds())
@@ -130,7 +126,7 @@ export default function MiniMap({
         })
       })
     },
-    [clickedLatLng, setClickedMarker, setIsPanoVisible],
+    [clickedLatLng, setClickedMarker, setIsPanoVisible, pano, map],
   )
 
   useEffect(() => {

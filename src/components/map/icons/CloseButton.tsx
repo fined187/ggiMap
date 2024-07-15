@@ -9,18 +9,18 @@ export default function CloseButton() {
       viewBox="0 0 50 44"
       fill="none"
     >
-      <rect width="50" height="44" rx="4" fill="#000001" fill-opacity="0.9" />
+      <rect width="50" height="44" rx="4" fill="#000001" fillOpacity="0.9" />
       <path
         d="M33 14L17 30"
         stroke="white"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M17 14L33 30"
         stroke="white"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )

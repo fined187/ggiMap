@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
-import { useState } from 'react'
 
-function TopBar({
+export default function TopBar({
   children,
   openCursor,
 }: {
@@ -12,13 +11,13 @@ function TopBar({
 }
 
 const Container = styled.div<{ openCursor: boolean }>`
-  position: absolute;
+  position: fixed;
   min-width: 200px;
   max-width: 450px;
   top: 30px;
   left: calc(50% + 100px);
   transform: translateX(-50%);
-  z-index: 10;
+  z-index: 9;
   display: flex;
   height: 40px;
   justify-content: center;
@@ -28,5 +27,3 @@ const Container = styled.div<{ openCursor: boolean }>`
   border: ${({ openCursor }) =>
     openCursor ? '1px solid #332EFC' : '1px solid #000001'};
 `
-
-export default TopBar

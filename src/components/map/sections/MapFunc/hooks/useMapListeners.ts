@@ -1,7 +1,7 @@
 import { NaverMap } from '@/models/Map'
 import { useEffect } from 'react'
 
-export const useMapListeners = (
+const useMapListeners = (
   map: NaverMap,
   onClickCallback: (e: any) => void,
   onMouseMoveCallback: (e: MouseEvent) => void,
@@ -28,3 +28,5 @@ export const useMapListeners = (
     }
   }, [map, onClickCallback, onMouseMoveCallback, finishCallback])
 }
+
+export default useMapListeners

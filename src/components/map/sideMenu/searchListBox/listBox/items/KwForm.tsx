@@ -45,6 +45,7 @@ function KwForm({
         css={ContainerStyle}
         style={{
           borderTop: `${index === 0 ? '' : '0.5px solid #e0e0e0 '}`,
+          zIndex: 1000,
         }}
       >
         <ListRow
@@ -67,6 +68,9 @@ function KwForm({
           }
           right={
             <Flex
+              style={{
+                zIndex: 1000,
+              }}
               onClick={() => {
                 if (openModal) {
                   close()
@@ -93,6 +97,7 @@ function KwForm({
             position: 'absolute',
             top: 60,
             cursor: 'pointer',
+            zIndex: 1,
           }}
           onClick={() => {
             handleDuplicatedOpen(item?.idCode ?? '', item?.type ?? 4)

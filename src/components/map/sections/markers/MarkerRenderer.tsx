@@ -10,10 +10,9 @@ import {
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 import IconContent from './IconContent'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import {
   clickedItemAtom,
-  isPanoramaVisibleAtom,
   listOverItemAtom,
   markerPositionAtom,
 } from '@/store/atom/map'
@@ -35,37 +34,35 @@ const MarkerRenderer = ({
 }: MarkerRendererProps) => {
   const { data: map } = useSWR(MAP_KEY)
   const markerRef = useRef<naver.maps.Marker | null>(null)
-  const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
+  const setMarkerPosition = useSetRecoilState(markerPositionAtom)
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
-  const [listOver, setListOver] = useRecoilState(listOverItemAtom)
+  const listOver = useRecoilValue(listOverItemAtom)
   let markers: naver.maps.Marker[] = []
   const handleItemUsage = useCallback(() => {
-    switch (item.usage) {
-      case '단독':
-        return '단독'
-      case '다가구':
-        return '다가구'
-      case '연립':
-        return '연립'
-      case '다세대':
-        return '다세대'
-      case '전':
-        return '전'
-      case '답':
-        return '답'
-      case '과수':
-        return '과수'
-      case '기타토지':
-        return '기타'
-      case '상업시설':
-        return '상업'
-      case '공업시설':
-        return '공업'
-      default:
-        return item.usage.length >= 4
-          ? `${item.usage.slice(0, 2)}<br />${item.usage.slice(2, 4)}`
-          : item.usage
+    const usageMapping: { [key: string]: string } = {
+      단독: '단독',
+      다가구: '다가구',
+      연립: '연립',
+      다세대: '다세대',
+      전: '전',
+      답: '답',
+      과수: '과수',
+      기타토지: '기타',
+      상업시설: '상업',
+      공업시설: '공업',
     }
+
+    const mappedUsage = usageMapping[item.usage]
+
+    if (!mappedUsage) {
+      if (item.usage.length >= 4) {
+        return `${item.usage.slice(0, 2)}<br />${item.usage.slice(2, 4)}`
+      } else {
+        return item.usage
+      }
+    }
+
+    return mappedUsage
   }, [item?.usage])
 
   const handleZIndex = useCallback((types: number, yn: string) => {

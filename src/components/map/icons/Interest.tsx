@@ -1,6 +1,10 @@
-function Interest({ interest }: { interest: string }) {
+export default function Interest({ interest }: { interest: string }) {
   return (
-    <>
+    <div
+      style={{
+        zIndex: 1000,
+      }}
+    >
       {interest === 'Y' ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -43,8 +47,6 @@ function Interest({ interest }: { interest: string }) {
           />
         </svg>
       )}
-    </>
+    </div>
   )
 }
-
-export default Interest
