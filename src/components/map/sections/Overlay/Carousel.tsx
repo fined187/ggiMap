@@ -319,31 +319,33 @@ export default function Carousel({
           </>
         ) : null}
       </Swiper>
-      <Flex
-        style={{
-          position: 'absolute',
-          top: 14,
-          right: 14,
-          zIndex: 1000,
-        }}
-        onClick={() => {
-          if (openModal) {
-            close()
-          } else {
-            open({
-              type: clickedInfo && clickedInfo[nowIndex]?.type?.toString()!,
-              id: clickedInfo && (clickedInfo[nowIndex]?.id as string),
-              onButtonClick: () => {
-                onButtonClick()
-              },
-            })
-          }
-        }}
-      >
-        <Interest
-          interest={(clickedInfo && clickedInfo[nowIndex]?.interest) || ''}
-        />
-      </Flex>
+      {clickedInfo && clickedInfo[nowIndex]?.type === 4 ? (
+        <Flex
+          style={{
+            position: 'absolute',
+            top: 14,
+            right: 14,
+            zIndex: 1000,
+          }}
+          onClick={() => {
+            if (openModal) {
+              close()
+            } else {
+              open({
+                type: clickedInfo && clickedInfo[nowIndex]?.type?.toString()!,
+                id: clickedInfo && (clickedInfo[nowIndex]?.id as string),
+                onButtonClick: () => {
+                  onButtonClick()
+                },
+              })
+            }
+          }}
+        >
+          <Interest
+            interest={(clickedInfo && clickedInfo[nowIndex]?.interest) || ''}
+          />
+        </Flex>
+      ) : null}
     </div>
   )
 }

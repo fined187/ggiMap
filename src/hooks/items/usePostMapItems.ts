@@ -35,21 +35,28 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
     selectedType: auth.type !== '' ? parseInt(auth.type) : null,
   }
 
-  const { mutate } = useMutation(['mapItems', param], async () => formData.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE') ? null : await postMapItems(param), {
-    onSuccess: (data) => {
-      if (data) {
-        setMapItems([])
-        setMapItems(data?.mapItems as MapItem[])
-      } else {
-        return
-      }
-      dragState = false
+  const { mutate } = useMutation(
+    ['mapItems', param],
+    async () =>
+      formData.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE')
+        ? null
+        : await postMapItems(param),
+    {
+      onSuccess: (data) => {
+        if (data) {
+          setMapItems([])
+          setMapItems(data?.mapItems as MapItem[])
+        } else {
+          return
+        }
+        dragState = false
+      },
+      onError: () => {
+        setMapItems((prev) => {
+          return prev
+        })
+      },
     },
-    onError: () => {
-      setMapItems((prev) => {
-        return prev
-      })
-    },
-  })
+  )
   return { mutate }
 }

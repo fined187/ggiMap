@@ -15,7 +15,9 @@ const useSessionStorage = <T>({
     }
     try {
       const sessionStorageValue = window.sessionStorage.getItem(key)
-      return sessionStorageValue ? JSON.parse(sessionStorageValue) : initialValue
+      return sessionStorageValue
+        ? JSON.parse(sessionStorageValue)
+        : initialValue
     } catch (error) {
       console.error(error)
       return initialValue
@@ -30,19 +32,19 @@ const useSessionStorage = <T>({
 
   const setSessionStorage = (value: T) => {
     try {
-      window.sessionStorage.setItem(key, JSON.stringify(value));
-      setState(value);
+      window.sessionStorage.setItem(key, JSON.stringify(value))
+      setState(value)
     } catch (error) {
-      console.error(`Error setting session storage key "${key}":`, error);
+      console.error(`Error setting session storage key "${key}":`, error)
     }
   }
 
   const removeSessionStorage = () => {
     try {
-      window.sessionStorage.removeItem(key);
-      setState(initialValue);
+      window.sessionStorage.removeItem(key)
+      setState(initialValue)
     } catch (error) {
-      console.error(`Error removing session storage key "${key}":`, error);
+      console.error(`Error removing session storage key "${key}":`, error)
     }
   }
 

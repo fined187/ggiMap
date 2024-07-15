@@ -16,26 +16,9 @@ import AddressContainer from '../top/AddressContainer'
 import useMapUtils from './hooks/useMapUtils'
 import { authInfo } from '@/store/atom/auth'
 
-interface MapProps {
-  token: string
-  handleParameters: (
-    params1: string,
-    params2: string,
-    params3?: string,
-    map?: NaverMap,
-  ) => void
-  idCode?: string
-  type?: string
-}
-
 const isHalfWindow = () => window.innerWidth < 768
 
-export default function MapSection({
-  token,
-  idCode,
-  type,
-  handleParameters,
-}: MapProps) {
+export default function MapSection() {
   const auth = useRecoilValue(authInfo)
   const [openCursor, setOpenCursor] = useState<boolean>(false)
   const markerClickedRef = useRef<boolean>(false)
@@ -54,7 +37,7 @@ export default function MapSection({
     setIsOpen,
     clickedMapType,
     setClickedMapType,
-  } = useMapUtils(token, type ?? '', idCode ?? '', handleParameters)
+  } = useMapUtils()
 
   const initialCenter = useMemo(() => {
     return auth.lat && auth.lng

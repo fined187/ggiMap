@@ -25,7 +25,7 @@ const fetchDetails = async (ids: string[], types: number[]) => {
     ids.map((id, index) => {
       const fetcher = detailFetchers[types[index]]
       return fetcher ? fetcher(id) : null
-    })
+    }),
   )
   return data.filter((item): item is ItemDetail => item !== null)
 }

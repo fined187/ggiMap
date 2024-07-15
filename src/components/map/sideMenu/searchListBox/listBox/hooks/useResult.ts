@@ -26,8 +26,6 @@ import {
 } from 'recoil'
 import useSWR from 'swr'
 import useSearchListQuery from './useSearchListQuery'
-import { Form } from '@/models/Form'
-import { Auth } from '@/models/Auth'
 import { MapListResponse } from '@/models/MapItem'
 import { InfiniteData } from 'react-query'
 
@@ -46,7 +44,6 @@ const useResult = (
   const [isOnlySelected, setIsOnlySelected] = useRecoilState(isOnlySelectedAtom)
   const setPage = useSetRecoilState(pageAtom)
   const { performReverseGeocode } = useReverseGeoCode()
-  const [mapData, setMapData] = useState(getInitialMapData(formData, auth))
 
   const handleCenterChanged = useCallback(() => {
     if (!map) return
@@ -56,7 +53,6 @@ const useResult = (
   }, [map, setJuso, performReverseGeocode])
 
   const { data, fetchNextPage, hasNextPage, isLoading } = useSearchListQuery({
-    mapData,
     handleCenterChanged,
     dragStateRef,
   })
@@ -75,9 +71,6 @@ const useResult = (
       setIsOpen(true)
     }
   }, [map, map?.getZoom(), setPage, setIsOpen])
-  useEffect(() => {
-    setMapData(getMapData(formData, auth))
-  }, [formData, auth])
 
   useEffect(() => {
     handleUpdateMapList(data, setMapListItems, scrollToTop)
@@ -124,58 +117,6 @@ const useResult = (
     auth,
   }
 }
-
-const getInitialMapData = (formData: Form, auth: Auth) => ({
-  ids:
-    formData.ids.length === 12 ? '0' : formData.ids.map((id) => id).join(','),
-  fromAppraisalAmount: formData.fromAppraisalAmount,
-  toAppraisalAmount: formData.toAppraisalAmount,
-  fromMinimumAmount: formData.fromMinimumAmount,
-  toMinimumAmount: formData.toMinimumAmount,
-  interests: formData.interests,
-  x1: formData.x1,
-  y1: formData.y1,
-  x2: formData.x2,
-  y2: formData.y2,
-  awardedMonths: formData.awardedMonths,
-  km: formData.km,
-  kw: formData.kw,
-  gm: formData.gm,
-  gg: formData.gg,
-  ekm: formData.ekm,
-  egm: formData.egm,
-  egg: formData.egg,
-  role: formData.role,
-  selectedId: auth.idCode !== '' ? auth.idCode : null,
-  selectedType: auth.type !== '' ? parseInt(auth.type) : null,
-})
-
-const getMapData = (formData: Form, auth: Auth) => ({
-  ids:
-    formData.ids.length === 12 || formData.ids.length === 0
-      ? '0'
-      : formData.ids.map((id) => id).join(','),
-  fromAppraisalAmount: formData.fromAppraisalAmount,
-  toAppraisalAmount: formData.toAppraisalAmount,
-  fromMinimumAmount: formData.fromMinimumAmount,
-  toMinimumAmount: formData.toMinimumAmount,
-  interests: formData.interests,
-  x1: formData.x1,
-  y1: formData.y1,
-  x2: formData.x2,
-  y2: formData.y2,
-  awardedMonths: formData.awardedMonths,
-  km: formData.km,
-  kw: formData.kw,
-  gm: formData.gm,
-  gg: formData.gg,
-  ekm: formData.ekm,
-  egm: formData.egm,
-  egg: formData.egg,
-  role: formData.role,
-  selectedId: auth.idCode !== '' ? auth.idCode : null,
-  selectedType: auth.type !== '' ? parseInt(auth.type) : null,
-})
 
 const handleUpdateMapList = (
   data: InfiniteData<MapListResponse | undefined> | undefined,

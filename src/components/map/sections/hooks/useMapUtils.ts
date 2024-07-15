@@ -1,31 +1,19 @@
-import { NaverMap } from '@/models/Map'
 import useSWR from 'swr'
 import { MAP_KEY } from './useMap'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
 import { useCallback, useEffect, useState } from 'react'
 import { MapCountsResponse } from '@/models/MapItem'
 import { authInfo } from '@/store/atom/auth'
 
-const useMapUtils = (
-  token: string,
-  type: string,
-  idCode: string,
-  handleParameters: (
-    params1: string,
-    params2: string,
-    params3?: string,
-    map?: NaverMap,
-  ) => void,
-) => {
+const useMapUtils = () => {
   const { data: map } = useSWR(MAP_KEY)
-  const [formData, setFormData] = useRecoilState(formDataAtom)
+  const setFormData = useSetRecoilState(formDataAtom)
   const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
   const [openOverlay, setOpenOverlay] = useState(false)
   const [isOpen, setIsOpen] = useState(true)
   const auth = useRecoilValue(authInfo)
 
-  // 초기 맵 타입 설정
   const initialMapType = {
     basic: true,
     terrain: false,

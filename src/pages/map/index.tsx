@@ -26,6 +26,11 @@ import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import axios from 'axios'
 
+declare global {
+  interface Window {
+    naver: any
+  }
+}
 interface Props {
   data?: {
     userId: string | null
@@ -34,11 +39,6 @@ interface Props {
   token?: string | null
   type?: string | null
   idCode?: string | null
-}
-declare global {
-  interface Window {
-    naver: any
-  }
 }
 
 function MapComponent({ token, type, idCode }: Props) {
@@ -161,7 +161,7 @@ function MapComponent({ token, type, idCode }: Props) {
       if (response && response.success) {
         const { data } = response
 
-        setSelectedData((prev: any) => ({
+        setSelectedData((prev) => ({
           ...prev,
           [`${handleItemType(type)}`]: data,
         }))
@@ -191,7 +191,7 @@ function MapComponent({ token, type, idCode }: Props) {
           ok = true
           delayExecution(() => {
             alert('지도 검색은 유료서비스 입니다.')
-            // window.close()
+            window.close()
           }, 500)
         }
       }
@@ -291,14 +291,7 @@ function MapComponent({ token, type, idCode }: Props) {
     handleParameters(token as string, type as string, idCode as string, map)
   }, [map, token, type, idCode, handleParameters])
 
-  return (
-    <MapSection
-      token={token as string}
-      idCode={idCode as string}
-      type={type as string}
-      handleParameters={handleParameters}
-    />
-  )
+  return <MapSection />
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

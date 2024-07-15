@@ -18,5 +18,8 @@ const fetchSidoList = async (): Promise<SidoProps[]> => {
 
 export default function useGetSidoList() {
   const juso = useRecoilValue(jusoAtom)
-  return useQuery<SidoProps[], Error>(['sidoList', juso.bottomSido], fetchSidoList)
+  return useQuery<SidoProps[], Error>(
+    ['sidoList', juso.bottomSido],
+    fetchSidoList,
+  )
 }

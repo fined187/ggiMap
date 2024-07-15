@@ -1,4 +1,4 @@
-import { ListData, MapItems, MapListResponse } from '@/models/MapItem'
+import { MapItems, MapListResponse } from '@/models/MapItem'
 import { MutableRefObject, useCallback, useMemo } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import { useRecoilValue } from 'recoil'
@@ -10,7 +10,6 @@ import { authInfo } from '@/store/atom/auth'
 import usePostListItems from '../../hooks/usePostListItems'
 
 interface SearchListQueryProps {
-  mapData: ListData
   handleCenterChanged: () => void
   dragStateRef: MutableRefObject<boolean>
 }
@@ -19,7 +18,6 @@ const QUERY_KEY = 'searchList'
 const PAGE_SIZE = 10
 
 export default function useSearchListQuery({
-  mapData,
   handleCenterChanged,
   dragStateRef,
 }: SearchListQueryProps) {
@@ -30,7 +28,7 @@ export default function useSearchListQuery({
     formData,
     dragStateRef.current,
   )
-  const { mutateAsync: getMapListItems } = usePostListItems({formData})
+  const { mutateAsync: getMapListItems } = usePostListItems({ formData })
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -43,9 +41,7 @@ export default function useSearchListQuery({
           await handleCenterChanged()
           return
         }
-        const promises = [
-          getMapListItems({ page, pageSize: PAGE_SIZE }),
-        ]
+        const promises = [getMapListItems({ page, pageSize: PAGE_SIZE })]
         if (page === 1) {
           promises.push(getMapItems()!, handleCenterChanged()!)
         }
@@ -71,7 +67,7 @@ export default function useSearchListQuery({
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery(
-      [QUERY_KEY, mapData],
+      [QUERY_KEY, formData],
       ({ pageParam = 1 }) => fetchSearchList(pageParam, PAGE_SIZE),
       {
         getNextPageParam: (lastPage) => {

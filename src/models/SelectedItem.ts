@@ -1,5 +1,3 @@
-import { MapItem } from './MapItem'
-
 export interface SelectedItem {
   kmItem?: {
     id: string

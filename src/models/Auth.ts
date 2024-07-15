@@ -71,7 +71,7 @@ export interface InitialDataResponse {
   contents: {
     contents: MapItems[]
     paging: PageInfo
-  },
+  }
   isLogin: boolean
   isAuth: boolean
   token: string

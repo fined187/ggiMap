@@ -11,12 +11,10 @@ interface PostListItemsArgs {
   pageSize: number
 }
 
-
-
 function usePostListItems({ formData }: { formData: Form }) {
   const setMapList = useSetRecoilState(mapListAtom)
   const auth = useRecoilValue(authInfo)
-  const param = {
+  const param: ListData = {
     ids:
       formData.ids.length === 12 || formData.ids.length === 0
         ? '0'
@@ -44,7 +42,9 @@ function usePostListItems({ formData }: { formData: Form }) {
   return useMutation<MapListResponse, unknown, PostListItemsArgs>(
     ['postListItems', param],
     async ({ page, pageSize }) => {
-      const response = formData.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE') ? null :  await postListItems(param, page, pageSize)
+      const response = formData.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE')
+        ? null
+        : await postListItems(param, page, pageSize)
       if (!response) {
         setMapList((prev) => {
           return {

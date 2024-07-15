@@ -1,6 +1,4 @@
-import { MapItem, MapItems, MapListResponse } from '@/models/MapItem'
 import axios from 'axios'
-import { SetterOrUpdater } from 'recoil'
 
 export const getSampleItems = async (type: number): Promise<void> => {
   try {
