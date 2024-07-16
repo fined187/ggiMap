@@ -1,5 +1,11 @@
 import { MapItems, MapListResponse } from '@/models/MapItem'
-import { MutableRefObject, useCallback, useEffect, useMemo, useRef } from 'react'
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react'
 import { useInfiniteQuery } from 'react-query'
 import { useRecoilValue } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
@@ -51,19 +57,21 @@ export default function useSearchListQuery({
           await handleCenterChanged()
           return
         }
-  
-        let listItems;
+
+        let listItems
         if (page === 1) {
-          const [mapListItems] = await Promise.all([getMapListItems({ page, pageSize: PAGE_SIZE })]);
-          listItems = mapListItems;
-          const promises = [];
-          promises.push(getMapItems());
-          promises.push(handleCenterChanged());
-          await Promise.all(promises);
+          const [mapListItems] = await Promise.all([
+            getMapListItems({ page, pageSize: PAGE_SIZE }),
+          ])
+          listItems = mapListItems
+          const promises = []
+          promises.push(getMapItems())
+          promises.push(handleCenterChanged())
+          await Promise.all(promises)
         } else {
-          listItems = await getMapListItems({ page, pageSize: PAGE_SIZE });
+          listItems = await getMapListItems({ page, pageSize: PAGE_SIZE })
         }
-  
+
         if (
           listItems?.contents.some(
             (item: MapItems) => item.idCode === auth.idCode,
@@ -71,22 +79,23 @@ export default function useSearchListQuery({
         ) {
           listItems.contents = listItems.contents.filter(
             (item: MapItems) => item.idCode !== auth.idCode,
-          );
-          return { ...listItems } as MapListResponse;
+          )
+          return { ...listItems } as MapListResponse
         }
-        return listItems as unknown as MapListResponse;
+        return listItems as unknown as MapListResponse
       } catch (error) {
-        console.error('fetchSearchList error:', error);
-        throw error;
+        console.error('fetchSearchList error:', error)
+        throw error
       }
     },
     [map, getMapItems, getMapListItems, handleCenterChanged, auth.idCode],
-  );
+  )
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery(
       [QUERY_KEY, formData],
-      ({ pageParam = 1 }) => fetchSearchList(pageParam, PAGE_SIZE) as Promise<MapListResponse>,
+      ({ pageParam = 1 }) =>
+        fetchSearchList(pageParam, PAGE_SIZE) as Promise<MapListResponse>,
       {
         getNextPageParam: (lastPage) => {
           const nextPage = lastPage?.paging?.isLast

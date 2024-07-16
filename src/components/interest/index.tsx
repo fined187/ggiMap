@@ -170,7 +170,6 @@ export default function InterestProps({
     },
     [formData.categories, formData.isNewCategory],
   )
-  console.log(formData.interestInfo.category)
   const handleForm = () => {
     if (formData.isNewCategory && !formData.interestInfo.category) {
       alert('새 그룹명을 입력해주세요')

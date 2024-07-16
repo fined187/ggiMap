@@ -34,7 +34,6 @@ const useResult = (
   dragStateRef: MutableRefObject<boolean>,
 ) => {
   const { data: map } = useSWR(MAP_KEY)
-  const [formData, setFormData] = useRecoilState(formDataAtom)
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
   const [showingList, setShowingList] = useState(false)
   const scrollbarRef = useRef<HTMLDivElement | null>(null)

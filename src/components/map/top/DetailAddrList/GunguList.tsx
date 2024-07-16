@@ -199,6 +199,16 @@ const containerStyle = css`
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+
+  & {
+    scrollbar-width: thin;
+    scrollbar-color: #dfdfdf #fff;
+    border-radius: 6px;
+  }
+
+  &:hover {
+    scrollbar-color: #555 #fff;
+  }
 `
 
 const boxStyle = css`

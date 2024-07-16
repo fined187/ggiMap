@@ -93,7 +93,7 @@ export default function ListBox({
 }
 
 const ContainerStyle = css`
-  width: 370px;
+  width: 375px;
   z-index: 10;
   border-radius: 16px;
   border: 1px solid #e0e0e0;

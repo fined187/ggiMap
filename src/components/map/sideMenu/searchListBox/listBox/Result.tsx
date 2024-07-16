@@ -174,6 +174,19 @@ const Container = styled.div<{ isOpen: boolean }>`
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+
+  & {
+    scrollbar-width: thin;
+    scrollbar-color: #dfdfdf #fff;
+    border-radius: 6px;
+  }
+
+  &:hover {
+    scrollbar-color: #555 #fff;
+  }
+  & > * {
+    width: 100%;
+  }
 `
 
 const NoResultText = css`

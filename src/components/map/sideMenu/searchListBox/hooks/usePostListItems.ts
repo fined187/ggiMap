@@ -45,17 +45,19 @@ function usePostListItems({ formData }: { formData: Form }) {
   return useMutation<MapListResponse, unknown, PostListItemsArgs>(
     ['postListItems', param],
     async ({ page, pageSize }) => {
-      const isRoleAnonymousOrFree = ['ROLE_ANONYMOUS', 'ROLE_FREE'].some(role => formData.role.includes(role))
+      const isRoleAnonymousOrFree = ['ROLE_ANONYMOUS', 'ROLE_FREE'].some(
+        (role) => formData.role.includes(role),
+      )
       if (isRoleAnonymousOrFree) {
         const prev = prevList
         setMapList((prev) => ({
           contents: [],
           paging: prev.paging,
         }))
-        return { contents: [], paging: prev.paging } as MapListResponse;
+        return { contents: [], paging: prev.paging } as MapListResponse
       }
       const response = await postListItems(param, page, pageSize)
-  
+
       if (response?.data.data) {
         return response?.data.data as MapListResponse
       }
@@ -64,8 +66,8 @@ function usePostListItems({ formData }: { formData: Form }) {
     {
       onError: (error) => {
         console.error('usePostListItems error:', error)
-      }
-    }
+      },
+    },
   )
 }
 

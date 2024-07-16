@@ -243,9 +243,14 @@ function MapComponent({ token, type, idCode }: Props) {
                 'ROLE_ANONYMOUS' || 'ROLE_FREE',
               )
             ) {
+              setJuso((prev) => ({
+                ...prev,
+                topSido: '서울특별시',
+                topGungu: '서초구',
+                topDong: '서초동',
+              }))
               handleAnonymous()
               setMapItems(response.data.mapItems as MapItem[])
-              console.log(response.data.contents)
               setMapList({
                 contents: response.data.contents?.contents as MapItems[],
                 paging: response.data.contents?.paging as PageInfo,
