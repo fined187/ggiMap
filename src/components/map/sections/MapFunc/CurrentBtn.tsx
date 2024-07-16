@@ -1,13 +1,16 @@
 import styled from '@emotion/styled'
-import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 export default function CurrentBtn() {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   const handleMoveCurrentLocation = () => {
     navigator?.geolocation?.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords
-      map.setCenter({ lat: latitude, lng: longitude })
+      map?.setCenter({ lat: latitude, lng: longitude })
     })
   }
   return (

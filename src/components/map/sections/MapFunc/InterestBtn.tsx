@@ -4,6 +4,10 @@ import styled from '@emotion/styled'
 import { Dispatch, SetStateAction } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { formDataAtom } from '@/store/atom/map'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -36,10 +40,12 @@ export default function InterestBtn({
   clickedMapType,
   setClickedMapType,
 }: MapTypeProps) {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   return (
     <>
-      {map?.getZoom() >= 15 && (
+      {map && map?.getZoom() >= 15 && (
         <ContainerStyle
           interest={clickedMapType.interest}
           onClick={() => {
@@ -76,7 +82,7 @@ export default function InterestBtn({
           </Text>
         </ContainerStyle>
       )}
-      {map?.getZoom() < 15 && (
+      {map && map?.getZoom() < 15 && (
         <NoContainerStyle>
           <div
             style={{

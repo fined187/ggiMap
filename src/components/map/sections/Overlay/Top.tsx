@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Flex from '@/components/shared/Flex'
-import { ItemDetail } from '@/models/ItemDetail'
 import { css } from '@emotion/react'
 import { Dispatch, SetStateAction } from 'react'
-import { MapItem } from '@/models/MapItem'
 import Carousel from './Carousel'
 
 interface TopProps {

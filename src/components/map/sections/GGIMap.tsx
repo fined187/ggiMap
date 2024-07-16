@@ -112,6 +112,7 @@ export default function GGIMap({
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
   const { handleGeoCode } = useGeoCode(auth.address, mapRef.current)
   const debouncedMapCounts = useDebounce(getMapCounts, 100)
+
   const updateFormDataBounds = useCallback(() => {
     if (!mapRef.current || auth.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE'))
       return
@@ -125,16 +126,22 @@ export default function GGIMap({
       x2: ne.lng(),
       y2: ne.lat(),
     }))
+    console.log(mapRef.current.getCenter())
   }, [setFormData])
-
   const initializeMap: () => void = useCallback(() => {
     if (!window.naver?.maps) return
+
     const mapOptions = {
       center: { lat: auth.lat, lng: auth.lng },
       zoom: zoom ?? 17,
       minZoom: 9,
       draggable: true,
+      maxBounds: new window.naver.maps.LatLngBounds(
+        new window.naver.maps.LatLng(33.1, 126.16),
+        new window.naver.maps.LatLng(38.614, 130.873),
+      ),
     }
+
     const map = new window.naver.maps.Map(mapId, mapOptions)
     mapRef.current = map
     map.setCenter({
@@ -253,6 +260,7 @@ export default function GGIMap({
     formData.toMinimumAmount,
     formData.toAppraisalAmount,
     formData.ids,
+    formData.interests,
   ])
 
   const useUnload = (func: () => void) => {

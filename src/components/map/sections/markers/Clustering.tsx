@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface ClusteringProps {
   item: {
@@ -14,7 +16,9 @@ interface ClusteringProps {
 }
 
 export default function Clustering({ item }: ClusteringProps) {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
 
   const placeName = useMemo(() => {
     if (!map) return ''

@@ -1,7 +1,8 @@
 import { Form } from '@/models/Form'
 import { useEffect } from 'react'
-import useSWR from 'swr'
 import { MAP_KEY } from '../sections/hooks/useMap'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface ArrowProps {
   setIsBoxOpen: React.Dispatch<
@@ -23,7 +24,9 @@ export default function Arrow({
   setIsOpenArrow,
   formData,
 }: ArrowProps) {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   useEffect(() => {
     if (formData.lastFilter === 1) {
       if (isOpenArrow) {
@@ -94,7 +97,7 @@ export default function Arrow({
   return (
     <div
       style={{
-        cursor: map?.getZoom() < 15 ? 'not-allowed' : 'pointer',
+        cursor: map && map?.getZoom() < 15 ? 'not-allowed' : 'pointer',
       }}
       onClick={() => {
         if (map && map?.getZoom() < 15) return

@@ -1,13 +1,16 @@
-import useSWR from 'swr'
 import { MAP_KEY } from './useMap'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
 import { useCallback, useEffect, useState } from 'react'
 import { MapCountsResponse } from '@/models/MapItem'
 import { authInfo } from '@/store/atom/auth'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 const useMapUtils = () => {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   const setFormData = useSetRecoilState(formDataAtom)
   const [mapCount, setMapCount] = useState<MapCountsResponse[]>([])
   const [openOverlay, setOpenOverlay] = useState(false)
@@ -37,7 +40,7 @@ const useMapUtils = () => {
 
   useEffect(() => {
     if (!map) return
-    map.setCenter({
+    map?.setCenter({
       lat: auth.lat,
       lng: auth.lng,
     })

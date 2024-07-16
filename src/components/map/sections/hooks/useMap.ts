@@ -1,5 +1,6 @@
 import { Coordinates, NaverMap } from '@/models/Map'
 import { useCallback } from 'react'
+import { useMutation, useQueryClient } from 'react-query'
 import useSWR, { mutate } from 'swr'
 
 export const INITIAL_CENTER: Coordinates = [37.497013, 127.0114263]
@@ -12,6 +13,11 @@ const useMap = () => {
 
   const initializeMap = useCallback((map: NaverMap) => {
     mutate(MAP_KEY, map)
+  }, [])
+
+  const queryClient = useQueryClient()
+  const useInitializeMap = useCallback((map: NaverMap) => {
+    return queryClient.setQueryData<NaverMap>([MAP_KEY], map)
   }, [])
 
   const resetMapOptions = useCallback(() => {
@@ -28,6 +34,7 @@ const useMap = () => {
     initializeMap,
     resetMapOptions,
     getMapOptions,
+    useInitializeMap,
   }
 }
 

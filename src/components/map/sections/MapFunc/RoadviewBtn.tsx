@@ -1,7 +1,8 @@
 import styled from '@emotion/styled'
 import { Dispatch, SetStateAction, useEffect } from 'react'
-import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 type clickedMapProps = {
   basic: boolean
@@ -24,7 +25,10 @@ export default function RoadviewBtn({
   clickedMapType,
   setClickedMapType,
 }: MapTypeProps) {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
+
   useEffect(() => {
     if (map) {
       const roadview = new window.naver.maps.StreetLayer()

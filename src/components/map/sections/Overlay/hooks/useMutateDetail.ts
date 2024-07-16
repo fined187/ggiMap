@@ -15,7 +15,6 @@ const useMutateDetail = () => {
   const ids = clickedItem?.ids ?? []
   const type = clickedItem?.types ?? []
 
-  // 데이터 패칭 함수 정의
   const fetchDetails = async () => {
     const data = await Promise.all(
       ids.map(async (id, index) => {
@@ -34,7 +33,6 @@ const useMutateDetail = () => {
     return data.filter((item) => item !== null) as ItemDetail[]
   }
 
-  // Mutation 훅 생성
   const mutateDetails = useMutation(fetchDetails, {
     onSuccess: (data) => {
       const sortedData = data.sort((a, b) => {

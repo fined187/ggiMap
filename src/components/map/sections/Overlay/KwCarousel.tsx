@@ -109,12 +109,6 @@ export default function KwCarousel({
   )
 }
 
-const ContainerStyle = css`
-  width: 300px;
-  height: 180px;
-  border-radius: 8px 8px 0px 0px;
-`
-
 const TextStyle = css`
   color: #fff;
   font-family: SUIT;

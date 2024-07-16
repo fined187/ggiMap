@@ -7,6 +7,8 @@ import SubFilterProps from './SubFilterProps'
 import Arrow from '../../icons/Arrow'
 import useSWR from 'swr'
 import { MAP_KEY } from '../../sections/hooks/useMap'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface SearchBoxProps {
   formData: Form
@@ -36,7 +38,9 @@ export default function SubFilter({
   setOpenOverlay,
 }: SearchBoxProps) {
   const [nowChecked, setNowChecked] = useState(1)
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   useEffect(() => {
     if (
       !isBoxOpen.usage &&
@@ -50,7 +54,7 @@ export default function SubFilter({
           isSubFilterBoxOpen: false,
         }
       })
-    } else if (nowChecked !== 2 && map?.getZoom() < 15) {
+    } else if (nowChecked !== 2 && map && map?.getZoom() < 15) {
       setFormData({
         ...formData,
         isSubFilterBoxOpen: false,

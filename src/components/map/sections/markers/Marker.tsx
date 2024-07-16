@@ -1,7 +1,6 @@
 import { MapItem } from '@/models/MapItem'
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import MarkerRenderer from './MarkerRenderer'
-import { NaverMap } from '@/models/Map'
 
 interface MarkerProps {
   item: MapItem

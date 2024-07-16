@@ -12,6 +12,8 @@ import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import { Area, AreaTextStyle, Distance, TextStyle } from './styled/MeasureStyle'
 import useMapListeners from './hooks/useMapListeners'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface ToolsBtnProps {
   clickedMapType: {
@@ -156,7 +158,7 @@ export const Measure = ({
         const proj = map.getProjection()
         const coord = proj.fromPageXYToCoord(
           new naver.maps.Point(e.pageX, e.pageY),
-        )
+        ) as naver.maps.Point
         const path = guideline?.getPath() as naver.maps.Point[]
         if (path) {
           if (path.length === 2) {

@@ -11,6 +11,8 @@ import useSWR from 'swr'
 import { MAP_KEY } from '../sections/hooks/useMap'
 import { useRecoilValue } from 'recoil'
 import { jusoAtom } from '@/store/atom/map'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface BottomAddressProps {
   range: number
@@ -23,7 +25,9 @@ export default function BottomAddress({
   setRange,
   setOpenCursor,
 }: BottomAddressProps) {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   const juso = useRecoilValue(jusoAtom)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [selectedGunguIndex, setSelectedGunguIndex] = useState<number | null>(

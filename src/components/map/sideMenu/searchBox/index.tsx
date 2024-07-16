@@ -23,6 +23,8 @@ import { useRecoilState } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
 import AutoKeyword from './AutoKeyword'
 import DetailBox from '../filterBox/subFilterDetail/DetailBox'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 declare global {
   interface Window {
@@ -35,7 +37,9 @@ interface SearchBoxProps {
 }
 
 const SearchBox = ({ setOpenOverlay }: SearchBoxProps) => {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   const [isFocus, setIsFocus] = useState(false)
   const [formData, setFormData] = useRecoilState(formDataAtom)
   const [keyword, setKeyword] = useState('')
@@ -66,10 +70,11 @@ const SearchBox = ({ setOpenOverlay }: SearchBoxProps) => {
             }
             const result = response.v2.addresses[0]
             const { x, y } = result ?? { x: 0, y: 0 }
-            map.setCenter({
-              lat: Number(y),
-              lng: Number(x),
-            })
+            map &&
+              map?.setCenter({
+                lat: Number(y),
+                lng: Number(x),
+              })
           },
         )
       }
@@ -91,10 +96,11 @@ const SearchBox = ({ setOpenOverlay }: SearchBoxProps) => {
             return
           }
           const { x, y } = response.documents[0]
-          map.setCenter({
-            lat: Number(y),
-            lng: Number(x),
-          })
+          map &&
+            map.setCenter({
+              lat: Number(y),
+              lng: Number(x),
+            })
         } catch (error) {
           console.error(error)
         }

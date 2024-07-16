@@ -25,6 +25,7 @@ import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import axios from 'axios'
+import { UseQueryResult, useQuery } from 'react-query'
 
 declare global {
   interface Window {
@@ -49,7 +50,9 @@ function MapComponent({ token, type, idCode }: Props) {
   const setSelectedData = useSetRecoilState(selectedItemAtom)
   const setFormData = useSetRecoilState(formDataAtom)
   const router = useRouter()
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   const [tokenValue, setTokenValue] = useSessionStorage({
     key: 'token',
     initialValue: token as string,

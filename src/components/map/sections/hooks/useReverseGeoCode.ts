@@ -1,6 +1,6 @@
 import { jusoProps } from '@/models/Juso'
 import { jusoAtom } from '@/store/atom/map'
-import { Dispatch, SetStateAction, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useSetRecoilState } from 'recoil'
 
 interface ReverseGeoCodeResult {
@@ -27,7 +27,7 @@ const reverseGeocode = async (
         if (status !== window.naver.maps.Service.Status.OK) {
           reject(new Error('주소를 찾을 수 없습니다.'))
         } else {
-          resolve(response.result.items[0].addrdetail)
+          resolve(response.result.items[0]?.addrdetail)
         }
       },
     )
@@ -36,8 +36,10 @@ const reverseGeocode = async (
 
 const processResult = (result: ReverseGeoCodeResult) => {
   let getGungu = ''
+  const sidoParts = result.sido.split(' ')
   const sigugunParts = result.sigugun.split(' ')
-  let topGungu = sigugunParts[0] === '' ? '세종시' : sigugunParts[0]
+  let topGungu =
+    sigugunParts[0] === '' && sidoParts[0] !== '' ? '세종시' : sigugunParts[0]
 
   if (sigugunParts.length === 1 && sigugunParts[0].match(/시$/)) {
     // 첫 번째 파트가 '시'로 끝나는 경우

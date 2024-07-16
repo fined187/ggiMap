@@ -6,9 +6,10 @@ import Top from './Top'
 import Bottom from './Bottom'
 import { useRecoilState } from 'recoil'
 import { markerPositionAtom } from '@/store/atom/map'
-import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 import useGetDetail from './hooks/useGetDetail'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface OverlayProps {
   halfDimensions: { width: number; height: number }
@@ -18,7 +19,9 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   const calculateScreenNum = useMemo(() => {
     let position = {
       first: false,
@@ -59,7 +62,7 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
   }, [markerPosition, halfDimensions])
 
   const handleCalcLeftTop = useCallback(() => {
-    if (map.getZoom() > 15) {
+    if (map && map.getZoom() > 15) {
       if (
         markerPosition.type[0] === 1 ||
         markerPosition.type[0] === 2 ||
@@ -182,7 +185,7 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
         markerPosition.type[0] === 3
       ) {
         if (markerPosition.winYn === 'Y') {
-          if (map.getZoom() === 15) {
+          if (map && map.getZoom() === 15) {
             if (calculateScreenNum.first) {
               return {
                 left: markerPosition.position[0] + 10,
@@ -204,7 +207,7 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
                 top: markerPosition.position[1] - 330,
               }
             }
-          } else if (map.getZoom() < 15) {
+          } else if (map && map.getZoom() < 15) {
             if (calculateScreenNum.first) {
               return {
                 left: markerPosition.position[0] + 100,

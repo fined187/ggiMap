@@ -15,6 +15,8 @@ import useSearchAddr from './hooks/useSearchAddr'
 import useSubwayStation from './hooks/useSubwayStation'
 import { MAP_KEY } from '../../sections/hooks/useMap'
 import highlightText from './utils/highlightText'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface AutoKeywordProps {
   keyword: string
@@ -37,7 +39,9 @@ type AutoKeywordItem = SubwayProps | AddrProps
 
 export default function AutoKeyword({ keyword, setKeyword }: AutoKeywordProps) {
   const [autoKeyword, setAutoKeyword] = useState<AutoKeywordItem[]>([])
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
 
   useEffect(() => {
     const handleSearch = async (inputKeyword: string) => {

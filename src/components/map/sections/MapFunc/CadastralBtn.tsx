@@ -6,6 +6,7 @@ import { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 import { NaverMap } from '@/models/Map'
+import { useQuery } from 'react-query'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -38,7 +39,10 @@ export default function CadastralBtn({
   clickedMapType,
   setClickedMapType,
 }: MapTypeProps) {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map } = useQuery(MAP_KEY, {
+    enabled: false,
+  })
+
   useEffect(() => {
     if (map) {
       const cadastral = new window.naver.maps.CadastralLayer()

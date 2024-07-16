@@ -27,13 +27,16 @@ import {
 import useSWR from 'swr'
 import useSearchListQuery from './useSearchListQuery'
 import { MapListResponse } from '@/models/MapItem'
-import { InfiniteData } from 'react-query'
+import { InfiniteData, UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 const useResult = (
   setIsOpen: Dispatch<SetStateAction<boolean>>,
   dragStateRef: MutableRefObject<boolean>,
 ) => {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   const [mapListItems, setMapListItems] = useRecoilState(mapListAtom)
   const [showingList, setShowingList] = useState(false)
   const scrollbarRef = useRef<HTMLDivElement | null>(null)

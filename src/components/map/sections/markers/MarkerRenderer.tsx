@@ -7,7 +7,6 @@ import {
   useEffect,
   useRef,
 } from 'react'
-import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 import IconContent from './IconContent'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
@@ -16,6 +15,8 @@ import {
   listOverItemAtom,
   markerPositionAtom,
 } from '@/store/atom/map'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface MarkerRendererProps {
   item: MapItem
@@ -32,7 +33,9 @@ const MarkerRenderer = ({
   setOpenOverlay,
   markerClickedRef,
 }: MarkerRendererProps) => {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   const markerRef = useRef<naver.maps.Marker | null>(null)
   const setMarkerPosition = useSetRecoilState(markerPositionAtom)
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)

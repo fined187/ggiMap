@@ -10,6 +10,8 @@ import useSWR from 'swr'
 import SelectedOnly from './icons/SelectedOnly'
 import { useRecoilValue } from 'recoil'
 import { authInfo } from '@/store/atom/auth'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface Props {
   isOpen: boolean
@@ -24,7 +26,9 @@ export default function Header({
   isLoading,
   pageInfo,
 }: Props) {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   const auth = useRecoilValue(authInfo)
   return (
     <>
@@ -35,7 +39,7 @@ export default function Header({
             contents={<Skeleton width={150} height={32} />}
             onClick={() => setIsOpen((prev) => !prev)}
           />
-        ) : map && map.zoom! >= 15 ? (
+        ) : map && map.getZoom() >= 15 ? (
           <ListRow
             left={<SearchText isOpen={isOpen}>검색결과</SearchText>}
             right={
@@ -51,7 +55,7 @@ export default function Header({
             }
             contents={<SearchText isOpen={isOpen}>{pageInfo}건</SearchText>}
           />
-        ) : map && map.zoom! < 15 ? (
+        ) : map && map.getZoom() < 15 ? (
           <ListRow
             left={<SearchText isOpen={isOpen}>검색결과</SearchText>}
             right={<BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />}

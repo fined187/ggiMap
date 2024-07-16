@@ -45,10 +45,12 @@ export default function MapSection() {
       : INITIAL_CENTER
   }, [auth.lat, auth.lng])
 
-  const { initializeMap } = useMap()
+  const { initializeMap, useInitializeMap } = useMap()
 
   const onLoadMap = (map: NaverMap) => {
     initializeMap(map)
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useInitializeMap(map)
   }
 
   return (

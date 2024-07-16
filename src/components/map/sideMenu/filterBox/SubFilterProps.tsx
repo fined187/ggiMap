@@ -3,6 +3,8 @@ import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../../sections/hooks/useMap'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface SubFilter {
   checkedColor: string
@@ -21,18 +23,22 @@ export default function SubFilterProps({
   nowChecked,
   isBoxOpen,
 }: SubFilter) {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   return (
     <button
       css={FilterStyle}
       style={{
         position: 'relative',
         cursor:
-          textType !== '용도' && map?.getZoom() < 15
+          textType !== '용도' && map && map?.getZoom() < 15
             ? 'not-allowed'
             : 'pointer',
       }}
-      disabled={textType !== '용도' && map?.getZoom() < 15 ? true : false}
+      disabled={
+        textType !== '용도' && map && map?.getZoom() < 15 ? true : false
+      }
       onClick={onButtonClick}
     >
       <div

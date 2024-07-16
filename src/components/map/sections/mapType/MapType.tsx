@@ -2,8 +2,9 @@ import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Dispatch, SetStateAction, useCallback, useState } from 'react'
-import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
+import { UseQueryResult, useQuery } from 'react-query'
+import { NaverMap } from '@/models/Map'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -38,7 +39,9 @@ export default function MapType({
   setClickedMapType,
   setOpenOverlay,
 }: MapTypeProps) {
-  const { data: map } = useSWR(MAP_KEY)
+  const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
+    enabled: false,
+  })
   const [indexNum, setIndexNum] = useState(0)
   const handleMapTypeChange = useCallback(
     (type: string) => {

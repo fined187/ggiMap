@@ -1,6 +1,4 @@
 import { Dispatch, SetStateAction } from 'react'
-import useSWR from 'swr'
-import { MAP_KEY } from '../hooks/useMap'
 import { Measure } from './Measure'
 
 declare global {
