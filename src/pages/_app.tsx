@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import { Global } from '@emotion/react'
 import { QueryClientProvider, QueryClient, Hydrate } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 import globalSteyls from '@styles/globalStyles'
 import { RecoilRoot } from 'recoil'
 import '@/styles/globals.css'
@@ -26,6 +27,7 @@ export default function App({
               <Component {...pageProps} />
             </InterestContextProvider>
           </Hydrate>
+          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
         </QueryClientProvider>
       </Layout>
     </RecoilRoot>

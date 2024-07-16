@@ -41,9 +41,8 @@ function usePostListItems({ formData }: { formData: Form }) {
     selectedType: auth.type !== '' ? parseInt(auth.type) : null,
   }
 
-  const isMutating = useIsMutating({ mutationKey: ['postListItems', param] })
   return useMutation<MapListResponse, unknown, PostListItemsArgs>(
-    ['postListItems', param],
+    ['postListItems', param.x1, param.y1, param.x2, param.y2],
     async ({ page, pageSize }) => {
       const isRoleAnonymousOrFree = ['ROLE_ANONYMOUS', 'ROLE_FREE'].some(
         (role) => formData.role.includes(role),

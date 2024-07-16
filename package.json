@@ -50,6 +50,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.51.1",
     "@types/babel-plugin-macros": "^3",
     "@types/body-parser": "^1",
     "@types/jquery": "^3",
@@ -74,6 +75,7 @@
     "lodash": "^4.17.21",
     "postcss": "^8.4.38",
     "prettier": "^3.0.3",
+    "react-query-devtools": "^2.6.3",
     "regenerator-runtime": "^0.14.1",
     "tailwindcss": "^3.3.0",
     "typescript": "^5.0.0",

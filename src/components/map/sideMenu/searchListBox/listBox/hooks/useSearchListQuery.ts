@@ -27,8 +27,7 @@ export default function useSearchListQuery({
   handleCenterChanged,
   dragStateRef,
 }: SearchListQueryProps) {
-  const isFirstMount = useRef(true)
-  const isSecondMount = useRef(true)
+  const isFirstMount = useRef(false)
   const auth = useRecoilValue(authInfo)
   const formData = useRecoilValue(formDataAtom)
   const { data: map } = useSWR(MAP_KEY)
@@ -43,16 +42,19 @@ export default function useSearchListQuery({
   const fetchSearchList = useCallback(
     async (page: number, PAGE_SIZE: number) => {
       if (!map) return
-      if (isFirstMount.current) {
-        isFirstMount.current = false
+      if (
+        formData.x1 === 1 &&
+        formData.x2 === 1 &&
+        formData.y1 === 1 &&
+        formData.y2 === 1
+      )
         return
-      }
-      if (isSecondMount.current) {
-        isSecondMount.current = false
+      await delay(100)
+      if (!isFirstMount.current) {
+        isFirstMount.current = true
         return
       }
       try {
-        await delay(100)
         if (map?.getZoom() < 15) {
           await handleCenterChanged()
           return
@@ -88,12 +90,19 @@ export default function useSearchListQuery({
         throw error
       }
     },
-    [map, getMapItems, getMapListItems, handleCenterChanged, auth.idCode],
+    [
+      auth.idCode,
+      formData,
+      getMapItems,
+      getMapListItems,
+      handleCenterChanged,
+      map,
+    ],
   )
 
   const { data, fetchNextPage, hasNextPage, isFetching, isLoading } =
     useInfiniteQuery(
-      [QUERY_KEY, formData],
+      [QUERY_KEY, formData.x1, formData.y1, formData.x2, formData.y2],
       ({ pageParam = 1 }) =>
         fetchSearchList(pageParam, PAGE_SIZE) as Promise<MapListResponse>,
       {

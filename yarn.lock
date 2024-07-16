@@ -229,6 +229,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.10.5":
+  version: 7.24.8
+  resolution: "@babel/runtime@npm:7.24.8"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: 10c0/f24b30af6b3ecae19165b3b032f9bc37b2d1769677bd63b69a6f81061967cfc847aa822518402ea6616b1d301d7eb46986b99c9f69cdb5880834fca2e6b34881
+  languageName: node
+  linkType: hard
+
 "@babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2":
   version: 7.23.2
   resolution: "@babel/runtime@npm:7.23.2"
@@ -1941,6 +1950,25 @@ __metadata:
   dependencies:
     tslib: "npm:^2.4.0"
   checksum: 10c0/b6fa49bcf6c00571d0eb7837b163f8609960d4d77538160585e27ed167361e9776bd6e5eb9646ffac2fb4d43c58df9ca50dab9d96ab097e6591bc82a75fd1164
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-devtools@npm:5.51.1":
+  version: 5.51.1
+  resolution: "@tanstack/query-devtools@npm:5.51.1"
+  checksum: 10c0/244367572faf5af1dbaf4a64654547fe92e913a888ca889e01ce7715c9834ac1d10107767c45478fe8d890c7b8b43c55c58f97a8db1755f08804623d51d3ec20
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query-devtools@npm:^5.51.1":
+  version: 5.51.1
+  resolution: "@tanstack/react-query-devtools@npm:5.51.1"
+  dependencies:
+    "@tanstack/query-devtools": "npm:5.51.1"
+  peerDependencies:
+    "@tanstack/react-query": ^5.51.1
+    react: ^18 || ^19
+  checksum: 10c0/39922b3d31c3ef5fcc1b7ecc16b18feeb17955ddc623f3ba688b6a903d284a349d12a8d645024ddb5373f7da80c0090af1aadf8ab0e3164f5c99e94a8bba07de
   languageName: node
   linkType: hard
 
@@ -5700,6 +5728,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"match-sorter@npm:^4.1.0":
+  version: 4.2.1
+  resolution: "match-sorter@npm:4.2.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.10.5"
+    remove-accents: "npm:0.4.2"
+  checksum: 10c0/07d91b93ae01d834621596c403d84b6bf2cabfaf7fc12070ad86461dfe051ef1c362dd9c752b14c6aab5c059e3e578f422070cacc45715b21d9bc2238df1b506
+  languageName: node
+  linkType: hard
+
 "match-sorter@npm:^6.0.2":
   version: 6.3.1
   resolution: "match-sorter@npm:6.3.1"
@@ -6398,6 +6436,7 @@ __metadata:
     "@emotion/babel-plugin": "npm:^11.11.0"
     "@emotion/react": "npm:^11.11.4"
     "@emotion/styled": "npm:^11.11.5"
+    "@tanstack/react-query-devtools": "npm:^5.51.1"
     "@types/babel-plugin-macros": "npm:^3"
     "@types/body-parser": "npm:^1"
     "@types/jquery": "npm:^3"
@@ -6446,6 +6485,7 @@ __metadata:
     react-lazy-load-image-component: "npm:^1.6.0"
     react-naver-maps: "npm:^0.1.3"
     react-query: "npm:^3.39.3"
+    react-query-devtools: "npm:^2.6.3"
     react-slick: "npm:^0.30.2"
     recoil: "npm:^0.7.7"
     regenerator-runtime: "npm:^0.14.1"
@@ -6988,6 +7028,18 @@ __metadata:
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
   checksum: 10c0/3d04952fea01b4bd248320ecbe63fe0235ce911789a714ccc8e1409a288de98a7bc5f832e26659124b3d716133d4db90bc5387491d9a7d5438b3c6ae2cdf7b0c
+  languageName: node
+  linkType: hard
+
+"react-query-devtools@npm:^2.6.3":
+  version: 2.6.3
+  resolution: "react-query-devtools@npm:2.6.3"
+  dependencies:
+    match-sorter: "npm:^4.1.0"
+  peerDependencies:
+    react: ^16.6.3 || ^17.0.0
+    react-query: ^2.0.0
+  checksum: 10c0/c2875821a8e8cbbeec3eda1a9a0ad85ee2ea7a6b9fcc8855e1a60a491a635248d052e4d7b69f56aaee9609ec5821622fd884827b6f47709ad8e2194331f04b81
   languageName: node
   linkType: hard
 

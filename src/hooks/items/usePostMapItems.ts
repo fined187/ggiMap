@@ -36,7 +36,7 @@ export default function usePostMapItems(formData: Form, dragState: boolean) {
   }
 
   const { mutate } = useMutation(
-    ['mapItems', param],
+    ['mapItems', param.x1, param.y1, param.x2, param.y2],
     async () =>
       formData.role.includes('ROLE_ANONYMOUS' || 'ROLE_FREE')
         ? null
