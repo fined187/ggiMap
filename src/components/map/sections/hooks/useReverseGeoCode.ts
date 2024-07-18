@@ -79,7 +79,7 @@ export const useReverseGeoCode = () => {
 
         return processedResult
       } catch (error) {
-        alert(error)
+        return
       }
     },
     [],

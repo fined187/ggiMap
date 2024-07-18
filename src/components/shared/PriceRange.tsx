@@ -3,6 +3,7 @@ import { css } from '@emotion/react'
 import Flex from './Flex'
 import Input from './Input'
 import Text from './Text'
+import { useCallback } from 'react'
 
 interface PriceRangeProps {
   formData: Form
@@ -10,32 +11,39 @@ interface PriceRangeProps {
 }
 
 export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
-  const handldeFromPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (formData.lastFilter === 3) {
-      setFormData({
-        ...formData,
-        fromAppraisalAmount: Number(e.target.value),
-      })
-    } else if (formData.lastFilter === 4) {
-      setFormData({
-        ...formData,
-        fromMinimumAmount: Number(e.target.value),
-      })
-    }
-  }
-  const handldeToPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (formData.lastFilter === 3) {
-      setFormData({
-        ...formData,
-        toAppraisalAmount: Number(e.target.value),
-      })
-    } else if (formData.lastFilter === 4) {
-      setFormData({
-        ...formData,
-        toMinimumAmount: Number(e.target.value),
-      })
-    }
-  }
+  const handldeFromPriceChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (formData.lastFilter === 3) {
+        setFormData({
+          ...formData,
+          fromAppraisalAmount: Number(e.target.value),
+        })
+      } else if (formData.lastFilter === 4) {
+        setFormData({
+          ...formData,
+          fromMinimumAmount: Number(e.target.value),
+        })
+      }
+    },
+    [formData],
+  )
+
+  const handldeToPriceChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (formData.lastFilter === 3) {
+        setFormData({
+          ...formData,
+          toAppraisalAmount: Number(e.target.value),
+        })
+      } else if (formData.lastFilter === 4) {
+        setFormData({
+          ...formData,
+          toMinimumAmount: Number(e.target.value),
+        })
+      }
+    },
+    [formData],
+  )
 
   const handlePriceBtn = (id: string) => {
     if (id === 'fromPriceMin') {
@@ -209,9 +217,23 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
           inputMode="numeric"
           value={
             formData.lastFilter === 3
-              ? formData.toAppraisalAmount
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              ? formData.fromAppraisalAmount === 3000000001
+                ? '최대'
+                : formData.fromAppraisalAmount === 10000000 &&
+                  formData.toAppraisalAmount === 3000000001
+                ? '최대'
+                : formData.toAppraisalAmount === 3000000001
+                ? '최대'
+                : formData.toAppraisalAmount
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              : formData.fromMinimumAmount === 3000000001
+              ? '최대'
+              : formData.fromMinimumAmount === 10000000 &&
+                formData.toMinimumAmount === 3000000001
+              ? '최대'
+              : formData.toMinimumAmount === 3000000001
+              ? '최대'
               : formData.toMinimumAmount
                   .toString()
                   .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -221,6 +243,7 @@ export default function PriceRange({ formData, setFormData }: PriceRangeProps) {
             width: '110px',
             borderTop: '1px solid #9d9999',
             borderBottom: '1px solid #9d9999',
+            textAlign: 'center',
           }}
           onChange={handldeToPriceChange}
           onInput={(e) => {

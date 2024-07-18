@@ -134,13 +134,14 @@ const SearchBox = ({ setOpenOverlay }: SearchBoxProps) => {
     <Flex id="searchBox" direction="column" align="center" css={ContainerStyle}>
       <Flex
         direction="row"
-        justify="center"
+        justify="start"
         align="center"
         style={{
           gap: '10px',
           height: '60px',
           width: '100%',
           boxShadow: '2px 2px 2px 0px rgba(198, 198, 198, 0.10)',
+          padding: '0 10px',
         }}
       >
         <Logo />
@@ -154,6 +155,11 @@ const SearchBox = ({ setOpenOverlay }: SearchBoxProps) => {
           onKeyDown={(e) => handleEnter(e)}
           style={{
             zIndex: 100,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            textAlign: 'left',
+            width: '80%',
           }}
           autoComplete="off"
           onFocus={() => {

@@ -5,7 +5,7 @@ import { PRICE } from '@/constants/SubFilter'
 import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useRecoilState } from 'recoil'
 
 interface LowPriceBoxProps {
@@ -18,58 +18,190 @@ export default function LowPriceBox({
   setFromToMinPrice,
 }: LowPriceBoxProps) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
-  const handlefromToMinPrice = (price: number) => {
-    if (fromToMinPrice[0] === 0 && fromToMinPrice[1] === 0) {
-      setFromToMinPrice([0, price])
-      setFormData({
-        ...formData,
-        toMinimumAmount: price,
-      })
-    } else if (
-      fromToMinPrice[0] === 0 &&
-      fromToMinPrice[1] !== 0 &&
-      price < fromToMinPrice[1]
-    ) {
-      setFromToMinPrice([price, fromToMinPrice[1]])
-      setFormData({
-        ...formData,
-        toMinimumAmount: fromToMinPrice[1],
-        fromMinimumAmount: price,
-      })
-    } else if (fromToMinPrice[0] !== 0 && fromToMinPrice[1] !== 0) {
-      setFromToMinPrice([0, price])
-      setFormData({
-        ...formData,
-        toMinimumAmount: price,
-        fromMinimumAmount: 0,
-      })
-    } else if (fromToMinPrice[0] !== 0 && fromToMinPrice[1] === 0) {
-      setFromToMinPrice([fromToMinPrice[0], price])
-      setFormData({
-        ...formData,
-        fromMinimumAmount: fromToMinPrice[0],
-        toMinimumAmount: price,
-      })
-    } else if (fromToMinPrice[0] === price) {
-      setFromToMinPrice([0, 0])
-      setFormData({
-        ...formData,
-        fromMinimumAmount: 0,
-        toMinimumAmount: 0,
-      })
-    } else if (
-      fromToMinPrice[0] === 0 &&
-      fromToMinPrice[1] !== 0 &&
-      price > fromToMinPrice[1]
-    ) {
-      setFromToMinPrice([fromToMinPrice[1], price])
-      setFormData({
-        ...formData,
-        fromMinimumAmount: fromToMinPrice[1],
-        toMinimumAmount: price,
-      })
-    }
-  }
+
+  // const handlefromToMinPrice = useCallback(
+  //   (price: number) => {
+  //     if (price === 3000000001 && fromToMinPrice[0] === 0) {
+  //       setFromToMinPrice([price, 0])
+  //       setFormData({
+  //         ...formData,
+  //         fromMinimumAmount: price,
+  //         toMinimumAmount: 0,
+  //       })
+  //       return
+  //     } else if (fromToMinPrice[0] === 3000000001 && price < 3000000001) {
+  //       setFromToMinPrice([price, fromToMinPrice[0]])
+  //       setFormData({
+  //         ...formData,
+  //         fromMinimumAmount: price,
+  //         toMinimumAmount: fromToMinPrice[0],
+  //       })
+  //       return
+  //     }
+  //     if (fromToMinPrice[0] === 0 && fromToMinPrice[1] === 0) {
+  //       setFromToMinPrice([0, price])
+  //       setFormData({
+  //         ...formData,
+  //         toMinimumAmount: price,
+  //       })
+  //     } else if (
+  //       fromToMinPrice[0] === 0 &&
+  //       fromToMinPrice[1] !== 0 &&
+  //       price < fromToMinPrice[1]
+  //     ) {
+  //       setFromToMinPrice([price, fromToMinPrice[1]])
+  //       setFormData({
+  //         ...formData,
+  //         toMinimumAmount: fromToMinPrice[1],
+  //         fromMinimumAmount: price,
+  //       })
+  //     } else if (fromToMinPrice[0] !== 0 && fromToMinPrice[1] !== 0) {
+  //       setFromToMinPrice([0, price])
+  //       setFormData({
+  //         ...formData,
+  //         toMinimumAmount: price,
+  //         fromMinimumAmount: 0,
+  //       })
+  //     } else if (
+  //       fromToMinPrice[0] !== 0 &&
+  //       fromToMinPrice[1] === 0 &&
+  //       price !== 3000000001
+  //     ) {
+  //       setFromToMinPrice([fromToMinPrice[0], price])
+  //       setFormData({
+  //         ...formData,
+  //         fromMinimumAmount: fromToMinPrice[0],
+  //         toMinimumAmount: price,
+  //       })
+  //     } else if (fromToMinPrice[0] === price) {
+  //       setFromToMinPrice([0, 0])
+  //       setFormData({
+  //         ...formData,
+  //         fromMinimumAmount: 0,
+  //         toMinimumAmount: 0,
+  //       })
+  //     } else if (
+  //       fromToMinPrice[0] === 0 &&
+  //       fromToMinPrice[1] !== 0 &&
+  //       price > fromToMinPrice[1]
+  //     ) {
+  //       setFromToMinPrice([fromToMinPrice[1], price])
+  //       setFormData({
+  //         ...formData,
+  //         fromMinimumAmount: fromToMinPrice[1],
+  //         toMinimumAmount: price,
+  //       })
+  //     }
+  //   },
+  //   [formData, fromToMinPrice, setFormData, setFromToMinPrice],
+  // )
+
+  const handlefromToMinPrice = useCallback(
+    (price: number) => {
+      if (
+        price === 3000000001 &&
+        fromToMinPrice[0] === 0 &&
+        fromToMinPrice[1] === 0
+      ) {
+        setFromToMinPrice([price, 0])
+        setFormData({
+          ...formData,
+          fromMinimumAmount: price,
+          toMinimumAmount: 0,
+        })
+        return
+      } else if (
+        fromToMinPrice[0] === 3000000001 &&
+        price < 3000000001 &&
+        fromToMinPrice[1] === 0
+      ) {
+        setFromToMinPrice([price, fromToMinPrice[0]])
+        setFormData({
+          ...formData,
+          fromMinimumAmount: price,
+          toMinimumAmount: fromToMinPrice[0],
+        })
+        return
+      }
+      if (
+        fromToMinPrice[0] !== 0 &&
+        fromToMinPrice[1] !== 0 &&
+        price !== 3000000001
+      ) {
+        setFromToMinPrice([0, price])
+        setFormData({
+          ...formData,
+          fromMinimumAmount: 0,
+          toMinimumAmount: price,
+        })
+        return
+      } else if (
+        fromToMinPrice[0] === 0 &&
+        fromToMinPrice[1] !== 0 &&
+        price < fromToMinPrice[1]
+      ) {
+        setFromToMinPrice([price, fromToMinPrice[1]])
+        setFormData({
+          ...formData,
+          fromMinimumAmount: price,
+          toMinimumAmount: fromToMinPrice[1],
+        })
+      } else if (
+        fromToMinPrice[0] === 0 &&
+        fromToMinPrice[1] !== 0 &&
+        price > fromToMinPrice[1]
+      ) {
+        setFromToMinPrice([fromToMinPrice[1], price])
+        setFormData({
+          ...formData,
+          fromMinimumAmount: fromToMinPrice[1],
+          toMinimumAmount: price,
+        })
+      } else if (fromToMinPrice[0] === 0 && fromToMinPrice[1] === 0) {
+        setFromToMinPrice([0, price])
+        setFormData({
+          ...formData,
+          fromMinimumAmount: 0,
+          toMinimumAmount: price,
+        })
+      } else if (
+        fromToMinPrice[0] !== 0 &&
+        fromToMinPrice[1] !== 0 &&
+        price === 3000000001
+      ) {
+        setFromToMinPrice([price, 0])
+        setFormData({
+          ...formData,
+          fromMinimumAmount: price,
+          toMinimumAmount: 0,
+        })
+      } else if (
+        fromToMinPrice[0] === 0 &&
+        fromToMinPrice[1] !== 0 &&
+        price === fromToMinPrice[1] &&
+        price !== 3000000001
+      ) {
+        setFromToMinPrice([0, 0])
+        setFormData({
+          ...formData,
+          fromMinimumAmount: 0,
+          toMinimumAmount: 0,
+        })
+      } else if (
+        fromToMinPrice[1] === 0 &&
+        price === 3000000001 &&
+        fromToMinPrice[0] === price
+      ) {
+        setFromToMinPrice([0, 0])
+        setFormData({
+          ...formData,
+          fromMinimumAmount: 0,
+          toMinimumAmount: 0,
+        })
+      }
+    },
+    [formData, fromToMinPrice, setFormData, setFromToMinPrice],
+  )
 
   return (
     <Flex

@@ -5,7 +5,7 @@ import { PRICE } from '@/constants/SubFilter'
 import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useRecoilState } from 'recoil'
 import { colors } from '@/styles/colorPalette'
 
@@ -19,58 +19,116 @@ export default function PriceBox({
   setFromToAppraisalPrice,
 }: PriceBoxProps) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
-  const handlefromToAppraisalPrice = (price: number) => {
-    if (fromToAppraisalPrice[0] === 0 && fromToAppraisalPrice[1] === 0) {
-      setFromToAppraisalPrice([0, price])
-      setFormData({
-        ...formData,
-        toAppraisalAmount: price,
-      })
-    } else if (
-      fromToAppraisalPrice[0] === 0 &&
-      fromToAppraisalPrice[1] !== 0 &&
-      price < fromToAppraisalPrice[1]
-    ) {
-      setFromToAppraisalPrice([price, fromToAppraisalPrice[1]])
-      setFormData({
-        ...formData,
-        toAppraisalAmount: fromToAppraisalPrice[1],
-        fromAppraisalAmount: price,
-      })
-    } else if (fromToAppraisalPrice[0] !== 0 && fromToAppraisalPrice[1] !== 0) {
-      setFromToAppraisalPrice([0, price])
-      setFormData({
-        ...formData,
-        toAppraisalAmount: price,
-        fromAppraisalAmount: 0,
-      })
-    } else if (fromToAppraisalPrice[0] !== 0 && fromToAppraisalPrice[1] === 0) {
-      setFromToAppraisalPrice([fromToAppraisalPrice[0], price])
-      setFormData({
-        ...formData,
-        fromAppraisalAmount: fromToAppraisalPrice[0],
-        toAppraisalAmount: price,
-      })
-    } else if (fromToAppraisalPrice[0] === price) {
-      setFromToAppraisalPrice([0, 0])
-      setFormData({
-        ...formData,
-        fromAppraisalAmount: 0,
-        toAppraisalAmount: 0,
-      })
-    } else if (
-      fromToAppraisalPrice[0] === 0 &&
-      fromToAppraisalPrice[1] !== 0 &&
-      price > fromToAppraisalPrice[1]
-    ) {
-      setFromToAppraisalPrice([fromToAppraisalPrice[1], price])
-      setFormData({
-        ...formData,
-        fromAppraisalAmount: fromToAppraisalPrice[1],
-        toAppraisalAmount: price,
-      })
-    }
-  }
+
+  const handlefromToAppraisalPrice = useCallback(
+    (price: number) => {
+      if (
+        price === 3000000001 &&
+        fromToAppraisalPrice[0] === 0 &&
+        fromToAppraisalPrice[1] === 0
+      ) {
+        setFromToAppraisalPrice([price, 0])
+        setFormData({
+          ...formData,
+          fromAppraisalAmount: price,
+          toAppraisalAmount: 0,
+        })
+        return
+      } else if (
+        fromToAppraisalPrice[0] === 3000000001 &&
+        price < 3000000001 &&
+        fromToAppraisalPrice[1] === 0
+      ) {
+        setFromToAppraisalPrice([price, fromToAppraisalPrice[0]])
+        setFormData({
+          ...formData,
+          fromAppraisalAmount: price,
+          toAppraisalAmount: fromToAppraisalPrice[0],
+        })
+        return
+      }
+      if (
+        fromToAppraisalPrice[0] !== 0 &&
+        fromToAppraisalPrice[1] !== 0 &&
+        price !== 3000000001
+      ) {
+        setFromToAppraisalPrice([0, price])
+        setFormData({
+          ...formData,
+          fromAppraisalAmount: 0,
+          toAppraisalAmount: price,
+        })
+        return
+      } else if (
+        fromToAppraisalPrice[0] === 0 &&
+        fromToAppraisalPrice[1] !== 0 &&
+        price < fromToAppraisalPrice[1]
+      ) {
+        setFromToAppraisalPrice([price, fromToAppraisalPrice[1]])
+        setFormData({
+          ...formData,
+          fromAppraisalAmount: price,
+          toAppraisalAmount: fromToAppraisalPrice[1],
+        })
+      } else if (
+        fromToAppraisalPrice[0] === 0 &&
+        fromToAppraisalPrice[1] !== 0 &&
+        price > fromToAppraisalPrice[1]
+      ) {
+        setFromToAppraisalPrice([fromToAppraisalPrice[1], price])
+        setFormData({
+          ...formData,
+          fromAppraisalAmount: fromToAppraisalPrice[1],
+          toAppraisalAmount: price,
+        })
+      } else if (
+        fromToAppraisalPrice[0] === 0 &&
+        fromToAppraisalPrice[1] === 0
+      ) {
+        setFromToAppraisalPrice([0, price])
+        setFormData({
+          ...formData,
+          fromAppraisalAmount: 0,
+          toAppraisalAmount: price,
+        })
+      } else if (
+        fromToAppraisalPrice[0] !== 0 &&
+        fromToAppraisalPrice[1] !== 0 &&
+        price === 3000000001
+      ) {
+        setFromToAppraisalPrice([price, 0])
+        setFormData({
+          ...formData,
+          fromAppraisalAmount: price,
+          toAppraisalAmount: 0,
+        })
+      } else if (
+        fromToAppraisalPrice[0] === 0 &&
+        fromToAppraisalPrice[1] !== 0 &&
+        price === fromToAppraisalPrice[1] &&
+        price !== 3000000001
+      ) {
+        setFromToAppraisalPrice([0, 0])
+        setFormData({
+          ...formData,
+          fromAppraisalAmount: 0,
+          toAppraisalAmount: 0,
+        })
+      } else if (
+        fromToAppraisalPrice[1] === 0 &&
+        price === 3000000001 &&
+        fromToAppraisalPrice[0] === price
+      ) {
+        setFromToAppraisalPrice([0, 0])
+        setFormData({
+          ...formData,
+          fromAppraisalAmount: 0,
+          toAppraisalAmount: 0,
+        })
+      }
+    },
+    [formData, fromToAppraisalPrice, setFormData, setFromToAppraisalPrice],
+  )
   return (
     <Flex
       justify="start"

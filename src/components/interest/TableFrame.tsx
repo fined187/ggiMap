@@ -107,7 +107,6 @@ const ContentsFrame = styled.div<{ height?: string }>`
 
   &::-webkit-scrollbar-thumb {
     background: #dfdfdf;
-    border-radius: 6px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
@@ -117,7 +116,6 @@ const ContentsFrame = styled.div<{ height?: string }>`
   & {
     scrollbar-width: thin;
     scrollbar-color: #dfdfdf #fff;
-    border-radius: 6px;
   }
 
   &:hover {

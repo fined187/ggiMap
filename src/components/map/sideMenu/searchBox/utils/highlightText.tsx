@@ -4,14 +4,16 @@ import styled from '@emotion/styled'
 const highlightText = (text: string, highlight: string) => {
   if (!highlight) return text
 
-  const parts = text.split(new RegExp(`(${highlight})`, 'gi'))
+  const escapedHighlight = highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+  const parts = text.split(new RegExp(`(${escapedHighlight})`, 'gi'))
   return (
     <>
       {parts.map((part, index) =>
         part.toLowerCase() === highlight.toLowerCase() ? (
           <Highlight key={index}>{part}</Highlight>
         ) : (
-          part
+          <span key={index}>{part}</span>
         ),
       )}
     </>

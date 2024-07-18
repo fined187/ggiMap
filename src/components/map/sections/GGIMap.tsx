@@ -126,7 +126,6 @@ export default function GGIMap({
       x2: ne.lng(),
       y2: ne.lat(),
     }))
-    console.log(mapRef.current.getCenter())
   }, [setFormData])
   const initializeMap: () => void = useCallback(() => {
     if (!window.naver?.maps) return

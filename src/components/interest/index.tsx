@@ -365,7 +365,7 @@ export default function InterestProps({
       <Flex
         style={{
           position: 'absolute',
-          bottom: '10px',
+          bottom: '0px',
           left: '50%',
           transform: 'translateX(-50%)',
           gap: '10px',
