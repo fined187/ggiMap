@@ -5,6 +5,7 @@ import {
   formDataAtom,
   isOnlySelectedAtom,
   jusoAtom,
+  mapItemsAtom,
   mapListAtom,
   pageAtom,
   selectedItemAtom,
@@ -46,7 +47,6 @@ const useResult = (
   const [isOnlySelected, setIsOnlySelected] = useRecoilState(isOnlySelectedAtom)
   const setPage = useSetRecoilState(pageAtom)
   const { performReverseGeocode } = useReverseGeoCode()
-
   const handleCenterChanged = useCallback(() => {
     if (!map) return
     const mapCenter: naver.maps.Point = map.getCenter()
@@ -90,7 +90,7 @@ const useResult = (
 
   const handleReturnPageInfo = useCallback(() => {
     let pageInfo = 0
-    if (auth.idCode !== '') {
+    if (auth.id !== '') {
       if (isOnlySelected) {
         pageInfo = 1
         return pageInfo
@@ -102,7 +102,7 @@ const useResult = (
       pageInfo = mapListItems?.paging?.totalElements
       return pageInfo
     }
-  }, [auth.idCode, isOnlySelected, mapListItems])
+  }, [auth.id, isOnlySelected, mapListItems])
 
   return {
     isShowingList: showingList,

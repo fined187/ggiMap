@@ -49,7 +49,7 @@ const Result = ({ isOpen, setIsOpen, dragStateRef }: ResultProps) => {
               isLoading={isLoading}
               pageInfo={handleReturnPageInfo() as number}
             />
-            {isOpen && auth.idCode !== '' && (
+            {isOpen && auth.id !== '' && (
               <Forms
                 item={handleReturnSelectedItems() as MapItems}
                 index={0}
@@ -74,7 +74,7 @@ const Result = ({ isOpen, setIsOpen, dragStateRef }: ResultProps) => {
                         <Forms
                           key={index}
                           item={item}
-                          index={auth.idCode === '' ? index : index + 1}
+                          index={auth.id === '' ? index : index + 1}
                           isSelected={false}
                           isDetailed={false}
                         />
@@ -93,7 +93,7 @@ const Result = ({ isOpen, setIsOpen, dragStateRef }: ResultProps) => {
               isLoading={isLoading}
               pageInfo={handleReturnPageInfo() as number}
             />
-            {isOpen && auth.idCode !== '' && (
+            {isOpen && auth.id !== '' && (
               <Forms
                 item={handleReturnSelectedItems() as MapItems}
                 index={0}
@@ -101,8 +101,8 @@ const Result = ({ isOpen, setIsOpen, dragStateRef }: ResultProps) => {
                 isDetailed={true}
               />
             )}
-            <ContainerNone isOpen={true} idCode={auth.idCode}>
-              {auth.idCode === '' && (
+            <ContainerNone isOpen={true} idCode={auth.id}>
+              {auth.id === '' && (
                 <>
                   <Spacing size={20} />
                   <Text css={NoResultText}>
@@ -121,7 +121,7 @@ const Result = ({ isOpen, setIsOpen, dragStateRef }: ResultProps) => {
             isLoading={isLoading}
             pageInfo={mapListItems?.paging?.totalElements ?? 0}
           />
-          <ContainerNone isOpen={true} idCode={auth.idCode}>
+          <ContainerNone isOpen={true} idCode={auth.id}>
             <Spacing size={20} />
             <Text css={NoResultText}>
               300m 초과에서는 매물 종류(경매/예정/공매)

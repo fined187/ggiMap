@@ -13,6 +13,8 @@ export const authInfo = atom<Auth>({
     address: '',
     idCode: '',
     type: '',
+    id: '',
+    isInitialized: false,
     lng: 127.0030847,
     lat: 37.4909565,
     detailLng: 0,

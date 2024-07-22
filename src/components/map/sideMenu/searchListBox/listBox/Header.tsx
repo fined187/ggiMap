@@ -49,7 +49,7 @@ export default function Header({
                   gap: '10px',
                 }}
               >
-                {auth.idCode !== '' && <SelectedOnly />}
+                {auth.id !== '' && <SelectedOnly />}
                 <BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />
               </Flex>
             }

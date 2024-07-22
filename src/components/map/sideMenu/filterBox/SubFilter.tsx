@@ -5,7 +5,6 @@ import { css } from '@emotion/react'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import SubFilterProps from './SubFilterProps'
 import Arrow from '../../icons/Arrow'
-import useSWR from 'swr'
 import { MAP_KEY } from '../../sections/hooks/useMap'
 import { UseQueryResult, useQuery } from 'react-query'
 import { NaverMap } from '@/models/Map'
@@ -128,7 +127,9 @@ export default function SubFilter({
         }}
       />
       <SubFilterProps
-        isSelected={formData.toAppraisalAmount > 0}
+        isSelected={
+          formData.toAppraisalAmount > 0 || formData.fromAppraisalAmount > 0
+        }
         checkedColor="#007AFF"
         nowChecked={nowChecked === 3}
         textType={SUBFILTERS.PRCIE}
@@ -148,7 +149,9 @@ export default function SubFilter({
         }}
       />
       <SubFilterProps
-        isSelected={formData.toMinimumAmount > 0}
+        isSelected={
+          formData.toMinimumAmount > 0 || formData.fromMinimumAmount > 0
+        }
         checkedColor="#007AFF"
         nowChecked={nowChecked === 4}
         textType={SUBFILTERS.LOW_PRICE}

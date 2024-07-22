@@ -1,7 +1,6 @@
 import Text from '@/components/shared/Text'
 import { colors } from '@/styles/colorPalette'
 import { css } from '@emotion/react'
-import useSWR from 'swr'
 import { MAP_KEY } from '../../sections/hooks/useMap'
 import { UseQueryResult, useQuery } from 'react-query'
 import { NaverMap } from '@/models/Map'

@@ -10,7 +10,7 @@ import { AmountBottomIcon, UsageTopIcon } from './icon/Marker2'
 
 interface IconContentProps {
   item: MapItem
-  handleItemUsage: () => string
+  handleItemUsage: (usage?: string) => string
   index: number
   zoomLevel: number
   winExist: boolean

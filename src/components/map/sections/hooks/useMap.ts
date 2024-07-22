@@ -16,8 +16,8 @@ const useMap = () => {
   }, [])
 
   const queryClient = useQueryClient()
-  const useInitializeMap = useCallback((map: NaverMap) => {
-    return queryClient.setQueryData<NaverMap>([MAP_KEY], map)
+  const initMap = useCallback((map: NaverMap) => {
+    return queryClient.setQueryData<NaverMap>(MAP_KEY, map)
   }, [])
 
   const resetMapOptions = useCallback(() => {
@@ -34,7 +34,7 @@ const useMap = () => {
     initializeMap,
     resetMapOptions,
     getMapOptions,
-    useInitializeMap,
+    initMap,
   }
 }
 

@@ -56,7 +56,7 @@ export default function ListBox({
         return 'calc(100vh - 150px)'
       }
 
-      if (auth?.idCode !== '' && map && map.getZoom() >= 15) {
+      if (auth?.id !== '' && map && map.getZoom() >= 15) {
         if (mapListItems?.contents?.length! > 0) {
           return 'calc(100vh - 150px)'
         }
@@ -68,7 +68,7 @@ export default function ListBox({
 
     return '59px'
   }, [
-    auth.idCode,
+    auth.id,
     formData.isSubFilterBoxOpen,
     formData.lastFilter,
     isOpen,

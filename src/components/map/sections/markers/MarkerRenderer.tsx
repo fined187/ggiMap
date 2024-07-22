@@ -12,11 +12,13 @@ import IconContent from './IconContent'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import {
   clickedItemAtom,
+  isPanoramaVisibleAtom,
   listOverItemAtom,
   markerPositionAtom,
 } from '@/store/atom/map'
 import { UseQueryResult, useQuery } from 'react-query'
 import { NaverMap } from '@/models/Map'
+import { MINI_MAP } from '../MiniMap'
 
 interface MarkerRendererProps {
   item: MapItem
@@ -40,7 +42,10 @@ const MarkerRenderer = ({
   const setMarkerPosition = useSetRecoilState(markerPositionAtom)
   const [clickedItem, setClickedItem] = useRecoilState(clickedItemAtom)
   const listOver = useRecoilValue(listOverItemAtom)
-  let markers: naver.maps.Marker[] = []
+  const isPanoVisible = useRecoilValue(isPanoramaVisibleAtom)
+  const { data: miniMap }: UseQueryResult<NaverMap> = useQuery(MINI_MAP, {
+    enabled: false,
+  })
   const handleItemUsage = useCallback(() => {
     const usageMapping: { [key: string]: string } = {
       단독: '단독',
@@ -56,7 +61,6 @@ const MarkerRenderer = ({
     }
 
     const mappedUsage = usageMapping[item.usage]
-
     if (!mappedUsage) {
       if (item.usage.length >= 4) {
         return `${item.usage.slice(0, 2)}<br />${item.usage.slice(2, 4)}`
@@ -78,6 +82,7 @@ const MarkerRenderer = ({
 
   const handleMarkerClick = useCallback(
     (item: MapItem) => {
+      if (isPanoVisible) return
       const isSelected = clickedItem === item
       setOpenOverlay(isSelected ? !openOverlay : true)
       markerClickedRef.current = isSelected ? !openOverlay : true
@@ -89,6 +94,7 @@ const MarkerRenderer = ({
       setClickedItem,
       markerClickedRef,
       openOverlay,
+      isPanoVisible,
     ],
   )
 
@@ -101,14 +107,6 @@ const MarkerRenderer = ({
 
   useEffect(() => {
     if (!map || !item || map.getZoom() < 15) return
-
-    const removeAllMarkers = () => {
-      markers.forEach((marker) => {
-        naver.maps.Event?.clearInstanceListeners(marker)
-        marker.setMap(null)
-      })
-      markers = []
-    }
     const zoomLevel = map?.getZoom()
     const marker = new window.naver.maps.Marker({
       map: map,
@@ -133,7 +131,6 @@ const MarkerRenderer = ({
         ? 110
         : handleZIndex(item.types[0], item.winYn),
     )
-    markers.push(marker)
 
     markerRef.current = marker
 
@@ -155,7 +152,9 @@ const MarkerRenderer = ({
         })
       }
     })
-    return () => removeAllMarkers()
+    return () => {
+      marker.setMap(null)
+    }
   }, [
     map,
     item,
@@ -166,6 +165,8 @@ const MarkerRenderer = ({
     handleMarkerClick,
     setMarkerPosition,
     listOver.isOver,
+    isPanoVisible,
+    miniMap,
   ])
   return null
 }

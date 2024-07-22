@@ -147,6 +147,7 @@ const containerStyle = css`
   border-radius: 10px;
   padding: 10px 5px 10px 5px;
   z-index: 100;
+  border: 1px solid #9d9999;
 `
 
 const flexRowStyle = css`

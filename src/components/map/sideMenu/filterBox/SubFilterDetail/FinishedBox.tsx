@@ -5,6 +5,7 @@ import Text from '@/components/shared/Text'
 import { MULGUN, MULGUN_SUB } from '@/constants/SubFilter'
 import { formDataAtom } from '@/store/atom/map'
 import { css } from '@emotion/react'
+import { useCallback, useEffect } from 'react'
 import { useRecoilState } from 'recoil'
 
 interface FinishedBoxProps {
@@ -13,34 +14,61 @@ interface FinishedBoxProps {
 
 export default function FinishedBox({ handleReset }: FinishedBoxProps) {
   const [formData, setFormData] = useRecoilState(formDataAtom)
-  const handleGubunBoxClick = (index: number) => {
-    if (index === 0) {
+  const handleGubunBoxClick = useCallback(
+    (index: number) => {
+      if (index === 0) {
+        setFormData({
+          ...formData,
+          ekm: !formData.ekm,
+        })
+      } else if (index === 1) {
+        setFormData({
+          ...formData,
+          egm: !formData.egm,
+        })
+      } else {
+        setFormData({
+          ...formData,
+          egg: !formData.egg,
+        })
+      }
+    },
+    [formData, setFormData],
+  )
+
+  const handleFinishedBoxClick = useCallback(
+    (index: number) => {
       setFormData({
         ...formData,
-        ekm: !formData.ekm,
+        awardedMonths:
+          formData.awardedMonths === Number(Object.keys(MULGUN)[index])
+            ? 0
+            : Number(Object.keys(MULGUN)[index]),
       })
-    } else if (index === 1) {
+    },
+    [formData, setFormData],
+  )
+
+  useEffect(() => {
+    if (formData.ekm || formData.egm || formData.egg) {
+      if (formData.awardedMonths === 0) {
+        setFormData({
+          ...formData,
+          awardedMonths: 3,
+        })
+      } else {
+        setFormData({
+          ...formData,
+          awardedMonths: formData.awardedMonths,
+        })
+      }
+    } else if (!formData.ekm && !formData.egm && !formData.egg) {
       setFormData({
         ...formData,
-        egm: !formData.egm,
-      })
-    } else {
-      setFormData({
-        ...formData,
-        egg: !formData.egg,
+        awardedMonths: 0,
       })
     }
-  }
-
-  const handleFinishedBoxClick = (index: number) => {
-    setFormData({
-      ...formData,
-      awardedMonths:
-        formData.awardedMonths === Number(Object.keys(MULGUN)[index])
-          ? 0
-          : Number(Object.keys(MULGUN)[index]),
-    })
-  }
+  }, [formData.ekm, formData.egm, formData.egg, setFormData])
 
   return (
     <Flex justify="start" direction="column" css={ContainerStyle}>
@@ -200,7 +228,9 @@ export default function FinishedBox({ handleReset }: FinishedBoxProps) {
                 key={index}
                 css={BoxStyle}
                 onClick={() => {
-                  handleFinishedBoxClick(index)
+                  formData.egg || formData.egm || formData.ekm
+                    ? handleFinishedBoxClick(index + 3)
+                    : null
                 }}
                 style={{
                   borderLeft:
@@ -227,6 +257,11 @@ export default function FinishedBox({ handleReset }: FinishedBoxProps) {
                         Number(Object.keys(MULGUN)[index])
                       ? '1px solid #332EFC'
                       : '',
+
+                  cursor:
+                    formData.egg || formData.egm || formData.ekm
+                      ? 'pointer'
+                      : 'not-allowed',
                 }}
               >
                 <Text
@@ -255,7 +290,9 @@ export default function FinishedBox({ handleReset }: FinishedBoxProps) {
                 key={index}
                 css={BoxStyle}
                 onClick={() => {
-                  handleFinishedBoxClick(index + 3)
+                  formData.egg || formData.egm || formData.ekm
+                    ? handleFinishedBoxClick(index + 3)
+                    : null
                 }}
                 style={{
                   borderLeft:
@@ -289,6 +326,10 @@ export default function FinishedBox({ handleReset }: FinishedBoxProps) {
                     Number(Object.keys(MULGUN)[index + 3])
                       ? '#F0F0FF'
                       : 'white',
+                  cursor:
+                    formData.egg || formData.egm || formData.ekm
+                      ? 'pointer'
+                      : 'not-allowed',
                 }}
               >
                 <Text

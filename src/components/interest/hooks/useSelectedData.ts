@@ -14,6 +14,7 @@ const useHandleSelectedData = () => {
   const auth = useRecoilValue(authInfo)
   const type = auth?.type
   const idCode = auth?.idCode
+  const id = auth?.id
   const handleItemType = (type: string) => {
     switch (type) {
       case '1':
@@ -35,10 +36,10 @@ const useHandleSelectedData = () => {
             response = (await getKmItem(idCode)) || null
             break
           case '2':
-            response = (await getGmItem(idCode)) || null
+            response = (await getGmItem(id)) || null
             break
           case '3':
-            response = (await getGgItem(idCode)) || null
+            response = (await getGgItem(id)) || null
             break
           case '4':
             response = (await getKwItem(idCode)) || null
@@ -47,7 +48,6 @@ const useHandleSelectedData = () => {
 
         if (response && response.success) {
           const { data } = response
-          console.log(data)
           setSelectedData((prev: any) => ({
             ...prev,
             [`${handleItemType(type)}`]: data,

@@ -22,8 +22,8 @@ import {
 } from '@/remote/interest/getInterest'
 import Image from 'next/image'
 import UpdateResult from './InterestResult'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { mapItemsAtom, mapListAtom } from '@/store/atom/map'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { mapItemsAtom, mapListAtom, selectedItemAtom } from '@/store/atom/map'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
 import Loader from '../map/sideMenu/searchListBox/listBox/icons/loading/loader/Loader'
@@ -48,6 +48,7 @@ export default function InterestProps({
   const [openGroup, setOpenGroup] = useState(false)
   const [step, setStep] = useState(1)
   const [interestData, setInterestData] = useState<interest | null>(null)
+  const mapListItems = useRecoilValue(mapListAtom)
   const setMapItems = useSetRecoilState(mapItemsAtom)
   const setMapListItems = useSetRecoilState(mapListAtom)
   const { mutate: postClickedInfo } = useMutateDetail()
@@ -105,7 +106,7 @@ export default function InterestProps({
 
   const { mutate: putInterest } = usePutInterest(type, formData, setUpdatedData)
   const { mutate: deleteInterest } = useDeleteInterest(type, formData)
-
+  const [selectedItem, setSelectedItem] = useRecoilState(selectedItemAtom)
   const handleGetData = async (type: string, id: string) => {
     const fetchData: { [key: string]: Function } = {
       '1': getKmInterest,
@@ -218,7 +219,7 @@ export default function InterestProps({
               ? (formData.goodsId as string)
               : ((formData.infoId + formData.caseNo + '0000') as string),
           )
-          if (auth.idCode) handleSelectedData()
+          if (auth.id) handleSelectedData()
           onButtonClick()
         }, 500)
       }

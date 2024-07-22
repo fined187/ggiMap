@@ -21,9 +21,13 @@ function usePostListItems({ formData }: { formData: Form }) {
         ? '0'
         : formData.ids.join(','),
     fromAppraisalAmount: formData.fromAppraisalAmount,
-    toAppraisalAmount: formData.toAppraisalAmount,
+    toAppraisalAmount:
+      formData.toAppraisalAmount === 3000000001
+        ? 0
+        : formData.toAppraisalAmount,
     fromMinimumAmount: formData.fromMinimumAmount,
-    toMinimumAmount: formData.toMinimumAmount,
+    toMinimumAmount:
+      formData.toMinimumAmount === 3000000001 ? 0 : formData.toMinimumAmount,
     interests: formData.interests,
     x1: formData.x1,
     y1: formData.y1,
@@ -37,24 +41,13 @@ function usePostListItems({ formData }: { formData: Form }) {
     ekm: formData.ekm,
     egm: formData.egm,
     egg: formData.egg,
-    selectedId: auth.idCode !== '' ? auth.idCode : null,
+    selectedId: auth.id !== '' ? auth.id : null,
     selectedType: auth.type !== '' ? parseInt(auth.type) : null,
   }
 
   return useMutation<MapListResponse, unknown, PostListItemsArgs>(
     ['postListItems', param.x1, param.y1, param.x2, param.y2],
     async ({ page, pageSize }) => {
-      const isRoleAnonymousOrFree = ['ROLE_ANONYMOUS', 'ROLE_FREE'].some(
-        (role) => formData.role.includes(role),
-      )
-      if (isRoleAnonymousOrFree) {
-        const prev = prevList
-        setMapList((prev) => ({
-          contents: [],
-          paging: prev.paging,
-        }))
-        return { contents: [], paging: prev.paging } as MapListResponse
-      }
       const response = await postListItems(param, page, pageSize)
 
       if (response?.data.data) {

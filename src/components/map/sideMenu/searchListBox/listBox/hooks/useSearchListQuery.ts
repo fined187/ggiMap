@@ -4,7 +4,6 @@ import { UseQueryResult, useInfiniteQuery, useQuery } from 'react-query'
 import { useRecoilValue } from 'recoil'
 import { formDataAtom } from '@/store/atom/map'
 import usePostMapItems from '@/hooks/items/usePostMapItems'
-import useSWR from 'swr'
 import { MAP_KEY } from '@/components/map/sections/hooks/useMap'
 import { authInfo } from '@/store/atom/auth'
 import usePostListItems from '../../hooks/usePostListItems'
@@ -39,25 +38,13 @@ export default function useSearchListQuery({
   const fetchSearchList = useCallback(
     async (page: number, PAGE_SIZE: number) => {
       if (!map) return
-      if (
-        formData.x1 === 1 &&
-        formData.x2 === 1 &&
-        formData.y1 === 1 &&
-        formData.y2 === 1
-      )
-        return
-      await delay(100)
-      if (!isFirstMount.current) {
-        isFirstMount.current = true
-        return
-      }
+      await delay(250)
       try {
-        if (map?.getZoom() < 15) {
+        if (map && map?.getZoom() < 15) {
           await handleCenterChanged()
           return
         }
-
-        let listItems
+        let listItems = null
         if (page === 1) {
           const [mapListItems] = await Promise.all([
             getMapListItems({ page, pageSize: PAGE_SIZE }),
@@ -73,11 +60,11 @@ export default function useSearchListQuery({
 
         if (
           listItems?.contents.some(
-            (item: MapItems) => item.idCode === auth.idCode,
+            (item: MapItems) => item.idCode === auth.id,
           )
         ) {
           listItems.contents = listItems.contents.filter(
-            (item: MapItems) => item.idCode !== auth.idCode,
+            (item: MapItems) => item.idCode !== auth.id,
           )
           return { ...listItems } as MapListResponse
         }
@@ -88,8 +75,25 @@ export default function useSearchListQuery({
       }
     },
     [
-      auth.idCode,
-      formData,
+      auth.id,
+      formData.x1,
+      formData.x2,
+      formData.y1,
+      formData.y2,
+      formData.interests,
+      formData.awardedMonths,
+      formData.km,
+      formData.kw,
+      formData.gg,
+      formData.gm,
+      formData.ekm,
+      formData.egm,
+      formData.egg,
+      formData.fromAppraisalAmount,
+      formData.toAppraisalAmount,
+      formData.fromMinimumAmount,
+      formData.toMinimumAmount,
+      formData.ids,
       getMapItems,
       getMapListItems,
       handleCenterChanged,
@@ -129,6 +133,7 @@ export default function useSearchListQuery({
             : (lastPage?.paging?.pageNumber ?? 0) + 1
           return nextPage
         },
+        enabled: !!map || !!auth.isInitialized, 
         refetchOnWindowFocus: false,
       },
     )

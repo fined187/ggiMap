@@ -197,11 +197,11 @@ export default function Carousel({
                       }}
                     >
                       <Text css={TextStyle}>
-                        {clickedItem?.types[0] === 1
+                        {clickedItem?.types[index] === 1
                           ? '경매'
-                          : clickedItem?.types[0] === 2
+                          : clickedItem?.types[index] === 2
                           ? '캠코'
-                          : clickedItem?.types[0] === 3
+                          : clickedItem?.types[index] === 3
                           ? '기관'
                           : '예정'}
                       </Text>
@@ -271,9 +271,9 @@ export default function Carousel({
                     </Flex>
                     <BottomBox>
                       <Text css={BottomTextStyle}>
-                        {clickedItem?.types[0] === 1
+                        {clickedItem?.types[index] === 1
                           ? clickedInfo && clickedInfo[index]?.caseNo
-                          : clickedItem?.types[0] === 2 || 3
+                          : clickedItem?.types[index] === 2 || 3
                           ? clickedInfo && clickedInfo[index]?.manageNo
                           : ''}
                       </Text>

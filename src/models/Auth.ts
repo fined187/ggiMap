@@ -11,8 +11,10 @@ export interface Auth {
   type: string
   lng: number
   lat: number
+  isInitialized: boolean
   detailLng: number
   detailLat: number
+  id: string
 }
 
 interface Contents {

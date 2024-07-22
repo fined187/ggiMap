@@ -60,21 +60,26 @@ export default function Bottom({ nowIndex }: BottomProps) {
           }}
         >
           <Text css={AmountTitleTextStyle}>
-            {(clickedInfo && clickedInfo[nowIndex]?.claimAmt) || 0 > 0
+            {(clickedInfo[nowIndex]?.claimAmt ?? 0) > 0
               ? '청구액'
-              : clickedInfo && (clickedInfo[nowIndex]?.winAmt as number) > 0
+              : clickedInfo && (clickedInfo[nowIndex]?.winAmt ?? 0) > 0
               ? '낙찰액'
               : '최저가'}
           </Text>
           <Text css={AmountTextStyle}>
-            {clickedInfo && (clickedInfo[nowIndex]?.claimAmt as number) > 0
+            {clickedInfo && (clickedInfo[nowIndex]?.claimAmt ?? 0) > 0
               ? useNum2Han(
-                  (clickedInfo && clickedInfo[nowIndex]?.claimAmt) || 0,
+                  clickedInfo[nowIndex]?.claimAmt ?? 0,
+                  clickedInfo && (clickedInfo[nowIndex]?.winAmt ?? 0),
                 )
               : clickedItem?.winYn === 'Y'
-              ? useNum2Han((clickedInfo && clickedInfo[nowIndex]?.winAmt) || 0)
+              ? useNum2Han(
+                  clickedInfo[nowIndex]?.winAmt ?? 0,
+                  clickedInfo && (clickedInfo[nowIndex]?.winAmt ?? 0),
+                )
               : useNum2Han(
-                  (clickedInfo && clickedInfo[nowIndex]?.minAmt) || 0,
+                  clickedInfo[nowIndex]?.minAmt ?? 0,
+                  clickedInfo && (clickedInfo[nowIndex]?.winAmt ?? 0),
                 ) +
                 '(' +
                 (((clickedInfo && clickedInfo[nowIndex]?.ratio) as number) > 0
@@ -150,7 +155,8 @@ export default function Bottom({ nowIndex }: BottomProps) {
             <Text css={DetailTextStyle}>
               {'감정가 ' +
                 useNum2Han(
-                  (clickedInfo && clickedInfo[nowIndex]?.appraisalAmt) || 0,
+                  clickedInfo[nowIndex]?.appraisalAmt ?? 0,
+                  clickedInfo && (clickedInfo[nowIndex]?.winAmt ?? 0),
                 )}
             </Text>
           </Flex>

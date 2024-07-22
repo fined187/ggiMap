@@ -104,7 +104,10 @@ function KwForm({
           }}
         >
           <Text css={TextStyle}>청구액</Text>
-          <Text css={ClaimStyle}>{`${useNum2Han(item?.claim)}`}</Text>
+          <Text css={ClaimStyle}>{`${useNum2Han(
+            item?.claim,
+            item?.winAmt ?? 0,
+          )}`}</Text>
           <Spacing size={10} />
           <Flex
             direction="row"

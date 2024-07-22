@@ -35,7 +35,7 @@ export function NumToHan(num: number) {
     const chunMan = Math.floor(num / 10000000)
     const baekMan = Math.round((num % 10000000) / 1000000)
     if (baekMan.toString().length > 1) {
-      return `${chunMan + 1}천만`
+      return `${chunMan + 1 === 10 ? '1억원' : chunMan + 1 + '천만'}`
     } else if (baekMan.toString() === '0') {
       return `${chunMan}천만`
     } else {
@@ -46,7 +46,7 @@ export function NumToHan(num: number) {
     const baekMan = Math.floor(num / 1000000)
     const shipMan = Math.round((num % 1000000) / 100000)
     if (shipMan.toString().length > 1) {
-      return `${baekMan + 1}백만`
+      return `${baekMan + 1 === 10 ? '1천만' : baekMan + 1 + '백만'}`
     } else if (shipMan.toString() === '0') {
       return `${baekMan}백만`
     } else {

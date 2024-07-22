@@ -1,4 +1,6 @@
 import { NaverMap } from '@/models/Map'
+import getPolypath from '@/remote/map/selected/getPolypath'
+import { authInfo } from '@/store/atom/auth'
 import { isPanoramaVisibleAtom } from '@/store/atom/map'
 import {
   Dispatch,
@@ -19,22 +21,23 @@ interface MiniMapProps {
   setClickedMarker: Dispatch<SetStateAction<naver.maps.Marker | null>>
   setIsPanoVisible: Dispatch<SetStateAction<boolean>>
   pano: naver.maps.Panorama | null
+  minimapRef: React.MutableRefObject<NaverMap | null>
 }
-
+export const MINI_MAP = '/minimap'
 export default function MiniMap({
   clickedLatLng,
   setClickedMarker,
   setIsPanoVisible,
   map,
   pano,
+  minimapRef,
 }: MiniMapProps) {
   const [miniMap, setMiniMap] = useState<NaverMap | null>(null)
   const isPanoramaVisible = useRecoilValue(isPanoramaVisibleAtom)
-  const miniMapRef = useRef<NaverMap | null>(null)
   const panoChanged = useRef(false)
+  const auth = useRecoilValue(authInfo)
 
   const calculatePanoPan = (angle: number) => ((angle % 360) + 360) % 360
-
   const getMarkerIconNumber = (radius: number, divider: number) => {
     const delta = 360 / (divider || 1)
     return (Math.round(radius / delta) % divider) + 1
@@ -51,10 +54,10 @@ export default function MiniMap({
         scrollWheel: true,
         scaleControl: true,
         mapDataControl: true,
-        logoControl: true,
+        logoControl: false,
       })
       setMiniMap(minimap)
-      miniMapRef.current = miniMap
+      minimapRef.current = miniMap
 
       const control: HTMLElement[] = []
       control.push(miniMapElement)
@@ -130,6 +133,40 @@ export default function MiniMap({
   )
 
   useEffect(() => {
+    const updatePolyPath = async () => {
+      if (!auth.id || !auth.detailLat || !auth.detailLng || !miniMap) return
+
+      try {
+        const response = await getPolypath(
+          auth.detailLng as number,
+          auth.detailLat as number,
+        )
+        if (response.length > 0 && auth.id) {
+          new window.naver.maps.Polyline({
+            map: miniMap,
+            path: response.map(
+              (item: number[][]) =>
+                new window.naver.maps.LatLng(item[0], item[1]),
+            ),
+            fillColor: '#ff0000',
+            fillOpacity: 0.3,
+            strokeColor: '#ff0000',
+            strokeOpacity: 0.6,
+            strokeWeight: 3,
+            zIndex: 100,
+          })
+          miniMap.setCenter(
+            new window.naver.maps.LatLng(auth.detailLat, auth.detailLng),
+          )
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    updatePolyPath()
+  }, [auth.detailLat, auth.detailLng, auth.id, miniMap])
+
+  useEffect(() => {
     if (map && isPanoramaVisible) {
       initializeMiniMap(map)
     }
@@ -141,7 +178,7 @@ export default function MiniMap({
         position: 'fixed',
         bottom: '0',
         right: '0',
-        zIndex: 1100,
+        zIndex: 21,
       }}
     >
       <div
@@ -150,7 +187,7 @@ export default function MiniMap({
           width: '300px',
           height: '300px',
           position: 'fixed',
-          zIndex: 1100,
+          zIndex: 21,
           bottom: '0',
           right: '0',
           display: isPanoramaVisible ? 'block' : 'none',

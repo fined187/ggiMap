@@ -221,9 +221,9 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
               </Text>
               <Text css={minPriceNum}>
                 {item?.winAmt != 0
-                  ? useNum2Han(item?.winAmt ?? 0) +
+                  ? useNum2Han(item?.winAmt ?? 0, item?.winAmt) +
                     (item?.ratio && item?.ratio > 0 ? `(${item?.ratio}%)` : '')
-                  : useNum2Han(item?.minAmt ?? 0) +
+                  : useNum2Han(item?.minAmt ?? 0, item.winAmt) +
                     (item?.ratio && item?.ratio > 0 ? `(${item?.ratio}%)` : '')}
               </Text>
               <Spacing direction="horizontal" size={2} />
@@ -231,7 +231,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
                 <Text css={appraisalAmtNum}>감정가</Text>
                 <Spacing direction="horizontal" size={5} />
                 <Text css={appraisalAmt}>
-                  {useNum2Han(item?.appraisalAmt ?? 0)}
+                  {useNum2Han(item?.appraisalAmt ?? 0, item.winAmt)}
                 </Text>
               </Flex>
               <Spacing direction="horizontal" size={4} />

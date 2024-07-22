@@ -1,7 +1,6 @@
-import { useMemo, useRef, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRef, useState } from 'react'
 import { NaverMap } from '@/models/Map'
-import useMap, { INITIAL_CENTER, INITIAL_ZOOM } from './hooks/useMap'
+import useMap, { INITIAL_ZOOM } from './hooks/useMap'
 import Map from './GGIMap'
 import BoxGuard from '@/components/shared/BoxGuard'
 import SearchBox from '../sideMenu/searchBox'
@@ -14,12 +13,10 @@ import Clusterings from './markers/Clusterings'
 import Overlay from './overlay'
 import AddressContainer from '../top/AddressContainer'
 import useMapUtils from './hooks/useMapUtils'
-import { authInfo } from '@/store/atom/auth'
 
 const isHalfWindow = () => window.innerWidth < 768
 
 export default function MapSection() {
-  const auth = useRecoilValue(authInfo)
   const [openCursor, setOpenCursor] = useState<boolean>(false)
   const markerClickedRef = useRef<boolean>(false)
   const [halfDimensions, setHalfDimensions] = useState({
@@ -39,29 +36,17 @@ export default function MapSection() {
     setClickedMapType,
   } = useMapUtils()
 
-  const initialCenter = useMemo(() => {
-    return auth.lat && auth.lng
-      ? { lat: auth.lat, lng: auth.lng }
-      : INITIAL_CENTER
-  }, [auth.lat, auth.lng])
-
-  const { initializeMap, useInitializeMap } = useMap()
+  const { initializeMap, initMap } = useMap()
 
   const onLoadMap = (map: NaverMap) => {
     initializeMap(map)
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useInitializeMap(map)
+    initMap(map)
   }
 
   return (
     <>
       <Map
         onLoad={onLoadMap}
-        initialCenter={
-          initialCenter && 'lat' in initialCenter
-            ? [initialCenter.lat, initialCenter.lng]
-            : undefined
-        }
         zoom={INITIAL_ZOOM}
         clickedMapType={clickedMapType}
         setMapCount={setMapCount}

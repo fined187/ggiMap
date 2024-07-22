@@ -8,6 +8,7 @@ import {
 } from '@/store/atom/map'
 import { MapItem } from '@/models/MapItem'
 import { authInfo } from '@/store/atom/auth'
+import { NaverMap } from '@/models/Map'
 
 interface MarkersProps {
   openOverlay: boolean
@@ -20,10 +21,10 @@ export default function Markers({
   setOpenOverlay,
   markerClickedRef,
 }: MarkersProps) {
-  const [mapItems] = useRecoilState(mapItemsAtom)
+  const mapItems = useRecoilValue(mapItemsAtom)
   const auth = useRecoilValue(authInfo)
-  const [selectedItem] = useRecoilState(selectedItemAtom)
-  const [isOnlySelected] = useRecoilState(isOnlySelectedAtom)
+  const selectedItem = useRecoilValue(selectedItemAtom)
+  const isOnlySelected = useRecoilValue(isOnlySelectedAtom)
   const handleOnlySelected = useCallback(() => {
     if (isOnlySelected) {
       const idToFilter =

@@ -7,7 +7,7 @@ export const getKmItem = async (idCode: string) => {
     if (response.data.success === true) {
       return response.data as GetItemResponse
     } else {
-      alert('물건 정보를 가져오는데 실패했습니다')
+      return
     }
   } catch (error) {
     console.error(error)
@@ -20,7 +20,7 @@ export const getGmItem = async (goodsId: string) => {
     if (response.data.success === true) {
       return response.data as GetItemResponse
     } else {
-      alert('물건 정보를 가져오는데 실패했습니다')
+      return
     }
   } catch (error) {
     console.error(error)
@@ -33,7 +33,7 @@ export const getGgItem = async (goodsId: string) => {
     if (response.data.success === true) {
       return response.data as GetItemResponse
     } else {
-      alert('물건 정보를 가져오는데 실패했습니다')
+      return
     }
   } catch (error) {
     console.error(error)
@@ -46,7 +46,7 @@ export const getKwItem = async (idCode: string) => {
     if (response.data.success === true) {
       return response.data as GetItemResponse
     } else {
-      alert('물건 정보를 가져오는데 실패했습니다')
+      return
     }
   } catch (error) {
     console.error(error)

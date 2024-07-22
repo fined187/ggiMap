@@ -95,7 +95,7 @@ export default function UpdateResult({
         <CloseButtonStyle
           onClick={() => {
             onButtonClick && onButtonClick()
-            auth.idCode === '' ? null : handleSelectedData()
+            auth.id === '' ? null : handleSelectedData()
           }}
         >
           <Text css={TextStyle}>닫기</Text>
