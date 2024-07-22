@@ -49,7 +49,6 @@ const useMutateDetail = () => {
         }
         return 0
       })
-      setClickedInfo([])
       setClickedInfo(sortedData)
     },
     onError: (error) => {

@@ -22,15 +22,14 @@ import {
 } from '@/remote/interest/getInterest'
 import Image from 'next/image'
 import UpdateResult from './InterestResult'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { mapItemsAtom, mapListAtom, selectedItemAtom } from '@/store/atom/map'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { clickedInfoAtom, mapItemsAtom, mapListAtom } from '@/store/atom/map'
 import useHandleSelectedData from './hooks/useSelectedData'
 import { authInfo } from '@/store/atom/auth'
 import Loader from '../map/sideMenu/searchListBox/listBox/icons/loading/loader/Loader'
 import usePostInterest from './hooks/usePostInterest'
 import usePutInterest from './hooks/usePutInterest'
 import useDeleteInterest from './hooks/useDeleteInterest'
-import useMutateDetail from '../map/sections/overlay/hooks/useMutateDetail'
 
 interface InterestProps {
   type: string
@@ -48,10 +47,9 @@ export default function InterestProps({
   const [openGroup, setOpenGroup] = useState(false)
   const [step, setStep] = useState(1)
   const [interestData, setInterestData] = useState<interest | null>(null)
-  const mapListItems = useRecoilValue(mapListAtom)
   const setMapItems = useSetRecoilState(mapItemsAtom)
   const setMapListItems = useSetRecoilState(mapListAtom)
-  const { mutate: postClickedInfo } = useMutateDetail()
+  const setClickedInfo = useSetRecoilState(clickedInfoAtom)
   const [formData, setFormData] = useState<InterestFormData>({
     goodsId: '',
     infoId: '',
@@ -102,64 +100,69 @@ export default function InterestProps({
     type,
     formData,
     setUpdatedData,
+    toggleInterest,
   )
-
   const { mutate: putInterest } = usePutInterest(type, formData, setUpdatedData)
-  const { mutate: deleteInterest } = useDeleteInterest(type, formData)
-  const [selectedItem, setSelectedItem] = useRecoilState(selectedItemAtom)
-  const handleGetData = async (type: string, id: string) => {
-    const fetchData: { [key: string]: Function } = {
-      '1': getKmInterest,
-      '2': getGmInterest,
-      '3': getGmInterest,
-      '4': getKwInterest,
-    }
-    const fetchFunction = fetchData[type]
-
-    try {
-      const response = await fetchFunction(id)
-      if (response.success) {
-        const data = response.data
-        setInterestData(data)
-        setFormData((prev) => ({
-          ...prev,
-          ...{
-            infoId: data?.infoId,
-            caseNo: data?.caseNo ?? '',
-            manageNo: data?.manageNo ?? '',
-            mulSeq: data?.mulSeq ?? '0000',
-            infoNo: data?.infoNo ?? '',
-            caseNoString: data?.caseNoString ?? '',
-            oldInfoId: data?.oldInfoId,
-            interestInfo: {
-              category: data?.interestInfo?.category ?? '미분류',
-              memo: data?.interestInfo?.memo ?? '',
-              starRating: data?.interestInfo?.starRating ?? '',
-            },
-            title: data?.caseNo !== undefined ? '사건번호' : '관리번호',
-            categories: data?.categories,
-            smsNotificationYn: data?.smsNotificationYn,
-            isWait: data?.isWait,
-            goodsId: data?.goodsId ?? '',
-            type:
-              data?.goodsId === '' || data?.goodsId === undefined
-                ? 1
-                : data?.infoId === undefined
-                ? 2
-                : data?.mulSeq === undefined
-                ? 4
-                : 3,
-          },
-        }))
+  const { mutate: deleteInterest } = useDeleteInterest(
+    type,
+    formData,
+    toggleInterest,
+  )
+  const handleGetData = useCallback(
+    async (type: string, id: string) => {
+      const fetchData: { [key: string]: Function } = {
+        '1': getKmInterest,
+        '2': getGmInterest,
+        '3': getGmInterest,
+        '4': getKwInterest,
       }
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    }
-  }
+      const fetchFunction = fetchData[type]
+      try {
+        const response = await fetchFunction(id)
+        if (response.success) {
+          const data = response.data
+          setInterestData(data)
+          setFormData((prev) => ({
+            ...prev,
+            ...{
+              infoId: data?.infoId,
+              caseNo: data?.caseNo ?? '',
+              manageNo: data?.manageNo ?? '',
+              mulSeq: data?.mulSeq ?? '0000',
+              infoNo: data?.infoNo ?? '',
+              caseNoString: data?.caseNoString ?? '',
+              oldInfoId: data?.oldInfoId,
+              interestInfo: {
+                category: data?.interestInfo?.category ?? '미분류',
+                memo: data?.interestInfo?.memo ?? '',
+                starRating: data?.interestInfo?.starRating ?? '',
+              },
+              title: data?.caseNo !== undefined ? '사건번호' : '관리번호',
+              categories: data?.categories,
+              smsNotificationYn: data?.smsNotificationYn,
+              isWait: data?.isWait,
+              goodsId: data?.goodsId ?? '',
+              type:
+                data?.goodsId === '' || data?.goodsId === undefined
+                  ? 1
+                  : data?.infoId === undefined
+                  ? 2
+                  : data?.mulSeq === undefined
+                  ? 4
+                  : 3,
+            },
+          }))
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    },
+    [type, id],
+  )
 
   useEffect(() => {
     handleGetData(type, id)
-  }, [type, id])
+  }, [])
 
   const handleDuplicatedGroupName = useCallback(
     (name: string) => {
@@ -182,16 +185,6 @@ export default function InterestProps({
       if (처음등록하는가) {
         if (window.confirm('관심물건을 등록하시겠습니까?')) {
           postInterest()
-          toggleInterest(
-            formData.type === 1
-              ? ((formData.infoId +
-                  formData.caseNo +
-                  formData.mulSeq) as string)
-              : formData.type === 2 || formData.type === 3
-              ? (formData.goodsId as string)
-              : (((((formData.infoId as string) + formData.caseNo) as string) +
-                  formData.mulSeq) as string as string),
-          )
           setStep(2)
         }
       } else {
@@ -210,15 +203,6 @@ export default function InterestProps({
       if (window.confirm('관심물건을 삭제하시겠습니까?')) {
         deleteInterest()
         setTimeout(() => {
-          toggleInterest(
-            formData.type === 1
-              ? ((formData.infoId +
-                  formData.caseNo +
-                  formData.mulSeq) as string)
-              : formData.type === 2 || formData.type === 3
-              ? (formData.goodsId as string)
-              : ((formData.infoId + formData.caseNo + '0000') as string),
-          )
           if (auth.id) handleSelectedData()
           onButtonClick()
         }, 500)
@@ -226,7 +210,7 @@ export default function InterestProps({
     }
   }
 
-  const toggleInterest = (id: string) => {
+  function toggleInterest(id: string) {
     setMapListItems((prev) => {
       const updatedContents = prev.contents.map((content) => {
         if (content.id === id) {
@@ -251,7 +235,15 @@ export default function InterestProps({
       })
       return updatedMarkers
     })
-    postClickedInfo()
+    setClickedInfo((prev) => {
+      const updatedInfo = prev.map((info) => {
+        if (info.id === id) {
+          return { ...info, interest: info.interest === '' ? 'Y' : '' }
+        }
+        return info
+      })
+      return updatedInfo
+    })
   }
 
   const renderInterestForm = () => (

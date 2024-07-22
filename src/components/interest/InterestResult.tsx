@@ -49,6 +49,7 @@ export default function UpdateResult({
           height={30}
           onClick={() => {
             onButtonClick && onButtonClick()
+            handleSelectedData()
           }}
           style={{
             cursor: 'pointer',

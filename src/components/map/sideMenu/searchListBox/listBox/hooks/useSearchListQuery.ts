@@ -59,9 +59,7 @@ export default function useSearchListQuery({
         }
 
         if (
-          listItems?.contents.some(
-            (item: MapItems) => item.idCode === auth.id,
-          )
+          listItems?.contents.some((item: MapItems) => item.idCode === auth.id)
         ) {
           listItems.contents = listItems.contents.filter(
             (item: MapItems) => item.idCode !== auth.id,
@@ -133,7 +131,7 @@ export default function useSearchListQuery({
             : (lastPage?.paging?.pageNumber ?? 0) + 1
           return nextPage
         },
-        enabled: !!map || !!auth.isInitialized, 
+        enabled: !!map || !!auth.isInitialized,
         refetchOnWindowFocus: false,
       },
     )

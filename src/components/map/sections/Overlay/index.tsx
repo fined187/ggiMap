@@ -4,7 +4,7 @@ import { css } from '@emotion/react'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import Top from './Top'
 import Bottom from './Bottom'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { markerPositionAtom } from '@/store/atom/map'
 import { MAP_KEY } from '../hooks/useMap'
 import useGetDetail from './hooks/useGetDetail'
@@ -17,7 +17,7 @@ interface OverlayProps {
 
 export default function Overlay({ halfDimensions }: OverlayProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const [markerPosition, setMarkerPosition] = useRecoilState(markerPositionAtom)
+  const markerPosition = useRecoilValue(markerPositionAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
   const { data: map }: UseQueryResult<NaverMap> = useQuery(MAP_KEY, {
     enabled: false,

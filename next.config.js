@@ -2,7 +2,7 @@ const withTwin = require('./withTwin')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withTwin({
-  reactStrictMode: true,
+  reactStrictMode: false,
   async headers() {
     return [
       {
