@@ -73,16 +73,14 @@ const usePostInterest = (
     {
       onSuccess: (data) => {
         setUpdatedInterest(data)
-          toggleInterest(
-            formData.type === 1
-              ? ((formData.infoId +
-                  formData.caseNo +
-                  formData.mulSeq) as string)
-              : formData.type === 2 || formData.type === 3
-              ? (formData.goodsId as string)
-              : (((((formData.infoId as string) + formData.caseNo) as string) +
-                  formData.mulSeq) as string as string),
-          )
+        toggleInterest(
+          formData.type === 1
+            ? ((formData.infoId + formData.caseNo + formData.mulSeq) as string)
+            : formData.type === 2 || formData.type === 3
+            ? (formData.goodsId as string)
+            : (((((formData.infoId as string) + formData.caseNo) as string) +
+                formData.mulSeq) as string as string),
+        )
       },
     },
   )

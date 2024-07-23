@@ -91,7 +91,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
     (idCode: string, type: number) => {
       if (window) {
         const url = handleDetailPage(idCode, type)
-        const win = window.open(url, 'popup', 'width=1220,height=1000')
+        const win = window.open(url, 'popup_new', 'width=1220,height=1000')
         if (win) {
           win.focus()
         }
@@ -188,7 +188,7 @@ function Form({ item, index, isDetailed, isSelected }: ItemProps) {
             <NextImageWithFallback
               src={item?.path ? url + item?.path : ''}
               alt="KM image"
-              fallbackComponent={<NoImage />}
+              fallbackComponent={<NoImage winYn={item.winAmt > 0} />}
               width={180}
               height={135}
               style={{

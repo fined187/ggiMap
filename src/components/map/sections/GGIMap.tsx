@@ -273,12 +273,22 @@ export default function GGIMap({
           panoRef.current?.setPov(lookAtPov)
         }
       }
+
+      const fitBounds = window.naver.maps.Event.addListener(
+        mapRef.current,
+        'bounds_changed',
+        () => {
+          console.log('bounds_changed')
+          mapRef.current?.fitBounds(mapRef.current.getBounds())
+        },
+      )
       const clickListener = window.naver.maps.Event.addListener(
         mapRef.current,
         'click',
         (e: any) => {
           const latlng = e.coord as naver.maps.Coord
           mapRef.current?.setCenter(latlng)
+          mapRef.current?.fitBounds(mapRef.current.getBounds())
         },
       )
       const positionChangedListener = window.naver.maps.Event.addListener(
@@ -295,6 +305,7 @@ export default function GGIMap({
         window.naver.maps.Event.removeListener(clickListener)
         window.naver.maps.Event.removeListener(positionChangedListener)
         window.naver.maps.Event.removeListener(povChangedListener)
+        window.naver.maps.Event.removeListener(fitBounds)
       }
     } else {
       markerRef.current?.setMap(null)

@@ -30,7 +30,7 @@ export default function Bottom({ nowIndex }: BottomProps) {
     (idCode: string, type: number) => {
       if (window) {
         const url = handleDetailPage(type, idCode)
-        const win = window.open(url, 'popup', 'width=1220,height=1000')
+        const win = window.open(url, 'popup_new', 'width=1220,height=1000')
         if (win) {
           win.focus()
         }
@@ -63,7 +63,7 @@ export default function Bottom({ nowIndex }: BottomProps) {
             {(clickedInfo[nowIndex]?.claimAmt ?? 0) > 0
               ? '청구액'
               : clickedInfo && (clickedInfo[nowIndex]?.winAmt ?? 0) > 0
-              ? '낙찰액'
+              ? '낙찰가'
               : '최저가'}
           </Text>
           <Text css={AmountTextStyle}>

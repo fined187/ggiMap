@@ -27,6 +27,7 @@ export default function BoxGuard({
     }
     return ''
   }, [isOpen, map])
+
   return (
     <Flex
       justify="start"
@@ -35,7 +36,7 @@ export default function BoxGuard({
       css={ContainerStyle}
       style={{
         height: handleCalcHeight(),
-        gap: isOpen ? '10px' : '19px',
+        gap: map && map.getZoom() < 15 ? '10px' : isOpen ? '0px' : '10px',
       }}
     >
       {children}

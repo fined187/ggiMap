@@ -53,19 +53,17 @@ export default function ListBox({
       }
 
       if (map && map.getZoom() >= 15 && mapListItems?.contents?.length! > 0) {
-        return 'calc(100vh - 150px)'
+        return 'calc(100vh - 160px)'
       }
 
       if (auth?.id !== '' && map && map.getZoom() >= 15) {
         if (mapListItems?.contents?.length! > 0) {
-          return 'calc(100vh - 150px)'
+          return 'calc(100vh - 160px)'
         }
-        return 'calc(100vh - 150px)'
+        return 'calc(100vh - 160px)'
       }
-
-      return '150px'
+      return '160px'
     }
-
     return '59px'
   }, [
     auth.id,

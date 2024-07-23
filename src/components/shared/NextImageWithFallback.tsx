@@ -26,7 +26,7 @@ export default function NextImageWithFallback({
     setImagSrc(src)
   }, [src])
 
-  if (imgError && fallbackComponent) {
+  if ((imgError && fallbackComponent) || !src) {
     return <>{fallbackComponent}</>
   }
   if (src !== '') {

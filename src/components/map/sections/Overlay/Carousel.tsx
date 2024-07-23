@@ -75,7 +75,7 @@ export default function Carousel({
     (idCode: string, type: number) => {
       if (window) {
         const url = handleDetailPage(idCode, type)
-        const win = window.open(url, 'popup', 'width=1220,height=1000')
+        const win = window.open(url, 'popup_new', 'width=1220,height=1000')
         if (win) {
           win.focus()
         }
@@ -165,7 +165,11 @@ export default function Carousel({
                     <NextImageWithFallback
                       src={image[index] ?? ''}
                       alt="image"
-                      fallbackComponent={<NoImage />}
+                      fallbackComponent={
+                        <NoImage
+                          winYn={(clickedInfo[index]?.winAmt as number) > 0}
+                        />
+                      }
                       width={299}
                       height={180}
                       style={{

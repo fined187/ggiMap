@@ -229,7 +229,7 @@ export default function FinishedBox({ handleReset }: FinishedBoxProps) {
                 css={BoxStyle}
                 onClick={() => {
                   formData.egg || formData.egm || formData.ekm
-                    ? handleFinishedBoxClick(index + 3)
+                    ? handleFinishedBoxClick(index)
                     : null
                 }}
                 style={{

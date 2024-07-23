@@ -38,6 +38,8 @@ const Result = ({ isOpen, setIsOpen, dragStateRef }: ResultProps) => {
       style={{
         width: '100%',
         height: '100%',
+        position: 'absolute',
+        top: '0px',
       }}
     >
       {showingList ? (

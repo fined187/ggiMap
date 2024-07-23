@@ -35,7 +35,7 @@ export default function Header({
       <Flex direction="row" css={ContainerStyle}>
         {isLoading ? (
           <ListRow
-            right={<BigArrow isOpen={isOpen} setIsOpen={setIsOpen} />}
+            right={null}
             contents={<Skeleton width={150} height={32} />}
             onClick={() => setIsOpen((prev) => !prev)}
           />
