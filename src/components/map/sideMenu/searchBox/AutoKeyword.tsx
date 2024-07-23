@@ -7,7 +7,6 @@ import React, {
 } from 'react'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import useSWR from 'swr'
 import Flex from '@/components/shared/Flex'
 import Spacing from '@/components/shared/Spacing'
 import { KakaoAddrProps, KakaoSubwayProps } from '@/models/Juso'

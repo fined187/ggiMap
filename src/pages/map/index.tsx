@@ -278,11 +278,37 @@ function MapComponent({ token, type, idCode }: Props) {
         setRefreshValue('true')
         return
       }
-      if (typeCode && !idCodeValue) {
+      if (typeCode && !idCodeValue && idCode) {
+        if (typeCode !== type) {
+          setTypeCode(type as string)
+          const url = `/map?token=${tokenValue}&type=${type}&idCode=${idCode}`
+          router.push(url)
+        }
+        const url = `/map?token=${tokenValue}&type=${typeCode}&idCode=${idCode}`
+        router.push(url)
+      } else if (typeCode && !idCodeValue && !idCode) {
+        if (typeCode !== type) {
+          setTypeCode(type as string)
+          const url = `/map?token=${tokenValue}&type=${type}`
+          router.push(url)
+        }
         const url = `/map?token=${tokenValue}&type=${typeCode}`
         router.push(url)
-      } else if (typeCode && idCodeValue) {
-        const url = `/map?token=${tokenValue}&type=${typeCode}&idCode=${idCodeValue}`
+      } else if (typeCode && idCodeValue && idCode) {
+        if (typeCode !== type) {
+          setTypeCode(type as string)
+          const url = `/map?token=${tokenValue}&type=${type}&idCode=${idCode}`
+          router.push(url)
+        }
+        const url = `/map?token=${tokenValue}&type=${typeCode}&idCode=${idCode}`
+        router.push(url)
+      } else if (typeCode && idCodeValue && !idCode) {
+        if (typeCode !== type) {
+          setTypeCode(type as string)
+          const url = `/map?token=${tokenValue}&type=${type}`
+          router.push(url)
+        }
+        const url = `/map?token=${tokenValue}&type=${typeCode}`
         router.push(url)
       }
       setTimeout(() => {

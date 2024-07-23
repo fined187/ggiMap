@@ -224,12 +224,14 @@ export default function GGIMap({
     setOpenOverlay,
     isPanoVisible,
   ])
+
   const closePanorama = () => {
     setIsPanoVisible(false)
     if (markerRef.current) {
       markerRef.current.setMap(null)
     }
   }
+
   useEffect(() => {
     if (!mapRef.current) return
     if (!markerRef.current) {
@@ -244,9 +246,16 @@ export default function GGIMap({
     }
     if (isPanoVisible) {
       markerRef.current?.setPosition(clickedLatLng)
-      markerRef.current?.setMap(mapRef.current)
-      mapRef.current.setSize(new window.naver.maps.Size(350, 350))
-
+      const resizeAndCenterMap = () => {
+        mapRef.current?.setSize(new window.naver.maps.Size(350, 350))
+        markerRef.current?.setMap(mapRef.current)
+        setTimeout(() => {
+          mapRef.current?.setCenter(clickedLatLng)
+          updatePanoPosition()
+          updateMarkerIcon()
+        }, 100)
+      }
+      resizeAndCenterMap()
       const updateMarkerIcon = () => {
         const panValue = calculatePanoPan(
           panoRef.current?.getPov().pan as number,
@@ -273,15 +282,6 @@ export default function GGIMap({
           panoRef.current?.setPov(lookAtPov)
         }
       }
-
-      const fitBounds = window.naver.maps.Event.addListener(
-        mapRef.current,
-        'bounds_changed',
-        () => {
-          console.log('bounds_changed')
-          mapRef.current?.fitBounds(mapRef.current.getBounds())
-        },
-      )
       const clickListener = window.naver.maps.Event.addListener(
         mapRef.current,
         'click',
@@ -301,11 +301,18 @@ export default function GGIMap({
         'pov_changed',
         updateMarkerIcon,
       )
+      const panoStatusListener = window.naver.maps.Event.addListener(
+        panoRef.current,
+        'pano_status',
+        () => {
+          updatePanoPosition()
+        },
+      )
       return () => {
         window.naver.maps.Event.removeListener(clickListener)
         window.naver.maps.Event.removeListener(positionChangedListener)
         window.naver.maps.Event.removeListener(povChangedListener)
-        window.naver.maps.Event.removeListener(fitBounds)
+        window.naver.maps.Event.removeListener(panoStatusListener)
       }
     } else {
       markerRef.current?.setMap(null)
