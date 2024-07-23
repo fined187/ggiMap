@@ -110,16 +110,12 @@ export default function Carousel({
                 clickedInfo && clickedInfo[nowIndex]?.type === 4
                   ? handleDuplicatedOpen(
                       clickedInfo[nowIndex]?.idCode as string,
-                      clickedInfo[nowIndex]?.type!,
+                      clickedInfo[nowIndex]?.type as number,
                     )
                   : null
               }}
             >
-              <MiniMap
-                clickedItem={clickedItem}
-                clickedInfo={clickedInfo}
-                handleDuplicatedOpen={handleDuplicatedOpen}
-              />
+              <MiniMap clickedItem={clickedItem} clickedInfo={clickedInfo} />
             </div>
           ) : null,
         )}
@@ -143,88 +139,70 @@ export default function Carousel({
           clickedInfo && clickedInfo[nowIndex]?.type === 4
             ? handleDuplicatedOpen(
                 clickedInfo[nowIndex]?.idCode as string,
-                clickedInfo[nowIndex]?.type!,
+                clickedInfo[nowIndex]?.type as number,
               )
             : null
         }}
       >
         {clickedInfo &&
           clickedInfo?.map((info, index) => (
-            <div
-              key={
-                info?.id
-                  ? info?.id + index + Math.random()
-                  : info?.goodsID! + index + Math.random()
-              }
-            >
-              <SwiperSlide>
-                {(clickedInfo && clickedInfo[index]?.type === 1) ||
-                clickedInfo[index]?.type === 2 ||
-                clickedInfo[index]?.type === 3 ? (
-                  <div>
-                    <NextImageWithFallback
-                      src={image[index] ?? ''}
-                      alt="image"
-                      fallbackComponent={
-                        <NoImage
-                          winYn={(clickedInfo[index]?.winAmt as number) > 0}
-                        />
-                      }
-                      width={299}
-                      height={180}
-                      style={{
-                        borderRadius: '8px 8px 0px 0px',
-                        width: '300px',
-                        height: '180px',
-                        cursor: 'pointer',
-                      }}
-                      handleDuplicatedOpen={handleDuplicatedOpen}
-                      type={clickedInfo && clickedInfo[index]?.type!}
-                      idCode={
-                        clickedInfo && clickedInfo[index]?.type === 1
-                          ? clickedInfo[index]?.idCode!
-                          : clickedInfo[index]?.type === 2 || 3
-                          ? clickedInfo[index]?.goodsID!
-                          : clickedInfo[index]?.idCode!
-                      }
-                    />
-                    <TypeStyle
-                      style={{
-                        backgroundColor:
-                          clickedInfo && clickedInfo[index]?.type === 1
-                            ? colors.kmBlue
-                            : clickedInfo && clickedInfo[index]?.type === 2
-                            ? colors.gmBlue
-                            : clickedInfo && clickedInfo[index]?.type === 3
-                            ? colors.ggPurple
-                            : colors.kwGreen,
-                      }}
-                    >
-                      <Text css={TextStyle}>
-                        {clickedItem?.types[index] === 1
-                          ? '경매'
-                          : clickedItem?.types[index] === 2
-                          ? '캠코'
-                          : clickedItem?.types[index] === 3
-                          ? '기관'
-                          : '예정'}
+            <SwiperSlide key={info?.id || info?.goodsID || index}>
+              {info?.type === 1 || info?.type === 2 || info?.type === 3 ? (
+                <div>
+                  <NextImageWithFallback
+                    src={image[index] ?? ''}
+                    alt="image"
+                    fallbackComponent={
+                      <NoImage winYn={(info?.winAmt as number) > 0} />
+                    }
+                    width={299}
+                    height={180}
+                    style={{
+                      borderRadius: '8px 8px 0px 0px',
+                      width: '300px',
+                      height: '180px',
+                      cursor: 'pointer',
+                    }}
+                    handleDuplicatedOpen={handleDuplicatedOpen}
+                    type={info?.type ?? 1}
+                    idCode={info?.idCode || info?.goodsID || ''}
+                  />
+                  <TypeStyle
+                    style={{
+                      backgroundColor:
+                        info?.type === 1
+                          ? colors.kmBlue
+                          : info?.type === 2
+                          ? colors.gmBlue
+                          : info?.type === 3
+                          ? colors.ggPurple
+                          : colors.kwGreen,
+                    }}
+                  >
+                    <Text css={TextStyle}>
+                      {clickedItem?.types[index] === 1
+                        ? '경매'
+                        : clickedItem?.types[index] === 2
+                        ? '캠코'
+                        : clickedItem?.types[index] === 3
+                        ? '기관'
+                        : '예정'}
+                    </Text>
+                  </TypeStyle>
+                  {clickedInfo && clickedInfo.length > 1 && !isOnlySelected && (
+                    <PageCount>
+                      <Text css={PageCountTextStyle}>
+                        {index + 1}/{clickedInfo.length}
                       </Text>
-                    </TypeStyle>
-                    {clickedInfo &&
-                      clickedInfo.length > 1 &&
-                      !isOnlySelected && (
-                        <PageCount>
-                          <Text css={PageCountTextStyle}>
-                            {index + 1}/{clickedInfo.length}
-                          </Text>
-                        </PageCount>
-                      )}
-                    {clickedInfo && clickedInfo[index]?.share === 'Y' && (
-                      <ShareType>
-                        <Text css={TextStyle}>지분</Text>
-                      </ShareType>
-                    )}
-                    {clickedInfo && clickedInfo[index]?.winAmt! > 0 && (
+                    </PageCount>
+                  )}
+                  {clickedInfo && clickedInfo[index]?.share === 'Y' && (
+                    <ShareType>
+                      <Text css={TextStyle}>지분</Text>
+                    </ShareType>
+                  )}
+                  {clickedInfo &&
+                    (clickedInfo[index]?.winAmt as number) > 0 && (
                       <WinType
                         shareYn={
                           clickedInfo && clickedInfo[index]?.share === 'Y'
@@ -238,83 +216,80 @@ export default function Carousel({
                         <Text css={TextStyle}>낙찰</Text>
                       </WinType>
                     )}
-                    <Flex
-                      style={{
-                        position: 'absolute',
-                        top: 14,
-                        right: 14,
-                        zIndex: 1000,
-                      }}
-                      onClick={() => {
-                        if (openModal) {
-                          close()
-                        } else {
-                          open({
-                            type:
-                              (clickedInfo &&
-                                clickedInfo[index]?.type?.toString()) ||
-                              '1',
-                            id:
-                              clickedInfo && clickedInfo[index]?.type === 1
-                                ? clickedInfo[index]?.id!
-                                : clickedInfo[index]?.type === 2 || 3
-                                ? clickedInfo[index]?.goodsID!
-                                : clickedInfo[index]?.id!,
-                            onButtonClick: () => {
-                              onButtonClick()
-                            },
-                          })
-                        }
-                      }}
-                    >
-                      <Interest
-                        interest={
-                          (clickedInfo && clickedInfo[index]?.interest) || ''
-                        }
-                      />
-                    </Flex>
-                    <BottomBox>
-                      <Text css={BottomTextStyle}>
-                        {clickedItem?.types[index] === 1
-                          ? clickedInfo && clickedInfo[index]?.caseNo
-                          : clickedItem?.types[index] === 2 || 3
-                          ? clickedInfo && clickedInfo[index]?.manageNo
-                          : ''}
+                  <Flex
+                    style={{
+                      position: 'absolute',
+                      top: 14,
+                      right: 14,
+                      zIndex: 1000,
+                    }}
+                    onClick={() => {
+                      if (openModal) {
+                        close()
+                      } else {
+                        open({
+                          type:
+                            (clickedInfo &&
+                              clickedInfo[index]?.type?.toString()) ||
+                            '1',
+                          id:
+                            clickedInfo && clickedInfo[index]?.type === 1
+                              ? (clickedInfo[index]?.id as string)
+                              : clickedInfo[index]?.type === 2 || 3
+                              ? (clickedInfo[index]?.goodsID as string)
+                              : (clickedInfo[index]?.id as string),
+                          onButtonClick: () => {
+                            onButtonClick()
+                          },
+                        })
+                      }
+                    }}
+                  >
+                    <Interest
+                      interest={
+                        (clickedInfo && clickedInfo[index]?.interest) || ''
+                      }
+                    />
+                  </Flex>
+                  <BottomBox>
+                    <Text css={BottomTextStyle}>
+                      {clickedItem?.types[index] === 1
+                        ? clickedInfo && clickedInfo[index]?.caseNo
+                        : clickedItem?.types[index] === 2 || 3
+                        ? clickedInfo && clickedInfo[index]?.manageNo
+                        : ''}
+                    </Text>
+                  </BottomBox>
+                </div>
+              ) : (
+                <>
+                  <TypeStyle
+                    style={{
+                      backgroundColor: colors.kwGreen,
+                    }}
+                  >
+                    <Text css={TextStyle}>예정</Text>
+                  </TypeStyle>
+                  {clickedInfo && clickedInfo.length > 1 && !isOnlySelected && (
+                    <PageCount>
+                      <Text css={PageCountTextStyle}>
+                        {nowIndex + 1}/{clickedInfo.length}
                       </Text>
-                    </BottomBox>
-                  </div>
-                ) : (
-                  <>
-                    <TypeStyle
-                      style={{
-                        backgroundColor: colors.kwGreen,
-                      }}
-                    >
-                      <Text css={TextStyle}>예정</Text>
-                    </TypeStyle>
-                    {clickedInfo &&
-                      clickedInfo.length > 1 &&
-                      !isOnlySelected && (
-                        <PageCount>
-                          <Text css={PageCountTextStyle}>
-                            {nowIndex + 1}/{clickedInfo.length}
-                          </Text>
-                        </PageCount>
-                      )}
-                    <BottomBox
-                      style={{
-                        flexDirection: 'row',
-                        zIndex: 1,
-                      }}
-                    >
-                      <Text css={BottomTextStyle}>
-                        {clickedInfo && clickedInfo[index]?.caseNo}
-                      </Text>
-                    </BottomBox>
-                  </>
-                )}
-              </SwiperSlide>
-            </div>
+                    </PageCount>
+                  )}
+                  <BottomBox
+                    style={{
+                      flexDirection: 'row',
+                      zIndex: 1,
+                    }}
+                  >
+                    <Text css={BottomTextStyle}>
+                      {clickedInfo && clickedInfo[index]?.caseNo}
+                    </Text>
+                  </BottomBox>
+                </>
+              )}
+            </SwiperSlide>
           ))}
         {clickedInfo && clickedInfo.length > 1 && !isOnlySelected ? (
           <>
@@ -336,7 +311,9 @@ export default function Carousel({
               close()
             } else {
               open({
-                type: clickedInfo && clickedInfo[nowIndex]?.type?.toString()!,
+                type:
+                  clickedInfo &&
+                  (clickedInfo[nowIndex]?.type?.toString() as string),
                 id: clickedInfo && (clickedInfo[nowIndex]?.id as string),
                 onButtonClick: () => {
                   onButtonClick()

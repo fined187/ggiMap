@@ -18,9 +18,9 @@ const usePutInterest = (
         case '1':
           return putKmInterest({
             infoId: formData.infoId,
-            caseNo: formData.caseNo!,
+            caseNo: formData.caseNo as string,
             mulSeq: formData.mulSeq,
-            infoNo: formData.infoNo!,
+            infoNo: formData.infoNo as string,
             oldInfoId: formData.oldInfoId,
             isNewCategory: formData.isNewCategory,
             interestInfo: formData.interestInfo,
@@ -29,22 +29,22 @@ const usePutInterest = (
           })
         case '2':
           return putGmInterest({
-            goodsId: formData.goodsId!,
-            manageNo: formData.manageNo!,
+            goodsId: formData.goodsId as string,
+            manageNo: formData.manageNo as string,
             isNewCategory: formData.isNewCategory,
             interestInfo: formData.interestInfo,
           })
         case '3':
           return putGmInterest({
-            goodsId: formData.goodsId!,
-            manageNo: formData.manageNo!,
+            goodsId: formData.goodsId as string,
+            manageNo: formData.manageNo as string,
             isNewCategory: formData.isNewCategory,
             interestInfo: formData.interestInfo,
           })
         case '4':
           return putKwInterest({
             infoId: formData.infoId,
-            caseNo: formData.caseNo!,
+            caseNo: formData.caseNo as string,
             oldInfoId: formData.oldInfoId,
             isNewCategory: formData.isNewCategory,
             interestInfo: formData.interestInfo,

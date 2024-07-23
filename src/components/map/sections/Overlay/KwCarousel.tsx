@@ -36,7 +36,7 @@ export default function KwCarousel({
   useEffect(() => {
     const handleGetKwClickedInfo = () => {
       if (clickedInfo) {
-        setKwInfo(clickedInfo.filter((info) => info.claimAmt! > 0))
+        setKwInfo(clickedInfo.filter((info) => (info.claimAmt as number) > 0))
       }
     }
     handleGetKwClickedInfo()

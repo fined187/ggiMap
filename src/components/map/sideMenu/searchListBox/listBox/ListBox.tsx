@@ -52,12 +52,16 @@ export default function ListBox({
         return 'calc(100vh - 380px)'
       }
 
-      if (map && map.getZoom() >= 15 && mapListItems?.contents?.length! > 0) {
+      if (
+        map &&
+        map.getZoom() >= 15 &&
+        (mapListItems?.contents?.length as number) > 0
+      ) {
         return 'calc(100vh - 160px)'
       }
 
       if (auth?.id !== '' && map && map.getZoom() >= 15) {
-        if (mapListItems?.contents?.length! > 0) {
+        if ((mapListItems?.contents?.length as number) > 0) {
           return 'calc(100vh - 160px)'
         }
         return 'calc(100vh - 160px)'

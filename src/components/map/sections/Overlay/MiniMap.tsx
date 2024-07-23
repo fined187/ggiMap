@@ -19,20 +19,16 @@ type Props = {
 interface MiniMapProps {
   clickedItem: MapItem | null
   clickedInfo: ItemDetail[] | null
-  handleDuplicatedOpen: (idCode: string, type: number) => void
 }
 
-export default function MiniMap({
-  clickedItem,
-  clickedInfo,
-  handleDuplicatedOpen,
-}: MiniMapProps) {
+export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
   const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&autoload=false`
   const mapRef = useRef<NaverMap | null>(null)
   const [path, setPath] = useState<number[][]>([])
   const [maps, setMaps] = useState<any>(null)
   const [roadViewAvailable, setRoadViewAvailable] = useState<boolean>(false)
   const [getLatLngArr, setGetLatLngArr] = useState<Props[]>([])
+  const distances = [50, 100]
 
   useEffect(() => {
     setGetLatLngArr(
@@ -61,7 +57,7 @@ export default function MiniMap({
           clickedItem?.x,
         )
 
-        rvClient.getNearestPanoId(position, 50, (panoId: any) => {
+        rvClient.getNearestPanoId(position, 50, (panoId: string) => {
           if (panoId) {
             setRoadViewAvailable(true)
             roadview.setPanoId(panoId, position)

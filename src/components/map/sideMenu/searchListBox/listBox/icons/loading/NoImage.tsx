@@ -18,11 +18,18 @@ export default function NoImage({ winYn }: NoImageProps) {
           fill="none"
         >
           <path
+            d="M13 34.1602L34.266 12.9999"
+            stroke="#D6D6D6"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
             d="M30.7891 28.7583C32.1252 27.2656 32.9376 25.2944 32.9376 23.1334C32.9376 18.4735 29.16 14.6959 24.5001 14.6959C22.3391 14.6959 20.3679 15.5083 18.8752 16.8444M23.0939 31.4542C19.4441 30.8418 16.5889 27.8864 16.1279 24.1874M2.00025 36.0708V13.0084C1.97852 11.1334 3.35433 7.38345 9.03146 7.38345H13.2502C16.6877 3.32097 26.0001 -2.3665 35.7501 7.38345H41.375C44.4816 7.38345 47 9.90184 47 13.0084V36.0708C47 40.5276 43.25 41.6778 41.375 41.6958H7.62522C4.51864 41.6958 2.00025 39.1774 2.00025 36.0708Z"
             stroke="#D6D6D6"
-            stroke-width="3"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       ) : (

@@ -19,9 +19,9 @@ const usePostInterest = (
         case '1':
           return postKmInterest({
             infoId: formData.infoId,
-            caseNo: formData.caseNo!,
+            caseNo: formData.caseNo as string,
             mulSeq: formData.mulSeq,
-            infoNo: formData.infoNo!,
+            infoNo: formData.infoNo as string,
             oldInfoId: formData.oldInfoId,
             isNewCategory: formData.isNewCategory,
             interestInfo: {
@@ -34,8 +34,8 @@ const usePostInterest = (
           })
         case '2':
           return postGmInterest({
-            goodsId: formData.goodsId!,
-            manageNo: formData.manageNo!,
+            goodsId: formData.goodsId as string,
+            manageNo: formData.manageNo as string,
             isNewCategory: formData.isNewCategory,
             interestInfo: {
               ...formData.interestInfo,
@@ -45,8 +45,8 @@ const usePostInterest = (
           })
         case '3':
           return postGmInterest({
-            goodsId: formData.goodsId!,
-            manageNo: formData.manageNo!,
+            goodsId: formData.goodsId as string,
+            manageNo: formData.manageNo as string,
             isNewCategory: formData.isNewCategory,
             interestInfo: {
               ...formData.interestInfo,
@@ -57,7 +57,7 @@ const usePostInterest = (
         case '4':
           return postKwInterest({
             infoId: formData.infoId,
-            caseNo: formData.caseNo!,
+            caseNo: formData.caseNo as string,
             oldInfoId: formData.oldInfoId,
             isNewCategory: formData.isNewCategory,
             interestInfo: {
