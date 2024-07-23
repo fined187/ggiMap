@@ -180,7 +180,6 @@ const containerStyle = css`
 
   &::-webkit-scrollbar-thumb {
     background: #dfdfdf;
-    border-radius: 6px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
@@ -190,7 +189,6 @@ const containerStyle = css`
   & {
     scrollbar-width: thin;
     scrollbar-color: #dfdfdf #fff;
-    border-radius: 6px;
   }
 
   &:hover {

@@ -170,7 +170,6 @@ const Container = styled.div<{ isOpen: boolean }>`
 
   &::-webkit-scrollbar-thumb {
     background: #dfdfdf;
-    border-radius: 6px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
@@ -180,7 +179,6 @@ const Container = styled.div<{ isOpen: boolean }>`
   & {
     scrollbar-width: thin;
     scrollbar-color: #dfdfdf #fff;
-    border-radius: 6px;
   }
 
   &:hover {

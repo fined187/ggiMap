@@ -37,7 +37,14 @@ export default function useSearchListQuery({
 
   const fetchSearchList = useCallback(
     async (page: number, PAGE_SIZE: number) => {
-      if (!map) return
+      if (
+        !map ||
+        (formData.x1 === 1 &&
+          formData.x2 === 1 &&
+          formData.y1 === 1 &&
+          formData.y2 === 1)
+      )
+        return
       await delay(250)
       try {
         if (map && map?.getZoom() < 15) {
