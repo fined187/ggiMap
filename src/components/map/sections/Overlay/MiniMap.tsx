@@ -11,93 +11,101 @@ declare global {
   }
 }
 
-type Props = {
-  lat: number
-  lng: number
-}
-
 interface MiniMapProps {
   clickedItem: MapItem | null
   clickedInfo: ItemDetail[] | null
+  index: number
 }
 
-export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
+export default function MiniMap({
+  clickedItem,
+  clickedInfo,
+  index,
+}: MiniMapProps) {
   const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&autoload=false`
   const mapRef = useRef<NaverMap | null>(null)
   const [path, setPath] = useState<number[][]>([])
   const [maps, setMaps] = useState<any>(null)
-  const [roadViewAvailable, setRoadViewAvailable] = useState<boolean>(false)
-  const [getLatLngArr, setGetLatLngArr] = useState<Props[]>([])
-  const distances = [50, 100]
+  const [roadViewAvailable, setRoadViewAvailable] = useState<boolean>(true)
 
   useEffect(() => {
-    setGetLatLngArr(
-      Array.from({ length: clickedInfo?.length ?? 0 }, () => ({
-        lat: clickedItem?.y || 0,
-        lng: clickedItem?.x || 0,
-      })),
-    )
-  }, [clickedInfo, clickedItem])
-  useEffect(() => {
+    if (!clickedInfo) return
+
     const script = document.createElement('script')
     script.src = KAKAO_SDK_URL
-    document.head.appendChild(script)
-    script.onload = () => {
+
+    const onLoadScript = () => {
       window.kakao.maps.load(() => {
         const container = document.getElementById('miniMap')
         const options = {
-          center: new window.kakao.maps.LatLng(clickedItem?.y, clickedItem?.x),
+          center: new window.kakao.maps.LatLng(
+            clickedItem?.y as number,
+            clickedItem?.x as number,
+          ),
           level: 2,
         }
+
         const roadviewContainer = document.getElementById('roadview')
         const roadview = new window.kakao.maps.Roadview(roadviewContainer)
         const rvClient = new window.kakao.maps.RoadviewClient()
         const position = new window.kakao.maps.LatLng(
-          clickedItem?.y,
-          clickedItem?.x,
+          clickedItem?.y as number,
+          clickedItem?.x as number,
         )
 
-        rvClient.getNearestPanoId(position, 50, (panoId: string) => {
-          if (panoId) {
+        rvClient.getNearestPanoId(position, 50, () => {
+          if (clickedInfo[index]?.roadViewInfo?.panoId) {
             setRoadViewAvailable(true)
+            const panoId = clickedInfo[index]?.roadViewInfo?.panoId
             roadview.setPanoId(panoId, position)
-            roadview.setViewpoint({
-              pan: 10,
-              tilt: 0,
-              zoom: 0,
+            window.kakao.maps.event.addListener(roadview, 'init', () => {
+              roadview.setViewpoint({
+                pan: clickedInfo[index]?.roadViewInfo?.pan,
+                tilt: clickedInfo[index]?.roadViewInfo?.tilt,
+                zoom: clickedInfo[index]?.roadViewInfo?.zoom,
+              })
             })
           } else {
             setRoadViewAvailable(false)
             const map = new window.kakao.maps.Map(container, options)
             map.addOverlayMapTypeId(window.kakao.maps.MapTypeId.USE_DISTRICT)
-
             mapRef.current = map
             setMaps(map)
           }
         })
       })
     }
+    script.onload = onLoadScript
+    document.head.appendChild(script)
     return () => {
+      script.onload = null
       document.head.removeChild(script)
     }
-  }, [clickedItem, KAKAO_SDK_URL])
+  }, [clickedInfo, index, clickedItem, KAKAO_SDK_URL])
 
   useEffect(() => {
+    if (!clickedItem || roadViewAvailable) return
     const handleGetPolypath = async () => {
-      const response = await getPolypath(
-        clickedItem?.x as number,
-        clickedItem?.y as number,
-      )
-      setPath(response)
+      try {
+        const response = await getPolypath(
+          clickedItem?.y as number,
+          clickedItem?.x as number,
+        )
+        if (response && Array.isArray(response)) {
+          setPath(response)
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
 
     handleGetPolypath()
-  }, [clickedItem?.x, clickedItem?.y])
+  }, [clickedItem, roadViewAvailable])
 
   useEffect(() => {
     const drawPolyline = () => {
-      if (path?.length === 0 || !mapRef.current) return
-      let polyline = new window.kakao.maps.Polyline({
+      if (!path.length || !mapRef.current || typeof path === 'undefined') return
+      const polyline = new window.kakao.maps.Polyline({
         path: path?.map(
           (coord) => new window.kakao.maps.LatLng(coord[0], coord[1]),
         ),
@@ -107,13 +115,13 @@ export default function MiniMap({ clickedItem, clickedInfo }: MiniMapProps) {
         strokeStyle: 'solid',
       })
       polyline.setMap(mapRef.current)
-      let bounds = new window.kakao.maps.LatLngBounds()
-      path?.forEach((coord) => {
+      const bounds = new window.kakao.maps.LatLngBounds()
+      path.forEach((coord) => {
         bounds.extend(new window.kakao.maps.LatLng(coord[0], coord[1]))
       })
       maps.setBounds(bounds)
     }
-    if (!roadViewAvailable) {
+    if (!roadViewAvailable && maps) {
       drawPolyline()
     }
   }, [path, roadViewAvailable, maps])

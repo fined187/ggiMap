@@ -20,4 +20,12 @@ export interface ItemDetail {
   share?: string
   claimAmt?: number
   startDate?: string
+  roadViewInfo?: {
+    pan: number
+    tilt: number
+    zoom: number
+    panoId: number
+    panoX: number
+    panoY: number
+  }
 }

@@ -50,6 +50,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^14.2.5",
     "@tanstack/react-query-devtools": "^5.51.1",
     "@types/babel-plugin-macros": "^3",
     "@types/body-parser": "^1",

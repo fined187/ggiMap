@@ -83,7 +83,6 @@ export default function Carousel({
     },
     [clickedInfo, nowIndex, handleDetailPage],
   )
-
   return (
     <div
       style={{
@@ -115,7 +114,11 @@ export default function Carousel({
                   : null
               }}
             >
-              <MiniMap clickedItem={clickedItem} clickedInfo={clickedInfo} />
+              <MiniMap
+                clickedItem={clickedItem}
+                clickedInfo={clickedInfo}
+                index={index}
+              />
             </div>
           ) : null,
         )}

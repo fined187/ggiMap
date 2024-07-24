@@ -32,6 +32,7 @@ const RAW_RUNTIME_STATE =
           ["@emotion/babel-plugin", "npm:11.11.0"],\
           ["@emotion/react", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:11.11.4"],\
           ["@emotion/styled", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:11.11.5"],\
+          ["@next/bundle-analyzer", "npm:14.2.5"],\
           ["@tanstack/react-query-devtools", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:5.51.1"],\
           ["@types/babel-plugin-macros", "npm:3.1.3"],\
           ["@types/body-parser", "npm:1.19.5"],\
@@ -2795,6 +2796,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@discoveryjs/json-ext", [\
+      ["npm:0.5.7", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@discoveryjs-json-ext-npm-0.5.7-fe04af1f31-10c0.zip/node_modules/@discoveryjs/json-ext/",\
+        "packageDependencies": [\
+          ["@discoveryjs/json-ext", "npm:0.5.7"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@emotion/babel-plugin", [\
       ["npm:11.11.0", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@emotion-babel-plugin-npm-11.11.0-c1dcc4c884-10c0.zip/node_modules/@emotion/babel-plugin/",\
@@ -3166,6 +3176,16 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@next/bundle-analyzer", [\
+      ["npm:14.2.5", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@next-bundle-analyzer-npm-14.2.5-93f73f25bf-10c0.zip/node_modules/@next/bundle-analyzer/",\
+        "packageDependencies": [\
+          ["@next/bundle-analyzer", "npm:14.2.5"],\
+          ["webpack-bundle-analyzer", "npm:4.10.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@next/env", [\
       ["npm:13.5.6", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@next-env-npm-13.5.6-8fa321d68d-10c0.zip/node_modules/@next/env/",\
@@ -3341,6 +3361,15 @@ const RAW_RUNTIME_STATE =
           ["open", "npm:9.1.0"],\
           ["picocolors", "npm:1.0.0"],\
           ["tslib", "npm:2.6.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@polka/url", [\
+      ["npm:1.0.0-next.25", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/@polka-url-npm-1.0.0-next.25-a523d9bd78-10c0.zip/node_modules/@polka/url/",\
+        "packageDependencies": [\
+          ["@polka/url", "npm:1.0.0-next.25"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -3917,6 +3946,13 @@ const RAW_RUNTIME_STATE =
           ["acorn", "npm:8.11.1"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:8.12.1", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/acorn-npm-8.12.1-610871d57c-10c0.zip/node_modules/acorn/",\
+        "packageDependencies": [\
+          ["acorn", "npm:8.12.1"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["acorn-jsx", [\
@@ -3937,6 +3973,16 @@ const RAW_RUNTIME_STATE =
         "packagePeers": [\
           "@types/acorn",\
           "acorn"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["acorn-walk", [\
+      ["npm:8.3.3", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/acorn-walk-npm-8.3.3-868c75184d-10c0.zip/node_modules/acorn-walk/",\
+        "packageDependencies": [\
+          ["acorn-walk", "npm:8.3.3"],\
+          ["acorn", "npm:8.12.1"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -4904,6 +4950,13 @@ const RAW_RUNTIME_STATE =
           ["commander", "npm:4.1.1"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:7.2.0", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/commander-npm-7.2.0-19178180f8-10c0.zip/node_modules/commander/",\
+        "packageDependencies": [\
+          ["commander", "npm:7.2.0"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["common-path-prefix", [\
@@ -5116,6 +5169,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/date-fns-npm-3.6.0-e59d980978-10c0.zip/node_modules/date-fns/",\
         "packageDependencies": [\
           ["date-fns", "npm:3.6.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["debounce", [\
+      ["npm:1.2.1", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/debounce-npm-1.2.1-b09266a260-10c0.zip/node_modules/debounce/",\
+        "packageDependencies": [\
+          ["debounce", "npm:1.2.1"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -5377,6 +5439,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/dompurify-npm-2.5.0-848c617296-10c0.zip/node_modules/dompurify/",\
         "packageDependencies": [\
           ["dompurify", "npm:2.5.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["duplexer", [\
+      ["npm:0.1.2", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/duplexer-npm-0.1.2-952c810235-10c0.zip/node_modules/duplexer/",\
+        "packageDependencies": [\
+          ["duplexer", "npm:0.1.2"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -6774,6 +6845,16 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["gzip-size", [\
+      ["npm:6.0.0", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/gzip-size-npm-6.0.0-d5b52fdbf1-10c0.zip/node_modules/gzip-size/",\
+        "packageDependencies": [\
+          ["gzip-size", "npm:6.0.0"],\
+          ["duplexer", "npm:0.1.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["hamt_plus", [\
       ["npm:1.0.2", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/hamt_plus-npm-1.0.2-67a52ee1df-10c0.zip/node_modules/hamt_plus/",\
@@ -6885,6 +6966,15 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["hoist-non-react-statics", "npm:3.3.2"],\
           ["react-is", "npm:16.13.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["html-escaper", [\
+      ["npm:2.0.2", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/html-escaper-npm-2.0.2-38e51ef294-10c0.zip/node_modules/html-escaper/",\
+        "packageDependencies": [\
+          ["html-escaper", "npm:2.0.2"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -7315,6 +7405,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/is-path-inside-npm-3.0.3-2ea0ef44fd-10c0.zip/node_modules/is-path-inside/",\
         "packageDependencies": [\
           ["is-path-inside", "npm:3.0.3"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["is-plain-object", [\
+      ["npm:5.0.0", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/is-plain-object-npm-5.0.0-285b70faa3-10c0.zip/node_modules/is-plain-object/",\
+        "packageDependencies": [\
+          ["is-plain-object", "npm:5.0.0"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -8158,6 +8257,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["mrmime", [\
+      ["npm:2.0.0", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/mrmime-npm-2.0.0-0326eb1458-10c0.zip/node_modules/mrmime/",\
+        "packageDependencies": [\
+          ["mrmime", "npm:2.0.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["ms", [\
       ["npm:2.0.0", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/ms-npm-2.0.0-9e1101a471-10c0.zip/node_modules/ms/",\
@@ -8575,6 +8683,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["opener", [\
+      ["npm:1.5.2", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/opener-npm-1.5.2-7a1aa69f14-10c0.zip/node_modules/opener/",\
+        "packageDependencies": [\
+          ["opener", "npm:1.5.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["optionator", [\
       ["npm:0.9.3", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/optionator-npm-0.9.3-56c3a4bf80-10c0.zip/node_modules/optionator/",\
@@ -8698,6 +8815,7 @@ const RAW_RUNTIME_STATE =
           ["@emotion/babel-plugin", "npm:11.11.0"],\
           ["@emotion/react", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:11.11.4"],\
           ["@emotion/styled", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:11.11.5"],\
+          ["@next/bundle-analyzer", "npm:14.2.5"],\
           ["@tanstack/react-query-devtools", "virtual:98535b2253237943b85f779721254112f25eeaa708672693294e074bc9a41306f6091e9a010f29fe9aa0dac75e43aa012849aaab5bc72e9d16cf76b8c5fd5b07#npm:5.51.1"],\
           ["@types/babel-plugin-macros", "npm:3.1.3"],\
           ["@types/body-parser", "npm:1.19.5"],\
@@ -10201,6 +10319,18 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["sirv", [\
+      ["npm:2.0.4", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/sirv-npm-2.0.4-cace6fe955-10c0.zip/node_modules/sirv/",\
+        "packageDependencies": [\
+          ["sirv", "npm:2.0.4"],\
+          ["@polka/url", "npm:1.0.0-next.25"],\
+          ["mrmime", "npm:2.0.0"],\
+          ["totalist", "npm:3.0.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["slash", [\
       ["npm:3.0.0", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/slash-npm-3.0.0-b87de2279a-10c0.zip/node_modules/slash/",\
@@ -10913,6 +11043,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["totalist", [\
+      ["npm:3.0.1", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/totalist-npm-3.0.1-91e71f3baa-10c0.zip/node_modules/totalist/",\
+        "packageDependencies": [\
+          ["totalist", "npm:3.0.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["ts-api-utils", [\
       ["npm:1.0.3", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/ts-api-utils-npm-1.0.3-992f360d9b-10c0.zip/node_modules/ts-api-utils/",\
@@ -11374,6 +11513,28 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["webpack-bundle-analyzer", [\
+      ["npm:4.10.1", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/webpack-bundle-analyzer-npm-4.10.1-57768ac46c-10c0.zip/node_modules/webpack-bundle-analyzer/",\
+        "packageDependencies": [\
+          ["webpack-bundle-analyzer", "npm:4.10.1"],\
+          ["@discoveryjs/json-ext", "npm:0.5.7"],\
+          ["acorn", "npm:8.12.1"],\
+          ["acorn-walk", "npm:8.3.3"],\
+          ["commander", "npm:7.2.0"],\
+          ["debounce", "npm:1.2.1"],\
+          ["escape-string-regexp", "npm:4.0.0"],\
+          ["gzip-size", "npm:6.0.0"],\
+          ["html-escaper", "npm:2.0.2"],\
+          ["is-plain-object", "npm:5.0.0"],\
+          ["opener", "npm:1.5.2"],\
+          ["picocolors", "npm:1.0.0"],\
+          ["sirv", "npm:2.0.4"],\
+          ["ws", "virtual:57768ac46c56f84ed2602a325a7058b7cd8bcbeca704995d8ca8dce47055cb63fd910c635e0fd2cb7ae48b70755c7adf2c18a98e9f57a1f1c8d707383a5fed10#npm:7.5.10"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["which", [\
       ["npm:2.0.2", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/which-npm-2.0.2-320ddf72f7-10c0.zip/node_modules/which/",\
@@ -11495,6 +11656,13 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["ws", [\
+      ["npm:7.5.10", {\
+        "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/ws-npm-7.5.10-878ccb886b-10c0.zip/node_modules/ws/",\
+        "packageDependencies": [\
+          ["ws", "npm:7.5.10"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
       ["npm:8.16.0", {\
         "packageLocation": "../../Users/woota/AppData/Local/Yarn/Berry/cache/ws-npm-8.16.0-46943f6199-10c0.zip/node_modules/ws/",\
         "packageDependencies": [\
@@ -11506,6 +11674,23 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/__virtual__/ws-virtual-8d6e9b9329/3/Users/woota/AppData/Local/Yarn/Berry/cache/ws-npm-8.16.0-46943f6199-10c0.zip/node_modules/ws/",\
         "packageDependencies": [\
           ["ws", "virtual:4bcff699fa1f855aac26f15f7795b33b8b179ed0a0f67f2f5102c5282232eff6c18d0ffaa1fa9c6fb3bee15434db888ba87952e787924fcb71efc32a29b44555#npm:8.16.0"],\
+          ["@types/bufferutil", null],\
+          ["@types/utf-8-validate", null],\
+          ["bufferutil", null],\
+          ["utf-8-validate", null]\
+        ],\
+        "packagePeers": [\
+          "@types/bufferutil",\
+          "@types/utf-8-validate",\
+          "bufferutil",\
+          "utf-8-validate"\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["virtual:57768ac46c56f84ed2602a325a7058b7cd8bcbeca704995d8ca8dce47055cb63fd910c635e0fd2cb7ae48b70755c7adf2c18a98e9f57a1f1c8d707383a5fed10#npm:7.5.10", {\
+        "packageLocation": "./.yarn/__virtual__/ws-virtual-dd29fcfec0/3/Users/woota/AppData/Local/Yarn/Berry/cache/ws-npm-7.5.10-878ccb886b-10c0.zip/node_modules/ws/",\
+        "packageDependencies": [\
+          ["ws", "virtual:57768ac46c56f84ed2602a325a7058b7cd8bcbeca704995d8ca8dce47055cb63fd910c635e0fd2cb7ae48b70755c7adf2c18a98e9f57a1f1c8d707383a5fed10#npm:7.5.10"],\
           ["@types/bufferutil", null],\
           ["@types/utf-8-validate", null],\
           ["bufferutil", null],\

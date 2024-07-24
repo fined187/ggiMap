@@ -27,7 +27,15 @@ export default function NextImageWithFallback({
   }, [src])
 
   if ((imgError && fallbackComponent) || !src) {
-    return <>{fallbackComponent}</>
+    return (
+      <div
+        onClick={() => {
+          handleDuplicatedOpen(idCode, type)
+        }}
+      >
+        {fallbackComponent}
+      </div>
+    )
   }
   if (src !== '') {
     return (
