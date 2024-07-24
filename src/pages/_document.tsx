@@ -12,7 +12,7 @@ export default function Document() {
         <link rel="icon" href="/GGILogo.ico" />
         <link
           href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT/fonts/static/woff2/SUIT.css"
-          rel="stylesheet"
+          rel="preconnect"
         />
       </Head>
       <meta

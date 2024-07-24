@@ -1,10 +1,11 @@
 {
   "name": "part4_my_account",
   "version": "0.1.0",
+  "sideEffects": false,
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\""

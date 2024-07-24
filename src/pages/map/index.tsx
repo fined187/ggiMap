@@ -76,7 +76,7 @@ function MapComponent({ token, type, idCode }: Props) {
     })
   }, [])
 
-  const okRef = useRef(false)
+  let ok = false
 
   const handleGetPosition = useCallback(
     async (type: string) => {
@@ -194,8 +194,8 @@ function MapComponent({ token, type, idCode }: Props) {
         setTimeout(callback, delay)
       }
       const runDelayedConfirm = async () => {
-        if (!okRef.current && window) {
-          okRef.current = true
+        if (!ok && window) {
+          ok = true
           delayExecution(() => {
             alert('지도 검색은 유료서비스 입니다.')
             window.close()

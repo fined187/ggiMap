@@ -1,6 +1,10 @@
 const withTwin = require('./withTwin')
 
 /** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require('@next/bundle-analyzer') ({
+  enabled: process.env.ANALYZE === 'true',
+  openAnalyzer: false,
+})
 const nextConfig = withTwin({
   reactStrictMode: false,
   async headers() {
@@ -74,4 +78,4 @@ const nextConfig = withTwin({
   },
 })
 
-module.exports = nextConfig
+module.exports = withBundleAnalyzer(nextConfig)
