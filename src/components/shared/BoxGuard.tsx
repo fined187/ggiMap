@@ -41,7 +41,10 @@ export default function BoxGuard({
       css={ContainerStyle}
       style={{
         height: handleCalcHeight(),
-        gap: map && map.getZoom() < 15 ? '10px' : isOpen ? '0px' : '10px',
+        gap:
+          (map && map.getZoom() < 15) || mapListItems?.contents?.length === 0
+            ? '19px'
+            : '10px',
       }}
     >
       {children}

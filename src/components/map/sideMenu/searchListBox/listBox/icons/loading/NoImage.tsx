@@ -63,7 +63,7 @@ const ContainerStyle = styled.div`
   width: 180px;
   height: 135px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 6px;
 `
 const TextStyle = css`
   color: #d6d6d6;

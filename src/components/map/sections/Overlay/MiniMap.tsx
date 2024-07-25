@@ -26,25 +26,41 @@ export default function MiniMap({
   const mapRef = useRef<NaverMap | null>(null)
   const [path, setPath] = useState<number[][]>([])
   const [maps, setMaps] = useState<any>(null)
-  const [roadViewAvailable, setRoadViewAvailable] = useState<boolean>(true)
+  const [roadViewAvailable, setRoadViewAvailable] = useState<boolean>(false)
 
+  const delay = () => new Promise((resolve) => setTimeout(resolve, 100))
+  console.log(clickedInfo)
   useEffect(() => {
-    if (!clickedInfo) return
+    if (!clickedInfo || !clickedItem) return
 
     const script = document.createElement('script')
     script.src = KAKAO_SDK_URL
+
+    const handleChangeXY = () => {
+      if (clickedInfo[index]?.roadViewInfo?.isChange) {
+        return {
+          x: clickedInfo[index]?.roadViewInfo?.changeX,
+          y: clickedInfo[index]?.roadViewInfo?.changeY,
+        }
+      } else {
+        return {
+          x: clickedItem?.x,
+          y: clickedItem?.y,
+        }
+      }
+    }
 
     const onLoadScript = () => {
       window.kakao.maps.load(() => {
         const container = document.getElementById('miniMap')
         const options = {
           center: new window.kakao.maps.LatLng(
-            clickedItem?.y as number,
-            clickedItem?.x as number,
+            handleChangeXY().y as number,
+            handleChangeXY().x as number,
           ),
           level: 2,
         }
-
+        console.log(options)
         const roadviewContainer = document.getElementById('roadview')
         const roadview = new window.kakao.maps.Roadview(roadviewContainer)
         const rvClient = new window.kakao.maps.RoadviewClient()
@@ -52,25 +68,29 @@ export default function MiniMap({
           clickedItem?.y as number,
           clickedItem?.x as number,
         )
-
+        console.log(handleChangeXY())
         rvClient.getNearestPanoId(position, 50, () => {
           if (clickedInfo[index]?.roadViewInfo?.panoId) {
             setRoadViewAvailable(true)
-            const panoId = clickedInfo[index]?.roadViewInfo?.panoId
-            roadview.setPanoId(panoId, position)
-            window.kakao.maps.event.addListener(roadview, 'init', () => {
-              roadview.setViewpoint({
-                pan: clickedInfo[index]?.roadViewInfo?.pan,
-                tilt: clickedInfo[index]?.roadViewInfo?.tilt,
-                zoom: clickedInfo[index]?.roadViewInfo?.zoom,
+            delay().then(() => {
+              const panoId = clickedInfo[index]?.roadViewInfo?.panoId
+              roadview.setPanoId(panoId, position)
+              window.kakao.maps.event.addListener(roadview, 'init', () => {
+                roadview.setViewpoint({
+                  pan: clickedInfo[index]?.roadViewInfo?.pan,
+                  tilt: clickedInfo[index]?.roadViewInfo?.tilt,
+                  zoom: clickedInfo[index]?.roadViewInfo?.zoom,
+                })
               })
             })
           } else {
             setRoadViewAvailable(false)
-            const map = new window.kakao.maps.Map(container, options)
-            map.addOverlayMapTypeId(window.kakao.maps.MapTypeId.USE_DISTRICT)
-            mapRef.current = map
-            setMaps(map)
+            delay().then(() => {
+              const map = new window.kakao.maps.Map(container, options)
+              map.addOverlayMapTypeId(window.kakao.maps.MapTypeId.USE_DISTRICT)
+              mapRef.current = map
+              setMaps(map)
+            })
           }
         })
       })
@@ -80,6 +100,10 @@ export default function MiniMap({
     return () => {
       script.onload = null
       document.head.removeChild(script)
+      setMaps(null)
+      if (roadViewAvailable) {
+        setRoadViewAvailable(false)
+      }
     }
   }, [clickedInfo, index, clickedItem, KAKAO_SDK_URL])
 
@@ -132,7 +156,7 @@ export default function MiniMap({
         id="roadview"
         style={{
           display: roadViewAvailable ? 'block' : 'none',
-          width: '299px',
+          width: '298px',
           height: '100%',
           borderRadius: '8px 8px 0px 0px',
           position: 'absolute',
@@ -145,7 +169,7 @@ export default function MiniMap({
       <div
         id="miniMap"
         style={{
-          width: '299px',
+          width: '298px',
           height: '100%',
           position: 'absolute',
           top: '0',

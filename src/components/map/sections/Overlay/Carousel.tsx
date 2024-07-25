@@ -335,7 +335,7 @@ export default function Carousel({
 }
 
 const BottomBox = styled.div`
-  width: 299px;
+  width: 298px;
   height: 30px;
   border: 0px solid #fff;
   background: rgba(0, 0, 0, 0.6);

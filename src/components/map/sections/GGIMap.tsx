@@ -143,7 +143,6 @@ export default function GGIMap({
 
   const initializeMap: () => void = useCallback(() => {
     if (!window.naver?.maps) return
-    let resize = new window.naver.maps.Size(300, 300)
     const mapOptions = {
       center: { lat: auth.lat, lng: auth.lng },
       zoom: zoom ?? 17,
@@ -256,6 +255,7 @@ export default function GGIMap({
         }, 100)
       }
       resizeAndCenterMap()
+
       const updateMarkerIcon = () => {
         const panValue = calculatePanoPan(
           panoRef.current?.getPov().pan as number,
@@ -271,8 +271,15 @@ export default function GGIMap({
         })
       }
 
+      const updatePanoLocation = () => {
+        const latlng = panoRef.current?.getPosition()
+        if (!latlng?.equals(mapRef.current?.getCenter() as naver.maps.Coord)) {
+          mapRef.current?.setCenter(latlng as naver.maps.LatLng)
+          markerRef.current?.setPosition(latlng as naver.maps.LatLng)
+        }
+      }
+
       const updatePanoPosition = () => {
-        if (panoChanged.current) return
         const center = mapRef.current?.getCenter()
         const proj = panoRef.current?.getProjection()
         const lookAtPov = proj?.fromCoordToPov(center as naver.maps.LatLng)
@@ -288,31 +295,22 @@ export default function GGIMap({
         (e: any) => {
           const latlng = e.coord as naver.maps.Coord
           mapRef.current?.setCenter(latlng)
-          mapRef.current?.fitBounds(mapRef.current.getBounds())
         },
       )
       const positionChangedListener = window.naver.maps.Event.addListener(
         panoRef.current,
         'position_changed',
-        updatePanoPosition,
+        updatePanoLocation,
       )
       const povChangedListener = window.naver.maps.Event.addListener(
         panoRef.current,
         'pov_changed',
         updateMarkerIcon,
       )
-      const panoStatusListener = window.naver.maps.Event.addListener(
-        panoRef.current,
-        'pano_status',
-        () => {
-          updatePanoPosition()
-        },
-      )
       return () => {
         window.naver.maps.Event.removeListener(clickListener)
         window.naver.maps.Event.removeListener(positionChangedListener)
         window.naver.maps.Event.removeListener(povChangedListener)
-        window.naver.maps.Event.removeListener(panoStatusListener)
       }
     } else {
       markerRef.current?.setMap(null)
@@ -427,8 +425,8 @@ export default function GGIMap({
         return
       try {
         const response = await getPolypath(
-          auth.detailLng as number,
           auth.detailLat as number,
+          auth.detailLng as number,
         )
         if (response.length > 0 && auth.id) {
           new window.naver.maps.Polyline({
