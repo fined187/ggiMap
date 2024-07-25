@@ -117,7 +117,7 @@ export default function Carousel({
               <MiniMap
                 clickedItem={clickedItem}
                 clickedInfo={clickedInfo}
-                index={index}
+                index={nowIndex}
               />
             </div>
           ) : null,

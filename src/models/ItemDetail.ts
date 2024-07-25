@@ -27,8 +27,5 @@ export interface ItemDetail {
     panoId: number
     panoX: number
     panoY: number
-    isChange: boolean
-    changeX: number
-    changeY: number
   }
 }

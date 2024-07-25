@@ -29,7 +29,7 @@ export default function MiniMap({
   const [roadViewAvailable, setRoadViewAvailable] = useState<boolean>(false)
 
   const delay = () => new Promise((resolve) => setTimeout(resolve, 100))
-  console.log(clickedInfo)
+
   useEffect(() => {
     if (!clickedInfo || !clickedItem) return
 
@@ -37,10 +37,10 @@ export default function MiniMap({
     script.src = KAKAO_SDK_URL
 
     const handleChangeXY = () => {
-      if (clickedInfo[index]?.roadViewInfo?.isChange) {
+      if (clickedInfo[index]?.roadViewInfo?.pan) {
         return {
-          x: clickedInfo[index]?.roadViewInfo?.changeX,
-          y: clickedInfo[index]?.roadViewInfo?.changeY,
+          x: clickedInfo[index]?.roadViewInfo?.panoX,
+          y: clickedInfo[index]?.roadViewInfo?.panoY,
         }
       } else {
         return {
@@ -49,7 +49,11 @@ export default function MiniMap({
         }
       }
     }
-
+    const _viewPoint = {
+      pan: clickedInfo[index]?.roadViewInfo?.pan,
+      tilt: clickedInfo[index]?.roadViewInfo?.tilt,
+      zoom: clickedInfo[index]?.roadViewInfo?.zoom,
+    }
     const onLoadScript = () => {
       window.kakao.maps.load(() => {
         const container = document.getElementById('miniMap')
@@ -60,15 +64,28 @@ export default function MiniMap({
           ),
           level: 2,
         }
-        console.log(options)
         const roadviewContainer = document.getElementById('roadview')
         const roadview = new window.kakao.maps.Roadview(roadviewContainer)
         const rvClient = new window.kakao.maps.RoadviewClient()
         const position = new window.kakao.maps.LatLng(
-          clickedItem?.y as number,
-          clickedItem?.x as number,
+          handleChangeXY().y as number,
+          handleChangeXY().x as number,
         )
-        console.log(handleChangeXY())
+        const panoid_changed = () => {
+          roadview.setViewpoint({
+            pan: clickedInfo[index]?.roadViewInfo?.pan,
+            tilt: clickedInfo[index]?.roadViewInfo?.tilt,
+            zoom: clickedInfo[index]?.roadViewInfo?.zoom,
+          })
+          window.kakao.maps.event.removeListener(
+            roadview,
+            'panoid_changed',
+            panoid_changed,
+          )
+        }
+
+        let rMarker: any = null
+
         rvClient.getNearestPanoId(position, 50, () => {
           if (clickedInfo[index]?.roadViewInfo?.panoId) {
             setRoadViewAvailable(true)
@@ -76,11 +93,32 @@ export default function MiniMap({
               const panoId = clickedInfo[index]?.roadViewInfo?.panoId
               roadview.setPanoId(panoId, position)
               window.kakao.maps.event.addListener(roadview, 'init', () => {
-                roadview.setViewpoint({
-                  pan: clickedInfo[index]?.roadViewInfo?.pan,
-                  tilt: clickedInfo[index]?.roadViewInfo?.tilt,
-                  zoom: clickedInfo[index]?.roadViewInfo?.zoom,
-                })
+                if (_viewPoint) {
+                  window.kakao.maps.event.addListener(
+                    roadview,
+                    'panoid_changed',
+                    panoid_changed,
+                  )
+                }
+                window.kakao.maps.event.addListener(
+                  roadview,
+                  'panoid_changed',
+                  () => {
+                    if (!_viewPoint) {
+                      if (rMarker) {
+                        rMarker.setMap(null)
+                      }
+                      rMarker = new window.kakao.maps.Marker({
+                        position: roadview.getPosition(),
+                        map: roadview,
+                        opacity: 0,
+                      })
+                      rMarker.setVisible(false)
+                      const viewPoint = roadview.getPanoId()
+                      roadview.setViewpoint(viewPoint)
+                    }
+                  },
+                )
               })
             })
           } else {

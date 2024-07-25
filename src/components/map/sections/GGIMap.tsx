@@ -233,6 +233,7 @@ export default function GGIMap({
 
   useEffect(() => {
     if (!mapRef.current) return
+
     if (!markerRef.current) {
       markerRef.current = new window.naver.maps.Marker({
         icon: {
@@ -243,6 +244,7 @@ export default function GGIMap({
         },
       })
     }
+
     if (isPanoVisible) {
       markerRef.current?.setPosition(clickedLatLng)
       const resizeAndCenterMap = () => {
@@ -289,12 +291,14 @@ export default function GGIMap({
           panoRef.current?.setPov(lookAtPov)
         }
       }
+
       const clickListener = window.naver.maps.Event.addListener(
         mapRef.current,
         'click',
         (e: any) => {
           const latlng = e.coord as naver.maps.Coord
           mapRef.current?.setCenter(latlng)
+          panoRef.current?.setPosition(latlng)
         },
       )
       const positionChangedListener = window.naver.maps.Event.addListener(
@@ -302,15 +306,27 @@ export default function GGIMap({
         'position_changed',
         updatePanoLocation,
       )
+
       const povChangedListener = window.naver.maps.Event.addListener(
         panoRef.current,
         'pov_changed',
         updateMarkerIcon,
       )
+
+      const panoIdChangedListener = window.naver.maps.Event.addListener(
+        panoRef.current,
+        'pano_changed',
+        () => {
+          updatePanoLocation()
+          updateMarkerIcon()
+        },
+      )
+
       return () => {
         window.naver.maps.Event.removeListener(clickListener)
         window.naver.maps.Event.removeListener(positionChangedListener)
         window.naver.maps.Event.removeListener(povChangedListener)
+        window.naver.maps.Event.removeListener(panoIdChangedListener)
       }
     } else {
       markerRef.current?.setMap(null)
@@ -319,7 +335,6 @@ export default function GGIMap({
       mapRef.current?.setSize(new window.naver.maps.Size(fullWidth, fullHeight))
     }
   }, [isPanoVisible, clickedLatLng])
-
   const handleLastXY = async () => {
     if (!mapRef.current || auth.id !== '') return
     const center = mapRef.current.getCenter()

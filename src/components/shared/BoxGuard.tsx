@@ -42,7 +42,9 @@ export default function BoxGuard({
       style={{
         height: handleCalcHeight(),
         gap:
-          (map && map.getZoom() < 15) || mapListItems?.contents?.length === 0
+          (map && map.getZoom() < 15) ||
+          mapListItems?.contents?.length === 0 ||
+          !isOpen
             ? '19px'
             : '10px',
       }}
