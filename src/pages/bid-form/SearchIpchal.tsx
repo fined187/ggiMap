@@ -138,7 +138,6 @@ export default function SearchIpchal() {
       setLoading(false)
     }
   }
-  console.log(getCase)
 
   const handleNextButton = (
     number: number,
@@ -190,7 +189,6 @@ export default function SearchIpchal() {
       : date.getMonth() + 1
     ).toString() +
     date.getDate().toString()
-  console.log(biddingInfo)
 
   useEffect(() => {
     if (
