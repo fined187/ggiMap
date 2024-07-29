@@ -27,7 +27,7 @@ import useDebounce from '@/components/shared/hooks/useDebounce'
 import CloseButton from '@/components/map/icons/CloseButton'
 import useGeoCode from '@/components/map/sections/hooks/useGeoCode'
 import fetchXY from '@/remote/map/lastXY/fetchXY'
-import MapFunction from './mapFunc/MapFunction'
+import MapFunction from '@/components/map/sections/mapFunc/MapFunction'
 declare global {
   interface Window {
     naver: any

@@ -1,5 +1,3 @@
-import { css } from '@emotion/react'
-
 export default function CloseButton() {
   return (
     <svg
