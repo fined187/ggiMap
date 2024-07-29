@@ -78,4 +78,8 @@ const nextConfig = withTwin({
   },
 })
 
-module.exports = withBundleAnalyzer(nextConfig)
+module.exports = {
+  output: {
+    'standalone',
+  }
+}
