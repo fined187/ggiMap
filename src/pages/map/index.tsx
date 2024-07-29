@@ -77,7 +77,7 @@ function MapComponent({ token, type, idCode }: Props) {
   }, [])
 
   let ok = false
-  console.log('테스트 중')
+  console.log('테스트 중12')
   const handleGetPosition = useCallback(
     async (type: string) => {
       if (idCode) return
