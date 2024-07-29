@@ -26,6 +26,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags:
-            ${{ secrets.DOCKER_HUB_USERNAME }}/my-docker-image:${{ github.sha }}
-            ${{ secrets.DOCKER_HUB_USERNAME }}/my-docker-image:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ggi-serivce:latest
