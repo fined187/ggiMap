@@ -34,7 +34,7 @@ COPY . .
 RUN ls -al ./node_modules/.bin
 
 # Try building your project and log any errors
-RUN yarn build
+RUN yarn next build
 
 # Remove next build cache if necessary
 RUN rm -rf ./.next/cache
