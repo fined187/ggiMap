@@ -20,12 +20,12 @@ import {
   mapItemsAtom,
 } from '@/store/atom/map'
 import MapType from './mapType/MapType'
-import MapFunction from './mapFunc/MapFunction'
+import MapFunction from '@/components/map/sections/mapFunc/MapFunction'
 import { authInfo } from '@/store/atom/auth'
 import getPolypath from '@/remote/map/selected/getPolypath'
 import useDebounce from '@/components/shared/hooks/useDebounce'
-import CloseButton from '../icons/CloseButton'
-import useGeoCode from './hooks/useGeoCode'
+import CloseButton from '@/components/map/icons/CloseButton'
+import useGeoCode from '@/components/map/sections/hooks/useGeoCode'
 import fetchXY from '@/remote/map/lastXY/fetchXY'
 declare global {
   interface Window {
