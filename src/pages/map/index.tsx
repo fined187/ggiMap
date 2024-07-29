@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from 'next'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useSetRecoilState } from 'recoil'
 import MapSection from '@/components/map/sections/MapSection'
 import { authInfo } from '@/store/atom/auth'

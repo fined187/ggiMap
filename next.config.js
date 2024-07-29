@@ -7,6 +7,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer') ({
 })
 const nextConfig = withTwin({
   reactStrictMode: false,
+  output: 'standalone',
   async headers() {
     return [
       {
@@ -78,8 +79,4 @@ const nextConfig = withTwin({
   },
 })
 
-module.exports = {
-  output: {
-    'standalone',
-  }
-}
+module.exports = nextConfig
