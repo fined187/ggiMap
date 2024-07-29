@@ -24,7 +24,5 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tag: ${{ secrets.DOCKER_HUB_USERNAME }}/ggi-serivce:latest
-          run:
-            docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/ggi-serivce:latest .
-            docker push ${{ secrets.DOCKER_HUB_USERNAME }}/ggi-serivce:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ggi-serivce:latest
+          run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/ggi-serivce:latest .
