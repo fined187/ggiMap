@@ -20,7 +20,7 @@ async function postListItems(
       setTimeout(() => {
         alert('지도 검색은 유료서비스 입니다. 로그인 후 이용해주세요.')
         window.close()
-      }, 1000)
+      }, 500)
     }
   } catch (error) {
     console.error(error)

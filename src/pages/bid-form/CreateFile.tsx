@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { LiaEyeSolid, LiaEyeSlashSolid } from 'react-icons/lia'
 import axios from 'axios'
@@ -11,6 +11,8 @@ import { TotalResultType } from '@/models/IpchalType'
 import { format } from 'date-fns'
 import Spinner from '@/components/bidForm/Spinner'
 import Button from '@/components/bidForm/shared/Button'
+import { useDisclosure } from '@chakra-ui/react'
+import { usePDFContext } from '@/contexts/usePDFContext'
 
 export default function CreateFile({ userId }: { userId: string }) {
   const [stateNum, setStateNum] = useRecoilState(stepState)
@@ -26,7 +28,7 @@ export default function CreateFile({ userId }: { userId: string }) {
   const [pageNum, setPageNum] = useState<number>(2)
   const [width, setWidth] = useState<number>(1000)
   const [isMobile, setIsMobile] = useState<boolean>(false)
-
+  const { openModal } = usePDFContext()
   useEffect(() => {
     if (window) {
       setWidth(window.innerWidth)
@@ -150,7 +152,7 @@ export default function CreateFile({ userId }: { userId: string }) {
       captureDiv && captureDiv.style.display === 'none'
         ? (captureDiv.style.display = 'block')
         : (captureDiv.style.display = 'none')
-      const response = await fetch(`http://localhost:3000/api/generatePDF`, {
+      const response = await fetch(`/api/generatePDF`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -206,16 +208,17 @@ export default function CreateFile({ userId }: { userId: string }) {
     }
   }
 
-  const handleDownloadMobile = (file: Blob) => {
-    if (window) {
-      window && window.open(URL.createObjectURL(file), '_blank')
-      const url = window.URL.createObjectURL(file)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${fileName.replace(' ', '')}.pdf`
-      a.click()
-    }
-  }
+  const handleDownloadMobile = useCallback(
+    async (file: Blob) => {
+      if (!isMobile) return
+      console.log('handleDownloadMobile')
+      openModal({
+        onClose: () => {},
+        file,
+      })
+    },
+    [isMobile, openModal],
+  )
 
   useEffect(() => {
     handleGetHeight()

@@ -1,34 +1,38 @@
+# Base image setup
 FROM node:18-alpine AS base
 
+# Dependencies installation stage
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Copy your package files
+COPY package.json yarn.lock ./
 
+# Make sure corepack is active for Yarn 2+
+RUN corepack enable && yarn install
 
-RUN rm -rf ./.next/cache
+# Check the installed files
+RUN ls -al /usr/src/app
 
+# Build stage
 FROM base AS builder
 WORKDIR /usr/src/app
-COPY --from=deps /usr/src/app/node_modules ./node_modules
+
+# Ensure .yarn and .pnp files are copied correctly
+COPY --from=deps /usr/src/app/.yarn/ ./.yarn/
+COPY --from=deps /usr/src/app/.pnp* ./
+
+# Copy the rest of your application code
 COPY . .
 
-RUN yarn install --frozen-lockfile
+# Try building your project and log any errors
+RUN yarn build
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Remove next build cache if necessary
+RUN rm -rf ./.next/cache
 
+# Production stage
 FROM base AS runner
 WORKDIR /usr/src/app
 
@@ -38,17 +42,12 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /usr/src/app/public ./public
-
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-COPY --from=builder --chown=nextjs:nodejs /usr/src/app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /usr/src/app/.next/static ./.next/static
+COPY --from=builder /usr/src/app/.next/static ./.next/static
+COPY --from=builder /usr/src/app/.next/standalone ./
 
 USER nextjs
 
 EXPOSE 3000
-
 ENV PORT 3000
 
 CMD ["node", "server.js"]

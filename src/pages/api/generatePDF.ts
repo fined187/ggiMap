@@ -130,12 +130,16 @@ export default async function handler(
     }
 
     doc.save(`${name}.pdf`)
-
+    const sanitizedFileName = name.replace(/[^\w\s.-]/g, '') + '.pdf'
     let pdf: any = fs.readFileSync(`${name}.pdf`)
     fs.rmSync(`${name}.pdf`)
     console.log('PDF Generated!!')
     await browser.close()
     res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${encodeURIComponent(sanitizedFileName)}.pdf`,
+    )
     res.send(pdf)
   }
 }

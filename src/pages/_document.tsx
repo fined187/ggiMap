@@ -9,6 +9,10 @@ export default function Document() {
         <Script src={KAKAO_SDK_URL} strategy="beforeInteractive" />
         <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" />
         <meta name="google" content="notranslate" />
+        <meta
+          name="content-disposition"
+          content='attachment; filename="filename.pdf"'
+        />
         <link rel="icon" href="/GGILogo.ico" />
         <link
           href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT/fonts/static/woff2/SUIT.css"
