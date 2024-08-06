@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
+<<<<<<< HEAD
     "target": "es5",
+=======
+    "target": "es6",
+>>>>>>> 4bf876143340604d70255d4d2101f2add04da863
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -30,6 +34,7 @@
     "jsxImportSource": "@emotion/react",
     "forceConsistentCasingInFileNames": true
   },
+<<<<<<< HEAD
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -39,5 +44,8 @@
     "src/components/map/sideMenu/searchBox/hooks/useHighlightText.txs",
     "pdf.worker.js"
   ],
+=======
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "withTwin.js"],
+>>>>>>> 4bf876143340604d70255d4d2101f2add04da863
   "exclude": ["node_modules"]
 }

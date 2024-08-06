@@ -12,6 +12,7 @@
 # next.js
 /.next/
 /out/
+/Users/woota/AppData/Local/Yarn/Berry/cache
 
 # production
 /build
