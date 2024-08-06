@@ -5,6 +5,7 @@ import {
   getKmDetail,
   getKwDetail,
 } from '@/remote/map/info/getDetail'
+import { isPyeongState } from '@/store/atom/atom'
 import { clickedInfoAtom, clickedItemAtom } from '@/store/atom/map'
 import { useQuery } from 'react-query'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
@@ -30,16 +31,18 @@ const fetchDetails = async (ids: string[], types: number[]) => {
   return data.filter((item): item is ItemDetail => item !== null)
 }
 
-const useGetDetail = () => {
+const useGetDetail = (openOverlay: boolean) => {
   const clickedItem = useRecoilValue(clickedItemAtom)
   const setClickedInfo = useSetRecoilState(clickedInfoAtom)
+  const isPyeong = useRecoilValue(isPyeongState)
   const ids = clickedItem?.ids ?? []
   const type = clickedItem?.types ?? []
   return useQuery<ItemDetail[]>(
-    ['dtail', { ids, type }],
-    () => fetchDetails(ids, type),
+    ['detail', { ids, type, isPyeong }],
+    () => (openOverlay ? fetchDetails(ids, type) : []),
     {
       refetchOnWindowFocus: false,
+      enabled: openOverlay,
       onSuccess: (data) => {
         const sortedData = data?.slice().sort((a, b) => {
           if (a?.winAmt !== undefined && b?.winAmt !== undefined) {

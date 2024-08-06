@@ -1,6 +1,6 @@
 import { Coordinates, NaverMap } from '@/models/Map'
 import { useCallback } from 'react'
-import { useMutation, useQueryClient } from 'react-query'
+import { useQueryClient } from 'react-query'
 import useSWR, { mutate } from 'swr'
 
 export const INITIAL_CENTER: Coordinates = [37.497013, 127.0114263]

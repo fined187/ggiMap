@@ -5,7 +5,6 @@ import { MapCountsResponse } from '@/models/MapItem'
 import postMapCounts from '@/remote/map/items/postMapCounts'
 import { Dispatch, SetStateAction } from 'react'
 import { UseQueryResult, useMutation, useQuery } from 'react-query'
-import useSWR from 'swr'
 
 export default function useMapCounts(
   formData: Form,

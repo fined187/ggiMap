@@ -14,6 +14,7 @@ interface IconContentProps {
   index: number
   zoomLevel: number
   winExist: boolean
+  isPyeong: boolean
 }
 
 export default function IconContent({
@@ -22,6 +23,7 @@ export default function IconContent({
   index,
   zoomLevel,
   winExist,
+  isPyeong,
 }: IconContentProps) {
   const commonStyle1 = `
     <div id="target_${index}" style="flex-direction: row; display: flex; margin-top: -30px;">
@@ -47,7 +49,7 @@ export default function IconContent({
   const commonStyle2 = `
     <div id="target_${index}" style="display: flex; flex-direction: column; justify-content: center; align-items: center; align-content: center; flex-shrink: 0; position: absolute; margin-left: 0px; margin-top: -100px;">
       ${UsageTopIcon(item, item.count, item.types[0], winExist)}
-      ${AmountBottomIcon(item, item.types[0])}
+      ${AmountBottomIcon(item, item.types[0], isPyeong)}
     </div>
   `
   if (item.winYn !== 'Y') {

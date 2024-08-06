@@ -197,8 +197,8 @@ function MapComponent({ token, type, idCode }: Props) {
         if (!ok && window) {
           ok = true
           delayExecution(() => {
-            alert('지도 검색은 유료서비스 입니다.')
-            window.close()
+            // alert('지도 검색은 유료서비스 입니다.')
+            // window.close()
           }, 500)
         }
       }

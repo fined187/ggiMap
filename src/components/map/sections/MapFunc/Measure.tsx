@@ -1,19 +1,22 @@
-//* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
+import {
   useEffect,
+  useCallback,
   useState,
+  SetStateAction,
+  Dispatch,
 } from 'react'
 import useSWR from 'swr'
 import { MAP_KEY } from '../hooks/useMap'
 import Flex from '@/components/shared/Flex'
 import { css } from '@emotion/react'
-import { Area, AreaTextStyle, Distance, TextStyle } from './styled/MeasureStyle'
+import { Area, Distance } from './styled/MeasureStyle'
 import useMapListeners from './hooks/useMapListeners'
-import { UseQueryResult, useQuery } from 'react-query'
-import { NaverMap } from '@/models/Map'
+import { DistanceBtn } from '@/components/map/sections/mapFunc/DistanceBtn'
+import { AreaBtn } from '@/components/map/sections/mapFunc/AreaBtn'
+import { fromSquareMetersToText } from '@/utils/MeterToText'
+
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { isCurrentStateAtom, isPyeongState } from '@/store/atom/atom'
 
 interface ToolsBtnProps {
   clickedMapType: {
@@ -41,10 +44,55 @@ interface ToolsBtnProps {
     }>
   >
 }
+
 interface Coord {
   lat: number
   lng: number
 }
+
+const createMarkerContent = (
+  mode: string,
+  text: string | number,
+  isMoving: boolean = false,
+  pyeong?: number | string,
+  isDistance?: boolean,
+) => `
+  <div style="display: flex; flex-direction: column; min-width: 160px; padding: 11px 8px; align-items: flex-start; align-content: flex-start; gap: 14px 2px; flex-wrap: wrap; border-radius: 8px; border: 1px solid #9D9999; background: #FFF;">
+   <div style="width: 100%;">
+     <div style="display: flex; width: 100%; justify-content: space-between; padding: 5.5px 0;">
+      <div>
+        <span style="color: #000; font-family: SUIT; font-size: 15px; font-style: normal; font-weight: 700; line-height: 100%; letter-spacing: -0.15px;">${
+          isMoving
+            ? mode === 'distance'
+              ? '거리'
+              : '총 면적'
+            : mode === 'distance'
+            ? '총 거리'
+            : '총 면적'
+        }</span>
+      </div>
+      <div>
+        <span style="color: #0038FF; text-align: right; font-family: SUIT; font-size: 15px; font-style: normal; font-weight: 700; line-height: 100%; letter-spacing: -0.15px;">${text}</span>
+      </div>
+    </div>
+     ${
+       mode === 'area' && pyeong
+         ? `<div style="width: 100%; margin-top: 1px; font-family: SUIT; font-size: 15px; font-style: normal; font-weight: 700; color: #545454; display: flex; justify-content: flex-end;">(${pyeong})</div>`
+         : ''
+     }
+   </div>
+   ${
+     isMoving && mode === 'distance'
+       ? ''
+       : `<div style="width: 144px; height: 30px; margin: 0 auto; flex-shrink: 0; border-radius: 100px; border: 1px solid #9D9999; background: #FFF; display: flex; justify-content: center; align-items: center;">
+      <span style="color: #545454; font-family: SUIT; font-size: 13px; font-style: normal; font-weight: 500; line-height: 100%; letter-spacing: -0.13px;">${
+        isMoving || isDistance ? '마우스 오른쪽 버튼 종료' : '지우기'
+      }</span>
+    </div>`
+   }
+    
+  </div>
+`
 
 export const Measure = ({
   clickedMapType,
@@ -54,153 +102,193 @@ export const Measure = ({
   const [mode, setMode] = useState('')
   const [polyline, setPolyline] = useState<naver.maps.Polyline | null>(null)
   const [guideline, setGuideline] = useState<naver.maps.Polyline | null>(null)
-  const [markers, setMarkers] = useState<naver.maps.Marker[] | null>(null)
+  const [markers, setMarkers] = useState<naver.maps.Marker[]>([])
   const [polygon, setPolygon] = useState<naver.maps.Polygon | null>(null)
-  const [lastDistance, setLastDistance] = useState<number | null>(null)
-  const [isBoxDisplay, setIsBoxDisplay] = useState(false)
   const [startPoint, setStartPoint] = useState<naver.maps.LatLng | null>(null)
-  const [isRightclick, setIsRightclick] = useState(false)
+  const [distanceCircleMarkers, setDistanceCircleMarkers] = useState<
+    naver.maps.Marker[]
+  >([])
+  const [areaCircleMarkers, setAreaCircleMarkers] = useState<
+    naver.maps.Marker[]
+  >([])
+  const isPyeong = useRecoilValue(isPyeongState)
+  const [isCurrentState, setIsCurrentState] = useRecoilState(isCurrentStateAtom)
 
   const fromMetersToText = useCallback((meters: number) => {
     meters = meters || 0
     const km = 1000
-    let text: string | number = meters
+    let text: string
+
+    const formatNumber = (num: number) => {
+      return num.toLocaleString()
+    }
 
     if (meters >= km) {
-      text = parseFloat((meters / km).toFixed(1)) + 'km'
+      const kmValue = meters / km
+      text = `${formatNumber(
+        parseFloat(kmValue.toFixed(1)),
+      )}<span style="color: #000001"> km</span>`
     } else {
-      text = parseFloat(meters.toFixed(1)) + 'm'
+      text = `${formatNumber(
+        parseFloat(meters.toFixed(1)),
+      )}<span style="color: #000001"> m</span>`
     }
+
     return text
   }, [])
 
   const handleDelete = useCallback(() => {
-    if (polyline) {
-      polyline?.setMap(null)
+    if (mode === 'distance') {
+      if (polyline) polyline.setMap(null)
+      if (guideline) guideline.setMap(null)
+      distanceCircleMarkers.forEach((marker) => marker.setMap(null))
+      setDistanceCircleMarkers([])
+      setPolyline(null)
+      setGuideline(null)
+    } else if (mode === 'area') {
+      if (polygon) polygon.setMap(null)
+      areaCircleMarkers.forEach((marker) => marker.setMap(null))
+      setAreaCircleMarkers([])
+      setPolygon(null)
     }
-    setClickedMapType((prev) => {
-      return {
-        ...prev,
-        distance: false,
-      }
-    })
+
+    markers.forEach((marker) => marker.setMap(null))
+    setMarkers([])
+
+    setClickedMapType((prev) => ({
+      ...prev,
+      distance: false,
+      area: false,
+    }))
     setMode('')
-  }, [polyline, setClickedMapType])
-  const addMileStone2 = useCallback(
-    (coord: Coord, text: string) => {
-      const marker2 = new naver.maps.Marker({
-        position: coord,
-        map: map,
-        icon: {
-          content: `
-          <div style="display: flex; flex-direction: column; width: 160px; padding: 11px 8px; align-items: flex-start; align-content: flex-start; gap: 14px 2px; flex-wrap: wrap; border-radius: 8px; border: 1px solid #9D9999; background: #FFF;">
-            <div style="display: flex; width: 100%; justify-content: space-between; padding: 5.5px 4px;">
-              <div>
-                <span style="color: #000; font-family: SUIT; font-size: 15px; font-style: normal; font-weight: 700; line-height: 100%; letter-spacing: -0.15px;">총 거리</span>
-              </div>
-              <div>
-                <span style="color: #DC4798; text-align: right; font-family: SUIT; font-size: 15px; font-style: normal; font-weight: 700; line-height: 100%; letter-spacing: -0.15px;">${text}</span>
-              </div>
-            </div>
-            <div style="width: 144px; height: 30px; flex-shrink: 0; border-radius: 100px; border: 1px solid #9D9999; background: #F9F9F9; display: flex; justify-content: center; align-items: center;" onClick="">
-              <span style="color: #545454; font-family: SUIT; font-size: 13px; font-style: normal; font-weight: 500; line-height: 100%; letter-spacing: -0.13px;">지우기</span>
-            </div>
-          </div>
-          `,
-          anchor: new naver.maps.Point(-5, -5),
-        },
-      })
-      marker2.addListener('click', () => {
-        marker2.setMap(null)
-        handleDelete()
-      })
-      marker2.setZIndex(1000)
-      setMarkers((prev) => {
-        return [...(prev ?? []), marker2]
-      })
-    },
-    [map, handleDelete],
-  )
-  const addMileStone = useCallback(
-    (coord: Coord, text: string) => {
+  }, [
+    mode,
+    polyline,
+    guideline,
+    polygon,
+    distanceCircleMarkers,
+    areaCircleMarkers,
+    markers,
+    setClickedMapType,
+  ])
+
+  const addBlueCircleMarkers = (
+    path: naver.maps.LatLng[],
+    map: naver.maps.Map,
+    type: 'distance' | 'area',
+  ) => {
+    const marker = new naver.maps.Marker({
+      position: path[path.length - 1],
+      map: map,
+      icon: {
+        content: `<div style="width: 11px; height: 11px; background-color: #fff; border-radius: 50%; border: 2px solid #0038FF;"></div>`,
+        anchor: new naver.maps.Point(6, 6),
+      },
+      clickable: false,
+    })
+
+    if (mode === 'distance') {
+      setDistanceCircleMarkers((prev) => [...prev, marker])
+    } else if (mode === 'area') {
+      setAreaCircleMarkers((prev) => [...prev, marker])
+    }
+  }
+
+  const addMileStoneMarker = useCallback(
+    (
+      coord: Coord,
+      text: string | number,
+      isMoving: boolean = false,
+      isFinal: boolean = false,
+      isDistance?: boolean,
+      pyeong?: number | string,
+    ) => {
       const marker = new naver.maps.Marker({
         position: coord,
         map: map,
         icon: {
-          content: `
-            <div style="display: flex; flex-direction: column; width: 160px; padding: 11px 8px; align-items: flex-start; align-content: flex-start; gap: 14px 2px; flex-wrap: wrap; border-radius: 8px; border: 1px solid #9D9999; background: #FFF;">
-              <div style="display: flex; width: 100%; justify-content: space-between; padding: 5.5px 4px;">
-                <div>
-                  <span style="color: #000; font-family: SUIT; font-size: 15px; font-style: normal; font-weight: 700; line-height: 100%; letter-spacing: -0.15px;">총 거리</span>
-                </div>
-                <div>
-                  <span style="color: #DC4798; text-align: right; font-family: SUIT; font-size: 15px; font-style: normal; font-weight: 700; line-height: 100%; letter-spacing: -0.15px;">${text}</span>
-                </div>
-              </div>
-              <div style="width: 144px; height: 30px; flex-shrink: 0; border-radius: 100px; border: 1px solid #9D9999; background: #FFF; display: flex; justify-content: center; align-items: center;">
-                <span style="color: #545454; font-family: SUIT; font-size: 13px; font-style: normal; font-weight: 500; line-height: 100%; letter-spacing: -0.13px;">마우스 오른쪽 버튼 종료</span>
-              </div>
-            </div>
-            `,
+          content: createMarkerContent(
+            mode,
+            text,
+            isMoving,
+            pyeong,
+            isDistance,
+          ),
           anchor: new naver.maps.Point(-5, -5),
         },
       })
-      marker.setZIndex(100)
+
+      if (isFinal) {
+        marker.addListener('click', () => {
+          marker.setMap(null)
+          handleDelete()
+        })
+      }
+
+      marker.setZIndex(101)
+
       setMarkers((prev) => {
         return [...(prev ?? []), marker]
       })
     },
-    [map],
+    [map, handleDelete, mode],
   )
-  const onMouseMoveDistance = useCallback(
-    (e: MouseEvent) => {
-      if (map && guideline) {
-        const proj = map.getProjection()
-        const coord = proj.fromPageXYToCoord(
-          new naver.maps.Point(e.pageX, e.pageY),
-        ) as naver.maps.Point
-        const path = guideline?.getPath() as naver.maps.Point[]
-        if (path) {
-          if (path.length === 2) {
-            path.pop()
-          }
-          path.push(coord)
-          guideline.setPath(path)
-          const distance = polyline?.getDistance()
-          let ps = map.getPrimitiveProjection().getDistance(startPoint, coord)
-          const divMarker = new naver.maps.Marker({
-            position: coord,
-            map: map,
-            icon: {
-              content: `<div style="display: flex; flex-direction: column; width: 160px; padding: 11px 8px; align-items: flex-start; align-content: flex-start; gap: 14px 2px; flex-wrap: wrap; border-radius: 8px; border: 1px solid #9D9999; background: #FFF;">
-              <div style="display: flex; width: 100%; justify-content: space-between; padding: 5.5px 4px;">
-                <div>
-                  <span style="color: #000; font-family: SUIT; font-size: 15px; font-style: normal; font-weight: 700; line-height: 100%; letter-spacing: -0.15px;">총 거리</span>
-                </div>
-                <div>
-                  <span style="color: #DC4798; text-align: right; font-family: SUIT; font-size: 15px; font-style: normal; font-weight: 700; line-height: 100%; letter-spacing: -0.15px;">${fromMetersToText(
-                    ps,
-                  )}</span>
-                </div>
-              </div>
-              <div style="width: 144px; height: 30px; flex-shrink: 0; border-radius: 100px; border: 1px solid #9D9999; background: #FFF; display: flex; justify-content: center; align-items: center;">
-                <span style="color: #545454; font-family: SUIT; font-size: 13px; font-style: normal; font-weight: 500; line-height: 100%; letter-spacing: -0.13px;">마우스 오른쪽 버튼 종료</span>
-              </div>
-            </div>`,
-              anchor: new naver.maps.Point(-5, -5),
-            },
-          })
-          setMarkers((prev) => {
-            prev?.forEach((marker) => {
-              marker.setMap(null)
-            })
-            return [divMarker]
-          })
-        }
+
+  // 거리재기 클릭 이벤트
+  const onClickDistance = useCallback(
+    (e: { coord: naver.maps.Point }) => {
+      if (!map) return
+      if (clickedMapType.distance === false) {
+        handleDelete()
+        return
+      }
+      const coord = new naver.maps.LatLng(e.coord.y, e.coord.x)
+      setStartPoint(coord)
+      if (!polyline) {
+        const newGuideline = new naver.maps.Polyline({
+          strokeColor: '#0038FF',
+          strokeWeight: 2,
+          strokeStyle: 'shortdash',
+          strokeOpacity: 0.65,
+          path: [coord],
+          map: map,
+          strokeLineCap: 'round',
+        })
+        setGuideline(newGuideline)
+        const newPolyline = new naver.maps.Polyline({
+          strokeColor: '#0038FF',
+          strokeWeight: 2,
+          strokeOpacity: 0.8,
+          path: [coord],
+          map: map,
+        })
+        setPolyline(newPolyline)
+        addBlueCircleMarkers([coord], map, 'distance')
+      } else {
+        addBlueCircleMarkers([coord], map, 'distance')
+        guideline?.setPath([coord])
+        polyline?.getPath()?.push(coord)
+        const distance = polyline.getDistance()
+        addMileStoneMarker(
+          { lat: coord.lat(), lng: coord.lng() },
+          fromMetersToText(distance),
+          false,
+          false,
+          true,
+        )
       }
     },
-    [map, guideline, polyline, fromMetersToText, startPoint],
+    [
+      guideline,
+      polyline,
+      map,
+      clickedMapType.distance,
+      addMileStoneMarker,
+      fromMetersToText,
+    ],
   )
+
+  // 거리재기 종료 이벤트
   const finishDistance = useCallback(() => {
     if (guideline) {
       guideline.setMap(null)
@@ -208,6 +296,10 @@ export const Measure = ({
     }
     if (polyline) {
       const path = polyline.getPath() as any
+      if (path && path.length <= 1) {
+        distanceCircleMarkers?.forEach((marker) => marker.setMap(null))
+        setDistanceCircleMarkers([])
+      }
       if (path && path.length > 0) {
         const lastCoord = path._array[path.length - 1]
         const distance = polyline.getDistance()
@@ -217,102 +309,68 @@ export const Measure = ({
             lat: lastCoord.y,
             lng: lastCoord.x,
           }
-          addMileStone2(coord, fromMetersToText(distance))
+
+          if (path.length > 1) {
+            addMileStoneMarker(coord, fromMetersToText(distance), false, true)
+          }
         }
       }
     }
-    markers?.forEach((marker) => {
+    markers.forEach((marker) => {
       marker.setMap(null)
     })
-    setMarkers(null)
-    setLastDistance(null)
+
+    setMarkers([])
+    setMode('')
     map?.setOptions({
       draggable: true,
     })
     map?.setCursor('auto')
-    setClickedMapType((prev) => {
-      return {
-        ...prev,
-        distance: false,
-      }
-    })
-    setLastDistance(null)
+    setClickedMapType((prev) => ({
+      ...prev,
+      distance: false,
+    }))
   }, [
     guideline,
     polyline,
     map,
     fromMetersToText,
-    addMileStone2,
+    addMileStoneMarker,
     setClickedMapType,
-    setMarkers,
     markers,
   ])
 
-  const onClickDistance = useCallback(
-    (e: { coord: naver.maps.Point }) => {
+  // 면적재기 클릭 이벤트
+  const onClickArea = useCallback(
+    (e: any) => {
       if (!map) return
-      if (clickedMapType.distance === false) {
-        guideline?.setMap(null)
-        polyline?.setMap(null)
+      if (clickedMapType.area === false) {
+        handleDelete()
         return
       }
-      const coord = new naver.maps.LatLng(e.coord.y, e.coord.x)
-      setStartPoint(coord)
-      if (!polyline) {
-        const newGuideline = new naver.maps.Polyline({
-          strokeColor: '#f00',
-          strokeWeight: 5,
-          strokeStyle: 'dash',
-          strokeOpacity: 0.6,
-          path: [coord],
-          map: map,
-        })
-        setGuideline(newGuideline)
-        const newPolyline = new naver.maps.Polyline({
-          strokeColor: '#f00',
-          strokeWeight: 5,
-          strokeOpacity: 0.8,
-          path: [coord],
-          map: map,
-        })
-        setPolyline(newPolyline)
-        setLastDistance(newPolyline.getDistance())
-      } else {
-        guideline?.setPath([coord])
-        polyline?.getPath()?.push(coord)
-        const distance = polyline.getDistance()
-        addMileStone(
-          { lat: coord.lat(), lng: coord.lng() },
-          fromMetersToText(distance),
-        )
+      const coord = e.coord
 
-        setLastDistance(distance)
-        setIsBoxDisplay(true)
+      if (!polygon) {
+        const newPolygon = new naver.maps.Polygon({
+          strokeColor: '#00f',
+          strokeOpacity: 0.6,
+          strokeWeight: 2,
+          fillColor: '#00f',
+          fillOpacity: 0.2,
+          paths: [coord],
+          map: map,
+        })
+        setPolygon(newPolygon)
+        addBlueCircleMarkers([coord], map, 'area')
+      } else {
+        addBlueCircleMarkers([coord], map, 'area')
+        polygon.getPath().push(coord)
       }
     },
-    [
-      guideline,
-      polyline,
-      map,
-      clickedMapType.distance,
-      addMileStone,
-      fromMetersToText,
-    ],
+    [map, clickedMapType.area, polygon],
   )
 
-  const fromSquareMetersToText = useCallback((squareMeters: number) => {
-    let squareMeter = squareMeters || 0
-    let squarKm = 1000 * 1000
-    let text: string | number = squareMeter
-
-    if (squareMeter >= squarKm) {
-      text = parseFloat((squareMeter / squarKm).toFixed(1)) + 'km²'
-    } else {
-      text = parseFloat(squareMeter.toFixed(1)) + 'm²'
-    }
-    return text
-  }, [])
-
+  // 면적재기 종료 이벤트
   const finishArea = useCallback(() => {
     if (polygon) {
       const path = polygon.getPath() as any
@@ -320,223 +378,228 @@ export const Measure = ({
 
       const squareMeter = polygon.getAreaSize()
       const lastCoord = path._array[path.length - 1]
-
-      if (lastCoord) {
-        addMileStone2(lastCoord, fromSquareMetersToText(squareMeter))
+      const area = fromSquareMetersToText(squareMeter)[0]
+      const pyeong = fromSquareMetersToText(squareMeter)[1]
+      if (lastCoord && path.length > 2) {
+        addMileStoneMarker(lastCoord, area, false, true, false, pyeong)
+      } else {
+        areaCircleMarkers?.forEach((marker) => marker.setMap(null))
+        setAreaCircleMarkers([])
+        polygon.setMap(null)
+        setPolygon(null)
       }
     }
+
+    markers.forEach((marker) => {
+      marker.setMap(null)
+    })
+    setMarkers([])
     setPolygon(null)
+    setMode('')
     map?.setOptions({
       draggable: true,
     })
     map?.setCursor('auto')
-    setClickedMapType((prev) => {
-      return {
-        ...prev,
-        area: false,
+    setClickedMapType((prev) => ({
+      ...prev,
+      area: false,
+    }))
+  }, [
+    polygon,
+    addMileStoneMarker,
+    fromSquareMetersToText,
+    map,
+    setClickedMapType,
+    markers,
+  ])
+
+  // 무빙 마커 생성
+  const createMovingMarker = useCallback(
+    (coord: naver.maps.Point, content: string) => {
+      return new naver.maps.Marker({
+        position: coord,
+        map: map,
+        icon: {
+          content,
+          anchor: new naver.maps.Point(-5, -5),
+        },
+        zIndex: 100,
+      })
+    },
+    [map],
+  )
+
+  // 거리, 면적 마우스 무빙 이벤트
+  const onMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!map) return
+
+      const proj = map.getProjection()
+      const coord = proj.fromPageXYToCoord(
+        new naver.maps.Point(e.pageX, e.pageY),
+      ) as naver.maps.Point
+
+      if (mode === 'distance' && guideline) {
+        const path = guideline.getPath() as naver.maps.Point[]
+        if (path.length === 2) path.pop()
+        path.push(coord)
+        guideline.setPath(path)
+
+        const ps = map.getPrimitiveProjection().getDistance(startPoint, coord)
+        const content = createMarkerContent(
+          'distance',
+          fromMetersToText(ps),
+          true,
+        )
+        const divMarker = createMovingMarker(coord, content)
+
+        setMarkers((prev) => {
+          prev?.forEach((marker) => marker.setMap(null))
+          return [divMarker]
+        })
+      } else if (mode === 'area' && polygon) {
+        const path = polygon.getPath() as naver.maps.Point[]
+
+        if (path.length >= 2) {
+          path.pop()
+        }
+        path.push(coord)
+        const area = polygon.getAreaSize()
+        const [text, pyeong] = fromSquareMetersToText(area)
+        const content = createMarkerContent('area', text, true, pyeong)
+        if (path.length >= 3) {
+          const divMarker = createMovingMarker(coord, content)
+          setMarkers((prev) => {
+            prev?.forEach((marker) => marker.setMap(null))
+            return [divMarker]
+          })
+        }
       }
-    })
-  }, [polygon, addMileStone2, fromMetersToText, map, setClickedMapType])
+    },
+    [
+      map,
+      mode,
+      guideline,
+      polyline,
+      polygon,
+      startPoint,
+      fromMetersToText,
+      fromSquareMetersToText,
+    ],
+  )
+
+  const handleButtonClick = useCallback(
+    (value: 'distance' | 'area') => {
+      setClickedMapType((prev) => {
+        const isCurrentMode = value === mode
+        return {
+          ...prev,
+          distance: isCurrentMode ? false : value === 'distance',
+          area: isCurrentMode ? false : value === 'area',
+        }
+      })
+
+      if (value === 'distance') {
+        polyline?.setMap(null)
+        guideline?.setMap(null)
+        setPolyline(null)
+        setGuideline(null)
+        setDistanceCircleMarkers([])
+      } else if (value === 'area') {
+        polygon?.setMap(null)
+        setPolygon(null)
+        setAreaCircleMarkers([])
+      }
+
+      if (mode === 'distance') {
+        distanceCircleMarkers?.forEach((marker) => marker.setMap(null))
+      } else if (mode === 'area') {
+        areaCircleMarkers?.forEach((marker) => marker.setMap(null))
+      }
+
+      markers?.forEach((marker) => marker.setMap(null))
+      setMarkers([])
+
+      setMode((prevMode) => (prevMode === value ? '' : value))
+    },
+    [
+      mode,
+      polyline,
+      guideline,
+      polygon,
+      markers,
+      distanceCircleMarkers,
+      areaCircleMarkers,
+    ],
+  )
 
   useEffect(() => {
-    if (map) {
-      if (mode === 'distance' && clickedMapType.distance) {
-        map.setOptions({
-          draggable: false,
-        })
-        map.setCursor(`url(/images/Ruler.png), auto`)
-        document.addEventListener('mousemove', onMouseMoveDistance)
-        return () =>
-          document.removeEventListener('mousemove', onMouseMoveDistance)
-      } else {
-        map.setOptions({
-          draggable: true,
-        })
-        map.setCursor('auto')
-      }
-      if (mode === 'area' && clickedMapType.area) {
-        document.addEventListener('mousemove', () => {
-          console.log('add')
-        })
-        return () =>
-          document.removeEventListener('mousemove', () => {
-            console.log('remove')
-          })
-      } else {
-        map.setOptions({
-          draggable: true,
-        })
-        map.setCursor('auto')
-      }
-    }
-  }, [onMouseMoveDistance, map, mode, clickedMapType.distance])
+    if (!map) return
 
-  const handleButtonClick = useCallback(() => {
-    if (!clickedMapType.distance) {
-      setClickedMapType((prev) => {
-        return {
-          ...prev,
-          distance: true,
-          area: false,
-        }
-      })
-      setMode('distance')
+    const isDistanceMode = mode === 'distance' && clickedMapType.distance
+    const isAreaMode = mode === 'area' && clickedMapType.area
+
+    if (isDistanceMode || isAreaMode) {
+      map.setCursor(
+        `url(/images/${isDistanceMode ? 'Ruler' : 'area_cursor'}.png), auto`,
+      )
+      document.addEventListener('mousemove', onMouseMove)
+      return () => document.removeEventListener('mousemove', onMouseMove)
     } else {
-      setClickedMapType((prev) => {
-        return {
-          ...prev,
-          distance: false,
-        }
-      })
-      setMode('')
+      map.setCursor('auto')
     }
-  }, [clickedMapType.distance, setClickedMapType])
+  }, [map, mode, clickedMapType.distance, clickedMapType.area, onMouseMove])
 
-  useMapListeners(map, onClickDistance, onMouseMoveDistance, finishDistance)
+  useEffect(() => {
+    markers?.forEach((marker) => marker.setMap(null))
+    polygon?.setMap(null)
+    polyline?.setMap(null)
+    guideline?.setMap(null)
+
+    setPolyline(null)
+    setGuideline(null)
+    setPolygon(null)
+    setMarkers([])
+    if (mode === 'distance') {
+      distanceCircleMarkers?.forEach((marker) => marker.setMap(null))
+      setDistanceCircleMarkers([])
+    } else if (mode === 'area') {
+      areaCircleMarkers?.forEach((marker) => marker.setMap(null))
+      setAreaCircleMarkers([])
+    }
+  }, [mode, clickedMapType, map, isPyeong, isCurrentState])
+
+  const mapClickEvent =
+    mode === 'distance'
+      ? onClickDistance
+      : mode === 'area'
+      ? onClickArea
+      : () => {}
+
+  const mapFinishEvent =
+    mode === 'distance'
+      ? finishDistance
+      : mode === 'area'
+      ? finishArea
+      : () => {}
+
+  useMapListeners(map, mapClickEvent, onMouseMove, mapFinishEvent)
 
   return (
     <Flex css={ContainerStyle}>
       <Distance
         id="distance"
-        mode={mode}
-        onClick={() => {
-          handleButtonClick()
-        }}
+        mode={mode === 'distance' && clickedMapType.distance ? 'distance' : ''}
+        onClick={() => handleButtonClick('distance')}
       >
-        <div
-          style={{
-            width: '20px',
-            height: '20px',
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-          >
-            <path
-              d="M5.92578 6.62109L8.04729 4.49959"
-              stroke={`${mode === 'distance' ? 'white' : '#000001'}`}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M1.60547 6.54688L14.0303 18.9718"
-              stroke={`${mode === 'distance' ? 'white' : '#000001'}`}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M5.84766 2.30469L18.2725 14.7296"
-              stroke={`${mode === 'distance' ? 'white' : '#000001'}`}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M8.60156 9.29688L10.7231 7.17537"
-              stroke={`${mode === 'distance' ? 'white' : '#000001'}`}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M11.2773 11.9766L13.3989 9.85506"
-              stroke={`${mode === 'distance' ? 'white' : '#000001'}`}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M13.9531 14.6523L16.0746 12.5308"
-              stroke={`${mode === 'distance' ? 'white' : '#000001'}`}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M1.79688 6.73828L6.03989 2.49527"
-              stroke={`${mode === 'distance' ? 'white' : '#000001'}`}
-            />
-            <path
-              d="M13.8398 18.7812L18.0829 14.5382"
-              stroke={`${mode === 'distance' ? 'white' : '#000001'}`}
-            />
-          </svg>
-        </div>
-        <TextStyle mode={mode}>거리</TextStyle>
+        <DistanceBtn mode={mode} clickedMapType={clickedMapType} />
       </Distance>
       <Area
-        area={clickedMapType.area}
+        area={mode === 'area' && clickedMapType.area}
         id="area"
-        onClick={() => {
-          setClickedMapType((prev) => {
-            return {
-              ...prev,
-              area: !prev.area,
-              distance: false,
-            }
-          })
-          setMode('area')
-        }}
+        onClick={() => handleButtonClick('area')}
       >
-        <div
-          style={{
-            width: '20px',
-            height: '20px',
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-          >
-            <rect
-              x="3.5"
-              y="3.5"
-              width="13"
-              height="13"
-              stroke={`${clickedMapType.area ? 'white' : '#000001'}`}
-            />
-            <rect
-              x="2.5"
-              y="2.5"
-              width="3"
-              height="3"
-              rx="1.5"
-              fill={`${clickedMapType.area ? 'white' : '#000001'}`}
-              stroke={`${clickedMapType.area ? 'white' : '#000001'}`}
-            />
-            <rect
-              x="14.5"
-              y="2.5"
-              width="3"
-              height="3"
-              rx="1.5"
-              fill={`${clickedMapType.area ? 'white' : '#000001'}`}
-              stroke={`${clickedMapType.area ? 'white' : '#000001'}`}
-            />
-            <rect
-              x="2.5"
-              y="14.5"
-              width="3"
-              height="3"
-              rx="1.5"
-              fill={`${clickedMapType.area ? 'white' : '#000001'}`}
-              stroke={`${clickedMapType.area ? 'white' : '#000001'}`}
-            />
-            <rect
-              x="14.5"
-              y="14.5"
-              width="3"
-              height="3"
-              rx="1.5"
-              fill={`${clickedMapType.area ? 'white' : '#000001'}`}
-              stroke={`${clickedMapType.area ? 'white' : '#000001'}`}
-            />
-          </svg>
-        </div>
-        <AreaTextStyle area={clickedMapType.area}>면적</AreaTextStyle>
+        <AreaBtn mode={mode} clickedMapType={clickedMapType} />
       </Area>
     </Flex>
   )
@@ -544,7 +607,7 @@ export const Measure = ({
 const ContainerStyle = css`
   display: flex;
   width: 44px;
-  height: 88px;
+  height: 89px;
   flex-direction: column;
   align-items: center;
   border-radius: 4px 4px 4px 4px;

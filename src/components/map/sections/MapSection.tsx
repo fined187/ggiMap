@@ -96,7 +96,9 @@ export default function MapSection() {
         markerClickedRef={markerClickedRef}
       />
       <Clusterings item={mapCount} />
-      {openOverlay && <Overlay halfDimensions={halfDimensions} />}
+      {openOverlay && (
+        <Overlay halfDimensions={halfDimensions} openOverlay={openOverlay} />
+      )}
     </>
   )
 }

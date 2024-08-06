@@ -83,6 +83,7 @@ export default function Carousel({
     },
     [clickedInfo, nowIndex, handleDetailPage],
   )
+
   return (
     <div
       style={{

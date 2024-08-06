@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { LiaEyeSolid, LiaEyeSlashSolid } from 'react-icons/lia'
 import axios from 'axios'
-
 import CoIpchalPDF from '@/components/bidForm/createPDFContent/CoIpchalPDF'
 import SinglePDF from '@/components/bidForm/createPDFContent/SinglePDF'
 import CoverPage from '@/components/bidForm/createPDFContent/CoverPage'
@@ -11,8 +10,6 @@ import { TotalResultType } from '@/models/IpchalType'
 import { format } from 'date-fns'
 import Spinner from '@/components/bidForm/Spinner'
 import Button from '@/components/bidForm/shared/Button'
-import { useDisclosure } from '@chakra-ui/react'
-import { usePDFContext } from '@/contexts/usePDFContext'
 
 export default function CreateFile({ userId }: { userId: string }) {
   const [stateNum, setStateNum] = useRecoilState(stepState)
@@ -28,7 +25,7 @@ export default function CreateFile({ userId }: { userId: string }) {
   const [pageNum, setPageNum] = useState<number>(2)
   const [width, setWidth] = useState<number>(1000)
   const [isMobile, setIsMobile] = useState<boolean>(false)
-  const { openModal } = usePDFContext()
+
   useEffect(() => {
     if (window) {
       setWidth(window.innerWidth)
@@ -169,6 +166,9 @@ export default function CreateFile({ userId }: { userId: string }) {
       if (response.ok) {
         const data = await response.blob()
         const file = new Blob([data], { type: 'application/pdf' })
+        const mobileFile = new Blob([data], {
+          type: 'application/octet-stream',
+        })
         setBlobFile(
           new File([file], `${fileName}.pdf`, { type: 'application/pdf' }),
         )
@@ -184,7 +184,7 @@ export default function CreateFile({ userId }: { userId: string }) {
           )
         }
         if (isMobile) {
-          await handleDownloadMobile(file)
+          handleDownloadMobileA(mobileFile)
         } else {
           await handleDownload(file)
         }
@@ -196,28 +196,55 @@ export default function CreateFile({ userId }: { userId: string }) {
   }
 
   const handleDownload = (file: Blob) => {
-    if (!isMobile) {
-      if (window) {
-        const url = window.URL.createObjectURL(file)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `${fileName.replace(' ', '')}.pdf`
-        a.click()
-        window.URL.revokeObjectURL(url)
-      }
+    if (isMobile) return
+    if (window) {
+      const url = window.URL.createObjectURL(file)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${fileName.replace(' ', '')}.pdf`
+      a.click()
+      window.URL.revokeObjectURL(url)
     }
   }
 
   const handleDownloadMobile = useCallback(
-    async (file: Blob) => {
+    (file: Blob) => {
       if (!isMobile) return
-      console.log('handleDownloadMobile')
-      openModal({
-        onClose: () => {},
-        file,
-      })
+      const url = window.URL.createObjectURL(file)
+      const downloadWindow = window.open('', '_blank')
+
+      if (downloadWindow) {
+        downloadWindow.location.href = url
+        const a = downloadWindow.document.createElement('a')
+        a.href = url
+        a.download = `${fileName.replace(' ', '')}.pdf`
+        downloadWindow.document.body.appendChild(a)
+        a.click()
+        downloadWindow.document.body.removeChild(a)
+
+        // URL 해제
+        window.URL.revokeObjectURL(url)
+      }
     },
-    [isMobile, openModal],
+    [isMobile, fileName],
+  )
+
+  const handleDownloadMobileA = useCallback(
+    (file: Blob) => {
+      if (!isMobile) return
+      const url = window.URL.createObjectURL(file)
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${fileName.replace(' ', '')}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
+      // URL 해제
+      window.URL.revokeObjectURL(url)
+    },
+    [isMobile, fileName],
   )
 
   useEffect(() => {

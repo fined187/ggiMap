@@ -5,6 +5,11 @@ import InterestBtn from './InterestBtn'
 import CadastralBtn from './CadastralBtn'
 import RoadviewBtn from './RoadviewBtn'
 import CurrentBtn from './CurrentBtn'
+import ToolsBtn from './ToolsBtn'
+import { Pyeong } from './styled/MeasureStyle'
+import { useRecoilState } from 'recoil'
+import { isPyeongState } from '@/store/atom/atom'
+import { PyeongBtn } from './PyeongBtn'
 
 interface MapTypeProps {
   clickedMapType: {
@@ -39,6 +44,11 @@ export default function MapFunction({
   setClickedMapType,
   setOpenOverlay,
 }: MapTypeProps) {
+  const [isPyeong, setIsPyeong] = useRecoilState(isPyeongState)
+  const handleTogglePyeong = () => {
+    setIsPyeong((prev) => !prev)
+    setOpenOverlay(false)
+  }
   return (
     <Flex
       css={ContainerStyle}
@@ -59,10 +69,13 @@ export default function MapFunction({
         setClickedMapType={setClickedMapType}
       />
       <CurrentBtn />
-      {/* <ToolsBtn
+      <ToolsBtn
         clickedMapType={clickedMapType}
         setClickedMapType={setClickedMapType}
-      /> */}
+      />
+      <Pyeong onClick={handleTogglePyeong}>
+        <PyeongBtn isPyeong={isPyeong} />
+      </Pyeong>
     </Flex>
   )
 }

@@ -8,7 +8,6 @@ import '@/styles/globals.css'
 import InterestContextProvider from '@/contexts/useModalContext'
 import { useRouter } from 'next/router'
 import Layout from '@/components/shared/Layout'
-import PDFContextProvider from '@/contexts/usePDFContext'
 
 const client = new QueryClient({})
 
@@ -25,9 +24,7 @@ export default function App({
         <QueryClientProvider client={client}>
           <Hydrate state={dehydratedState}>
             <InterestContextProvider>
-              <PDFContextProvider>
-                <Component {...pageProps} />
-              </PDFContextProvider>
+              <Component {...pageProps} />
             </InterestContextProvider>
           </Hydrate>
           <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />

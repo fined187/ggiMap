@@ -371,6 +371,7 @@ export default function BidForm({ idcode, token, mstSeq }: BidFormProps) {
           },
         },
       )
+      console.log(response)
       if (response.status === 200) {
         setBiddingForm((prev) => {
           return {
@@ -413,6 +414,7 @@ export default function BidForm({ idcode, token, mstSeq }: BidFormProps) {
             reqCourtName: response.data.data.reqCourtName,
           }
         })
+        console.log(response)
         setLoading(false)
         if (window) {
           window.history.pushState({}, '', '/bid-form')
