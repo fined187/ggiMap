@@ -2,6 +2,8 @@ import { MapItem } from '@/models/MapItem'
 import { NumToHan } from '@/utils/NumToHan'
 import { PnuCountIcon, ShareIcon } from './Marker1'
 import { colors } from '@/styles/colorPalette'
+import { removeCommas } from '@/utils/RemoveCommas'
+import { fromSquareMetersToText } from '@/utils/MeterToText'
 
 const handleGetColor = (type: number) => {
   switch (type) {
@@ -39,7 +41,7 @@ export const InterestIcon = () => {
     <div style="display: flex; width: 15px; height: 16px; flex-direction: column; justify-content: center; flex-shrink: 0; background: #00A980; margin-right: 2.5px;">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M0 2C0 0.895431 0.895431 0 2 0H14C15.1046 0 16 0.895431 16 2V14C16 15.1046 15.1046 16 14 16H2C0.895431 16 0 15.1046 0 14V2Z" fill="#00A980"/>
-        <path d="M8.00251 11L4.60755 7.60143C2.76246 5.75635 5.47474 2.6341 8.00251 5.50014C10.5303 2.6341 13.2303 5.76865 11.3975 7.60143L8.00251 11Z" fill="white" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M8.00251 11L4.60755 7.60143C2.76246 5.75635 5.47474 2.6341 8.00251 5.50014C10.5303 2.6341 13.2303 5.76865 11.3975 7.60143L8.00251 11Z" fill="white" stroke="white" strokeLinecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
   `
@@ -82,7 +84,17 @@ export const UsageTopIcon = (
   `
 }
 
-export const AmountBottomIcon = (item: MapItem, type: number) => {
+export const AmountBottomIcon = (
+  item: MapItem,
+  type: number,
+  isPyeong: boolean,
+) => {
+  const buildingAreaPyeong = fromSquareMetersToText(
+    removeCommas(item.buildingArea.split('㎡')[0]),
+  )[1]
+  const landAreaPyeong = fromSquareMetersToText(
+    removeCommas(item.landArea.split('㎡')[0]),
+  )[1]
   return `
       <div style="flex-direction: column; display: flex; width: 100px; height: 59px; padding: 2px 0px 2px 4px; align-items: start; justify-content: start; align-content: center; gap: 1px 4px; flex-wrap: wrap; background: #FFF; border-radius: 0px 0px 11px 0px; border-right: ${handleGetBorderColor(
         item,
@@ -106,7 +118,13 @@ export const AmountBottomIcon = (item: MapItem, type: number) => {
             건물
           </span>
           <span style="color: #000001; font-family: SUIT; font-size: 11.5px; font-style: normal; font-weight: 600; line-height: 120%; letter-spacing: -0.115px;">
-            ${item.buildingArea === '' ? '-' : item.buildingArea}
+            ${
+              item.buildingArea === ''
+                ? '-'
+                : isPyeong
+                ? `${buildingAreaPyeong}`
+                : item.buildingArea
+            }
           </span>
         </div>
         <div style="display: flex; flex-direction: row; gap: 5px;">
@@ -114,7 +132,13 @@ export const AmountBottomIcon = (item: MapItem, type: number) => {
             토지
           </span>
           <span style="color: #000001; font-family: SUIT; font-size: 11.5px; font-style: normal; font-weight: 600; line-height: 120%; letter-spacing: -0.115px;">
-            ${item.landArea === '' ? '-' : item.landArea}
+            ${
+              item.landArea === ''
+                ? '-'
+                : isPyeong
+                ? `${landAreaPyeong}`
+                : item.landArea
+            }
           </span>
         </div>
       </div>

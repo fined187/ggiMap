@@ -8,6 +8,9 @@ import styled from '@emotion/styled'
 import { useRecoilValue } from 'recoil'
 import NewPageIcon from './icon/NewPageIcon'
 import { useCallback } from 'react'
+import { isPyeongState } from '@/store/atom/atom'
+import { fromSquareMetersToText } from '@/utils/MeterToText'
+import { removeCommas } from '@/utils/RemoveCommas'
 
 interface BottomProps {
   nowIndex: number
@@ -16,6 +19,7 @@ interface BottomProps {
 export default function Bottom({ nowIndex }: BottomProps) {
   const clickedItem = useRecoilValue(clickedItemAtom)
   const clickedInfo = useRecoilValue(clickedInfoAtom)
+  const isPyeong = useRecoilValue(isPyeongState)
   const handleDetailPage = (type: number, idCode: string) => {
     if (type === 1) {
       return `https://www.ggi.co.kr/kyungmae/mulgun_detail_popup_h.asp?idcode=${idCode}`
@@ -25,6 +29,16 @@ export default function Bottom({ nowIndex }: BottomProps) {
       return `https://www.ggi.co.kr/wait/mulgun_detail_popup_w.asp?idcode=${idCode}&new=new&viewchk=P`
     }
   }
+  const buildingAreaPyeong = fromSquareMetersToText(
+    removeCommas(
+      (clickedInfo[nowIndex]?.buildingArea as string)?.split('㎡')[0] ?? '0',
+    ),
+  )[1]
+  const landAreaPyeong = fromSquareMetersToText(
+    removeCommas(
+      (clickedInfo[nowIndex]?.landArea as string)?.split('㎡')[0] ?? '0',
+    ),
+  )[1]
 
   const handleDuplicatedOpen = useCallback(
     (idCode: string, type: number) => {
@@ -38,6 +52,7 @@ export default function Bottom({ nowIndex }: BottomProps) {
     },
     [clickedInfo, nowIndex, handleDetailPage],
   )
+
   return (
     <div
       style={{
@@ -211,7 +226,9 @@ export default function Bottom({ nowIndex }: BottomProps) {
                     &nbsp;{' | '}&nbsp;
                   </Text>
                   <Text css={DetailTextStyle}>
-                    {'토지 ' + clickedInfo[nowIndex]?.landArea}
+                    {isPyeong
+                      ? '토지 ' + landAreaPyeong
+                      : '토지 ' + clickedInfo[nowIndex]?.landArea}
                   </Text>
                 </>
               )}
@@ -231,7 +248,9 @@ export default function Bottom({ nowIndex }: BottomProps) {
                   &nbsp;{' | '}&nbsp;
                 </Text>
                 <Text css={DetailTextStyle}>
-                  {'건물 ' + clickedInfo[nowIndex]?.buildingArea}
+                  {isPyeong
+                    ? '건물 ' + buildingAreaPyeong
+                    : '건물 ' + clickedInfo[nowIndex]?.buildingArea}
                 </Text>
               </>
             )}

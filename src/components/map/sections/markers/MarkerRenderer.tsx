@@ -19,6 +19,7 @@ import {
 import { UseQueryResult, useQuery } from 'react-query'
 import { NaverMap } from '@/models/Map'
 import { MINI_MAP } from '../MiniMap'
+import { isPyeongState } from '@/store/atom/atom'
 
 interface MarkerRendererProps {
   item: MapItem
@@ -46,6 +47,8 @@ const MarkerRenderer = ({
   const { data: miniMap }: UseQueryResult<NaverMap> = useQuery(MINI_MAP, {
     enabled: false,
   })
+  const isPyeong = useRecoilValue(isPyeongState)
+
   const handleItemUsage = useCallback(() => {
     const usageMapping: { [key: string]: string } = {
       단독: '단독',
@@ -83,10 +86,14 @@ const MarkerRenderer = ({
   const handleMarkerClick = useCallback(
     (item: MapItem) => {
       if (isPanoVisible) return
-      const isSelected = clickedItem === item
-      setOpenOverlay(isSelected ? !openOverlay : true)
-      markerClickedRef.current = isSelected ? !openOverlay : true
-      setClickedItem(isSelected ? null : item)
+      if (clickedItem === item) {
+        setOpenOverlay(!openOverlay)
+        markerClickedRef.current = !openOverlay
+        return
+      } else {
+        setOpenOverlay(true)
+        markerClickedRef.current = true
+      }
     },
     [
       clickedItem,
@@ -95,6 +102,8 @@ const MarkerRenderer = ({
       markerClickedRef,
       openOverlay,
       isPanoVisible,
+      item,
+      isPyeong,
     ],
   )
 
@@ -118,6 +127,7 @@ const MarkerRenderer = ({
           index,
           zoomLevel: zoomLevel || 0,
           winExist: item.winExist,
+          isPyeong,
         }),
         anchor: handleAnchor(),
       },
@@ -141,6 +151,7 @@ const MarkerRenderer = ({
       marker.setZIndex(handleZIndex(item.types[0], item.winYn))
     })
     naver.maps.Event?.addListener(marker, 'click', () => {
+      setClickedItem(item)
       handleMarkerClick(item)
       const target = document.getElementById(`target_${index}`)
       if (target) {
@@ -167,6 +178,7 @@ const MarkerRenderer = ({
     listOver.isOver,
     isPanoVisible,
     miniMap,
+    isPyeong,
   ])
   return null
 }

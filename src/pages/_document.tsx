@@ -14,9 +14,10 @@ export default function Document() {
           content='attachment; filename="filename.pdf"'
         />
         <link rel="icon" href="/GGILogo.ico" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link
+          rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT/fonts/static/woff2/SUIT.css"
-          rel="preconnect"
         />
       </Head>
       <meta

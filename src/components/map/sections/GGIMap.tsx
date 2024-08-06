@@ -101,7 +101,6 @@ export default function GGIMap({
   // Ref hooks
   const panoRef = useRef<naver.maps.Panorama | null>(null)
   const mapRef = useRef<NaverMap | null>(null)
-  const panoChanged = useRef(false)
   const markerRef = useRef<naver.maps.Marker | null>(null)
   //  Custom hooks
   const { mutate: getMapCounts } = useMapCounts(

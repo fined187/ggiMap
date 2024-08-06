@@ -13,9 +13,10 @@ import { NaverMap } from '@/models/Map'
 
 interface OverlayProps {
   halfDimensions: { width: number; height: number }
+  openOverlay: boolean
 }
 
-export default function Overlay({ halfDimensions }: OverlayProps) {
+export default function Overlay({ halfDimensions, openOverlay }: OverlayProps) {
   const ref = useRef<HTMLDivElement>(null)
   const markerPosition = useRecoilValue(markerPositionAtom)
   const [nowIndex, setNowIndex] = useState<number>(0)
@@ -283,7 +284,7 @@ export default function Overlay({ halfDimensions }: OverlayProps) {
     }
   }, [markerPosition, calculateScreenNum])
 
-  useGetDetail()
+  useGetDetail(openOverlay)
   return (
     <Flex
       css={Overlaytop}
